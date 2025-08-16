@@ -107,8 +107,20 @@ class ApiClient {
       body: JSON.stringify(credentials),
     });
 
-    if (response.success && response.data?.token) {
-      this.setToken(response.data.token);
+    console.log("🔐 Login response in API client:", {
+      success: response.success,
+      hasData: !!response.data,
+      hasToken: !!(response.data as any)?.token,
+      rawResponse: response
+    });
+
+    // Handle both nested and flat response structures
+    const token = (response.data as any)?.token || response.data?.data?.token;
+    if (response.success && token) {
+      console.log("✅ Setting token:", token.substring(0, 20) + "...");
+      this.setToken(token);
+    } else {
+      console.log("❌ No token found in response");
     }
 
     return response;
