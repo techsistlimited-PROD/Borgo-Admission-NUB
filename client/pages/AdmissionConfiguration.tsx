@@ -657,11 +657,38 @@ export default function AdmissionConfiguration() {
                   </div>
                 </div>
                 <div className="space-y-4">
+                  <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg mb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="developer_mode" className="font-medium text-orange-900">
+                          🚀 Developer Mode (Bypass All Verifications)
+                        </Label>
+                        <p className="text-sm text-orange-700 mt-1">
+                          Skip all verification requirements for testing purposes. Use only for development/testing.
+                        </p>
+                      </div>
+                      <Switch
+                        id="developer_mode"
+                        checked={settings.developer_mode || false}
+                        onCheckedChange={(checked) => setSettings({
+                          ...settings,
+                          developer_mode: checked
+                        })}
+                      />
+                    </div>
+                    {settings.developer_mode && (
+                      <div className="mt-3 p-2 bg-orange-100 rounded text-sm text-orange-800">
+                        ⚠️ Developer mode is active. All verifications will be bypassed automatically.
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <Label htmlFor="phone_verification">Require Phone Verification</Label>
                     <Switch
                       id="phone_verification"
                       checked={settings.require_phone_verification}
+                      disabled={settings.developer_mode}
                       onCheckedChange={(checked) => setSettings({
                         ...settings,
                         require_phone_verification: checked
