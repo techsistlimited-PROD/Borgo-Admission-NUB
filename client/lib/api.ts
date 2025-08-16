@@ -38,6 +38,7 @@ class ApiClient {
   constructor() {
     // Get token from localStorage on initialization
     this.token = localStorage.getItem("nu_token");
+    console.log("🚀 ApiClient initialized with token:", this.token ? this.token.substring(0, 20) + "..." : "none");
   }
 
   setToken(token: string) {
