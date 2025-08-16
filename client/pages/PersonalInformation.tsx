@@ -88,6 +88,7 @@ export default function PersonalInformation() {
   const [emailVerified, setEmailVerified] = useState(
     applicationData.emailVerified || false,
   );
+  const [developerMode, setDeveloperMode] = useState(false);
 
   // Referrer system state
   const [referenceId, setReferenceId] = useState(
@@ -171,7 +172,7 @@ export default function PersonalInformation() {
     bn: {
       title: "ব্যক্তিগত তথ্য",
       subtitle: "৪টি ধাপের ২য় ধাপ",
-      backToPrevious: "প্রোগ্রাম নির্বাচনে ফিরুন",
+      backToPrevious: "প্রোগ্রাম ��ির্বাচনে ফিরুন",
       saveAndContinue: "সেভ করে এগিয়ে যান",
       saveAndExit: "সেভ করে বেরিয়ে যান",
       uploadPhoto: "ছবি আপলোড করুন",
@@ -232,7 +233,7 @@ export default function PersonalInformation() {
       referrerContact: "যোগাযোগ",
       lookupReferrer: "রেফারার খুঁজুন",
       referralNote:
-        "যদি নর্দার্ন ইউনিভার্সিটির কেউ আপনাকে রেফার করে থাকেন, তাহলে তাদের বিশ্ববিদ্যালয় আইডি লিখুন।",
+        "যদি নর্দার্ন ইউনিভার্সিটির কেউ আপনাকে রেফার করে থাকেন, তাহলে তাদের বিশ্ববিদ্যালয় আই���ি লিখুন।",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফলভাবে সেভ হয়েছে!",
       saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ্টা করুন।",
