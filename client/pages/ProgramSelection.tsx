@@ -61,6 +61,9 @@ export default function ProgramSelection() {
   const [selectedDepartment, setSelectedDepartment] = useState<string>(
     applicationData.department || "",
   );
+  const [selectedCampus, setSelectedCampus] = useState<string>(
+    applicationData.campus || "",
+  );
   const [availableDepartments, setAvailableDepartments] = useState<
     Department[]
   >([]);
@@ -143,7 +146,7 @@ export default function ProgramSelection() {
       subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণনা করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
-      programSelection: "প্রোগ্রাম নির্বাচন করুন",
+      programSelection: "প্রোগ্রাম ন��র্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectProgram: "আপনার প্রোগ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
@@ -161,7 +164,7 @@ export default function ProgramSelection() {
       additionalWaivers: "অতিরিক্ত মওকুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
-      waiverAmount: "মওকুফ পরিমাণ",
+      waiverAmount: "মওক��ফ পরিমাণ",
       finalAmount: "চূড়ান্ত পরিমাণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
