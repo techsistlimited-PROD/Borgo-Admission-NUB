@@ -209,7 +209,7 @@ export default function PersonalInformation() {
       verified: "যাচাইকৃত",
       required: "প্রয়োজনীয়",
       male: "পুরুষ",
-      female: "মহিলা",
+      female: "মহ��লা",
       other: "অন্যান্য",
       photoUpload: "ছব�� আপলোড",
       nidCertificate: "এনআইডি/পাসপোর্ট/জন্ম সনদ",
@@ -253,6 +253,32 @@ export default function PersonalInformation() {
         setReferrerError("");
       }
     }
+  }, []);
+
+  // Check for developer mode and auto-verify
+  useEffect(() => {
+    const checkDeveloperMode = async () => {
+      try {
+        const response = await fetch('/api/admission-settings');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.data?.developer_mode) {
+            setDeveloperMode(true);
+            setMobileVerified(true);
+            setEmailVerified(true);
+            toast({
+              title: "🚀 Developer Mode Active",
+              description: "All verifications automatically bypassed for testing.",
+              duration: 3000,
+            });
+          }
+        }
+      } catch (error) {
+        console.log("Could not check developer mode:", error);
+      }
+    };
+
+    checkDeveloperMode();
   }, []);
 
   // Auto-save data when form values change
