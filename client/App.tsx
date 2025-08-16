@@ -23,6 +23,7 @@ import FinancePanel from "./pages/FinancePanel";
 import Reports from "./pages/Reports";
 import Notifications from "./pages/Notifications";
 import EmailTemplates from "./pages/EmailTemplates";
+import AdmissionConfiguration from "./pages/AdmissionConfiguration";
 import ApplicantLogin from "./pages/ApplicantLogin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
