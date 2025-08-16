@@ -51,6 +51,18 @@ const Layout = () => {
     );
   }
 
+  // Check if user needs to be redirected to login for admin routes
+  if (window.location.pathname.startsWith('/admin/') && (!user || userType !== 'admin')) {
+    return (
+      <div className="min-h-screen bg-lavender-bg">
+        <Routes>
+          <Route path="/admin/*" element={<AdminLogin />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-lavender-bg flex">
       <Sidebar userType={userType} />
