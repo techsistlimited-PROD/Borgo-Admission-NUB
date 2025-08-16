@@ -170,7 +170,7 @@ export default function AdminAdmissionList() {
       rejecting: "প্রত্যাখ্যান করা হচ্ছে...",
       approveSuccess: "আবেদন সফলভাবে অনুমোদিত হয়েছে",
       rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যান করা হয়েছে",
-      actionError: "আবেদনের স্ট্যাটাস আপডেট করতে ব্যর্থ",
+      actionError: "আবেদনের স্ট্��াটাস আপডেট করতে ব্যর্থ",
       program: "প্রোগ্রাম",
       department: "বিভাগ",
       amount: "পরিমাণ",
@@ -227,7 +227,15 @@ export default function AdminAdmissionList() {
         console.log('❌ Failed to load stats:', statsResponse.error);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("💥 Error fetching data:", error);
+      // Ensure applications is always an array even on error
+      setApplications([]);
+      setStats({
+        totalApplications: 0,
+        needReview: 0,
+        todayApplicants: 0,
+        pendingPayments: 0,
+      });
       toast({
         title: t.error,
         description: "Unable to load applications. Please try again.",
