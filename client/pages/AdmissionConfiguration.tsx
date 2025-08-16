@@ -204,7 +204,23 @@ export default function AdmissionConfiguration() {
 
   const savePaymentMethod = async () => {
     try {
-      const url = editingPayment 
+      // Check for duplicates
+      const existingMethod = paymentMethods.find(method =>
+        method.type === paymentForm.type &&
+        method.account_number === paymentForm.account_number &&
+        method.id !== editingPayment?.id
+      );
+
+      if (existingMethod) {
+        toast({
+          title: "Duplicate Payment Method",
+          description: `A ${paymentForm.type} payment method with this account number already exists.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const url = editingPayment
         ? `/api/payment-methods/${editingPayment.id}`
         : "/api/payment-methods";
       const method = editingPayment ? "PUT" : "POST";
