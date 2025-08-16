@@ -563,6 +563,48 @@ export default function AdmissionConfiguration() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
+                Campus & Application Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="campus_selection">Available Campuses</Label>
+                <div className="space-y-3 mt-2">
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <span className="font-medium">Main Campus</span>
+                      <p className="text-sm text-gray-600">Primary campus location</p>
+                    </div>
+                    <Switch
+                      checked={settings.main_campus_enabled !== false}
+                      onCheckedChange={(checked) => setSettings({
+                        ...settings,
+                        main_campus_enabled: checked
+                      })}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <span className="font-medium">Khulna Branch</span>
+                      <p className="text-sm text-gray-600">Branch campus in Khulna</p>
+                    </div>
+                    <Switch
+                      checked={settings.khulna_branch_enabled || false}
+                      onCheckedChange={(checked) => setSettings({
+                        ...settings,
+                        khulna_branch_enabled: checked
+                      })}
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5" />
                 Application Settings
               </CardTitle>
             </CardHeader>
