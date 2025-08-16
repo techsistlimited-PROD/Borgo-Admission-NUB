@@ -143,7 +143,7 @@ export default function ProgramSelection() {
     },
     bn: {
       title: "প্রোগ্রাম ও বিভাগ নির্বাচন",
-      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
+      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ ��ণনা করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
@@ -296,11 +296,11 @@ export default function ProgramSelection() {
   };
 
   const handleContinue = async () => {
-    if (!selectedProgram || !selectedDepartment) {
+    if (!selectedProgram || !selectedDepartment || !selectedCampus) {
       toast({
         title: "Required Fields Missing",
         description:
-          "Please select both program and department before continuing.",
+          "Please select program, department, and campus before continuing.",
         variant: "destructive",
       });
       return;
