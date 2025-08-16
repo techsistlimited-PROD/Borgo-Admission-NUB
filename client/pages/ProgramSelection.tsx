@@ -181,7 +181,7 @@ export default function ProgramSelection() {
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে পারে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফলভাবে সেভ হয়েছে!",
-      saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ্টা করুন।",
+      saveError: "ডেটা সেভ ক���তে ব্যর্থ। আবার চেষ্টা করুন।",
     },
   };
 
@@ -462,6 +462,33 @@ export default function ProgramSelection() {
                             : department.namebn}
                         </SelectItem>
                       ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Campus Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="campus">
+                    {language === "en" ? "Campus" : "ক্যাম্পাস"}
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <Select value={selectedCampus} onValueChange={setSelectedCampus}>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={
+                          language === "en"
+                            ? "Select Campus"
+                            : "ক্যাম্পাস নির্বাচন করুন"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="main">
+                        {language === "en" ? "Main Campus" : "মূল ক্যাম্পাস"}
+                      </SelectItem>
+                      <SelectItem value="khulna">
+                        {language === "en" ? "Khulna Branch" : "খুলনা শাখা"}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
