@@ -86,6 +86,7 @@ const Layout = () => {
             <Route path="/admin/finance" element={<FinancePanel />} />
             <Route path="/admin/reports" element={<Reports />} />
             <Route path="/admin/templates" element={<EmailTemplates />} />
+            <Route path="/admin/configuration" element={<AdmissionConfiguration />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
