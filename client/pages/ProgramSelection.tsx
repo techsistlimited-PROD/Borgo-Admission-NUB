@@ -143,10 +143,10 @@ export default function ProgramSelection() {
     },
     bn: {
       title: "প্রোগ্রাম ও বিভাগ নির্বাচন",
-      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণনা করুন",
+      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
-      programSelection: "প্রোগ্রাম ন��র্বাচন করুন",
+      programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectProgram: "আপনার প্রোগ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
@@ -164,7 +164,7 @@ export default function ProgramSelection() {
       additionalWaivers: "অতিরিক্ত মওকুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
-      waiverAmount: "মওক��ফ পরিমাণ",
+      waiverAmount: "মওকুফ পরিমাণ",
       finalAmount: "চূড়ান্ত পরিমাণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
@@ -259,10 +259,11 @@ export default function ProgramSelection() {
   // Auto-save data when form values change
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (selectedProgram || selectedDepartment || sscGPA || hscGPA) {
+      if (selectedProgram || selectedDepartment || selectedCampus || sscGPA || hscGPA) {
         updateApplicationData({
           program: selectedProgram,
           department: selectedDepartment,
+          campus: selectedCampus,
           sscGPA: sscGPA ? parseFloat(sscGPA) : undefined,
           hscGPA: hscGPA ? parseFloat(hscGPA) : undefined,
           selectedWaivers,
@@ -278,6 +279,7 @@ export default function ProgramSelection() {
   }, [
     selectedProgram,
     selectedDepartment,
+    selectedCampus,
     sscGPA,
     hscGPA,
     selectedWaivers,
