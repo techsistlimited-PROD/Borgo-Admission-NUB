@@ -302,7 +302,22 @@ export default function AdmissionConfiguration() {
 
   const saveDocumentRequirement = async () => {
     try {
-      const url = editingDocument 
+      // Check for duplicates
+      const existingDocument = documentRequirements.find(doc =>
+        doc.name.toLowerCase() === documentForm.name?.toLowerCase() &&
+        doc.id !== editingDocument?.id
+      );
+
+      if (existingDocument) {
+        toast({
+          title: "Duplicate Document Requirement",
+          description: `A document requirement with the name "${documentForm.name}" already exists.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const url = editingDocument
         ? `/api/document-requirements/${editingDocument.id}`
         : "/api/document-requirements";
       const method = editingDocument ? "PUT" : "POST";
