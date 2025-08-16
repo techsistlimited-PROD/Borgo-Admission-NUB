@@ -35,22 +35,33 @@ export default function AdminLogin() {
     setError("");
     setIsSubmitting(true);
 
+    console.log("🚀 Admin login form submitted", { email, hasPassword: !!password });
+
     if (!email || !password) {
       setError("Please enter both email and password");
       setIsSubmitting(false);
       return;
     }
 
-    const success = await login({
-      identifier: email,
-      password,
-      type: "admin",
-    });
+    try {
+      const success = await login({
+        identifier: email,
+        password,
+        type: "admin",
+      });
 
-    if (success) {
-      navigate("/admin/admissions");
-    } else {
-      setError("Invalid email or password. Please try again.");
+      console.log("🔐 Login result:", success);
+
+      if (success) {
+        console.log("✅ Login successful, navigating to admin panel...");
+        navigate("/admin/admissions");
+      } else {
+        console.log("❌ Login failed");
+        setError("Invalid email or password. Please try again.");
+      }
+    } catch (error) {
+      console.error("💥 Login submission error:", error);
+      setError("An error occurred during login. Please try again.");
     }
 
     setIsSubmitting(false);
