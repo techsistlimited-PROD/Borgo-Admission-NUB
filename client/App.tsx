@@ -30,11 +30,23 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const Layout = () => {
-  const { userType, user } = useAuth();
+  const { userType, user, isLoading } = useAuth();
   const isLoginPage =
     window.location.pathname.includes("-login") ||
     window.location.pathname === "/applicant-portal" ||
     window.location.pathname === "/admin";
+
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-lavender-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-deep-plum mx-auto"></div>
+          <p className="mt-4 text-deep-plum font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Handle login pages and portal entry points
   if (isLoginPage) {
