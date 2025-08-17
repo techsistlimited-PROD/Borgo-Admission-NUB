@@ -25,7 +25,7 @@ export const initializeSchema = async (): Promise<void> => {
       CREATE TABLE IF NOT EXISTS applications (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         uuid TEXT UNIQUE NOT NULL,
-        user_id INTEGER NOT NULL,
+        user_id INTEGER,
         tracking_id TEXT UNIQUE NOT NULL,
         status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
         program TEXT NOT NULL,
