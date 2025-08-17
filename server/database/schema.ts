@@ -30,6 +30,7 @@ export const initializeSchema = async (): Promise<void> => {
         status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
         program TEXT NOT NULL,
         department TEXT NOT NULL,
+        campus TEXT DEFAULT 'main',
         session TEXT NOT NULL,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
