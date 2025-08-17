@@ -13,8 +13,8 @@ export const connectDB = async (): Promise<void> => {
     return;
   }
 
-  const connectionString = process.env.SUPABASE_URL 
-    ? `postgresql://postgres:${process.env.SUPABASE_SERVICE_ROLE_KEY?.split('.')[1] || 'password'}@${process.env.SUPABASE_URL?.replace('https://', '').replace('.supabase.co', '')}.supabase.co:5432/postgres`
+  const connectionString = process.env.SUPABASE_URL
+    ? `postgresql://postgres.kcaqrqyggshkroghxexc:${process.env.SUPABASE_SERVICE_ROLE_KEY}@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres`
     : process.env.DATABASE_URL || 'postgresql://localhost:5432/postgres';
 
   try {
