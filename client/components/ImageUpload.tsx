@@ -24,8 +24,8 @@ export default function ImageUpload({
   onImageUploaded,
   currentImage,
   maxSize = 5,
-  acceptedTypes = ["image/jpeg", "image/jpg", "image/png"],
-  label = "Upload Photo",
+  acceptedTypes = ["image/jpeg", "image/jpg", "image/png", "application/pdf"],
+  label = "Upload File",
   required = false,
 }: ImageUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -40,8 +40,13 @@ export default function ImageUpload({
 
     // Validate file type
     if (!acceptedTypes.includes(file.type)) {
+      const typeNames = acceptedTypes.map(type => {
+        if (type.includes('image')) return type.split('/')[1].toUpperCase();
+        if (type === 'application/pdf') return 'PDF';
+        return type;
+      });
       setError(
-        `Please upload a valid image file (${acceptedTypes.join(", ")})`,
+        `Please upload a valid file (${typeNames.join(", ")})`,
       );
       return;
     }
@@ -196,7 +201,11 @@ export default function ImageUpload({
                 Drag and drop your photo here, or click to browse
               </p>
               <p className="text-xs text-gray-400">
-                Supports: JPG, PNG (Max {maxSize}MB)
+                Supports: {acceptedTypes.map(type => {
+                  if (type.includes('image')) return type.split('/')[1].toUpperCase();
+                  if (type === 'application/pdf') return 'PDF';
+                  return type;
+                }).join(", ")} (Max {maxSize}MB)
               </p>
             </div>
             <Button className="mt-4" variant="outline">
