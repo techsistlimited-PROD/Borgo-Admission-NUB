@@ -34,6 +34,9 @@ export function createServer() {
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+  // Serve uploaded files
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
   // Health check endpoint
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "pong";
