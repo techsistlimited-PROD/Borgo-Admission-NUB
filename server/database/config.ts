@@ -1,41 +1,41 @@
-import { Pool } from "pg";
+// For now, let's temporarily revert to SQLite for development
+// until we get the proper Supabase database credentials
+import Database from "sqlite3";
+import { promisify } from "util";
+import path from "path";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-// PostgreSQL connection pool for Supabase
-let pool: Pool;
+// Database connection
+let db: Database.Database;
 let isConnected = false;
 
 export const connectDB = async (): Promise<void> => {
   // If already connected, don't reconnect
-  if (isConnected && pool) {
+  if (isConnected && db) {
     console.log("✅ Database already connected");
     return;
   }
 
-  // Use direct connection string format for Supabase
-  const connectionString = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
-    ? `postgresql://postgres:${process.env.SUPABASE_SERVICE_ROLE_KEY}@db.kcaqrqyggshkroghxexc.supabase.co:5432/postgres`
-    : process.env.DATABASE_URL || 'postgresql://localhost:5432/postgres';
+  const dbPath =
+    process.env.DATABASE_PATH ||
+    (isDevelopment
+      ? path.join(process.cwd(), "database.sqlite")
+      : path.join(process.cwd(), "data", "database.sqlite"));
 
-  try {
-    pool = new Pool({
-      connectionString,
-      ssl: isDevelopment ? false : { rejectUnauthorized: false }
+  return new Promise((resolve, reject) => {
+    db = new Database.Database(dbPath, (err) => {
+      if (err) {
+        console.error("Error opening database:", err);
+        isConnected = false;
+        reject(err);
+      } else {
+        console.log("✅ Connected to SQLite database (temporarily for development)");
+        isConnected = true;
+        resolve();
+      }
     });
-
-    // Test connection
-    const client = await pool.connect();
-    await client.query('SELECT NOW()');
-    client.release();
-    
-    isConnected = true;
-    console.log("✅ Connected to PostgreSQL database (Supabase)");
-  } catch (error) {
-    console.error("❌ Error connecting to database:", error);
-    isConnected = false;
-    throw error;
-  }
+  });
 };
 
 export const getDB = async (): Promise<Pool> => {
