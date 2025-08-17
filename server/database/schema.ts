@@ -5,7 +5,7 @@ export const initializeSchema = async (): Promise<void> => {
     // Users table (both applicants and admins)
     await dbRun(`
       CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         uuid TEXT UNIQUE NOT NULL,
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
@@ -14,16 +14,16 @@ export const initializeSchema = async (): Promise<void> => {
         university_id TEXT UNIQUE,
         department TEXT,
         designation TEXT,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        is_active BOOLEAN DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     // Applications table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS applications (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         uuid TEXT UNIQUE NOT NULL,
         user_id INTEGER NOT NULL,
         tracking_id TEXT UNIQUE NOT NULL,
@@ -77,7 +77,7 @@ export const initializeSchema = async (): Promise<void> => {
     // Programs table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS programs (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         code TEXT UNIQUE NOT NULL,
         name TEXT NOT NULL,
         type TEXT NOT NULL,
@@ -92,7 +92,7 @@ export const initializeSchema = async (): Promise<void> => {
     // Departments table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS departments (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         code TEXT UNIQUE NOT NULL,
         name TEXT NOT NULL,
         faculty TEXT NOT NULL,
@@ -104,7 +104,7 @@ export const initializeSchema = async (): Promise<void> => {
     // Waivers table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS waivers (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         application_id INTEGER NOT NULL,
         type TEXT NOT NULL,
         percentage REAL NOT NULL,
@@ -119,7 +119,7 @@ export const initializeSchema = async (): Promise<void> => {
     // Employee referrers table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS employee_referrers (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         employee_id TEXT UNIQUE NOT NULL,
         name TEXT NOT NULL,
         department TEXT NOT NULL,
@@ -133,7 +133,7 @@ export const initializeSchema = async (): Promise<void> => {
     // Sessions table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS sessions (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
         token TEXT UNIQUE NOT NULL,
         expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -145,7 +145,7 @@ export const initializeSchema = async (): Promise<void> => {
     // ID generation tracking
     await dbRun(`
       CREATE TABLE IF NOT EXISTS id_generation (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         application_id INTEGER NOT NULL,
         university_id TEXT NOT NULL,
         ugc_id TEXT,
@@ -160,7 +160,7 @@ export const initializeSchema = async (): Promise<void> => {
     // Admission settings table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS admission_settings (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         application_deadline TIMESTAMP WITH TIME ZONE NOT NULL,
         admission_fee REAL NOT NULL DEFAULT 1000,
         late_fee REAL NOT NULL DEFAULT 500,
@@ -190,7 +190,7 @@ export const initializeSchema = async (): Promise<void> => {
     // Payment methods table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS payment_methods (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         type TEXT NOT NULL CHECK (type IN ('bank', 'mobile', 'online')),
         account_number TEXT NOT NULL,
@@ -207,7 +207,7 @@ export const initializeSchema = async (): Promise<void> => {
     // Document requirements table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS document_requirements (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         description TEXT NOT NULL,
         is_required BOOLEAN DEFAULT true,
