@@ -150,51 +150,41 @@ router.post("/", async (req, res) => {
     // In a real implementation, you might want to create a guest user or require authentication
     const user_id = null;
 
-    await dbRun(
-      `
-      INSERT INTO applications (
-        uuid, user_id, tracking_id, status, program, department, session, campus,
-        first_name, last_name, email, phone, date_of_birth, gender,
-        address, city, postal_code, country, guardian_name,
-        guardian_phone, guardian_relation, ssc_institution, ssc_year,
-        ssc_gpa, hsc_institution, hsc_year, hsc_gpa, total_cost,
-        final_amount, referrer_id, referrer_name
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `,
-      [
-        applicationUuid,
-        user_id,
-        tracking_id,
-        "pending",
-        applicationData.program,
-        applicationData.department,
-        applicationData.session || "Spring 2024",
-        applicationData.campus || "main",
-        applicationData.firstName,
-        applicationData.lastName,
-        applicationData.email,
-        applicationData.phone,
-        applicationData.dateOfBirth,
-        applicationData.gender,
-        applicationData.address,
-        applicationData.city,
-        applicationData.postalCode,
-        applicationData.country || "Bangladesh",
-        applicationData.guardianName,
-        applicationData.guardianPhone,
-        applicationData.guardianRelation,
-        applicationData.sscInstitution,
-        applicationData.sscYear,
-        applicationData.sscGPA,
-        applicationData.hscInstitution,
-        applicationData.hscYear,
-        applicationData.hscGPA,
-        applicationData.totalCost || 0,
-        applicationData.finalAmount || 0,
-        applicationData.referrerId,
-        applicationData.referrerName,
-      ],
-    );
+    const applicationRecord = {
+      uuid: applicationUuid,
+      user_id: user_id,
+      tracking_id: tracking_id,
+      status: "pending",
+      program: applicationData.program,
+      department: applicationData.department,
+      session: applicationData.session || "Spring 2024",
+      campus: applicationData.campus || "main",
+      first_name: applicationData.firstName,
+      last_name: applicationData.lastName,
+      email: applicationData.email,
+      phone: applicationData.phone,
+      date_of_birth: applicationData.dateOfBirth,
+      gender: applicationData.gender,
+      address: applicationData.address,
+      city: applicationData.city,
+      postal_code: applicationData.postalCode,
+      country: applicationData.country || "Bangladesh",
+      guardian_name: applicationData.guardianName,
+      guardian_phone: applicationData.guardianPhone,
+      guardian_relation: applicationData.guardianRelation,
+      ssc_institution: applicationData.sscInstitution,
+      ssc_year: applicationData.sscYear,
+      ssc_gpa: applicationData.sscGPA,
+      hsc_institution: applicationData.hscInstitution,
+      hsc_year: applicationData.hscYear,
+      hsc_gpa: applicationData.hscGPA,
+      total_cost: applicationData.totalCost || 0,
+      final_amount: applicationData.finalAmount || 0,
+      referrer_id: applicationData.referrerId,
+      referrer_name: applicationData.referrerName,
+    };
+
+    await supabaseRun("applications", "insert", applicationRecord);
 
     res.json({
       success: true,
