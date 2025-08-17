@@ -179,6 +179,7 @@ router.post("/", async (req, res) => {
         "pending",
         applicationData.program,
         applicationData.department,
+        applicationData.campus || "main",
         applicationData.session || "Spring 2024",
         applicationData.firstName,
         applicationData.lastName,
