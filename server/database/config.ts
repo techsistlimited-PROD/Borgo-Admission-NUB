@@ -13,8 +13,9 @@ export const connectDB = async (): Promise<void> => {
     return;
   }
 
-  const connectionString = process.env.SUPABASE_URL
-    ? `postgresql://postgres.kcaqrqyggshkroghxexc:${process.env.SUPABASE_SERVICE_ROLE_KEY}@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres`
+  // Use direct connection string format for Supabase
+  const connectionString = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
+    ? `postgresql://postgres:${process.env.SUPABASE_SERVICE_ROLE_KEY}@db.kcaqrqyggshkroghxexc.supabase.co:5432/postgres`
     : process.env.DATABASE_URL || 'postgresql://localhost:5432/postgres';
 
   try {
