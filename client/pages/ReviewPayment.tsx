@@ -33,6 +33,9 @@ import {
   CollapsibleTrigger,
 } from "../components/ui/collapsible";
 import { Badge } from "../components/ui/badge";
+import { useApplication } from "../contexts/ApplicationContext";
+import { useToast } from "../hooks/use-toast";
+import apiClient from "../lib/api";
 
 export default function ReviewPayment() {
   const [language, setLanguage] = useState<"en" | "bn">("en");
@@ -127,7 +130,7 @@ export default function ReviewPayment() {
       rocketInstructions:
         "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       offlineInstructions:
-        "বিশ্ববিদ্যালয়ের ক্যাশ কাউন���টারে পেমেন্ট করুন এবং রসিদ আপলোড করুন",
+        "বিশ্ববিদ্যালয়ের ক্যাশ কাউন���টারে পেমেন্ট করুন এবং রসিদ আপলোড ক���ুন",
       totalAmount: "মোট পরিমাণ",
       edit: "সম্পাদনা",
       complete: "সম্পূর্ণ",
