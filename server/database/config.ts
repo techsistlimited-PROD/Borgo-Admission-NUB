@@ -22,7 +22,8 @@ export const connectDB = async (): Promise<void> => {
     dbPath = "/tmp/database.sqlite";
     console.log("🔧 Using Netlify serverless database path:", dbPath);
   } else {
-    dbPath = process.env.DATABASE_PATH ||
+    dbPath =
+      process.env.DATABASE_PATH ||
       (isDevelopment
         ? path.join(process.cwd(), "database.sqlite")
         : path.join(process.cwd(), "data", "database.sqlite"));
@@ -80,7 +81,10 @@ export const dbGet = async (sql: string, params: any[] = []): Promise<any> => {
   });
 };
 
-export const dbAll = async (sql: string, params: any[] = []): Promise<any[]> => {
+export const dbAll = async (
+  sql: string,
+  params: any[] = [],
+): Promise<any[]> => {
   return new Promise(async (resolve, reject) => {
     try {
       const database = await getDB();
@@ -99,7 +103,7 @@ export const closeDB = (): Promise<void> => {
     if (db && isConnected) {
       try {
         db.close((err) => {
-          if (err && err.code !== 'SQLITE_MISUSE') {
+          if (err && err.code !== "SQLITE_MISUSE") {
             reject(err);
           } else {
             db = null as any; // Clear the reference

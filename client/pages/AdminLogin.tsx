@@ -83,7 +83,10 @@ export default function AdminLogin() {
           <CardContent className="space-y-6">
             {/* Demo Credentials Alert */}
             <Alert className="border-purple-200 bg-purple-50" role="note">
-              <CheckCircle className="w-4 h-4 text-purple-600" aria-hidden="true" />
+              <CheckCircle
+                className="w-4 h-4 text-purple-600"
+                aria-hidden="true"
+              />
               <AlertDescription className="text-purple-800">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Demo credentials available</span>
@@ -137,13 +140,21 @@ export default function AdminLogin() {
                     size="sm"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                     aria-pressed={showPassword}
                   >
                     {showPassword ? (
-                      <EyeOff className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                      <EyeOff
+                        className="w-4 h-4 text-gray-500"
+                        aria-hidden="true"
+                      />
                     ) : (
-                      <Eye className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                      <Eye
+                        className="w-4 h-4 text-gray-500"
+                        aria-hidden="true"
+                      />
                     )}
                   </Button>
                 </div>
@@ -151,7 +162,10 @@ export default function AdminLogin() {
 
               {error && (
                 <Alert className="border-red-200 bg-red-50" role="alert">
-                  <AlertCircle className="w-4 h-4 text-red-600" aria-hidden="true" />
+                  <AlertCircle
+                    className="w-4 h-4 text-red-600"
+                    aria-hidden="true"
+                  />
                   <AlertDescription id="login-error" className="text-red-800">
                     {error}
                   </AlertDescription>

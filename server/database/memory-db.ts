@@ -8,7 +8,7 @@ export interface User {
   name: string;
   email: string;
   password_hash: string;
-  type: 'admin' | 'applicant';
+  type: "admin" | "applicant";
   university_id?: string;
   department?: string;
   designation?: string;
@@ -22,7 +22,7 @@ export interface Application {
   uuid: string;
   user_id: number;
   tracking_id: string;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   program: string;
   department: string;
   session: string;
@@ -57,7 +57,7 @@ export interface Application {
   total_cost: number;
   waiver_amount: number;
   final_amount: number;
-  payment_status: 'pending' | 'paid' | 'partial';
+  payment_status: "pending" | "paid" | "partial";
   payslip_uploaded: boolean;
   documents_complete: boolean;
   referrer_id?: string;
@@ -101,7 +101,7 @@ export const initializeMemoryDB = async () => {
 
   // Create admin users
   const adminPassword = await bcrypt.hash("admin123", 10);
-  
+
   users.push({
     id: nextUserId++,
     uuid: uuidv4(),
@@ -113,7 +113,7 @@ export const initializeMemoryDB = async () => {
     designation: "Admission Officer",
     is_active: true,
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   });
 
   users.push({
@@ -127,12 +127,12 @@ export const initializeMemoryDB = async () => {
     designation: "Department Head",
     is_active: true,
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   });
 
   // Create applicant user
   const applicantPassword = await bcrypt.hash("temp123456", 10);
-  
+
   users.push({
     id: nextUserId++,
     uuid: uuidv4(),
@@ -144,7 +144,7 @@ export const initializeMemoryDB = async () => {
     department: "Business Administration",
     is_active: true,
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   });
 
   // Add programs
@@ -158,7 +158,7 @@ export const initializeMemoryDB = async () => {
       total_credits: 120,
       base_cost: 180000,
       is_active: true,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     },
     {
       id: 2,
@@ -169,7 +169,7 @@ export const initializeMemoryDB = async () => {
       total_credits: 120,
       base_cost: 200000,
       is_active: true,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     },
     {
       id: 3,
@@ -180,8 +180,8 @@ export const initializeMemoryDB = async () => {
       total_credits: 60,
       base_cost: 150000,
       is_active: true,
-      created_at: new Date().toISOString()
-    }
+      created_at: new Date().toISOString(),
+    },
   ];
 
   // Add departments
@@ -192,15 +192,15 @@ export const initializeMemoryDB = async () => {
       name: "Computer Science & Engineering",
       faculty: "Faculty of Engineering",
       is_active: true,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     },
     {
       id: 2,
       code: "EEE",
-      name: "Electrical & Electronic Engineering", 
+      name: "Electrical & Electronic Engineering",
       faculty: "Faculty of Engineering",
       is_active: true,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     },
     {
       id: 3,
@@ -208,37 +208,41 @@ export const initializeMemoryDB = async () => {
       name: "Business Administration",
       faculty: "Faculty of Business",
       is_active: true,
-      created_at: new Date().toISOString()
-    }
+      created_at: new Date().toISOString(),
+    },
   ];
 
   // Add admission settings
-  admissionSettings = [{
-    id: 1,
-    application_deadline: "2024-12-31T23:59:59Z",
-    admission_fee: 1000,
-    late_fee: 500,
-    late_fee_deadline: "2025-01-15T23:59:59Z",
-    max_applications_per_user: 3,
-    allow_application_editing: true,
-    require_phone_verification: true,
-    require_email_verification: true,
-    require_document_upload: true,
-    application_start_date: "2024-01-01T00:00:00Z",
-    session_name: "Spring 2024",
-    admission_notice: "Welcome to Northern University Bangladesh Online Admission Portal.",
-    payment_instructions: "Please make payment to the designated bank account and upload the payment slip.",
-    contact_email: "admission@nu.edu.bd",
-    contact_phone: "+8801700000000",
-    is_admission_open: true,
-    waiver_enabled: true,
-    max_waiver_percentage: 50,
-    auto_approve_applications: false,
-    send_sms_notifications: true,
-    send_email_notifications: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }];
+  admissionSettings = [
+    {
+      id: 1,
+      application_deadline: "2024-12-31T23:59:59Z",
+      admission_fee: 1000,
+      late_fee: 500,
+      late_fee_deadline: "2025-01-15T23:59:59Z",
+      max_applications_per_user: 3,
+      allow_application_editing: true,
+      require_phone_verification: true,
+      require_email_verification: true,
+      require_document_upload: true,
+      application_start_date: "2024-01-01T00:00:00Z",
+      session_name: "Spring 2024",
+      admission_notice:
+        "Welcome to Northern University Bangladesh Online Admission Portal.",
+      payment_instructions:
+        "Please make payment to the designated bank account and upload the payment slip.",
+      contact_email: "admission@nu.edu.bd",
+      contact_phone: "+8801700000000",
+      is_admission_open: true,
+      waiver_enabled: true,
+      max_waiver_percentage: 50,
+      auto_approve_applications: false,
+      send_sms_notifications: true,
+      send_email_notifications: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+  ];
 
   // Add sample applications
   applications.push({
@@ -285,7 +289,7 @@ export const initializeMemoryDB = async () => {
     application_date: new Date().toISOString(),
     approval_date: new Date().toISOString(),
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   });
 
   initialized = true;
@@ -303,55 +307,67 @@ export const initializeMemoryDB = async () => {
 // Database operation functions
 export const memoryDbGet = async (table: string, where: any): Promise<any> => {
   await initializeMemoryDB();
-  
+
   switch (table) {
-    case 'users':
-      return users.find(user => {
+    case "users":
+      return users.find((user) => {
         if (where.email && where.type) {
-          return user.email === where.email && user.type === where.type && user.is_active;
+          return (
+            user.email === where.email &&
+            user.type === where.type &&
+            user.is_active
+          );
         }
         if (where.university_id && where.type) {
-          return user.university_id === where.university_id && user.type === where.type && user.is_active;
+          return (
+            user.university_id === where.university_id &&
+            user.type === where.type &&
+            user.is_active
+          );
         }
         if (where.id) {
           return user.id === where.id;
         }
         return false;
       });
-    case 'sessions':
-      return sessions.find(session => session.token === where.token);
+    case "sessions":
+      return sessions.find((session) => session.token === where.token);
     default:
       return null;
   }
 };
 
-export const memoryDbRun = async (table: string, operation: string, data: any): Promise<any> => {
+export const memoryDbRun = async (
+  table: string,
+  operation: string,
+  data: any,
+): Promise<any> => {
   await initializeMemoryDB();
-  
+
   switch (table) {
-    case 'sessions':
-      if (operation === 'insert') {
+    case "sessions":
+      if (operation === "insert") {
         const session = {
           id: nextSessionId++,
           user_id: data.user_id,
           token: data.token,
           expires_at: data.expires_at,
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
         };
         sessions.push(session);
         return { lastID: session.id };
       }
-      if (operation === 'delete') {
-        const index = sessions.findIndex(s => s.token === data.token);
+      if (operation === "delete") {
+        const index = sessions.findIndex((s) => s.token === data.token);
         if (index > -1) {
           sessions.splice(index, 1);
         }
         return { changes: index > -1 ? 1 : 0 };
       }
       break;
-    case 'users':
-      if (operation === 'update') {
-        const user = users.find(u => u.id === data.id);
+    case "users":
+      if (operation === "update") {
+        const user = users.find((u) => u.id === data.id);
         if (user) {
           Object.assign(user, data.updates);
           user.updated_at = new Date().toISOString();
@@ -360,24 +376,29 @@ export const memoryDbRun = async (table: string, operation: string, data: any): 
       }
       break;
   }
-  
+
   return { lastID: 0, changes: 0 };
 };
 
-export const memoryDbAll = async (table: string, where?: any): Promise<any[]> => {
+export const memoryDbAll = async (
+  table: string,
+  where?: any,
+): Promise<any[]> => {
   await initializeMemoryDB();
-  
+
   switch (table) {
-    case 'applications':
+    case "applications":
       if (where?.user_id) {
-        return applications.filter(app => app.user_id === where.user_id);
+        return applications.filter((app) => app.user_id === where.user_id);
       }
       return applications;
-    case 'programs':
-      return programs.filter(p => where?.is_active !== false || p.is_active);
-    case 'departments':
-      return departments.filter(d => where?.is_active !== false || d.is_active);
-    case 'admission_settings':
+    case "programs":
+      return programs.filter((p) => where?.is_active !== false || p.is_active);
+    case "departments":
+      return departments.filter(
+        (d) => where?.is_active !== false || d.is_active,
+      );
+    case "admission_settings":
       return admissionSettings;
     default:
       return [];

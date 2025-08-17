@@ -18,7 +18,11 @@ const createMemoryApp = () => {
   // Health check endpoint
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "pong";
-    res.json({ message: ping, timestamp: new Date().toISOString(), database: "memory" });
+    res.json({
+      message: ping,
+      timestamp: new Date().toISOString(),
+      database: "memory",
+    });
   });
 
   // Memory-based auth routes for demo
@@ -27,8 +31,10 @@ const createMemoryApp = () => {
   // Simple demo data endpoints
   app.get("/api/programs", async (req, res) => {
     try {
-      const { memoryDbAll } = await import("../../server/database/memory-db.js");
-      const programs = await memoryDbAll('programs');
+      const { memoryDbAll } = await import(
+        "../../server/database/memory-db.js"
+      );
+      const programs = await memoryDbAll("programs");
       res.json({ success: true, data: programs });
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });
@@ -37,8 +43,10 @@ const createMemoryApp = () => {
 
   app.get("/api/departments", async (req, res) => {
     try {
-      const { memoryDbAll } = await import("../../server/database/memory-db.js");
-      const departments = await memoryDbAll('departments');
+      const { memoryDbAll } = await import(
+        "../../server/database/memory-db.js"
+      );
+      const departments = await memoryDbAll("departments");
       res.json({ success: true, data: departments });
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });
@@ -47,8 +55,10 @@ const createMemoryApp = () => {
 
   app.get("/api/admission-settings", async (req, res) => {
     try {
-      const { memoryDbAll } = await import("../../server/database/memory-db.js");
-      const settings = await memoryDbAll('admission_settings');
+      const { memoryDbAll } = await import(
+        "../../server/database/memory-db.js"
+      );
+      const settings = await memoryDbAll("admission_settings");
       res.json({ success: true, data: settings[0] || {} });
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });
@@ -57,8 +67,10 @@ const createMemoryApp = () => {
 
   app.get("/api/applications", async (req, res) => {
     try {
-      const { memoryDbAll } = await import("../../server/database/memory-db.js");
-      const applications = await memoryDbAll('applications');
+      const { memoryDbAll } = await import(
+        "../../server/database/memory-db.js"
+      );
+      const applications = await memoryDbAll("applications");
       res.json({ success: true, data: applications });
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });
@@ -66,13 +78,23 @@ const createMemoryApp = () => {
   });
 
   // Global error handler
-  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error("Global error handler:", err);
-    res.status(500).json({
-      error: "Internal server error",
-      message: process.env.NODE_ENV === "development" ? err.message : "Something went wrong",
-    });
-  });
+  app.use(
+    (
+      err: any,
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ) => {
+      console.error("Global error handler:", err);
+      res.status(500).json({
+        error: "Internal server error",
+        message:
+          process.env.NODE_ENV === "development"
+            ? err.message
+            : "Something went wrong",
+      });
+    },
+  );
 
   return app;
 };
@@ -116,11 +138,11 @@ export const handler = async (event: any, context: any) => {
     return {
       statusCode: 500,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         error: "Internal server error",
-        message: error.message
+        message: error.message,
       }),
     };
   }

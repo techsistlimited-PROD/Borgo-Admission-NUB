@@ -1,12 +1,17 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { memoryDbGet, memoryDbRun, initializeMemoryDB } from "../database/memory-db.js";
+import {
+  memoryDbGet,
+  memoryDbRun,
+  initializeMemoryDB,
+} from "../database/memory-db.js";
 
 const router = express.Router();
 
 // JWT secret for demo
-const JWT_SECRET = process.env.JWT_SECRET || "demo-secret-key-change-in-production";
+const JWT_SECRET =
+  process.env.JWT_SECRET || "demo-secret-key-change-in-production";
 
 // Generate JWT token
 const generateToken = (userId: number): string => {
@@ -31,12 +36,15 @@ router.post("/login", async (req, res) => {
     let user;
     if (type === "admin") {
       console.log("🔍 Looking for admin user...");
-      user = await memoryDbGet('users', { email: identifier, type: type });
-      console.log(`👤 Admin user found: ${user ? 'YES' : 'NO'}`);
+      user = await memoryDbGet("users", { email: identifier, type: type });
+      console.log(`👤 Admin user found: ${user ? "YES" : "NO"}`);
     } else if (type === "applicant") {
       console.log("🔍 Looking for applicant user...");
-      user = await memoryDbGet('users', { university_id: identifier.toUpperCase(), type: type });
-      console.log(`👤 Applicant user found: ${user ? 'YES' : 'NO'}`);
+      user = await memoryDbGet("users", {
+        university_id: identifier.toUpperCase(),
+        type: type,
+      });
+      console.log(`👤 Applicant user found: ${user ? "YES" : "NO"}`);
     } else {
       console.log("❌ Invalid user type");
       return res.status(400).json({ error: "Invalid user type" });
@@ -50,7 +58,7 @@ router.post("/login", async (req, res) => {
     // Check password
     console.log("🔒 Verifying password...");
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
-    console.log(`🔓 Password valid: ${isValidPassword ? 'YES' : 'NO'}`);
+    console.log(`🔓 Password valid: ${isValidPassword ? "YES" : "NO"}`);
 
     if (!isValidPassword) {
       console.log("❌ Invalid password");
@@ -65,11 +73,11 @@ router.post("/login", async (req, res) => {
     console.log("💾 Storing session...");
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
-    
-    await memoryDbRun('sessions', 'insert', {
+
+    await memoryDbRun("sessions", "insert", {
       user_id: user.id,
       token: token,
-      expires_at: expiresAt.toISOString()
+      expires_at: expiresAt.toISOString(),
     });
 
     console.log("✅ Login successful");
@@ -91,7 +99,9 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Memory login error:", error);
-    res.status(500).json({ error: "Internal server error", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });
 
@@ -101,7 +111,7 @@ router.post("/logout", async (req, res) => {
     const token = req.headers.authorization?.split(" ")[1];
 
     if (token) {
-      await memoryDbRun('sessions', 'delete', { token });
+      await memoryDbRun("sessions", "delete", { token });
     }
 
     res.json({ success: true, message: "Logged out successfully" });
@@ -115,14 +125,14 @@ router.post("/logout", async (req, res) => {
 router.get("/me", async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    
+
     if (!token) {
       return res.status(401).json({ error: "No token provided" });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET) as any;
-    const user = await memoryDbGet('users', { id: decoded.userId });
-    
+    const user = await memoryDbGet("users", { id: decoded.userId });
+
     if (!user) {
       return res.status(401).json({ error: "Invalid token" });
     }
