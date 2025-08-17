@@ -1,32 +1,31 @@
 import serverless from "serverless-http";
 import { createServer, initializeDatabase } from "../../server/index.js";
 
-let serverInstance: any = null;
-let dbInitialized = false;
+let app: any = null;
+let initialized = false;
 
-const getServer = async () => {
-  if (!serverInstance) {
-    console.log("🚀 Creating server instance...");
-    serverInstance = createServer();
-
-    // Initialize database on first request
-    if (!dbInitialized) {
-      try {
-        console.log("🔄 Initializing database for serverless...");
-        await initializeDatabase();
-        dbInitialized = true;
-        console.log("✅ Database initialized successfully");
-      } catch (error) {
-        console.error("❌ Database initialization failed:", error);
-        // Continue anyway - the app should handle missing data gracefully
-      }
+const getApp = async () => {
+  if (!app) {
+    // Initialize database once
+    if (!initialized) {
+      await initializeDatabase();
+      initialized = true;
     }
+    app = createServer();
   }
-  return serverInstance;
+  return app;
 };
 
 export const handler = async (event: any, context: any) => {
-  const server = await getServer();
-  const serverlessHandler = serverless(server);
-  return serverlessHandler(event, context);
+  try {
+    const app = await getApp();
+    const serverlessHandler = serverless(app);
+    return await serverlessHandler(event, context);
+  } catch (error) {
+    console.error("Function error:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Internal server error" }),
+    };
+  }
 };
