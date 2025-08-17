@@ -115,7 +115,7 @@ export default function ReviewPayment() {
       personalInfo: "ব্যক্তিগত তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
       waiverInfo: "মওকুফ তথ্য",
-      paymentDetails: "পেমেন্��� বিবরণ",
+      paymentDetails: "পেমেন্ট বিবরণ",
       bkash: "বিকাশ",
       rocket: "র��েট",
       card: "ক্রেডিট/ডেবিট কার্ড",
@@ -134,7 +134,7 @@ export default function ReviewPayment() {
       bkashInstructions:
         "এই নাম্বার�� টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       rocketInstructions:
-        "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আ��লোড করুন",
+        "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       offlineInstructions:
         "বিশ্ববিদ্যালয়ের ক্যাশ কাউন���টারে পেমেন্ট করুন এবং রসিদ আপলোড করুন",
       totalAmount: "মোট পরিমাণ",
@@ -238,6 +238,24 @@ export default function ReviewPayment() {
       alert("Failed to initiate payment. Please try again.");
     } finally {
       setIsProcessingPayment(false);
+    }
+  };
+
+  const handlePaymentClearance = async () => {
+    try {
+      setPaymentCleared(true);
+      toast({
+        title: "Payment Cleared",
+        description: "Payment has been cleared. You can now submit your application.",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error("Payment clearance error:", error);
+      toast({
+        title: "Clearance Failed",
+        description: "Failed to clear payment. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
