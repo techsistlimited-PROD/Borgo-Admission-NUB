@@ -1,108 +1,104 @@
-import Database from "sqlite3";
-import { promisify } from "util";
-import path from "path";
+import { Pool } from "pg";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-// Database connection
-let db: Database.Database;
+// PostgreSQL connection pool for Supabase
+let pool: Pool;
 let isConnected = false;
 
 export const connectDB = async (): Promise<void> => {
   // If already connected, don't reconnect
-  if (isConnected && db) {
+  if (isConnected && pool) {
     console.log("✅ Database already connected");
     return;
   }
 
-  const dbPath =
-    process.env.DATABASE_PATH ||
-    (isDevelopment
-      ? path.join(process.cwd(), "database.sqlite")
-      : path.join(process.cwd(), "data", "database.sqlite"));
+  const connectionString = process.env.SUPABASE_URL 
+    ? `postgresql://postgres:${process.env.SUPABASE_SERVICE_ROLE_KEY?.split('.')[1] || 'password'}@${process.env.SUPABASE_URL?.replace('https://', '').replace('.supabase.co', '')}.supabase.co:5432/postgres`
+    : process.env.DATABASE_URL || 'postgresql://localhost:5432/postgres';
 
-  return new Promise((resolve, reject) => {
-    db = new Database.Database(dbPath, (err) => {
-      if (err) {
-        console.error("Error opening database:", err);
-        isConnected = false;
-        reject(err);
-      } else {
-        console.log("✅ Connected to SQLite database");
-        isConnected = true;
-        resolve();
-      }
+  try {
+    pool = new Pool({
+      connectionString,
+      ssl: isDevelopment ? false : { rejectUnauthorized: false }
     });
-  });
+
+    // Test connection
+    const client = await pool.connect();
+    await client.query('SELECT NOW()');
+    client.release();
+    
+    isConnected = true;
+    console.log("✅ Connected to PostgreSQL database (Supabase)");
+  } catch (error) {
+    console.error("❌ Error connecting to database:", error);
+    isConnected = false;
+    throw error;
+  }
 };
 
-export const getDB = async (): Promise<Database.Database> => {
-  if (!db || !isConnected) {
+export const getDB = async (): Promise<Pool> => {
+  if (!pool || !isConnected) {
     console.log("⚠️ Database connection lost, reconnecting...");
     await connectDB();
   }
-  return db;
+  return pool;
 };
 
-// Promisified database methods with better error handling
+// Database query methods for PostgreSQL
 export const dbRun = async (sql: string, params: any[] = []): Promise<any> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const database = await getDB();
-      database.run(sql, params, function (err) {
-        if (err) reject(err);
-        else resolve({ lastID: this.lastID, changes: this.changes });
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
+  try {
+    const database = await getDB();
+    const result = await database.query(sql, params);
+    return { 
+      lastID: result.rows[0]?.id || null, 
+      changes: result.rowCount || 0,
+      rows: result.rows
+    };
+  } catch (error) {
+    console.error("Error executing query:", error);
+    throw error;
+  }
 };
 
 export const dbGet = async (sql: string, params: any[] = []): Promise<any> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const database = await getDB();
-      database.get(sql, params, (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
+  try {
+    const database = await getDB();
+    const result = await database.query(sql, params);
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error("Error executing query:", error);
+    throw error;
+  }
 };
 
 export const dbAll = async (sql: string, params: any[] = []): Promise<any[]> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const database = await getDB();
-      database.all(sql, params, (err, rows) => {
-        if (err) reject(err);
-        else resolve(rows || []);
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
+  try {
+    const database = await getDB();
+    const result = await database.query(sql, params);
+    return result.rows || [];
+  } catch (error) {
+    console.error("Error executing query:", error);
+    throw error;
+  }
 };
 
 export const closeDB = (): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    if (db && isConnected) {
+  return new Promise((resolve) => {
+    if (pool && isConnected) {
       try {
-        db.close((err) => {
-          if (err && err.code !== 'SQLITE_MISUSE') {
-            reject(err);
-          } else {
-            db = null as any; // Clear the reference
-            isConnected = false;
-            resolve();
-          }
+        pool.end().then(() => {
+          pool = null as any;
+          isConnected = false;
+          console.log("✅ Database connection closed");
+          resolve();
+        }).catch(() => {
+          pool = null as any;
+          isConnected = false;
+          resolve();
         });
       } catch (error) {
-        // If the database is already closed, just clear the reference
-        db = null as any;
+        pool = null as any;
         isConnected = false;
         resolve();
       }
