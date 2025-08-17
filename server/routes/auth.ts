@@ -75,16 +75,18 @@ router.post("/login", async (req, res) => {
 
     res.json({
       success: true,
-      token,
-      user: {
-        id: user.id,
-        uuid: user.uuid,
-        name: user.name,
-        email: user.email,
-        type: user.type,
-        university_id: user.university_id,
-        department: user.department,
-        designation: user.designation,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          uuid: user.uuid,
+          name: user.name,
+          email: user.email,
+          type: user.type,
+          university_id: user.university_id,
+          department: user.department,
+          designation: user.designation,
+        },
       },
     });
   } catch (error) {
