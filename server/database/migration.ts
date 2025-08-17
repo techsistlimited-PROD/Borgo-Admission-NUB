@@ -4,22 +4,28 @@ export const runMigration = async (): Promise<void> => {
   try {
     // Check if user_id column allows NULL
     const tableInfo = await dbGet(`PRAGMA table_info(applications)`);
-    
+
     console.log("🔄 Running database migration to fix user_id constraint...");
-    
+
     // SQLite doesn't support ALTER COLUMN directly, so we need to recreate the table
     // First, check if the table exists and has data
-    const existingData = await dbGet(`SELECT COUNT(*) as count FROM applications`);
-    
+    const existingData = await dbGet(
+      `SELECT COUNT(*) as count FROM applications`,
+    );
+
     if (existingData && existingData.count > 0) {
-      console.log(`📊 Found ${existingData.count} existing applications, preserving data...`);
-      
+      console.log(
+        `📊 Found ${existingData.count} existing applications, preserving data...`,
+      );
+
       // Create backup table
-      await dbRun(`CREATE TEMPORARY TABLE applications_backup AS SELECT * FROM applications`);
-      
+      await dbRun(
+        `CREATE TEMPORARY TABLE applications_backup AS SELECT * FROM applications`,
+      );
+
       // Drop the old table
       await dbRun(`DROP TABLE applications`);
-      
+
       // Recreate table with nullable user_id
       await dbRun(`
         CREATE TABLE applications (
@@ -75,7 +81,7 @@ export const runMigration = async (): Promise<void> => {
           FOREIGN KEY (user_id) REFERENCES users (id)
         )
       `);
-      
+
       // Restore data with NULL user_id where it was 0 or invalid
       await dbRun(`
         INSERT INTO applications SELECT
@@ -98,15 +104,14 @@ export const runMigration = async (): Promise<void> => {
           created_at, updated_at
         FROM applications_backup
       `);
-      
+
       // Drop backup table
       await dbRun(`DROP TABLE applications_backup`);
-      
+
       console.log("✅ Migration completed successfully with data preservation");
     } else {
       console.log("📝 No existing data found, table structure updated");
     }
-    
   } catch (error) {
     console.error("❌ Migration failed:", error);
     throw error;

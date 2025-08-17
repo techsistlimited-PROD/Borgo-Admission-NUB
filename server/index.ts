@@ -23,7 +23,7 @@ import {
   getDocumentRequirements,
   createDocumentRequirement,
   updateDocumentRequirement,
-  deleteDocumentRequirement
+  deleteDocumentRequirement,
 } from "./routes/admission-settings.js";
 
 export function createServer() {
