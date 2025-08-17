@@ -6,6 +6,7 @@ import { connectDB, closeDB } from "./database/config.js";
 import { initializeSchema } from "./database/schema.js";
 import { seedDatabase } from "./database/seeder.js";
 import { runMigration } from "./database/migration.js";
+import { supabase } from "./database/supabase.js";
 import { handleDemo } from "./routes/demo.js";
 
 // Import API routes
