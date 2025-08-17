@@ -276,11 +276,14 @@ export const initializeSchema = async (): Promise<void> => {
       console.log("✅ Added campus column to applications table");
     } catch (error) {
       // Column might already exist, ignore the error
-      console.log("�� Campus column already exists or migration not needed");
+      console.log("🔄 Campus column already exists or migration not needed");
     }
 
     // Make user_id nullable for public submissions (migration)
     try {
+      // Clean up any existing temporary table first
+      await dbRun(`DROP TABLE IF EXISTS applications_new`);
+
       // Create a temporary table with the correct schema
       await dbRun(`
         CREATE TABLE applications_new (
