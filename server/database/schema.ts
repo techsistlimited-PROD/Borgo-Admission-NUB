@@ -222,7 +222,8 @@ export const initializeSchema = async (): Promise<void> => {
 
     // Insert default admission settings if none exist
     await dbRun(`
-      INSERT INTO admission_settings (
+      INSERT OR IGNORE INTO admission_settings (
+        id,
         application_deadline,
         admission_fee,
         late_fee,
@@ -234,39 +235,38 @@ export const initializeSchema = async (): Promise<void> => {
         contact_email,
         contact_phone
       ) VALUES (
-        '2024-12-31 23:59:59+00',
+        1,
+        '2024-12-31 23:59:59',
         1000,
         500,
-        '2025-01-15 23:59:59+00',
-        '2024-01-01 00:00:00+00',
+        '2025-01-15 23:59:59',
+        '2024-01-01 00:00:00',
         'Spring 2024',
         'Welcome to Northern University Bangladesh Online Admission Portal. Please complete all required fields and submit your application before the deadline.',
         'Please make payment to the designated bank account and upload the payment slip. For any payment related queries, contact our finance department.',
         'admission@nu.edu.bd',
         '+8801700000000'
-      ) ON CONFLICT (id) DO NOTHING
+      )
     `);
 
     // Insert default payment methods if none exist
     await dbRun(`
-      INSERT INTO payment_methods (name, type, account_number, account_name, instructions, order_priority)
+      INSERT OR IGNORE INTO payment_methods (name, type, account_number, account_name, instructions, order_priority)
       VALUES
         ('Dutch Bangla Bank', 'bank', '1234567890', 'Northern University Bangladesh', 'Please mention your tracking ID in the deposit slip.', 1),
         ('bKash', 'mobile', '01700000000', 'Northern University', 'Send money to this number and mention your tracking ID.', 2),
         ('Nagad', 'mobile', '01800000000', 'Northern University', 'Send money to this number and mention your tracking ID.', 3)
-      ON CONFLICT (id) DO NOTHING
     `);
 
     // Insert default document requirements if none exist
     await dbRun(`
-      INSERT INTO document_requirements (name, description, is_required, order_priority)
+      INSERT OR IGNORE INTO document_requirements (name, description, is_required, order_priority)
       VALUES
-        ('SSC Certificate', 'Upload your SSC/equivalent certificate', true, 1),
-        ('HSC Certificate', 'Upload your HSC/equivalent certificate', true, 2),
-        ('Passport Size Photo', 'Upload a recent passport size photograph', true, 3),
-        ('National ID/Birth Certificate', 'Upload National ID card or Birth Certificate', true, 4),
-        ('Guardian National ID', 'Upload guardian National ID card', false, 5)
-      ON CONFLICT (id) DO NOTHING
+        ('SSC Certificate', 'Upload your SSC/equivalent certificate', 1, 1),
+        ('HSC Certificate', 'Upload your HSC/equivalent certificate', 1, 2),
+        ('Passport Size Photo', 'Upload a recent passport size photograph', 1, 3),
+        ('National ID/Birth Certificate', 'Upload National ID card or Birth Certificate', 1, 4),
+        ('Guardian National ID', 'Upload guardian National ID card', 0, 5)
     `);
 
     console.log("✅ Database schema initialized successfully");
