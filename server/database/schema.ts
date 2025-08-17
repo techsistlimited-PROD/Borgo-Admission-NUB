@@ -34,8 +34,8 @@ export const initializeSchema = async (): Promise<void> => {
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
         phone TEXT NOT NULL,
-        phone_verified BOOLEAN DEFAULT false,
-        email_verified BOOLEAN DEFAULT false,
+        phone_verified BOOLEAN DEFAULT 0,
+        email_verified BOOLEAN DEFAULT 0,
         date_of_birth DATE,
         gender TEXT,
         address TEXT,
@@ -62,14 +62,14 @@ export const initializeSchema = async (): Promise<void> => {
         waiver_amount REAL DEFAULT 0,
         final_amount REAL DEFAULT 0,
         payment_status TEXT DEFAULT 'pending' CHECK (payment_status IN ('pending', 'paid', 'partial')),
-        payslip_uploaded BOOLEAN DEFAULT false,
-        documents_complete BOOLEAN DEFAULT false,
+        payslip_uploaded BOOLEAN DEFAULT 0,
+        documents_complete BOOLEAN DEFAULT 0,
         referrer_id TEXT,
         referrer_name TEXT,
-        application_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        application_date DATETIME DEFAULT CURRENT_TIMESTAMP,
         approval_date TIMESTAMP WITH TIME ZONE,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id)
       )
     `);
@@ -84,8 +84,8 @@ export const initializeSchema = async (): Promise<void> => {
         duration_years INTEGER NOT NULL,
         total_credits INTEGER NOT NULL,
         base_cost REAL NOT NULL,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        is_active BOOLEAN DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -96,8 +96,8 @@ export const initializeSchema = async (): Promise<void> => {
         code TEXT UNIQUE NOT NULL,
         name TEXT NOT NULL,
         faculty TEXT NOT NULL,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        is_active BOOLEAN DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -111,7 +111,7 @@ export const initializeSchema = async (): Promise<void> => {
         amount REAL NOT NULL,
         reason TEXT,
         approved_by TEXT,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (application_id) REFERENCES applications (id)
       )
     `);
@@ -125,8 +125,8 @@ export const initializeSchema = async (): Promise<void> => {
         department TEXT NOT NULL,
         designation TEXT NOT NULL,
         commission_rate REAL DEFAULT 0.05,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        is_active BOOLEAN DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -137,7 +137,7 @@ export const initializeSchema = async (): Promise<void> => {
         user_id INTEGER NOT NULL,
         token TEXT UNIQUE NOT NULL,
         expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id)
       )
     `);
@@ -150,9 +150,9 @@ export const initializeSchema = async (): Promise<void> => {
         university_id TEXT NOT NULL,
         ugc_id TEXT,
         batch TEXT NOT NULL,
-        generated_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        generated_date DATETIME DEFAULT CURRENT_TIMESTAMP,
         generated_by TEXT NOT NULL,
-        is_sent BOOLEAN DEFAULT false,
+        is_sent BOOLEAN DEFAULT 0,
         FOREIGN KEY (application_id) REFERENCES applications (id)
       )
     `);
@@ -166,24 +166,24 @@ export const initializeSchema = async (): Promise<void> => {
         late_fee REAL NOT NULL DEFAULT 500,
         late_fee_deadline TIMESTAMP WITH TIME ZONE,
         max_applications_per_user INTEGER DEFAULT 3,
-        allow_application_editing BOOLEAN DEFAULT true,
-        require_phone_verification BOOLEAN DEFAULT true,
-        require_email_verification BOOLEAN DEFAULT true,
-        require_document_upload BOOLEAN DEFAULT true,
+        allow_application_editing BOOLEAN DEFAULT 1,
+        require_phone_verification BOOLEAN DEFAULT 1,
+        require_email_verification BOOLEAN DEFAULT 1,
+        require_document_upload BOOLEAN DEFAULT 1,
         application_start_date TIMESTAMP WITH TIME ZONE NOT NULL,
         session_name TEXT NOT NULL DEFAULT 'Spring 2024',
         admission_notice TEXT,
         payment_instructions TEXT,
         contact_email TEXT DEFAULT 'admission@nu.edu.bd',
         contact_phone TEXT DEFAULT '+8801700000000',
-        is_admission_open BOOLEAN DEFAULT true,
-        waiver_enabled BOOLEAN DEFAULT true,
+        is_admission_open BOOLEAN DEFAULT 1,
+        waiver_enabled BOOLEAN DEFAULT 1,
         max_waiver_percentage REAL DEFAULT 50,
-        auto_approve_applications BOOLEAN DEFAULT false,
-        send_sms_notifications BOOLEAN DEFAULT true,
-        send_email_notifications BOOLEAN DEFAULT true,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        auto_approve_applications BOOLEAN DEFAULT 0,
+        send_sms_notifications BOOLEAN DEFAULT 1,
+        send_email_notifications BOOLEAN DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -197,10 +197,10 @@ export const initializeSchema = async (): Promise<void> => {
         account_name TEXT NOT NULL,
         routing_number TEXT,
         instructions TEXT,
-        is_active BOOLEAN DEFAULT true,
+        is_active BOOLEAN DEFAULT 1,
         order_priority INTEGER DEFAULT 0,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -210,13 +210,13 @@ export const initializeSchema = async (): Promise<void> => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         description TEXT NOT NULL,
-        is_required BOOLEAN DEFAULT true,
+        is_required BOOLEAN DEFAULT 1,
         file_types TEXT DEFAULT 'pdf,jpg,jpeg,png',
         max_file_size_mb INTEGER DEFAULT 5,
         order_priority INTEGER DEFAULT 0,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        is_active BOOLEAN DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
