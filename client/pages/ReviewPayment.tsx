@@ -697,9 +697,9 @@ export default function ReviewPayment() {
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="sm">
+                          <span className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer font-medium">
                             {t.edit}
-                          </Button>
+                          </span>
                           {expandedSections[section.id] ? (
                             <ChevronUp className="w-4 h-4" />
                           ) : (
@@ -779,6 +779,28 @@ export default function ReviewPayment() {
                       {t.paymentDetails}
                     </h4>
                     {renderPaymentForm()}
+                  </div>
+                )}
+
+                {/* Payment Clearance Button */}
+                {paymentMethod && (
+                  <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                      <div className="text-sm text-yellow-800">
+                        <p className="font-medium mb-1">Demo Payment Clearance</p>
+                        <p className="mb-3">
+                          Since payment verification is not available, you can use this button to clear your payment and proceed with application submission.
+                        </p>
+                        <Button
+                          size="sm"
+                          className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                          onClick={handlePaymentClearance}
+                        >
+                          Clear Payment
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 )}
 
