@@ -1,4 +1,10 @@
-import { connectDB, dbRun, dbGet, closeDB } from "./config.js";
+import {
+  connectDB,
+  supabaseInsert,
+  supabaseGet,
+  closeDB,
+  supabase,
+} from "./config.js";
 import { initializeSchema } from "./schema.js";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
@@ -14,8 +20,15 @@ const seedDatabase = async () => {
     await initializeSchema();
 
     // Check if data already exists
-    const existingUsers = await dbGet("SELECT COUNT(*) as count FROM users");
-    if (existingUsers.count > 0) {
+    const { count, error } = await supabase
+      .from("users")
+      .select("*", { count: "exact", head: true });
+
+    if (error) {
+      console.error("Error checking existing data:", error);
+    }
+
+    if (count && count > 0) {
       console.log("📊 Database already contains data. Skipping seed.");
       return;
     }
@@ -25,37 +38,36 @@ const seedDatabase = async () => {
     // Create admin users
     const adminPassword = await bcrypt.hash("admin123", 10);
 
-    await dbRun(
-      `
-      INSERT INTO users (uuid, name, email, password_hash, type, department, designation)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `,
-      [
-        uuidv4(),
-        "Dr. Mohammad Rahman",
-        "admin@nu.edu.bd",
-        adminPassword,
-        "admin",
-        "Administration",
-        "Admission Officer",
-      ],
-    );
+    const admin1Uuid = uuidv4();
+    const admin2Uuid = uuidv4();
 
-    await dbRun(
-      `
-      INSERT INTO users (uuid, name, email, password_hash, type, department, designation)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `,
-      [
-        uuidv4(),
-        "Prof. Fatima Ahmed",
-        "fatima@nu.edu.bd",
-        adminPassword,
-        "admin",
-        "Computer Science",
-        "Department Head",
-      ],
-    );
+    const { data: admin1 } = await supabase
+      .from("users")
+      .insert({
+        uuid: admin1Uuid,
+        name: "Dr. Mohammad Rahman",
+        email: "admin@nu.edu.bd",
+        password_hash: adminPassword,
+        type: "admin",
+        department: "Administration",
+        designation: "Admission Officer",
+      })
+      .select()
+      .single();
+
+    const { data: admin2 } = await supabase
+      .from("users")
+      .insert({
+        uuid: admin2Uuid,
+        name: "Prof. Fatima Ahmed",
+        email: "fatima@nu.edu.bd",
+        password_hash: adminPassword,
+        type: "admin",
+        department: "Computer Science",
+        designation: "Department Head",
+      })
+      .select()
+      .single();
 
     console.log("📚 Creating programs...");
 
@@ -96,20 +108,7 @@ const seedDatabase = async () => {
     ];
 
     for (const program of programs) {
-      await dbRun(
-        `
-        INSERT INTO programs (code, name, type, duration_years, total_credits, base_cost)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `,
-        [
-          program.code,
-          program.name,
-          program.type,
-          program.duration_years,
-          program.total_credits,
-          program.base_cost,
-        ],
-      );
+      await supabase.from("programs").insert(program);
     }
 
     console.log("🏫 Creating departments...");
@@ -139,13 +138,7 @@ const seedDatabase = async () => {
     ];
 
     for (const dept of departments) {
-      await dbRun(
-        `
-        INSERT INTO departments (code, name, faculty)
-        VALUES (?, ?, ?)
-      `,
-        [dept.code, dept.name, dept.faculty],
-      );
+      await supabase.from("departments").insert(dept);
     }
 
     console.log("👥 Creating employee referrers...");
@@ -176,29 +169,19 @@ const seedDatabase = async () => {
     ];
 
     for (const referrer of referrers) {
-      await dbRun(
-        `
-        INSERT INTO employee_referrers (employee_id, name, department, designation, commission_rate)
-        VALUES (?, ?, ?, ?, ?)
-      `,
-        [
-          referrer.employee_id,
-          referrer.name,
-          referrer.department,
-          referrer.designation,
-          referrer.commission_rate,
-        ],
-      );
+      await supabase.from("employee_referrers").insert(referrer);
     }
 
     console.log("📝 Creating sample applications...");
 
-    // Create sample applications
+    // Create sample applications (without user_id initially)
     const sampleApplications = [
       {
+        uuid: uuidv4(),
         tracking_id: "NU24001001",
         program: "BSC_CS",
         department: "CSE",
+        session: "Spring 2024",
         first_name: "Mohammad",
         last_name: "Rahman",
         phone: "+8801234567890",
@@ -224,11 +207,14 @@ const seedDatabase = async () => {
         payment_status: "pending",
         referrer_id: "NU-FAC-001",
         referrer_name: "Dr. Mohammad Rahman",
+        user_id: null,
       },
       {
+        uuid: uuidv4(),
         tracking_id: "NU24001002",
         program: "MBA",
         department: "BBA",
+        session: "Spring 2024",
         first_name: "Fatima",
         last_name: "Ahmed",
         phone: "+8801234567892",
@@ -257,58 +243,18 @@ const seedDatabase = async () => {
         payment_status: "paid",
         referrer_id: "NU-FAC-002",
         referrer_name: "Prof. Fatima Ahmed",
+        user_id: null,
       },
     ];
 
+    const createdApplications = [];
     for (const app of sampleApplications) {
-      await dbRun(
-        `
-        INSERT INTO applications (
-          uuid, tracking_id, status, program, department, session,
-          first_name, last_name, phone, date_of_birth, gender,
-          address, city, postal_code, country, guardian_name,
-          guardian_phone, guardian_relation, ssc_institution, ssc_year,
-          ssc_gpa, hsc_institution, hsc_year, hsc_gpa, bachelor_institution,
-          bachelor_year, bachelor_cgpa, total_cost, final_amount, 
-          payment_status, referrer_id, referrer_name, user_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `,
-        [
-          uuidv4(),
-          app.tracking_id,
-          app.status,
-          app.program,
-          app.department,
-          "Spring 2024",
-          app.first_name,
-          app.last_name,
-          app.phone,
-          app.date_of_birth,
-          app.gender,
-          app.address,
-          app.city,
-          app.postal_code,
-          app.country,
-          app.guardian_name,
-          app.guardian_phone,
-          app.guardian_relation,
-          app.ssc_institution,
-          app.ssc_year,
-          app.ssc_gpa,
-          app.hsc_institution,
-          app.hsc_year,
-          app.hsc_gpa,
-          app.bachelor_institution || null,
-          app.bachelor_year || null,
-          app.bachelor_cgpa || null,
-          app.total_cost,
-          app.final_amount,
-          app.payment_status,
-          app.referrer_id,
-          app.referrer_name,
-          1, // Assuming first admin user as creator
-        ],
-      );
+      const { data } = await supabase
+        .from("applications")
+        .insert(app)
+        .select()
+        .single();
+      createdApplications.push(data);
     }
 
     console.log("🎓 Creating sample applicant user...");
@@ -316,21 +262,27 @@ const seedDatabase = async () => {
     // Create a sample applicant user (for approved application)
     const applicantPassword = await bcrypt.hash("temp123456", 10);
 
-    await dbRun(
-      `
-      INSERT INTO users (uuid, name, email, password_hash, type, university_id, department)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `,
-      [
-        uuidv4(),
-        "Fatima Ahmed",
-        "fatima@email.com",
-        applicantPassword,
-        "applicant",
-        "NU24MBA002",
-        "Business Administration",
-      ],
-    );
+    const { data: applicantUser } = await supabase
+      .from("users")
+      .insert({
+        uuid: uuidv4(),
+        name: "Fatima Ahmed",
+        email: "fatima@email.com",
+        password_hash: applicantPassword,
+        type: "applicant",
+        university_id: "NU24MBA002",
+        department: "Business Administration",
+      })
+      .select()
+      .single();
+
+    // Update the approved application with the applicant user_id
+    if (applicantUser && createdApplications[1]) {
+      await supabase
+        .from("applications")
+        .update({ user_id: applicantUser.id })
+        .eq("id", createdApplications[1].id);
+    }
 
     console.log("✅ Database seeding completed successfully!");
     console.log("\n📋 Sample Credentials:");
