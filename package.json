@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "dev:backend": "tsx watch --ignore server/database/* server/start.ts",
+    "dev:backend": "tsx server/start.ts",
     "dev:full": "concurrently \"npm run dev\" \"npm run dev:backend\"",
     "dev:applicant": "vite --config vite.config.applicant.ts",
     "dev:applicant-portal": "vite --config vite.config.applicant-portal.ts",
