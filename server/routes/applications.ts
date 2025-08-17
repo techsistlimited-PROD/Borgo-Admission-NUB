@@ -138,10 +138,26 @@ router.post("/", async (req, res) => {
   try {
     const applicationData = req.body;
 
-    // Generate tracking ID
+    // Generate unique tracking ID
     const year = new Date().getFullYear().toString().slice(-2);
-    const randomNum = Math.floor(Math.random() * 900000) + 100000;
-    const tracking_id = `NU${year}${randomNum.toString().padStart(6, "0")}`;
+    let tracking_id: string;
+    let isUnique = false;
+
+    // Keep generating until we get a unique ID
+    while (!isUnique) {
+      const randomNum = Math.floor(Math.random() * 900000) + 100000;
+      tracking_id = `NU${year}${randomNum.toString().padStart(6, "0")}`;
+
+      // Check if this tracking ID already exists
+      const existingApp = await dbGet(
+        "SELECT id FROM applications WHERE tracking_id = ?",
+        [tracking_id]
+      );
+
+      if (!existingApp) {
+        isUnique = true;
+      }
+    }
 
     // Create application
     const applicationUuid = uuidv4();
