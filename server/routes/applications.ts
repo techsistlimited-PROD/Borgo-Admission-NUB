@@ -153,13 +153,13 @@ router.post("/", async (req, res) => {
     await dbRun(
       `
       INSERT INTO applications (
-        uuid, user_id, tracking_id, status, program, department, session,
-        first_name, last_name, phone, date_of_birth, gender,
+        uuid, user_id, tracking_id, status, program, department, session, campus,
+        first_name, last_name, email, phone, date_of_birth, gender,
         address, city, postal_code, country, guardian_name,
         guardian_phone, guardian_relation, ssc_institution, ssc_year,
         ssc_gpa, hsc_institution, hsc_year, hsc_gpa, total_cost,
         final_amount, referrer_id, referrer_name
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
         applicationUuid,
