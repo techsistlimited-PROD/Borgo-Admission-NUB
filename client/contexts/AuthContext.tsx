@@ -45,7 +45,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const token = localStorage.getItem("nu_token");
         if (token) {
+          // Set a timeout to prevent hanging
+          const timeoutId = setTimeout(() => {
+            console.warn("Session check timed out");
+            setIsLoading(false);
+          }, 5000);
+
           const response = await apiClient.getCurrentUser();
+          clearTimeout(timeoutId);
+
           if (response.success && response.data?.user) {
             setUser(response.data.user);
           } else {
