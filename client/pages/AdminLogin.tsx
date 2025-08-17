@@ -148,9 +148,9 @@ export default function AdminLogin() {
               </div>
 
               {error && (
-                <Alert className="border-red-200 bg-red-50">
-                  <AlertCircle className="w-4 h-4 text-red-600" />
-                  <AlertDescription className="text-red-800">
+                <Alert className="border-red-200 bg-red-50" role="alert">
+                  <AlertCircle className="w-4 h-4 text-red-600" aria-hidden="true" />
+                  <AlertDescription id="login-error" className="text-red-800">
                     {error}
                   </AlertDescription>
                 </Alert>
