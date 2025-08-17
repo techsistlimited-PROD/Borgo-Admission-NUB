@@ -46,6 +46,7 @@ export default function ReviewPayment() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isSubmittingApplication, setIsSubmittingApplication] = useState(false);
+  const [paymentCleared, setPaymentCleared] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
   const [mobileError, setMobileError] = useState("");
   const [cardData, setCardData] = useState({
@@ -114,7 +115,7 @@ export default function ReviewPayment() {
       personalInfo: "ব্যক্তিগত তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
       waiverInfo: "মওকুফ তথ্য",
-      paymentDetails: "পেমেন্ট বিবরণ",
+      paymentDetails: "পেমেন্��� বিবরণ",
       bkash: "বিকাশ",
       rocket: "র��েট",
       card: "ক্রেডিট/ডেবিট কার্ড",
@@ -133,7 +134,7 @@ export default function ReviewPayment() {
       bkashInstructions:
         "এই নাম্বার�� টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       rocketInstructions:
-        "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
+        "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আ��লোড করুন",
       offlineInstructions:
         "বিশ্ববিদ্যালয়ের ক্যাশ কাউন���টারে পেমেন্ট করুন এবং রসিদ আপলোড করুন",
       totalAmount: "মোট পরিমাণ",
