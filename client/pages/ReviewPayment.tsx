@@ -38,9 +38,14 @@ import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
 
 export default function ReviewPayment() {
+  const { applicationData } = useApplication();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isSubmittingApplication, setIsSubmittingApplication] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
   const [mobileError, setMobileError] = useState("");
   const [cardData, setCardData] = useState({
@@ -126,11 +131,11 @@ export default function ReviewPayment() {
       uploadPayslip: "পে-স্লিপ আপলোড করুন",
       paymentInstructions: "পেমেন্ট নির্দেশাবলী",
       bkashInstructions:
-        "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
+        "এই নাম্বার�� টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       rocketInstructions:
         "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       offlineInstructions:
-        "বিশ্ববিদ্যালয়ের ক্যাশ কাউন���টারে পেমেন্ট করুন এবং রসিদ আপলোড ক���ুন",
+        "বিশ্ববিদ্যালয়ের ক্যাশ কাউন���টারে পেমেন্ট করুন এবং রসিদ আপলোড করুন",
       totalAmount: "মোট পরিমাণ",
       edit: "সম্পাদনা",
       complete: "সম্পূর্ণ",
