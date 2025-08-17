@@ -270,6 +270,15 @@ export const initializeSchema = async (): Promise<void> => {
         ('Guardian National ID', 'Upload guardian National ID card', 0, 5)
     `);
 
+    // Add campus column if it doesn't exist (migration)
+    try {
+      await dbRun(`ALTER TABLE applications ADD COLUMN campus TEXT DEFAULT 'main'`);
+      console.log("✅ Added campus column to applications table");
+    } catch (error) {
+      // Column might already exist, ignore the error
+      console.log("🔄 Campus column already exists or migration not needed");
+    }
+
     console.log("✅ Database schema initialized successfully");
   } catch (error) {
     console.error("❌ Error initializing database schema:", error);
