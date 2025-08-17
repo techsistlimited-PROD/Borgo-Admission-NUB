@@ -1,6 +1,7 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
 import { dbGet, dbAll, dbRun } from "../database/config.js";
+import { createApplicationRecord } from "../database/adapter.js";
 import {
   authenticateToken,
   requireAdmin,
