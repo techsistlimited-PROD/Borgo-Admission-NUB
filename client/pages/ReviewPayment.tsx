@@ -109,7 +109,7 @@ export default function ReviewPayment() {
       backToPrevious: "মওকুফ যোগ্যতায় ফিরুন",
       submitApplication: "আবেদন জমা দিন",
       reviewApplication: "আপনার আবেদন পর্যালোচনা করুন",
-      paymentMethods: "পেমেন্ট পদ্ধতি",
+      paymentMethods: "পেম���ন্ট পদ্ধতি",
       programSelection: "প্রোগ্রাম নির্বাচন",
       personalInfo: "ব্যক্তিগত তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
@@ -131,7 +131,7 @@ export default function ReviewPayment() {
       uploadPayslip: "পে-স্লিপ আপলোড করুন",
       paymentInstructions: "পেমেন্ট নির্দেশাবলী",
       bkashInstructions:
-        "এই নাম্বার�� টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
+        "এই না��্বার�� টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       rocketInstructions:
         "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       offlineInstructions:
@@ -237,6 +237,94 @@ export default function ReviewPayment() {
       alert("Failed to initiate payment. Please try again.");
     } finally {
       setIsProcessingPayment(false);
+    }
+  };
+
+  const handleApplicationSubmit = async () => {
+    if (!paymentMethod) {
+      toast({
+        title: "Payment Method Required",
+        description: "Please select a payment method before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmittingApplication(true);
+
+    try {
+      // Prepare application data for submission
+      const submissionData = {
+        // Program Selection Data
+        program: applicationData.program,
+        department: applicationData.department,
+        campus: applicationData.campus,
+        session: applicationData.session || "Spring 2024",
+
+        // Personal Information
+        firstName: applicationData.firstName,
+        lastName: applicationData.lastName,
+        dateOfBirth: applicationData.dateOfBirth,
+        gender: applicationData.gender,
+        phone: applicationData.phone,
+        email: applicationData.email,
+        address: applicationData.presentAddress,
+        city: applicationData.city || "Dhaka",
+        postalCode: applicationData.postcode || "1000",
+        country: "Bangladesh",
+
+        // Guardian Information
+        guardianName: applicationData.fatherName,
+        guardianPhone: applicationData.fatherMobile,
+        guardianRelation: "Father",
+
+        // Academic Information
+        sscInstitution: applicationData.sscInstitution || "Not provided",
+        sscYear: applicationData.sscYear || new Date().getFullYear() - 5,
+        sscGPA: applicationData.sscGPA || 0,
+        hscInstitution: applicationData.hscInstitution || "Not provided",
+        hscYear: applicationData.hscYear || new Date().getFullYear() - 2,
+        hscGPA: applicationData.hscGPA || 0,
+
+        // Cost Information
+        totalCost: applicationData.totalCost || 0,
+        finalAmount: applicationData.finalAmount || 0,
+
+        // Referrer Information
+        referrerId: applicationData.referrerId,
+        referrerName: applicationData.referrerName,
+      };
+
+      console.log("🚀 Submitting application data:", submissionData);
+
+      const response = await apiClient.createApplication(submissionData);
+
+      if (response.success) {
+        toast({
+          title: "Application Submitted Successfully!",
+          description: `Your tracking ID is: ${response.data?.tracking_id}`,
+          duration: 5000,
+        });
+
+        // Navigate to dashboard with success state
+        navigate("/dashboard", {
+          state: {
+            submitted: true,
+            trackingId: response.data?.tracking_id
+          }
+        });
+      } else {
+        throw new Error(response.error || "Failed to submit application");
+      }
+    } catch (error) {
+      console.error("Application submission error:", error);
+      toast({
+        title: "Submission Failed",
+        description: error instanceof Error ? error.message : "An error occurred while submitting your application.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingApplication(false);
     }
   };
 
