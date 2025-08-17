@@ -1,4 +1,10 @@
-import { connectDB, supabaseInsert, supabaseGet, closeDB, supabase } from "./config.js";
+import {
+  connectDB,
+  supabaseInsert,
+  supabaseGet,
+  closeDB,
+  supabase,
+} from "./config.js";
 import { initializeSchema } from "./schema.js";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
@@ -15,8 +21,8 @@ const seedDatabase = async () => {
 
     // Check if data already exists
     const { count, error } = await supabase
-      .from('users')
-      .select('*', { count: 'exact', head: true });
+      .from("users")
+      .select("*", { count: "exact", head: true });
 
     if (error) {
       console.error("Error checking existing data:", error);
@@ -31,12 +37,12 @@ const seedDatabase = async () => {
 
     // Create admin users
     const adminPassword = await bcrypt.hash("admin123", 10);
-    
+
     const admin1Uuid = uuidv4();
     const admin2Uuid = uuidv4();
 
     const { data: admin1 } = await supabase
-      .from('users')
+      .from("users")
       .insert({
         uuid: admin1Uuid,
         name: "Dr. Mohammad Rahman",
@@ -50,7 +56,7 @@ const seedDatabase = async () => {
       .single();
 
     const { data: admin2 } = await supabase
-      .from('users')
+      .from("users")
       .insert({
         uuid: admin2Uuid,
         name: "Prof. Fatima Ahmed",
@@ -76,7 +82,7 @@ const seedDatabase = async () => {
         base_cost: 180000,
       },
       {
-        code: "BSC_EEE", 
+        code: "BSC_EEE",
         name: "BSc Electrical & Electronic Engineering",
         type: "undergraduate",
         duration_years: 4,
@@ -102,9 +108,7 @@ const seedDatabase = async () => {
     ];
 
     for (const program of programs) {
-      await supabase
-        .from('programs')
-        .insert(program);
+      await supabase.from("programs").insert(program);
     }
 
     console.log("🏫 Creating departments...");
@@ -134,9 +138,7 @@ const seedDatabase = async () => {
     ];
 
     for (const dept of departments) {
-      await supabase
-        .from('departments')
-        .insert(dept);
+      await supabase.from("departments").insert(dept);
     }
 
     console.log("👥 Creating employee referrers...");
@@ -167,9 +169,7 @@ const seedDatabase = async () => {
     ];
 
     for (const referrer of referrers) {
-      await supabase
-        .from('employee_referrers')
-        .insert(referrer);
+      await supabase.from("employee_referrers").insert(referrer);
     }
 
     console.log("📝 Creating sample applications...");
@@ -250,7 +250,7 @@ const seedDatabase = async () => {
     const createdApplications = [];
     for (const app of sampleApplications) {
       const { data } = await supabase
-        .from('applications')
+        .from("applications")
         .insert(app)
         .select()
         .single();
@@ -263,7 +263,7 @@ const seedDatabase = async () => {
     const applicantPassword = await bcrypt.hash("temp123456", 10);
 
     const { data: applicantUser } = await supabase
-      .from('users')
+      .from("users")
       .insert({
         uuid: uuidv4(),
         name: "Fatima Ahmed",
@@ -279,9 +279,9 @@ const seedDatabase = async () => {
     // Update the approved application with the applicant user_id
     if (applicantUser && createdApplications[1]) {
       await supabase
-        .from('applications')
+        .from("applications")
         .update({ user_id: applicantUser.id })
-        .eq('id', createdApplications[1].id);
+        .eq("id", createdApplications[1].id);
     }
 
     console.log("✅ Database seeding completed successfully!");
