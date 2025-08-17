@@ -98,9 +98,9 @@ export async function initializeDatabase() {
   try {
     console.log("🔄 Initializing database...");
 
-    const databaseType = process.env.DATABASE_TYPE || 'sqlite';
+    const databaseType = process.env.DATABASE_TYPE || "sqlite";
 
-    if (databaseType === 'supabase') {
+    if (databaseType === "supabase") {
       console.log("🌐 Using Supabase database");
 
       // Dynamically import Supabase only when needed
@@ -108,8 +108,8 @@ export async function initializeDatabase() {
 
       // Test Supabase connection
       const { data, error } = await supabase
-        .from('applications')
-        .select('count', { count: 'exact', head: true });
+        .from("applications")
+        .select("count", { count: "exact", head: true });
 
       if (error) {
         console.error("❌ Supabase connection failed:", error);

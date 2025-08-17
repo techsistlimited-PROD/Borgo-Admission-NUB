@@ -14,13 +14,14 @@ This guide will help you migrate from SQLite to Supabase PostgreSQL database to 
 ## Step 2: Run Database Migration in Supabase
 
 1. In your Supabase project, go to **SQL Editor**
-2. Copy the contents of `supabase_migration.sql` 
+2. Copy the contents of `supabase_migration.sql`
 3. Paste it into the SQL Editor
 4. Click **Run** to create all tables and insert sample data
 
 This will create all the necessary tables:
+
 - `applications` (with proper schema for your application form)
-- `users`, `programs`, `departments` 
+- `users`, `programs`, `departments`
 - `admission_settings`, `payment_methods`
 - Plus all necessary indexes and sample data
 
@@ -55,15 +56,18 @@ npm install @supabase/supabase-js
 ## Step 5: Deploy Updated Code
 
 ### Option A: Deploy to Fly.dev (Current Setup)
+
 1. Push your code to GitHub
 2. Redeploy on Fly.dev with the new environment variables
 
 ### Option B: Deploy to Netlify (Recommended)
-1. [Connect to Netlify](#open-mcp-popover) 
+
+1. [Connect to Netlify](#open-mcp-popover)
 2. I'll deploy the updated code automatically
 3. Set the environment variables in Netlify dashboard
 
 ### Option C: Deploy to Vercel
+
 1. [Connect to Vercel](#open-mcp-popover)
 2. I'll deploy the updated code automatically
 3. Set the environment variables in Vercel dashboard
@@ -88,6 +92,7 @@ After deployment:
 ## Rollback Plan
 
 If you need to rollback:
+
 1. Set `DATABASE_TYPE=sqlite` in your environment variables
 2. Redeploy the application
 3. The app will use the local SQLite database again
@@ -95,6 +100,7 @@ If you need to rollback:
 ## Need Help?
 
 If you encounter any issues:
+
 1. Check your Supabase project is active
 2. Verify environment variables are set correctly
 3. Check the server logs for detailed error messages

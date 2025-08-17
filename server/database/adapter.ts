@@ -1,53 +1,72 @@
 // Database adapter to switch between SQLite and Supabase based on environment
-import { dbGet as sqliteGet, dbAll as sqliteAll, dbRun as sqliteRun } from "./config.js";
+import {
+  dbGet as sqliteGet,
+  dbAll as sqliteAll,
+  dbRun as sqliteRun,
+} from "./config.js";
 
 // Dynamic database functions that choose the right implementation
-export const adaptedGet = async (sqlOrTable: string, params?: any): Promise<any> => {
-  const databaseType = process.env.DATABASE_TYPE || 'sqlite';
-  
-  if (databaseType === 'supabase') {
+export const adaptedGet = async (
+  sqlOrTable: string,
+  params?: any,
+): Promise<any> => {
+  const databaseType = process.env.DATABASE_TYPE || "sqlite";
+
+  if (databaseType === "supabase") {
     const { supabaseGet } = await import("./supabase.js");
-    
+
     // For Supabase, we need to convert SQL queries to Supabase queries
     // This is a simplified adapter - in production you'd want more sophisticated conversion
-    if (typeof sqlOrTable === 'string' && sqlOrTable.includes('SELECT')) {
+    if (typeof sqlOrTable === "string" && sqlOrTable.includes("SELECT")) {
       // Handle raw SQL - this is complex, so we'll throw an error for now
-      throw new Error('Raw SQL queries not supported with Supabase adapter. Use table-based queries.');
+      throw new Error(
+        "Raw SQL queries not supported with Supabase adapter. Use table-based queries.",
+      );
     }
-    
+
     return await supabaseGet(sqlOrTable, params);
   } else {
     return await sqliteGet(sqlOrTable, params);
   }
 };
 
-export const adaptedAll = async (sqlOrTable: string, params?: any): Promise<any[]> => {
-  const databaseType = process.env.DATABASE_TYPE || 'sqlite';
-  
-  if (databaseType === 'supabase') {
+export const adaptedAll = async (
+  sqlOrTable: string,
+  params?: any,
+): Promise<any[]> => {
+  const databaseType = process.env.DATABASE_TYPE || "sqlite";
+
+  if (databaseType === "supabase") {
     const { supabaseAll } = await import("./supabase.js");
-    
-    if (typeof sqlOrTable === 'string' && sqlOrTable.includes('SELECT')) {
-      throw new Error('Raw SQL queries not supported with Supabase adapter. Use table-based queries.');
+
+    if (typeof sqlOrTable === "string" && sqlOrTable.includes("SELECT")) {
+      throw new Error(
+        "Raw SQL queries not supported with Supabase adapter. Use table-based queries.",
+      );
     }
-    
+
     return await supabaseAll(sqlOrTable, params);
   } else {
     return await sqliteAll(sqlOrTable, params);
   }
 };
 
-export const adaptedRun = async (sqlOrTable: string, params?: any): Promise<any> => {
-  const databaseType = process.env.DATABASE_TYPE || 'sqlite';
-  
-  if (databaseType === 'supabase') {
+export const adaptedRun = async (
+  sqlOrTable: string,
+  params?: any,
+): Promise<any> => {
+  const databaseType = process.env.DATABASE_TYPE || "sqlite";
+
+  if (databaseType === "supabase") {
     const { supabaseRun } = await import("./supabase.js");
-    
-    if (typeof sqlOrTable === 'string' && sqlOrTable.includes('INSERT')) {
-      throw new Error('Raw SQL queries not supported with Supabase adapter. Use operation-based queries.');
+
+    if (typeof sqlOrTable === "string" && sqlOrTable.includes("INSERT")) {
+      throw new Error(
+        "Raw SQL queries not supported with Supabase adapter. Use operation-based queries.",
+      );
     }
-    
-    return await supabaseRun(sqlOrTable, 'insert', params);
+
+    return await supabaseRun(sqlOrTable, "insert", params);
   } else {
     return await sqliteRun(sqlOrTable, params);
   }
@@ -55,11 +74,11 @@ export const adaptedRun = async (sqlOrTable: string, params?: any): Promise<any>
 
 // Helper function to create application record for Supabase
 export const createApplicationRecord = async (applicationData: any) => {
-  const databaseType = process.env.DATABASE_TYPE || 'sqlite';
-  
-  if (databaseType === 'supabase') {
+  const databaseType = process.env.DATABASE_TYPE || "sqlite";
+
+  if (databaseType === "supabase") {
     const { supabaseRun } = await import("./supabase.js");
-    
+
     // Generate tracking ID
     const year = new Date().getFullYear().toString().slice(-2);
     const randomNum = Math.floor(Math.random() * 900000) + 100000;
@@ -97,12 +116,16 @@ export const createApplicationRecord = async (applicationData: any) => {
       referrer_name: applicationData.referrerName,
     };
 
-    const result = await supabaseRun("applications", "insert", applicationRecord);
+    const result = await supabaseRun(
+      "applications",
+      "insert",
+      applicationRecord,
+    );
     return { tracking_id, result };
   } else {
     // Use existing SQLite implementation
     const { v4: uuidv4 } = await import("uuid");
-    
+
     const year = new Date().getFullYear().toString().slice(-2);
     const randomNum = Math.floor(Math.random() * 900000) + 100000;
     const tracking_id = `NU${year}${randomNum.toString().padStart(6, "0")}`;
@@ -153,7 +176,7 @@ export const createApplicationRecord = async (applicationData: any) => {
         applicationData.referrerName,
       ],
     );
-    
+
     return { tracking_id };
   }
 };

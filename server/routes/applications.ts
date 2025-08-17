@@ -21,26 +21,26 @@ router.get(
       const { status, search, page = 1, limit = 10 } = req.query;
 
       // Build query for Supabase
-      let query = supabase
-        .from('applications')
-        .select(`
+      let query = supabase.from("applications").select(`
           *,
           users!applications_user_id_fkey(email)
         `);
 
       // Add filters
       if (status && status !== "all") {
-        query = query.eq('status', status as string);
+        query = query.eq("status", status as string);
       }
 
       if (search) {
-        query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,tracking_id.ilike.%${search}%`);
+        query = query.or(
+          `first_name.ilike.%${search}%,last_name.ilike.%${search}%,tracking_id.ilike.%${search}%`,
+        );
       }
 
       // Add pagination
       const offset = (Number(page) - 1) * Number(limit);
       query = query
-        .order('created_at', { ascending: false })
+        .order("created_at", { ascending: false })
         .range(offset, offset + Number(limit) - 1);
 
       const { data: applications, error, count } = await query;
@@ -49,15 +49,17 @@ router.get(
 
       // Get total count
       let countQuery = supabase
-        .from('applications')
-        .select('*', { count: 'exact', head: true });
+        .from("applications")
+        .select("*", { count: "exact", head: true });
 
       if (status && status !== "all") {
-        countQuery = countQuery.eq('status', status as string);
+        countQuery = countQuery.eq("status", status as string);
       }
 
       if (search) {
-        countQuery = countQuery.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,tracking_id.ilike.%${search}%`);
+        countQuery = countQuery.or(
+          `first_name.ilike.%${search}%,last_name.ilike.%${search}%,tracking_id.ilike.%${search}%`,
+        );
       }
 
       const { count: total, error: countError } = await countQuery;
