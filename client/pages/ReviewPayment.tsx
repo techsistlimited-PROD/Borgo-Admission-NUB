@@ -109,7 +109,7 @@ export default function ReviewPayment() {
       backToPrevious: "মওকুফ যোগ্যতায় ফিরুন",
       submitApplication: "আবেদন জমা দিন",
       reviewApplication: "আপনার আবেদন পর্যালোচনা করুন",
-      paymentMethods: "পেম���ন্ট পদ্ধতি",
+      paymentMethods: "পেমেন্ট পদ্ধতি",
       programSelection: "প্রোগ্রাম নির্বাচন",
       personalInfo: "ব্যক্তিগত তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
@@ -131,7 +131,7 @@ export default function ReviewPayment() {
       uploadPayslip: "পে-স্লিপ আপলোড করুন",
       paymentInstructions: "পেমেন্ট নির্দেশাবলী",
       bkashInstructions:
-        "এই না��্বার�� টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
+        "এই নাম্বার�� টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       rocketInstructions:
         "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       offlineInstructions:
@@ -787,10 +787,17 @@ export default function ReviewPayment() {
                   <Button
                     size="lg"
                     className="bg-deep-plum hover:bg-accent-purple px-8"
-                    disabled={!paymentMethod}
-                    asChild
+                    disabled={!paymentMethod || isSubmittingApplication}
+                    onClick={handleApplicationSubmit}
                   >
-                    <Link to="/dashboard">{t.submitApplication}</Link>
+                    {isSubmittingApplication ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Submitting...
+                      </div>
+                    ) : (
+                      t.submitApplication
+                    )}
                   </Button>
                 </div>
               </CardContent>
