@@ -78,11 +78,14 @@ export const runMigration = async (): Promise<void> => {
       
       // Restore data with NULL user_id where it was 0 or invalid
       await dbRun(`
-        INSERT INTO applications SELECT 
-          id, uuid, 
+        INSERT INTO applications SELECT
+          id, uuid,
           CASE WHEN user_id = 0 OR user_id NOT IN (SELECT id FROM users) THEN NULL ELSE user_id END,
           tracking_id, status, program, department, session,
-          first_name, last_name, phone, phone_verified, email_verified,
+          NULL as campus, -- Add default value for new campus field
+          first_name, last_name,
+          NULL as email, -- Add default value for new email field
+          phone, phone_verified, email_verified,
           date_of_birth, gender, address, city, postal_code, country,
           guardian_name, guardian_phone, guardian_relation,
           ssc_institution, ssc_year, ssc_gpa,
