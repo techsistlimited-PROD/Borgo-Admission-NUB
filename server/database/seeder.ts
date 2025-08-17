@@ -14,8 +14,15 @@ const seedDatabase = async () => {
     await initializeSchema();
 
     // Check if data already exists
-    const { count } = await supabaseGet("SELECT COUNT(*) as count FROM users", []);
-    if (count > 0) {
+    const { count, error } = await supabase
+      .from('users')
+      .select('*', { count: 'exact', head: true });
+
+    if (error) {
+      console.error("Error checking existing data:", error);
+    }
+
+    if (count && count > 0) {
       console.log("📊 Database already contains data. Skipping seed.");
       return;
     }
