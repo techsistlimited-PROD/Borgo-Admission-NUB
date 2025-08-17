@@ -12,6 +12,8 @@ import authRoutes from "./routes/auth.js";
 import applicationRoutes from "./routes/applications.js";
 import programRoutes from "./routes/programs.js";
 import referrerRoutes from "./routes/referrers.js";
+import documentRoutes from "./routes/documents.js";
+import paymentRoutes from "./routes/payments.js";
 import {
   getAdmissionSettings,
   updateAdmissionSettings,
@@ -33,6 +35,9 @@ export function createServer() {
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+  // Serve uploaded files
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
   // Health check endpoint
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "pong";
@@ -46,6 +51,8 @@ export function createServer() {
   app.use("/api/applications", applicationRoutes);
   app.use("/api/programs", programRoutes);
   app.use("/api/referrers", referrerRoutes);
+  app.use("/api/documents", documentRoutes);
+  app.use("/api/payments", paymentRoutes);
 
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);

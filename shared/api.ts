@@ -37,6 +37,28 @@ export interface AdmissionSettings {
   auto_approve_applications: boolean;
   send_sms_notifications: boolean;
   send_email_notifications: boolean;
+
+  // Campus configuration
+  main_campus_enabled?: boolean;
+  khulna_branch_enabled?: boolean;
+
+  // Student ID generation system
+  semester_codes?: {
+    summer?: string;
+    fall?: string;
+    winter?: string;
+  };
+  department_codes?: {
+    CSE?: string;
+    EEE?: string;
+    BBA?: string;
+    ENG?: string;
+    [key: string]: string | undefined;
+  };
+  id_generation_start_year?: number;
+  current_semester?: 'summer' | 'fall' | 'winter';
+  auto_id_generation?: boolean;
+
   created_at?: string;
   updated_at?: string;
 }

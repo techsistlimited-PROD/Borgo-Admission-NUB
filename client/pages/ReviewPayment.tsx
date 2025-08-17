@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   ChevronDown,
@@ -33,11 +33,20 @@ import {
   CollapsibleTrigger,
 } from "../components/ui/collapsible";
 import { Badge } from "../components/ui/badge";
+import { useApplication } from "../contexts/ApplicationContext";
+import { useToast } from "../hooks/use-toast";
+import apiClient from "../lib/api";
 
 export default function ReviewPayment() {
+  const { applicationData } = useApplication();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isSubmittingApplication, setIsSubmittingApplication] = useState(false);
+  const [paymentCleared, setPaymentCleared] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
   const [mobileError, setMobileError] = useState("");
   const [cardData, setCardData] = useState({
@@ -121,9 +130,9 @@ export default function ReviewPayment() {
       pin: "পিন",
       payNow: "এখনই পেমেন্ট করুন",
       uploadPayslip: "পে-স্লিপ আপলোড করুন",
-      paymentInstructions: "পেমেন্ট নির্দেশাবলী",
+      paymentInstructions: "পেমেন্ট নির্দেশ���বলী",
       bkashInstructions:
-        "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
+        "এই নাম্বার�� টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       rocketInstructions:
         "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       offlineInstructions:
@@ -229,6 +238,115 @@ export default function ReviewPayment() {
       alert("Failed to initiate payment. Please try again.");
     } finally {
       setIsProcessingPayment(false);
+    }
+  };
+
+  const handlePaymentClearance = async () => {
+    try {
+      setPaymentCleared(true);
+      toast({
+        title: "Payment Cleared",
+        description: "Payment has been cleared. You can now submit your application.",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error("Payment clearance error:", error);
+      toast({
+        title: "Clearance Failed",
+        description: "Failed to clear payment. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleApplicationSubmit = async () => {
+    if (!paymentMethod) {
+      toast({
+        title: "Payment Method Required",
+        description: "Please select a payment method before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmittingApplication(true);
+
+    try {
+      // Prepare application data for submission
+      const submissionData = {
+        // Program Selection Data
+        program: applicationData.program,
+        department: applicationData.department,
+        campus: applicationData.campus,
+        session: applicationData.session || "Spring 2024",
+
+        // Personal Information
+        firstName: applicationData.firstName,
+        lastName: applicationData.lastName,
+        dateOfBirth: applicationData.dateOfBirth,
+        gender: applicationData.gender,
+        phone: applicationData.phone,
+        email: applicationData.email,
+        address: applicationData.presentAddress,
+        city: applicationData.city || "Dhaka",
+        postalCode: applicationData.postcode || "1000",
+        country: "Bangladesh",
+
+        // Guardian Information
+        guardianName: applicationData.fatherName,
+        guardianPhone: applicationData.fatherMobile,
+        guardianRelation: "Father",
+
+        // Academic Information
+        sscInstitution: applicationData.sscInstitution || "Not provided",
+        sscYear: applicationData.sscYear || new Date().getFullYear() - 5,
+        sscGPA: applicationData.sscGPA || 0,
+        hscInstitution: applicationData.hscInstitution || "Not provided",
+        hscYear: applicationData.hscYear || new Date().getFullYear() - 2,
+        hscGPA: applicationData.hscGPA || 0,
+
+        // Cost Information
+        totalCost: applicationData.totalCost || 0,
+        finalAmount: applicationData.finalAmount || 0,
+
+        // Referrer Information
+        referrerId: applicationData.referrerId,
+        referrerName: applicationData.referrerName,
+
+        // Payment Status
+        paymentCleared: paymentCleared,
+      };
+
+      console.log("🚀 Submitting application data:", submissionData);
+
+      const response = await apiClient.createApplication(submissionData);
+
+      if (response.success) {
+        toast({
+          title: "Application Submitted Successfully!",
+          description: `Your tracking ID is: ${response.data?.tracking_id}`,
+          duration: 5000,
+        });
+
+        // Navigate to dashboard with success state
+        navigate("/dashboard", {
+          state: {
+            submitted: true,
+            trackingId: response.data?.tracking_id
+          }
+        });
+      } else {
+        throw new Error(response.error || "Failed to submit application");
+      }
+    } catch (error) {
+      console.error("Application submission error:", error);
+      toast({
+        title: "Submission Failed",
+        description: error instanceof Error ? error.message : "An error occurred while submitting your application.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingApplication(false);
     }
   };
 
@@ -601,9 +719,9 @@ export default function ReviewPayment() {
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="sm">
+                          <span className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer font-medium">
                             {t.edit}
-                          </Button>
+                          </span>
                           {expandedSections[section.id] ? (
                             <ChevronUp className="w-4 h-4" />
                           ) : (
@@ -686,15 +804,44 @@ export default function ReviewPayment() {
                   </div>
                 )}
 
+                {/* Payment Clearance Button */}
+                {paymentMethod && (
+                  <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                      <div className="text-sm text-yellow-800">
+                        <p className="font-medium mb-1">Demo Payment Clearance</p>
+                        <p className="mb-3">
+                          Since payment verification is not available, you can use this button to clear your payment and proceed with application submission.
+                        </p>
+                        <Button
+                          size="sm"
+                          className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                          onClick={handlePaymentClearance}
+                        >
+                          Clear Payment
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Submit Button */}
                 <div className="mt-6 text-center">
                   <Button
                     size="lg"
                     className="bg-deep-plum hover:bg-accent-purple px-8"
-                    disabled={!paymentMethod}
-                    asChild
+                    disabled={!paymentMethod || isSubmittingApplication}
+                    onClick={handleApplicationSubmit}
                   >
-                    <Link to="/dashboard">{t.submitApplication}</Link>
+                    {isSubmittingApplication ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Submitting...
+                      </div>
+                    ) : (
+                      t.submitApplication
+                    )}
                   </Button>
                 </div>
               </CardContent>

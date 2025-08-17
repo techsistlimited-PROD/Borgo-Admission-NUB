@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Upload, Save, LogOut, Plus, Scan, FileText, Trash2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import DocumentUpload from '../components/DocumentUpload';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -13,6 +14,8 @@ export default function AcademicHistory() {
     { id: 1, type: 'secondary', filled: false },
     { id: 2, type: 'higher_secondary', filled: false }
   ]);
+
+  const [uploadedDocuments, setUploadedDocuments] = useState<Record<string, string>>({});
 
   const texts = {
     en: {
@@ -66,7 +69,7 @@ export default function AcademicHistory() {
       documentScanner: 'ডকুমেন্ট স্ক্যানার',
       scanToFill: 'স্ক্যান করে অটো-ফিল করুন',
       secondary: 'মাধ্যমিক বা সমমান',
-      higherSecondary: 'উচ্চ মাধ্যমিক বা সমমান',
+      higherSecondary: 'উচ্চ মাধ্যমিক ���া সমমান',
       addRecord: 'শিক্��াগত রেকর্ড যোগ করুন',
       certificate: 'সনদপত্র',
       marksheet: 'নম্বরপত্র',
@@ -295,11 +298,21 @@ export default function AcademicHistory() {
                               <span className="text-gray-500 text-sm">({t.optional})</span>
                             )}
                           </Label>
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-accent-purple transition-colors">
-                            <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                            <p className="text-sm text-gray-600">Click or drag file here</p>
-                            <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" />
-                          </div>
+                          <DocumentUpload
+                            onDocumentUploaded={(url, fileName) => {
+                              const key = `${record.type}-${docType.key}`;
+                              setUploadedDocuments(prev => ({
+                                ...prev,
+                                [key]: url
+                              }));
+                            }}
+                            currentDocument={uploadedDocuments[`${record.type}-${docType.key}`]}
+                            label={`Upload ${docType.label}`}
+                            required={docType.required}
+                            documentType={`${record.type}-${docType.key}`}
+                            maxSize={5}
+                            acceptedTypes={["application/pdf", "image/jpeg", "image/png"]}
+                          />
                         </div>
                       ))}
                     </div>

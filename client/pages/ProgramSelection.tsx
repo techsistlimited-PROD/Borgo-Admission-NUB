@@ -61,6 +61,9 @@ export default function ProgramSelection() {
   const [selectedDepartment, setSelectedDepartment] = useState<string>(
     applicationData.department || "",
   );
+  const [selectedCampus, setSelectedCampus] = useState<string>(
+    applicationData.campus || "",
+  );
   const [availableDepartments, setAvailableDepartments] = useState<
     Department[]
   >([]);
@@ -140,7 +143,7 @@ export default function ProgramSelection() {
     },
     bn: {
       title: "প্রোগ্রাম ও বিভাগ নির্বাচন",
-      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণনা করুন",
+      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ ��ণনা করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
@@ -181,7 +184,7 @@ export default function ProgramSelection() {
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে পারে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফলভাবে সেভ হয়েছে!",
-      saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ্টা করুন।",
+      saveError: "ডেটা সেভ ক���তে ব্যর্থ। আবার চেষ্টা করুন।",
     },
   };
 
@@ -256,10 +259,11 @@ export default function ProgramSelection() {
   // Auto-save data when form values change
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (selectedProgram || selectedDepartment || sscGPA || hscGPA) {
+      if (selectedProgram || selectedDepartment || selectedCampus || sscGPA || hscGPA) {
         updateApplicationData({
           program: selectedProgram,
           department: selectedDepartment,
+          campus: selectedCampus,
           sscGPA: sscGPA ? parseFloat(sscGPA) : undefined,
           hscGPA: hscGPA ? parseFloat(hscGPA) : undefined,
           selectedWaivers,
@@ -275,6 +279,7 @@ export default function ProgramSelection() {
   }, [
     selectedProgram,
     selectedDepartment,
+    selectedCampus,
     sscGPA,
     hscGPA,
     selectedWaivers,
@@ -291,11 +296,11 @@ export default function ProgramSelection() {
   };
 
   const handleContinue = async () => {
-    if (!selectedProgram || !selectedDepartment) {
+    if (!selectedProgram || !selectedDepartment || !selectedCampus) {
       toast({
         title: "Required Fields Missing",
         description:
-          "Please select both program and department before continuing.",
+          "Please select program, department, and campus before continuing.",
         variant: "destructive",
       });
       return;
@@ -462,6 +467,33 @@ export default function ProgramSelection() {
                             : department.namebn}
                         </SelectItem>
                       ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Campus Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="campus">
+                    {language === "en" ? "Campus" : "ক্যাম্পাস"}
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <Select value={selectedCampus} onValueChange={setSelectedCampus}>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={
+                          language === "en"
+                            ? "Select Campus"
+                            : "ক্যাম্পাস নির্বাচন করুন"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="main">
+                        {language === "en" ? "Main Campus" : "মূল ক্যাম্পাস"}
+                      </SelectItem>
+                      <SelectItem value="khulna">
+                        {language === "en" ? "Khulna Branch" : "খুলনা শাখা"}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

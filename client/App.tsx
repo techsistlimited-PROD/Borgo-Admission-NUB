@@ -23,6 +23,7 @@ import FinancePanel from "./pages/FinancePanel";
 import Reports from "./pages/Reports";
 import Notifications from "./pages/Notifications";
 import EmailTemplates from "./pages/EmailTemplates";
+import AdmissionConfiguration from "./pages/AdmissionConfiguration";
 import ApplicantLogin from "./pages/ApplicantLogin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
@@ -51,6 +52,18 @@ const Layout = () => {
     );
   }
 
+  // Check if user needs to be redirected to login for admin routes
+  if (window.location.pathname.startsWith('/admin/') && (!user || userType !== 'admin')) {
+    return (
+      <div className="min-h-screen bg-lavender-bg">
+        <Routes>
+          <Route path="/admin/*" element={<AdminLogin />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-lavender-bg flex">
       <Sidebar userType={userType} />
@@ -73,6 +86,7 @@ const Layout = () => {
             <Route path="/admin/finance" element={<FinancePanel />} />
             <Route path="/admin/reports" element={<Reports />} />
             <Route path="/admin/templates" element={<EmailTemplates />} />
+            <Route path="/admin/configuration" element={<AdmissionConfiguration />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

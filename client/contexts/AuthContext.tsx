@@ -70,6 +70,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     try {
+      console.log("🔐 Starting login process...", {
+        identifier: credentials.identifier,
+        type: credentials.type
+      });
+
       const loginRequest: LoginRequest = {
         identifier: credentials.identifier,
         password: credentials.password,
@@ -77,17 +82,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
 
       const response = await apiClient.login(loginRequest);
+      console.log("📦 Login response received:", {
+        success: response.success,
+        hasData: !!response.data,
+        hasUser: !!response.data?.user
+      });
 
       if (response.success && response.data) {
+        console.log("✅ Setting user data:", response.data.user);
         setUser(response.data.user);
         setIsLoading(false);
         return true;
       } else {
+        console.log("❌ Login failed:", response.error || "No data in response");
         setIsLoading(false);
         return false;
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("💥 Login error:", error);
       setIsLoading(false);
       return false;
     }

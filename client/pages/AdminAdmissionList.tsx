@@ -170,7 +170,7 @@ export default function AdminAdmissionList() {
       rejecting: "প্রত্যাখ্যান করা হচ্ছে...",
       approveSuccess: "আবেদন সফলভাবে অনুমোদিত হয়েছে",
       rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যান করা হয়েছে",
-      actionError: "আবেদনের স্ট্যাটাস আপডেট করতে ব্যর্থ",
+      actionError: "আবেদনের স্ট্��াটাস আপডেট করতে ব্যর্থ",
       program: "প্রোগ্রাম",
       department: "বিভাগ",
       amount: "পরিমাণ",
@@ -193,19 +193,49 @@ export default function AdminAdmissionList() {
       });
 
       if (applicationsResponse.success && applicationsResponse.data) {
-        setApplications(applicationsResponse.data);
-        if (applicationsResponse.pagination) {
+        // Ensure we have an array of applications
+        const appsData = Array.isArray(applicationsResponse.data.applications)
+          ? applicationsResponse.data.applications
+          : Array.isArray(applicationsResponse.data)
+          ? applicationsResponse.data
+          : [];
+
+        console.log('📊 Applications data:', {
+          type: typeof applicationsResponse.data,
+          isArray: Array.isArray(applicationsResponse.data),
+          hasApplications: !!applicationsResponse.data.applications,
+          length: appsData.length
+        });
+
+        setApplications(appsData);
+
+        if (applicationsResponse.data.pagination) {
+          setTotalPages(applicationsResponse.data.pagination.totalPages);
+        } else if (applicationsResponse.pagination) {
           setTotalPages(applicationsResponse.pagination.totalPages);
         }
+      } else {
+        console.log('❌ Failed to load applications:', applicationsResponse.error);
+        setApplications([]);
       }
 
       // Fetch dashboard stats
       const statsResponse = await apiClient.getApplicationStats();
       if (statsResponse.success && statsResponse.data) {
         setStats(statsResponse.data);
+      } else {
+        console.log('❌ Failed to load stats:', statsResponse.error);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("💥 Error fetching data:", error);
+      // Ensure applications is always an array even on error
+      setApplications([]);
+      setStats({
+        totalApplications: 0,
+        needReview: 0,
+        todayApplicants: 0,
+        pendingPayments: 0,
+      });
       toast({
         title: t.error,
         description: "Unable to load applications. Please try again.",
@@ -477,7 +507,7 @@ export default function AdminAdmissionList() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {applications.map((app, index) => (
+                {Array.isArray(applications) && applications.length > 0 ? applications.map((app, index) => (
                   <TableRow key={app.id}>
                     <TableCell className="font-medium">
                       {(currentPage - 1) * 10 + index + 1}
@@ -595,7 +625,13 @@ export default function AdminAdmissionList() {
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                )) : (
+                  <TableRow>
+                    <TableCell colSpan={11} className="text-center py-8 text-gray-500">
+                      {loading ? t.loading : 'No applications found'}
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
 

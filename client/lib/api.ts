@@ -38,6 +38,7 @@ class ApiClient {
   constructor() {
     // Get token from localStorage on initialization
     this.token = localStorage.getItem("nu_token");
+    console.log("🚀 ApiClient initialized with token:", this.token ? this.token.substring(0, 20) + "..." : "none");
   }
 
   setToken(token: string) {
@@ -63,23 +64,38 @@ class ApiClient {
 
     if (this.token) {
       headers.Authorization = `Bearer ${this.token}`;
+      console.log(`🔑 Using token for ${endpoint}:`, this.token.substring(0, 20) + "...");
+    } else {
+      console.log(`⚠️ No token available for ${endpoint}`);
     }
 
     try {
+      console.log(`🌐 API Request: ${endpoint}`, { method: options.method || 'GET' });
+
       const response = await fetch(url, {
         ...options,
         headers,
       });
 
       const data = await response.json();
+      console.log(`📦 API Response: ${endpoint}`, {
+        ok: response.ok,
+        status: response.status,
+        success: data.success
+      });
 
       if (!response.ok) {
         throw new Error(data.error || `HTTP error! status: ${response.status}`);
       }
 
-      return data;
+      return {
+        success: data.success !== false,
+        data: data,
+        error: data.error,
+        message: data.message
+      };
     } catch (error) {
-      console.error(`API request failed: ${endpoint}`, error);
+      console.error(`❌ API request failed: ${endpoint}`, error);
       return {
         success: false,
         error:
@@ -95,8 +111,20 @@ class ApiClient {
       body: JSON.stringify(credentials),
     });
 
-    if (response.success && response.data?.token) {
-      this.setToken(response.data.token);
+    console.log("🔐 Login response in API client:", {
+      success: response.success,
+      hasData: !!response.data,
+      hasToken: !!(response.data as any)?.token,
+      rawResponse: response
+    });
+
+    // Handle both nested and flat response structures
+    const token = (response.data as any)?.token || response.data?.data?.token;
+    if (response.success && token) {
+      console.log("✅ Setting token:", token.substring(0, 20) + "...");
+      this.setToken(token);
+    } else {
+      console.log("❌ No token found in response");
     }
 
     return response;
@@ -167,6 +195,17 @@ class ApiClient {
 
   async getApplicationStats(): Promise<ApiResponse> {
     return this.request("/applications/stats/dashboard");
+  }
+
+  // Payment Methods
+  async clearPayment(trackingId: string): Promise<ApiResponse> {
+    return this.request(`/payments/clear/${trackingId}`, {
+      method: "POST",
+    });
+  }
+
+  async getPaymentStatus(trackingId: string): Promise<ApiResponse> {
+    return this.request(`/payments/status/${trackingId}`);
   }
 
   // Programs and Departments

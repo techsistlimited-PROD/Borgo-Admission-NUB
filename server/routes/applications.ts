@@ -138,10 +138,26 @@ router.post("/", async (req, res) => {
   try {
     const applicationData = req.body;
 
-    // Generate tracking ID
+    // Generate unique tracking ID
     const year = new Date().getFullYear().toString().slice(-2);
-    const randomNum = Math.floor(Math.random() * 900000) + 100000;
-    const tracking_id = `NU${year}${randomNum.toString().padStart(6, "0")}`;
+    let tracking_id: string;
+    let isUnique = false;
+
+    // Keep generating until we get a unique ID
+    while (!isUnique) {
+      const randomNum = Math.floor(Math.random() * 900000) + 100000;
+      tracking_id = `NU${year}${randomNum.toString().padStart(6, "0")}`;
+
+      // Check if this tracking ID already exists
+      const existingApp = await dbGet(
+        "SELECT id FROM applications WHERE tracking_id = ?",
+        [tracking_id]
+      );
+
+      if (!existingApp) {
+        isUnique = true;
+      }
+    }
 
     // Create application
     const applicationUuid = uuidv4();
@@ -149,13 +165,13 @@ router.post("/", async (req, res) => {
     await dbRun(
       `
       INSERT INTO applications (
-        uuid, tracking_id, status, program, department, session,
+        uuid, tracking_id, status, program, department, campus, session,
         first_name, last_name, phone, date_of_birth, gender,
         address, city, postal_code, country, guardian_name,
         guardian_phone, guardian_relation, ssc_institution, ssc_year,
         ssc_gpa, hsc_institution, hsc_year, hsc_gpa, total_cost,
-        final_amount, referrer_id, referrer_name
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        final_amount, referrer_id, referrer_name, payment_status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
         applicationUuid,
@@ -163,6 +179,7 @@ router.post("/", async (req, res) => {
         "pending",
         applicationData.program,
         applicationData.department,
+        applicationData.campus || "main",
         applicationData.session || "Spring 2024",
         applicationData.firstName,
         applicationData.lastName,
@@ -186,6 +203,7 @@ router.post("/", async (req, res) => {
         applicationData.finalAmount || 0,
         applicationData.referrerId,
         applicationData.referrerName,
+        applicationData.paymentCleared ? "paid" : "pending",
       ],
     );
 

@@ -204,7 +204,23 @@ export default function AdmissionConfiguration() {
 
   const savePaymentMethod = async () => {
     try {
-      const url = editingPayment 
+      // Check for duplicates
+      const existingMethod = paymentMethods.find(method =>
+        method.type === paymentForm.type &&
+        method.account_number === paymentForm.account_number &&
+        method.id !== editingPayment?.id
+      );
+
+      if (existingMethod) {
+        toast({
+          title: "Duplicate Payment Method",
+          description: `A ${paymentForm.type} payment method with this account number already exists.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const url = editingPayment
         ? `/api/payment-methods/${editingPayment.id}`
         : "/api/payment-methods";
       const method = editingPayment ? "PUT" : "POST";
@@ -286,7 +302,22 @@ export default function AdmissionConfiguration() {
 
   const saveDocumentRequirement = async () => {
     try {
-      const url = editingDocument 
+      // Check for duplicates
+      const existingDocument = documentRequirements.find(doc =>
+        doc.name.toLowerCase() === documentForm.name?.toLowerCase() &&
+        doc.id !== editingDocument?.id
+      );
+
+      if (existingDocument) {
+        toast({
+          title: "Duplicate Document Requirement",
+          description: `A document requirement with the name "${documentForm.name}" already exists.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const url = editingDocument
         ? `/api/document-requirements/${editingDocument.id}`
         : "/api/document-requirements";
       const method = editingDocument ? "PUT" : "POST";
@@ -532,6 +563,48 @@ export default function AdmissionConfiguration() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
+                Campus & Application Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="campus_selection">Available Campuses</Label>
+                <div className="space-y-3 mt-2">
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <span className="font-medium">Main Campus</span>
+                      <p className="text-sm text-gray-600">Primary campus location</p>
+                    </div>
+                    <Switch
+                      checked={settings.main_campus_enabled !== false}
+                      onCheckedChange={(checked) => setSettings({
+                        ...settings,
+                        main_campus_enabled: checked
+                      })}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <span className="font-medium">Khulna Branch</span>
+                      <p className="text-sm text-gray-600">Branch campus in Khulna</p>
+                    </div>
+                    <Switch
+                      checked={settings.khulna_branch_enabled || false}
+                      onCheckedChange={(checked) => setSettings({
+                        ...settings,
+                        khulna_branch_enabled: checked
+                      })}
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5" />
                 Application Settings
               </CardTitle>
             </CardHeader>
@@ -643,6 +716,204 @@ export default function AdmissionConfiguration() {
                     max_applications_per_user: Number(e.target.value)
                   })}
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                Student ID Generation System
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-medium text-blue-900 mb-2">ID Format: YYSSDDNNNN</h4>
+                <ul className="text-sm text-blue-700 space-y-1">
+                  <li><strong>YY:</strong> 2-digit year (25, 24, 23, etc.)</li>
+                  <li><strong>SS:</strong> 2-digit semester (01=Summer, 02=Fall, 03=Winter)</li>
+                  <li><strong>DD:</strong> 2-digit department code</li>
+                  <li><strong>NNNN:</strong> 4-digit incremental number</li>
+                </ul>
+                <p className="text-sm text-blue-600 mt-2">
+                  Example: 2502010001 (Year: 2025, Semester: Summer, Department: CSE, Student: 1st)
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="semester_codes">Semester Codes</Label>
+                  <div className="space-y-2 mt-2">
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">Summer (01)</span>
+                      <Input
+                        className="w-16 h-8"
+                        value={settings.semester_codes?.summer || "01"}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          semester_codes: {
+                            ...settings.semester_codes,
+                            summer: e.target.value
+                          }
+                        })}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">Fall (02)</span>
+                      <Input
+                        className="w-16 h-8"
+                        value={settings.semester_codes?.fall || "02"}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          semester_codes: {
+                            ...settings.semester_codes,
+                            fall: e.target.value
+                          }
+                        })}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">Winter (03)</span>
+                      <Input
+                        className="w-16 h-8"
+                        value={settings.semester_codes?.winter || "03"}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          semester_codes: {
+                            ...settings.semester_codes,
+                            winter: e.target.value
+                          }
+                        })}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="department_codes">Department Codes</Label>
+                  <div className="space-y-2 mt-2">
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">CSE (01)</span>
+                      <Input
+                        className="w-16 h-8"
+                        value={settings.department_codes?.CSE || "01"}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          department_codes: {
+                            ...settings.department_codes,
+                            CSE: e.target.value
+                          }
+                        })}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">EEE (02)</span>
+                      <Input
+                        className="w-16 h-8"
+                        value={settings.department_codes?.EEE || "02"}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          department_codes: {
+                            ...settings.department_codes,
+                            EEE: e.target.value
+                          }
+                        })}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">BBA (03)</span>
+                      <Input
+                        className="w-16 h-8"
+                        value={settings.department_codes?.BBA || "03"}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          department_codes: {
+                            ...settings.department_codes,
+                            BBA: e.target.value
+                          }
+                        })}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">ENG (04)</span>
+                      <Input
+                        className="w-16 h-8"
+                        value={settings.department_codes?.ENG || "04"}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          department_codes: {
+                            ...settings.department_codes,
+                            ENG: e.target.value
+                          }
+                        })}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="id_settings">ID Generation Settings</Label>
+                  <div className="space-y-3 mt-2">
+                    <div>
+                      <Label htmlFor="start_year" className="text-sm">Starting Year</Label>
+                      <Input
+                        id="start_year"
+                        type="number"
+                        min="2020"
+                        max="2099"
+                        value={settings.id_generation_start_year || new Date().getFullYear()}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          id_generation_start_year: Number(e.target.value)
+                        })}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="current_semester" className="text-sm">Current Semester</Label>
+                      <Select
+                        value={settings.current_semester || "summer"}
+                        onValueChange={(value) => setSettings({
+                          ...settings,
+                          current_semester: value
+                        })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="summer">Summer</SelectItem>
+                          <SelectItem value="fall">Fall</SelectItem>
+                          <SelectItem value="winter">Winter</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="auto_id_generation" className="text-sm">Auto ID Generation</Label>
+                      <Switch
+                        id="auto_id_generation"
+                        checked={settings.auto_id_generation !== false}
+                        onCheckedChange={(checked) => setSettings({
+                          ...settings,
+                          auto_id_generation: checked
+                        })}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="text-sm text-green-800">
+                  <strong>Preview ID:</strong> {
+                    (() => {
+                      const year = (settings.id_generation_start_year || new Date().getFullYear()).toString().slice(-2);
+                      const semester = settings.semester_codes?.[settings.current_semester || "summer"] || "01";
+                      const dept = settings.department_codes?.CSE || "01";
+                      return `${year}${semester}${dept}0001`;
+                    })()
+                  }
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -4,6 +4,7 @@ export interface ApplicationData {
   // Program Selection Data
   program?: string;
   department?: string;
+  campus?: string;
   session?: string;
   sscGPA?: number;
   hscGPA?: number;
