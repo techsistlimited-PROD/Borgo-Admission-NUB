@@ -276,7 +276,78 @@ export const initializeSchema = async (): Promise<void> => {
       console.log("✅ Added campus column to applications table");
     } catch (error) {
       // Column might already exist, ignore the error
-      console.log("🔄 Campus column already exists or migration not needed");
+      console.log("�� Campus column already exists or migration not needed");
+    }
+
+    // Make user_id nullable for public submissions (migration)
+    try {
+      // Create a temporary table with the correct schema
+      await dbRun(`
+        CREATE TABLE applications_new (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          uuid TEXT UNIQUE NOT NULL,
+          user_id INTEGER,
+          tracking_id TEXT UNIQUE NOT NULL,
+          status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+          program TEXT NOT NULL,
+          department TEXT NOT NULL,
+          campus TEXT DEFAULT 'main',
+          session TEXT NOT NULL,
+          first_name TEXT NOT NULL,
+          last_name TEXT NOT NULL,
+          phone TEXT NOT NULL,
+          phone_verified BOOLEAN DEFAULT 0,
+          email_verified BOOLEAN DEFAULT 0,
+          date_of_birth DATE,
+          gender TEXT,
+          address TEXT,
+          city TEXT,
+          postal_code TEXT,
+          country TEXT DEFAULT 'Bangladesh',
+          guardian_name TEXT,
+          guardian_phone TEXT,
+          guardian_relation TEXT,
+          ssc_institution TEXT,
+          ssc_year INTEGER,
+          ssc_gpa REAL,
+          hsc_institution TEXT,
+          hsc_year INTEGER,
+          hsc_gpa REAL,
+          bachelor_institution TEXT,
+          bachelor_year INTEGER,
+          bachelor_cgpa REAL,
+          master_institution TEXT,
+          master_year INTEGER,
+          master_cgpa REAL,
+          other_qualifications TEXT,
+          total_cost REAL DEFAULT 0,
+          waiver_amount REAL DEFAULT 0,
+          final_amount REAL DEFAULT 0,
+          payment_status TEXT DEFAULT 'pending' CHECK (payment_status IN ('pending', 'paid', 'partial')),
+          payslip_uploaded BOOLEAN DEFAULT 0,
+          documents_complete BOOLEAN DEFAULT 0,
+          referrer_id TEXT,
+          referrer_name TEXT,
+          application_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+          approval_date DATETIME,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+      `);
+
+      // Copy data from old table to new table
+      await dbRun(`
+        INSERT INTO applications_new SELECT * FROM applications
+      `);
+
+      // Drop old table and rename new table
+      await dbRun(`DROP TABLE applications`);
+      await dbRun(`ALTER TABLE applications_new RENAME TO applications`);
+
+      console.log("✅ Made user_id nullable in applications table");
+    } catch (error) {
+      console.log("🔄 user_id migration not needed or already completed:", error.message);
     }
 
     console.log("✅ Database schema initialized successfully");
