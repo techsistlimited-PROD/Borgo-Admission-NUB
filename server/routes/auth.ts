@@ -116,7 +116,9 @@ router.get("/me", authenticateToken, async (req: AuthRequest, res) => {
   try {
     res.json({
       success: true,
-      user: req.user,
+      data: {
+        user: req.user,
+      },
     });
   } catch (error) {
     console.error("Get user error:", error);
