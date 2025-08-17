@@ -146,19 +146,24 @@ router.post("/", async (req, res) => {
     // Create application
     const applicationUuid = uuidv4();
 
+    // For public applications, use a default user_id of 0 (guest user)
+    // In a real implementation, you might want to create a guest user or require authentication
+    const user_id = 0;
+
     await dbRun(
       `
       INSERT INTO applications (
-        uuid, tracking_id, status, program, department, session,
+        uuid, user_id, tracking_id, status, program, department, session,
         first_name, last_name, phone, date_of_birth, gender,
         address, city, postal_code, country, guardian_name,
         guardian_phone, guardian_relation, ssc_institution, ssc_year,
         ssc_gpa, hsc_institution, hsc_year, hsc_gpa, total_cost,
         final_amount, referrer_id, referrer_name
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
         applicationUuid,
+        user_id,
         tracking_id,
         "pending",
         applicationData.program,
