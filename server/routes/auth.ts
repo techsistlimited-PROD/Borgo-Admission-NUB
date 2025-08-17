@@ -29,14 +29,14 @@ router.post("/login", async (req, res) => {
         "SELECT * FROM users WHERE email = ? AND type = ? AND is_active = 1",
         [identifier, type],
       );
-      console.log(`👤 Admin user found: ${user ? 'YES' : 'NO'}`);
+      console.log(`👤 Admin user found: ${user ? "YES" : "NO"}`);
     } else if (type === "applicant") {
       console.log("🔍 Looking for applicant user...");
       user = await dbGet(
         "SELECT * FROM users WHERE university_id = ? AND type = ? AND is_active = 1",
         [identifier.toUpperCase(), type],
       );
-      console.log(`👤 Applicant user found: ${user ? 'YES' : 'NO'}`);
+      console.log(`👤 Applicant user found: ${user ? "YES" : "NO"}`);
     } else {
       console.log("❌ Invalid user type");
       return res.status(400).json({ error: "Invalid user type" });
@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
     // Check password
     console.log("🔒 Verifying password...");
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
-    console.log(`🔓 Password valid: ${isValidPassword ? 'YES' : 'NO'}`);
+    console.log(`🔓 Password valid: ${isValidPassword ? "YES" : "NO"}`);
 
     if (!isValidPassword) {
       console.log("❌ Invalid password");
@@ -75,16 +75,18 @@ router.post("/login", async (req, res) => {
 
     res.json({
       success: true,
-      token,
-      user: {
-        id: user.id,
-        uuid: user.uuid,
-        name: user.name,
-        email: user.email,
-        type: user.type,
-        university_id: user.university_id,
-        department: user.department,
-        designation: user.designation,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          uuid: user.uuid,
+          name: user.name,
+          email: user.email,
+          type: user.type,
+          university_id: user.university_id,
+          department: user.department,
+          designation: user.designation,
+        },
       },
     });
   } catch (error) {
@@ -114,7 +116,9 @@ router.get("/me", authenticateToken, async (req: AuthRequest, res) => {
   try {
     res.json({
       success: true,
-      user: req.user,
+      data: {
+        user: req.user,
+      },
     });
   } catch (error) {
     console.error("Get user error:", error);

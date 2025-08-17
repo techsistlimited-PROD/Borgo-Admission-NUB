@@ -82,16 +82,21 @@ export default function AdminLogin() {
 
           <CardContent className="space-y-6">
             {/* Demo Credentials Alert */}
-            <Alert className="border-purple-200 bg-purple-50">
-              <CheckCircle className="w-4 h-4 text-purple-600" />
+            <Alert className="border-purple-200 bg-purple-50" role="note">
+              <CheckCircle
+                className="w-4 h-4 text-purple-600"
+                aria-hidden="true"
+              />
               <AlertDescription className="text-purple-800">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Demo credentials available</span>
                   <Button
+                    type="button"
                     variant="outline"
                     size="sm"
                     onClick={loadDemoCredentials}
                     className="text-xs border-purple-300 text-purple-700 hover:bg-purple-100"
+                    aria-label="Load demo credentials for testing"
                   >
                     Load Demo
                   </Button>
@@ -99,15 +104,19 @@ export default function AdminLogin() {
               </AlertDescription>
             </Alert>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@nu.edu.bd"
+                  autoComplete="email"
+                  required
+                  aria-describedby={error ? "login-error" : undefined}
                 />
               </div>
 
@@ -116,10 +125,14 @@ export default function AdminLogin() {
                 <div className="relative">
                   <Input
                     id="password"
+                    name="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
+                    autoComplete="current-password"
+                    required
+                    aria-describedby={error ? "login-error" : undefined}
                   />
                   <Button
                     type="button"
@@ -127,20 +140,33 @@ export default function AdminLogin() {
                     size="sm"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                    aria-pressed={showPassword}
                   >
                     {showPassword ? (
-                      <EyeOff className="w-4 h-4 text-gray-500" />
+                      <EyeOff
+                        className="w-4 h-4 text-gray-500"
+                        aria-hidden="true"
+                      />
                     ) : (
-                      <Eye className="w-4 h-4 text-gray-500" />
+                      <Eye
+                        className="w-4 h-4 text-gray-500"
+                        aria-hidden="true"
+                      />
                     )}
                   </Button>
                 </div>
               </div>
 
               {error && (
-                <Alert className="border-red-200 bg-red-50">
-                  <AlertCircle className="w-4 h-4 text-red-600" />
-                  <AlertDescription className="text-red-800">
+                <Alert className="border-red-200 bg-red-50" role="alert">
+                  <AlertCircle
+                    className="w-4 h-4 text-red-600"
+                    aria-hidden="true"
+                  />
+                  <AlertDescription id="login-error" className="text-red-800">
                     {error}
                   </AlertDescription>
                 </Alert>

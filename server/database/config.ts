@@ -3,6 +3,7 @@ import { promisify } from "util";
 import path from "path";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+const isNetlify = process.env.NETLIFY === "true";
 
 // Database connection
 let db: Database.Database;
@@ -15,11 +16,18 @@ export const connectDB = async (): Promise<void> => {
     return;
   }
 
-  const dbPath =
-    process.env.DATABASE_PATH ||
-    (isDevelopment
-      ? path.join(process.cwd(), "database.sqlite")
-      : path.join(process.cwd(), "data", "database.sqlite"));
+  // For Netlify functions, use /tmp directory for database
+  let dbPath;
+  if (isNetlify) {
+    dbPath = "/tmp/database.sqlite";
+    console.log("🔧 Using Netlify serverless database path:", dbPath);
+  } else {
+    dbPath =
+      process.env.DATABASE_PATH ||
+      (isDevelopment
+        ? path.join(process.cwd(), "database.sqlite")
+        : path.join(process.cwd(), "data", "database.sqlite"));
+  }
 
   return new Promise((resolve, reject) => {
     db = new Database.Database(dbPath, (err) => {
@@ -73,7 +81,10 @@ export const dbGet = async (sql: string, params: any[] = []): Promise<any> => {
   });
 };
 
-export const dbAll = async (sql: string, params: any[] = []): Promise<any[]> => {
+export const dbAll = async (
+  sql: string,
+  params: any[] = [],
+): Promise<any[]> => {
   return new Promise(async (resolve, reject) => {
     try {
       const database = await getDB();
@@ -92,7 +103,7 @@ export const closeDB = (): Promise<void> => {
     if (db && isConnected) {
       try {
         db.close((err) => {
-          if (err && err.code !== 'SQLITE_MISUSE') {
+          if (err && err.code !== "SQLITE_MISUSE") {
             reject(err);
           } else {
             db = null as any; // Clear the reference
