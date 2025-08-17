@@ -146,9 +146,9 @@ router.post("/", async (req, res) => {
     // Create application
     const applicationUuid = uuidv4();
 
-    // For public applications, use a default user_id of 0 (guest user)
+    // For public applications, use NULL user_id (guest applications)
     // In a real implementation, you might want to create a guest user or require authentication
-    const user_id = 0;
+    const user_id = null;
 
     await dbRun(
       `
