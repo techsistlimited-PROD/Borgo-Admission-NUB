@@ -35,7 +35,7 @@ export default function ImageUpload({
   const [error, setError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = async (file: File) => {
     setError("");
 
     // Validate file type
@@ -52,14 +52,13 @@ export default function ImageUpload({
       return;
     }
 
-    // Read file and show preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageUrl = e.target?.result as string;
-      setSelectedImage(imageUrl);
-      setShowCropper(true);
-    };
-    reader.readAsDataURL(file);
+    try {
+      // Upload file directly
+      const uploadedUrl = await uploadFile(file);
+      onImageUploaded(uploadedUrl);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to upload image. Please try again.");
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -79,27 +78,42 @@ export default function ImageUpload({
     }
   };
 
-  const simulateUpload = async (imageData: string): Promise<string> => {
+  const uploadFile = async (file: File): Promise<string> => {
     setIsUploading(true);
 
-    // Simulate upload delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
 
-    // In a real implementation, you would upload to your server/cloud storage
-    // For now, we'll just return the data URL
-    setIsUploading(false);
-    return imageData;
+      const response = await fetch('/api/upload/single', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const result = await response.json();
+      setIsUploading(false);
+      return result.file.url;
+    } catch (error) {
+      setIsUploading(false);
+      throw error;
+    }
   };
 
   const handleCropComplete = async () => {
     if (selectedImage) {
       try {
-        const uploadedUrl = await simulateUpload(selectedImage);
-        onImageUploaded(uploadedUrl);
+        // For simplicity, we'll use the selected image directly
+        // In a real implementation, you would get the cropped image data
+        onImageUploaded(selectedImage);
         setShowCropper(false);
         setSelectedImage(null);
       } catch (error) {
-        setError("Failed to upload image. Please try again.");
+        setError("Failed to process image. Please try again.");
       }
     }
   };
