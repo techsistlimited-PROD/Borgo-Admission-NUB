@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import ImageUpload from '../components/ImageUpload';
+import DocumentScanner from '../components/DocumentScanner';
 
 export default function AcademicHistory() {
   const [language, setLanguage] = useState<'en' | 'bn'>('en');
@@ -13,6 +15,9 @@ export default function AcademicHistory() {
     { id: 1, type: 'secondary', filled: false },
     { id: 2, type: 'higher_secondary', filled: false }
   ]);
+  const [showDocumentScanner, setShowDocumentScanner] = useState(false);
+  const [currentScanType, setCurrentScanType] = useState<'nid' | 'ssc' | 'hsc' | 'other'>('nid');
+  const [uploadedDocuments, setUploadedDocuments] = useState<{[key: string]: string}>({});
 
   const texts = {
     en: {
@@ -78,7 +83,7 @@ export default function AcademicHistory() {
       required: 'প্রয়োজনীয়',
       optional: 'ঐচ্ছিক',
       feeBreakdown: 'ফি বিভাজন',
-      admissionFee: 'ভর্তি ফি',
+      admissionFee: 'ভর��তি ফি',
       courseFee: 'কোর্স ফি',
       labFee: 'ল্যাব ফি',
       others: 'অন্যান্য',
@@ -108,6 +113,25 @@ export default function AcademicHistory() {
       case 'higher_secondary': return t.higherSecondary;
       default: return 'Other Degree';
     }
+  };
+
+  const handleDocumentScan = (type: 'nid' | 'ssc' | 'hsc' | 'other') => {
+    setCurrentScanType(type);
+    setShowDocumentScanner(true);
+  };
+
+  const handleScanComplete = (data: any) => {
+    console.log('Scanned data:', data);
+    setShowDocumentScanner(false);
+    // Auto-fill form fields based on scanned data
+    // This would populate the form fields with the extracted data
+  };
+
+  const handleDocumentUpload = (docKey: string, imageUrl: string) => {
+    setUploadedDocuments(prev => ({
+      ...prev,
+      [docKey]: imageUrl
+    }));
   };
 
   const documentTypes = [
@@ -172,15 +196,27 @@ export default function AcademicHistory() {
           <CardContent>
             <p className="text-gray-700 mb-4">{t.scanToFill}</p>
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
+              <Button
+                variant="outline"
+                className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
+                onClick={() => handleDocumentScan('nid')}
+              >
                 <Scan className="w-4 h-4 mr-2" />
                 NID
               </Button>
-              <Button variant="outline" className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
+              <Button
+                variant="outline"
+                className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
+                onClick={() => handleDocumentScan('ssc')}
+              >
                 <Scan className="w-4 h-4 mr-2" />
                 {t.secondary}
               </Button>
-              <Button variant="outline" className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
+              <Button
+                variant="outline"
+                className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
+                onClick={() => handleDocumentScan('hsc')}
+              >
                 <Scan className="w-4 h-4 mr-2" />
                 {t.higherSecondary}
               </Button>
@@ -285,23 +321,29 @@ export default function AcademicHistory() {
                       {t.uploadDocs}
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {documentTypes.map((docType) => (
-                        <div key={docType.key} className="space-y-2">
-                          <Label className="flex items-center gap-2">
-                            {docType.label}
-                            {docType.required ? (
-                              <span className="text-red-500 text-sm">({t.required})</span>
-                            ) : (
-                              <span className="text-gray-500 text-sm">({t.optional})</span>
-                            )}
-                          </Label>
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-accent-purple transition-colors">
-                            <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                            <p className="text-sm text-gray-600">Click or drag file here</p>
-                            <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" />
+                      {documentTypes.map((docType) => {
+                        const docKey = `${record.id}-${docType.key}`;
+                        return (
+                          <div key={docType.key} className="space-y-2">
+                            <Label className="flex items-center gap-2">
+                              {docType.label}
+                              {docType.required ? (
+                                <span className="text-red-500 text-sm">({t.required})</span>
+                              ) : (
+                                <span className="text-gray-500 text-sm">({t.optional})</span>
+                              )}
+                            </Label>
+                            <ImageUpload
+                              onImageUploaded={(imageUrl) => handleDocumentUpload(docKey, imageUrl)}
+                              currentImage={uploadedDocuments[docKey]}
+                              label={`Upload ${docType.label}`}
+                              required={docType.required}
+                              acceptedTypes={['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']}
+                              maxSize={10}
+                            />
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </CardContent>
@@ -369,6 +411,15 @@ export default function AcademicHistory() {
           </div>
         </div>
       </div>
+
+      {/* Document Scanner Modal */}
+      <DocumentScanner
+        isOpen={showDocumentScanner}
+        onClose={() => setShowDocumentScanner(false)}
+        documentType={currentScanType}
+        onDataExtracted={handleScanComplete}
+        language={language}
+      />
     </div>
   );
 }
