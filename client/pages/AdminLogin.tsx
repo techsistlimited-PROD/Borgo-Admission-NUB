@@ -82,16 +82,18 @@ export default function AdminLogin() {
 
           <CardContent className="space-y-6">
             {/* Demo Credentials Alert */}
-            <Alert className="border-purple-200 bg-purple-50">
-              <CheckCircle className="w-4 h-4 text-purple-600" />
+            <Alert className="border-purple-200 bg-purple-50" role="note">
+              <CheckCircle className="w-4 h-4 text-purple-600" aria-hidden="true" />
               <AlertDescription className="text-purple-800">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Demo credentials available</span>
                   <Button
+                    type="button"
                     variant="outline"
                     size="sm"
                     onClick={loadDemoCredentials}
                     className="text-xs border-purple-300 text-purple-700 hover:bg-purple-100"
+                    aria-label="Load demo credentials for testing"
                   >
                     Load Demo
                   </Button>
