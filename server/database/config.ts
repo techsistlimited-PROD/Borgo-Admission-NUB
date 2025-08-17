@@ -3,6 +3,7 @@ import { promisify } from "util";
 import path from "path";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+const isNetlify = process.env.NETLIFY === "true";
 
 // Database connection
 let db: Database.Database;
@@ -15,11 +16,17 @@ export const connectDB = async (): Promise<void> => {
     return;
   }
 
-  const dbPath =
-    process.env.DATABASE_PATH ||
-    (isDevelopment
-      ? path.join(process.cwd(), "database.sqlite")
-      : path.join(process.cwd(), "data", "database.sqlite"));
+  // For Netlify functions, use /tmp directory for database
+  let dbPath;
+  if (isNetlify) {
+    dbPath = "/tmp/database.sqlite";
+    console.log("🔧 Using Netlify serverless database path:", dbPath);
+  } else {
+    dbPath = process.env.DATABASE_PATH ||
+      (isDevelopment
+        ? path.join(process.cwd(), "database.sqlite")
+        : path.join(process.cwd(), "data", "database.sqlite"));
+  }
 
   return new Promise((resolve, reject) => {
     db = new Database.Database(dbPath, (err) => {
