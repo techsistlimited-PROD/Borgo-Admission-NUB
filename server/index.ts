@@ -103,6 +103,9 @@ export async function initializeDatabase() {
     if (databaseType === 'supabase') {
       console.log("🌐 Using Supabase database");
 
+      // Dynamically import Supabase only when needed
+      const { supabase } = await import("./database/supabase.js");
+
       // Test Supabase connection
       const { data, error } = await supabase
         .from('applications')
