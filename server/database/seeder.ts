@@ -15,8 +15,19 @@ const seedDatabase = async () => {
 
     // Check if data already exists
     const existingUsers = await dbGet("SELECT COUNT(*) as count FROM users");
+    console.log(`📊 Found ${existingUsers.count} existing users in database`);
+
     if (existingUsers.count > 0) {
       console.log("📊 Database already contains data. Skipping seed.");
+      // Still show credentials for convenience
+      console.log("\n📋 Demo Credentials:");
+      console.log("🔐 Admin Login:");
+      console.log("   Email: admin@nu.edu.bd");
+      console.log("   Password: admin123");
+      console.log("");
+      console.log("🎓 Applicant Login:");
+      console.log("   University ID: NU24MBA002");
+      console.log("   Password: temp123456");
       return;
     }
 
