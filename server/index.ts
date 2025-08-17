@@ -99,6 +99,7 @@ export async function initializeDatabase() {
     console.log("🔄 Initializing database...");
     await connectDB();
     await initializeSchema();
+    await runMigration();
     await seedDatabase();
     console.log("✅ Database initialization completed");
   } catch (error) {
