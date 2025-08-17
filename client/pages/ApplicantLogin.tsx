@@ -82,16 +82,18 @@ export default function ApplicantLogin() {
 
           <CardContent className="space-y-6">
             {/* Demo Credentials Alert */}
-            <Alert className="border-blue-200 bg-blue-50">
-              <CheckCircle className="w-4 h-4 text-blue-600" />
+            <Alert className="border-blue-200 bg-blue-50" role="note">
+              <CheckCircle className="w-4 h-4 text-blue-600" aria-hidden="true" />
               <AlertDescription className="text-blue-800">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Demo credentials available</span>
                   <Button
+                    type="button"
                     variant="outline"
                     size="sm"
                     onClick={loadDemoCredentials}
                     className="text-xs border-blue-300 text-blue-700 hover:bg-blue-100"
+                    aria-label="Load demo credentials for testing"
                   >
                     Load Demo
                   </Button>
