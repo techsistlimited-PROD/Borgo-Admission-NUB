@@ -38,9 +38,6 @@ export interface AdmissionSettings {
   send_sms_notifications: boolean;
   send_email_notifications: boolean;
 
-  // Developer/Testing features
-  developer_mode?: boolean;
-
   // Campus configuration
   main_campus_enabled?: boolean;
   khulna_branch_enabled?: boolean;
