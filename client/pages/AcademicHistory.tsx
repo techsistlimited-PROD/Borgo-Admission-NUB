@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Upload, Save, LogOut, Plus, Scan, FileText, Trash2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import DocumentUpload from '../components/DocumentUpload';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -64,7 +65,7 @@ export default function AcademicHistory() {
       location: 'অবস্থান',
       uploadDocs: 'কাগজপত্র আপলোড করুন',
       documentScanner: 'ডকুমেন্ট স্ক্যানার',
-      scanToFill: 'স্ক্যান করে অটো-ফিল করুন',
+      scanToFill: 'স্ক্যা��� করে অটো-ফিল করুন',
       secondary: 'মাধ্যমিক বা সমমান',
       higherSecondary: 'উচ্চ মাধ্যমিক বা সমমান',
       addRecord: 'শিক্��াগত রেকর্ড যোগ করুন',
