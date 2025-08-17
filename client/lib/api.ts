@@ -197,6 +197,17 @@ class ApiClient {
     return this.request("/applications/stats/dashboard");
   }
 
+  // Payment Methods
+  async clearPayment(trackingId: string): Promise<ApiResponse> {
+    return this.request(`/payments/clear/${trackingId}`, {
+      method: "POST",
+    });
+  }
+
+  async getPaymentStatus(trackingId: string): Promise<ApiResponse> {
+    return this.request(`/payments/status/${trackingId}`);
+  }
+
   // Programs and Departments
   async getPrograms(): Promise<ApiResponse> {
     return this.request("/programs");
