@@ -1,120 +1,174 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Upload, Save, LogOut, Plus, Scan, FileText, Trash2 } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  Upload,
+  Save,
+  LogOut,
+  Plus,
+  Scan,
+  FileText,
+  Trash2,
+} from "lucide-react";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import ImageUpload from "../components/ImageUpload";
+import DocumentScanner from "../components/DocumentScanner";
 
 export default function AcademicHistory() {
-  const [language, setLanguage] = useState<'en' | 'bn'>('en');
+  const [language, setLanguage] = useState<"en" | "bn">("en");
   const [academicRecords, setAcademicRecords] = useState([
-    { id: 1, type: 'secondary', filled: false },
-    { id: 2, type: 'higher_secondary', filled: false }
+    { id: 1, type: "secondary", filled: false },
+    { id: 2, type: "higher_secondary", filled: false },
   ]);
+  const [showDocumentScanner, setShowDocumentScanner] = useState(false);
+  const [currentScanType, setCurrentScanType] = useState<
+    "nid" | "ssc" | "hsc" | "other"
+  >("nid");
+  const [uploadedDocuments, setUploadedDocuments] = useState<{
+    [key: string]: string;
+  }>({});
 
   const texts = {
     en: {
-      title: 'Academic History & Document Uploads',
-      subtitle: 'Step 3 of 4',
-      backToPrevious: 'Back to Personal Information',
-      saveAndContinue: 'Save & Continue',
-      saveAndExit: 'Save & Exit',
-      instituteName: 'Institute Name',
-      board: 'Board',
-      degree: 'Degree',
-      result: 'Result',
-      passingYear: 'Passing Year',
-      location: 'Location',
-      uploadDocs: 'Upload Documents',
-      documentScanner: 'Document Scanner',
-      scanToFill: 'Scan to Auto-fill',
-      secondary: 'Secondary or Equivalent',
-      higherSecondary: 'Higher Secondary or Equivalent',
-      addRecord: 'Add Academic Record',
-      certificate: 'Certificate',
-      marksheet: 'Marksheet',
-      testimonial: 'Testimonial',
-      transferCertificate: 'Transfer Certificate',
-      gpa: 'GPA',
-      cgpa: 'CGPA',
-      division: 'Division',
-      required: 'Required',
-      optional: 'Optional',
-      feeBreakdown: 'Fee Breakdown',
-      admissionFee: 'Admission Fee',
-      courseFee: 'Course Fee',
-      labFee: 'Lab Fee',
-      others: 'Others',
-      total: 'Total',
-      removeRecord: 'Remove Record'
+      title: "Academic History & Document Uploads",
+      subtitle: "Step 3 of 4",
+      backToPrevious: "Back to Personal Information",
+      saveAndContinue: "Save & Continue",
+      saveAndExit: "Save & Exit",
+      instituteName: "Institute Name",
+      board: "Board",
+      degree: "Degree",
+      result: "Result",
+      passingYear: "Passing Year",
+      location: "Location",
+      uploadDocs: "Upload Documents",
+      documentScanner: "Document Scanner",
+      scanToFill: "Scan to Auto-fill",
+      secondary: "Secondary or Equivalent",
+      higherSecondary: "Higher Secondary or Equivalent",
+      addRecord: "Add Academic Record",
+      certificate: "Certificate",
+      marksheet: "Marksheet",
+      testimonial: "Testimonial",
+      transferCertificate: "Transfer Certificate",
+      gpa: "GPA",
+      cgpa: "CGPA",
+      division: "Division",
+      required: "Required",
+      optional: "Optional",
+      feeBreakdown: "Fee Breakdown",
+      admissionFee: "Admission Fee",
+      courseFee: "Course Fee",
+      labFee: "Lab Fee",
+      others: "Others",
+      total: "Total",
+      removeRecord: "Remove Record",
     },
     bn: {
-      title: 'শিক্ষাগত ইতিহাস এবং কাগজপত্র আপলোড',
-      subtitle: '৪টি ধাপের ৩য় ধাপ',
-      backToPrevious: 'ব্যক্তিগত তথ্যে ফিরুন',
-      saveAndContinue: 'সেভ করে এগিয়ে যান',
-      saveAndExit: 'সেভ করে বেরিয়ে যান',
-      instituteName: 'শিক্ষা প্রতিষ্ঠানের নাম',
-      board: 'বোর্ড',
-      degree: 'ডিগ্রী',
-      result: 'ফলাফল',
-      passingYear: 'পাসের বছর',
-      location: 'অবস্থান',
-      uploadDocs: 'কাগজপত্র আপলোড করুন',
-      documentScanner: 'ডকুমেন্ট স্ক্যানার',
-      scanToFill: 'স্ক্যান করে অটো-ফিল করুন',
-      secondary: 'মাধ্যমিক বা সমমান',
-      higherSecondary: 'উচ্চ মাধ্যমিক বা সমমান',
-      addRecord: 'শিক্��াগত রেকর্ড যোগ করুন',
-      certificate: 'সনদপত্র',
-      marksheet: 'নম্বরপত্র',
-      testimonial: 'প্রশংসাপত্র',
-      transferCertificate: 'স্থানান্তর সনদ',
-      gpa: 'জিপিএ',
-      cgpa: 'সিজিপিএ',
-      division: 'বিভাগ',
-      required: 'প্রয়োজনীয়',
-      optional: 'ঐচ্ছিক',
-      feeBreakdown: 'ফি বিভাজন',
-      admissionFee: 'ভর্তি ফি',
-      courseFee: 'কোর্স ফি',
-      labFee: 'ল্যাব ফি',
-      others: 'অন্যান্য',
-      total: 'মোট',
-      removeRecord: 'রেকর্ড মুছুন'
-    }
+      title: "শিক্ষাগত ইতিহাস এবং কাগজপত্র আপলোড",
+      subtitle: "৪টি ধাপের ৩য় ধাপ",
+      backToPrevious: "ব্যক্তিগত তথ্যে ফিরুন",
+      saveAndContinue: "সেভ করে এগিয়ে যান",
+      saveAndExit: "সেভ করে বেরিয়ে যান",
+      instituteName: "শিক্ষা প্রতিষ্ঠানের নাম",
+      board: "বোর্ড",
+      degree: "ডিগ্রী",
+      result: "ফলাফল",
+      passingYear: "পাসের বছর",
+      location: "অবস্থান",
+      uploadDocs: "কাগজপত্র আপলোড করুন",
+      documentScanner: "ডকুমেন্ট স্ক্যানার",
+      scanToFill: "স্ক্যান করে অটো-ফিল করুন",
+      secondary: "মাধ্যমিক বা সমমান",
+      higherSecondary: "উচ্চ মাধ্যমিক বা সমমান",
+      addRecord: "শিক্��াগত রেকর্ড যোগ করুন",
+      certificate: "সনদপত্র",
+      marksheet: "নম্বরপত্র",
+      testimonial: "প্রশংসাপত্র",
+      transferCertificate: "স্থানান্তর সনদ",
+      gpa: "জিপিএ",
+      cgpa: "সিজিপিএ",
+      division: "বিভাগ",
+      required: "প্রয়োজনীয়",
+      optional: "ঐচ্ছিক",
+      feeBreakdown: "ফি বিভাজন",
+      admissionFee: "ভর��তি ফি",
+      courseFee: "কোর্স ফি",
+      labFee: "ল্যাব ফি",
+      others: "অন্যান্য",
+      total: "মোট",
+      removeRecord: "রেকর্ড মুছুন",
+    },
   };
 
   const t = texts[language];
 
   const addAcademicRecord = () => {
-    const newId = Math.max(...academicRecords.map(r => r.id)) + 1;
-    setAcademicRecords([...academicRecords, { 
-      id: newId, 
-      type: 'other', 
-      filled: false 
-    }]);
+    const newId = Math.max(...academicRecords.map((r) => r.id)) + 1;
+    setAcademicRecords([
+      ...academicRecords,
+      {
+        id: newId,
+        type: "other",
+        filled: false,
+      },
+    ]);
   };
 
   const removeRecord = (id: number) => {
-    setAcademicRecords(academicRecords.filter(record => record.id !== id));
+    setAcademicRecords(academicRecords.filter((record) => record.id !== id));
   };
 
   const getDegreeLabel = (type: string) => {
-    switch(type) {
-      case 'secondary': return t.secondary;
-      case 'higher_secondary': return t.higherSecondary;
-      default: return 'Other Degree';
+    switch (type) {
+      case "secondary":
+        return t.secondary;
+      case "higher_secondary":
+        return t.higherSecondary;
+      default:
+        return "Other Degree";
     }
   };
 
+  const handleDocumentScan = (type: "nid" | "ssc" | "hsc" | "other") => {
+    setCurrentScanType(type);
+    setShowDocumentScanner(true);
+  };
+
+  const handleScanComplete = (data: any) => {
+    console.log("Scanned data:", data);
+    setShowDocumentScanner(false);
+    // Auto-fill form fields based on scanned data
+    // This would populate the form fields with the extracted data
+  };
+
+  const handleDocumentUpload = (docKey: string, imageUrl: string) => {
+    setUploadedDocuments((prev) => ({
+      ...prev,
+      [docKey]: imageUrl,
+    }));
+  };
+
   const documentTypes = [
-    { key: 'certificate', label: t.certificate, required: true },
-    { key: 'marksheet', label: t.marksheet, required: true },
-    { key: 'testimonial', label: t.testimonial, required: false },
-    { key: 'transfer', label: t.transferCertificate, required: false }
+    { key: "certificate", label: t.certificate, required: true },
+    { key: "marksheet", label: t.marksheet, required: true },
+    { key: "testimonial", label: t.testimonial, required: false },
+    { key: "transfer", label: t.transferCertificate, required: false },
   ];
 
   return (
@@ -122,11 +176,14 @@ export default function AcademicHistory() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link to="/personal-information" className="inline-flex items-center text-accent-purple hover:text-deep-plum mb-4">
+          <Link
+            to="/personal-information"
+            className="inline-flex items-center text-accent-purple hover:text-deep-plum mb-4"
+          >
             <ArrowLeft className="w-4 h-4 mr-2" />
             {t.backToPrevious}
           </Link>
-          
+
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-deep-plum font-poppins">
@@ -134,25 +191,25 @@ export default function AcademicHistory() {
               </h1>
               <p className="text-accent-purple font-medium">{t.subtitle}</p>
             </div>
-            
+
             {/* Language Toggle */}
             <div className="flex items-center bg-white rounded-lg p-1 shadow-sm">
               <button
-                onClick={() => setLanguage('en')}
+                onClick={() => setLanguage("en")}
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  language === 'en'
-                    ? 'bg-deep-plum text-white'
-                    : 'text-gray-600 hover:text-deep-plum'
+                  language === "en"
+                    ? "bg-deep-plum text-white"
+                    : "text-gray-600 hover:text-deep-plum"
                 }`}
               >
                 EN
               </button>
               <button
-                onClick={() => setLanguage('bn')}
+                onClick={() => setLanguage("bn")}
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  language === 'bn'
-                    ? 'bg-deep-plum text-white'
-                    : 'text-gray-600 hover:text-deep-plum'
+                  language === "bn"
+                    ? "bg-deep-plum text-white"
+                    : "text-gray-600 hover:text-deep-plum"
                 }`}
               >
                 BN
@@ -172,15 +229,27 @@ export default function AcademicHistory() {
           <CardContent>
             <p className="text-gray-700 mb-4">{t.scanToFill}</p>
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
+              <Button
+                variant="outline"
+                className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
+                onClick={() => handleDocumentScan("nid")}
+              >
                 <Scan className="w-4 h-4 mr-2" />
                 NID
               </Button>
-              <Button variant="outline" className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
+              <Button
+                variant="outline"
+                className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
+                onClick={() => handleDocumentScan("ssc")}
+              >
                 <Scan className="w-4 h-4 mr-2" />
                 {t.secondary}
               </Button>
-              <Button variant="outline" className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
+              <Button
+                variant="outline"
+                className="border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
+                onClick={() => handleDocumentScan("hsc")}
+              >
                 <Scan className="w-4 h-4 mr-2" />
                 {t.higherSecondary}
               </Button>
@@ -216,15 +285,22 @@ export default function AcademicHistory() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor={`institute-${record.id}`}>
-                        {t.instituteName} <span className="text-red-500">*</span>
+                        {t.instituteName}{" "}
+                        <span className="text-red-500">*</span>
                       </Label>
-                      <Input id={`institute-${record.id}`} placeholder="Enter institute name" />
+                      <Input
+                        id={`institute-${record.id}`}
+                        placeholder="Enter institute name"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor={`board-${record.id}`}>
                         {t.board} <span className="text-red-500">*</span>
                       </Label>
-                      <Input id={`board-${record.id}`} placeholder="Enter board name" />
+                      <Input
+                        id={`board-${record.id}`}
+                        placeholder="Enter board name"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor={`degree-${record.id}`}>
@@ -235,10 +311,18 @@ export default function AcademicHistory() {
                           <SelectValue placeholder="Select degree type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="secondary">{t.secondary}</SelectItem>
-                          <SelectItem value="higher_secondary">{t.higherSecondary}</SelectItem>
-                          <SelectItem value="bachelor">Bachelor's Degree</SelectItem>
-                          <SelectItem value="master">Master's Degree</SelectItem>
+                          <SelectItem value="secondary">
+                            {t.secondary}
+                          </SelectItem>
+                          <SelectItem value="higher_secondary">
+                            {t.higherSecondary}
+                          </SelectItem>
+                          <SelectItem value="bachelor">
+                            Bachelor's Degree
+                          </SelectItem>
+                          <SelectItem value="master">
+                            Master's Degree
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -246,7 +330,10 @@ export default function AcademicHistory() {
                       <Label htmlFor={`location-${record.id}`}>
                         {t.location}
                       </Label>
-                      <Input id={`location-${record.id}`} placeholder="Enter location" />
+                      <Input
+                        id={`location-${record.id}`}
+                        placeholder="Enter location"
+                      />
                     </div>
                   </div>
 
@@ -264,7 +351,9 @@ export default function AcademicHistory() {
                           <SelectContent>
                             <SelectItem value="gpa">{t.gpa}</SelectItem>
                             <SelectItem value="cgpa">{t.cgpa}</SelectItem>
-                            <SelectItem value="division">{t.division}</SelectItem>
+                            <SelectItem value="division">
+                              {t.division}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <Input placeholder="Enter result" className="flex-1" />
@@ -274,7 +363,13 @@ export default function AcademicHistory() {
                       <Label htmlFor={`year-${record.id}`}>
                         {t.passingYear} <span className="text-red-500">*</span>
                       </Label>
-                      <Input id={`year-${record.id}`} type="number" placeholder="2024" min="1950" max="2024" />
+                      <Input
+                        id={`year-${record.id}`}
+                        type="number"
+                        placeholder="2024"
+                        min="1950"
+                        max="2024"
+                      />
                     </div>
                   </div>
 
@@ -285,23 +380,40 @@ export default function AcademicHistory() {
                       {t.uploadDocs}
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {documentTypes.map((docType) => (
-                        <div key={docType.key} className="space-y-2">
-                          <Label className="flex items-center gap-2">
-                            {docType.label}
-                            {docType.required ? (
-                              <span className="text-red-500 text-sm">({t.required})</span>
-                            ) : (
-                              <span className="text-gray-500 text-sm">({t.optional})</span>
-                            )}
-                          </Label>
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-accent-purple transition-colors">
-                            <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                            <p className="text-sm text-gray-600">Click or drag file here</p>
-                            <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" />
+                      {documentTypes.map((docType) => {
+                        const docKey = `${record.id}-${docType.key}`;
+                        return (
+                          <div key={docType.key} className="space-y-2">
+                            <Label className="flex items-center gap-2">
+                              {docType.label}
+                              {docType.required ? (
+                                <span className="text-red-500 text-sm">
+                                  ({t.required})
+                                </span>
+                              ) : (
+                                <span className="text-gray-500 text-sm">
+                                  ({t.optional})
+                                </span>
+                              )}
+                            </Label>
+                            <ImageUpload
+                              onImageUploaded={(imageUrl) =>
+                                handleDocumentUpload(docKey, imageUrl)
+                              }
+                              currentImage={uploadedDocuments[docKey]}
+                              label={`Upload ${docType.label}`}
+                              required={docType.required}
+                              acceptedTypes={[
+                                "image/jpeg",
+                                "image/jpg",
+                                "image/png",
+                                "application/pdf",
+                              ]}
+                              maxSize={10}
+                            />
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </CardContent>
@@ -322,7 +434,10 @@ export default function AcademicHistory() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-end">
-              <Button variant="outline" className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white">
+              <Button
+                variant="outline"
+                className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white"
+              >
                 <LogOut className="w-4 h-4 mr-2" />
                 {t.saveAndExit}
               </Button>
@@ -369,6 +484,15 @@ export default function AcademicHistory() {
           </div>
         </div>
       </div>
+
+      {/* Document Scanner Modal */}
+      <DocumentScanner
+        isOpen={showDocumentScanner}
+        onClose={() => setShowDocumentScanner(false)}
+        documentType={currentScanType}
+        onDataExtracted={handleScanComplete}
+        language={language}
+      />
     </div>
   );
 }

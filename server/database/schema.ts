@@ -67,7 +67,7 @@ export const initializeSchema = async (): Promise<void> => {
         referrer_id TEXT,
         referrer_name TEXT,
         application_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-        approval_date DATETIME,
+        approval_date TIMESTAMP WITH TIME ZONE,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id)
@@ -136,7 +136,7 @@ export const initializeSchema = async (): Promise<void> => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
         token TEXT UNIQUE NOT NULL,
-        expires_at DATETIME NOT NULL,
+        expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id)
       )
@@ -161,16 +161,16 @@ export const initializeSchema = async (): Promise<void> => {
     await dbRun(`
       CREATE TABLE IF NOT EXISTS admission_settings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        application_deadline DATETIME NOT NULL,
+        application_deadline TIMESTAMP WITH TIME ZONE NOT NULL,
         admission_fee REAL NOT NULL DEFAULT 1000,
         late_fee REAL NOT NULL DEFAULT 500,
-        late_fee_deadline DATETIME,
+        late_fee_deadline TIMESTAMP WITH TIME ZONE,
         max_applications_per_user INTEGER DEFAULT 3,
         allow_application_editing BOOLEAN DEFAULT 1,
         require_phone_verification BOOLEAN DEFAULT 1,
         require_email_verification BOOLEAN DEFAULT 1,
         require_document_upload BOOLEAN DEFAULT 1,
-        application_start_date DATETIME NOT NULL,
+        application_start_date TIMESTAMP WITH TIME ZONE NOT NULL,
         session_name TEXT NOT NULL DEFAULT 'Spring 2024',
         admission_notice TEXT,
         payment_instructions TEXT,
