@@ -1,24 +1,96 @@
 import serverless from "serverless-http";
-import { createServer, initializeDatabase } from "../../server/index.js";
+import express from "express";
+import cors from "cors";
+import authMemoryRoutes from "../../server/routes/auth-memory.js";
+import { initializeMemoryDB } from "../../server/database/memory-db.js";
 
 let app: any = null;
 let initialized = false;
 
+const createMemoryApp = () => {
+  const app = express();
+
+  // Middleware
+  app.use(cors());
+  app.use(express.json({ limit: "10mb" }));
+  app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+  // Health check endpoint
+  app.get("/api/ping", (_req, res) => {
+    const ping = process.env.PING_MESSAGE ?? "pong";
+    res.json({ message: ping, timestamp: new Date().toISOString(), database: "memory" });
+  });
+
+  // Memory-based auth routes for demo
+  app.use("/api/auth", authMemoryRoutes);
+
+  // Simple demo data endpoints
+  app.get("/api/programs", async (req, res) => {
+    try {
+      const { memoryDbAll } = await import("../../server/database/memory-db.js");
+      const programs = await memoryDbAll('programs');
+      res.json({ success: true, data: programs });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.get("/api/departments", async (req, res) => {
+    try {
+      const { memoryDbAll } = await import("../../server/database/memory-db.js");
+      const departments = await memoryDbAll('departments');
+      res.json({ success: true, data: departments });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.get("/api/admission-settings", async (req, res) => {
+    try {
+      const { memoryDbAll } = await import("../../server/database/memory-db.js");
+      const settings = await memoryDbAll('admission_settings');
+      res.json({ success: true, data: settings[0] || {} });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.get("/api/applications", async (req, res) => {
+    try {
+      const { memoryDbAll } = await import("../../server/database/memory-db.js");
+      const applications = await memoryDbAll('applications');
+      res.json({ success: true, data: applications });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Global error handler
+  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error("Global error handler:", err);
+    res.status(500).json({
+      error: "Internal server error",
+      message: process.env.NODE_ENV === "development" ? err.message : "Something went wrong",
+    });
+  });
+
+  return app;
+};
+
 const getApp = async () => {
   if (!app) {
-    app = createServer();
+    app = createMemoryApp();
   }
 
-  // Always try to initialize database for serverless functions
-  // This ensures database is ready for each invocation
+  // Initialize memory database
   if (!initialized) {
     try {
-      console.log("🔄 Initializing database for serverless function...");
-      await initializeDatabase();
+      console.log("🔄 Initializing memory database for serverless function...");
+      await initializeMemoryDB();
       initialized = true;
-      console.log("✅ Database initialized successfully");
+      console.log("✅ Memory database initialized successfully");
     } catch (error) {
-      console.error("❌ Database initialization error:", error);
+      console.error("❌ Memory database initialization error:", error);
       // Don't throw here, let the function attempt to work anyway
     }
   }
