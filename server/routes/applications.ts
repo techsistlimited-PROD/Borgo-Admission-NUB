@@ -19,51 +19,49 @@ router.get(
     try {
       const { status, search, page = 1, limit = 10 } = req.query;
 
-      let sql = `
-      SELECT a.*, u.email as user_email 
-      FROM applications a 
-      LEFT JOIN users u ON a.user_id = u.id 
-      WHERE 1=1
-    `;
-      const params: any[] = [];
+      // Build query for Supabase
+      let query = supabase
+        .from('applications')
+        .select(`
+          *,
+          users!applications_user_id_fkey(email)
+        `);
 
       // Add filters
       if (status && status !== "all") {
-        sql += " AND a.status = ?";
-        params.push(status);
+        query = query.eq('status', status as string);
       }
 
       if (search) {
-        sql += ` AND (a.first_name LIKE ? OR a.last_name LIKE ? OR a.tracking_id LIKE ? OR u.email LIKE ?)`;
-        const searchParam = `%${search}%`;
-        params.push(searchParam, searchParam, searchParam, searchParam);
+        query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,tracking_id.ilike.%${search}%`);
       }
 
       // Add pagination
-      sql += " ORDER BY a.created_at DESC LIMIT ? OFFSET ?";
       const offset = (Number(page) - 1) * Number(limit);
-      params.push(Number(limit), offset);
+      query = query
+        .order('created_at', { ascending: false })
+        .range(offset, offset + Number(limit) - 1);
 
-      const applications = await dbAll(sql, params);
+      const { data: applications, error, count } = await query;
+
+      if (error) throw error;
 
       // Get total count
-      let countSql =
-        "SELECT COUNT(*) as total FROM applications a LEFT JOIN users u ON a.user_id = u.id WHERE 1=1";
-      const countParams: any[] = [];
+      let countQuery = supabase
+        .from('applications')
+        .select('*', { count: 'exact', head: true });
 
       if (status && status !== "all") {
-        countSql += " AND a.status = ?";
-        countParams.push(status);
+        countQuery = countQuery.eq('status', status as string);
       }
 
       if (search) {
-        countSql += ` AND (a.first_name LIKE ? OR a.last_name LIKE ? OR a.tracking_id LIKE ? OR u.email LIKE ?)`;
-        const searchParam = `%${search}%`;
-        countParams.push(searchParam, searchParam, searchParam, searchParam);
+        countQuery = countQuery.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,tracking_id.ilike.%${search}%`);
       }
 
-      const countResult = await dbGet(countSql, countParams);
-      const total = countResult.total;
+      const { count: total, error: countError } = await countQuery;
+
+      if (countError) throw countError;
 
       res.json({
         success: true,
@@ -71,8 +69,8 @@ router.get(
         pagination: {
           page: Number(page),
           limit: Number(limit),
-          total,
-          totalPages: Math.ceil(total / Number(limit)),
+          total: total || 0,
+          totalPages: Math.ceil((total || 0) / Number(limit)),
         },
       });
     } catch (error) {
