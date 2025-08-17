@@ -22,12 +22,12 @@ import {
   getDocumentRequirements,
   createDocumentRequirement,
   updateDocumentRequirement,
-  deleteDocumentRequirement
+  deleteDocumentRequirement,
 } from "./routes/admission-settings.js";
 import {
   handleSingleUpload,
   handleMultipleUpload,
-  handleDeleteFile
+  handleDeleteFile,
 } from "./routes/upload.js";
 
 export function createServer() {

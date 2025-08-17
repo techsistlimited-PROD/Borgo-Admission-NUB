@@ -30,7 +30,9 @@ export const connectDB = async (): Promise<void> => {
         isConnected = false;
         reject(err);
       } else {
-        console.log("✅ Connected to SQLite database (temporarily for development)");
+        console.log(
+          "✅ Connected to SQLite database (temporarily for development)",
+        );
         isConnected = true;
         resolve();
       }
@@ -75,7 +77,10 @@ export const dbGet = async (sql: string, params: any[] = []): Promise<any> => {
   });
 };
 
-export const dbAll = async (sql: string, params: any[] = []): Promise<any[]> => {
+export const dbAll = async (
+  sql: string,
+  params: any[] = [],
+): Promise<any[]> => {
   return new Promise(async (resolve, reject) => {
     try {
       const database = await getDB();
@@ -94,7 +99,7 @@ export const closeDB = (): Promise<void> => {
     if (db && isConnected) {
       try {
         db.close((err) => {
-          if (err && err.code !== 'SQLITE_MISUSE') {
+          if (err && err.code !== "SQLITE_MISUSE") {
             reject(err);
           } else {
             db = null as any; // Clear the reference

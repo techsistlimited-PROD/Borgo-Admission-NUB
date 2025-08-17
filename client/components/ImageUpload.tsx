@@ -40,14 +40,12 @@ export default function ImageUpload({
 
     // Validate file type
     if (!acceptedTypes.includes(file.type)) {
-      const typeNames = acceptedTypes.map(type => {
-        if (type.includes('image')) return type.split('/')[1].toUpperCase();
-        if (type === 'application/pdf') return 'PDF';
+      const typeNames = acceptedTypes.map((type) => {
+        if (type.includes("image")) return type.split("/")[1].toUpperCase();
+        if (type === "application/pdf") return "PDF";
         return type;
       });
-      setError(
-        `Please upload a valid file (${typeNames.join(", ")})`,
-      );
+      setError(`Please upload a valid file (${typeNames.join(", ")})`);
       return;
     }
 
@@ -62,7 +60,11 @@ export default function ImageUpload({
       const uploadedUrl = await uploadFile(file);
       onImageUploaded(uploadedUrl);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to upload image. Please try again.");
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to upload image. Please try again.",
+      );
     }
   };
 
@@ -88,16 +90,16 @@ export default function ImageUpload({
 
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
-      const response = await fetch('/api/upload/single', {
-        method: 'POST',
+      const response = await fetch("/api/upload/single", {
+        method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Upload failed');
+        throw new Error(errorData.error || "Upload failed");
       }
 
       const result = await response.json();
@@ -201,11 +203,16 @@ export default function ImageUpload({
                 Drag and drop your photo here, or click to browse
               </p>
               <p className="text-xs text-gray-400">
-                Supports: {acceptedTypes.map(type => {
-                  if (type.includes('image')) return type.split('/')[1].toUpperCase();
-                  if (type === 'application/pdf') return 'PDF';
-                  return type;
-                }).join(", ")} (Max {maxSize}MB)
+                Supports:{" "}
+                {acceptedTypes
+                  .map((type) => {
+                    if (type.includes("image"))
+                      return type.split("/")[1].toUpperCase();
+                    if (type === "application/pdf") return "PDF";
+                    return type;
+                  })
+                  .join(", ")}{" "}
+                (Max {maxSize}MB)
               </p>
             </div>
             <Button className="mt-4" variant="outline">
