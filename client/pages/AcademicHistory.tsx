@@ -15,6 +15,8 @@ export default function AcademicHistory() {
     { id: 2, type: 'higher_secondary', filled: false }
   ]);
 
+  const [uploadedDocuments, setUploadedDocuments] = useState<Record<string, string>>({});
+
   const texts = {
     en: {
       title: 'Academic History & Document Uploads',
@@ -65,7 +67,7 @@ export default function AcademicHistory() {
       location: 'অবস্থান',
       uploadDocs: 'কাগজপত্র আপলোড করুন',
       documentScanner: 'ডকুমেন্ট স্ক্যানার',
-      scanToFill: 'স্ক্যা��� করে অটো-ফিল করুন',
+      scanToFill: 'স্ক্যান করে অটো-ফিল করুন',
       secondary: 'মাধ্যমিক বা সমমান',
       higherSecondary: 'উচ্চ মাধ্যমিক বা সমমান',
       addRecord: 'শিক্��াগত রেকর্ড যোগ করুন',
