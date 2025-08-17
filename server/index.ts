@@ -13,6 +13,7 @@ import applicationRoutes from "./routes/applications.js";
 import programRoutes from "./routes/programs.js";
 import referrerRoutes from "./routes/referrers.js";
 import documentRoutes from "./routes/documents.js";
+import paymentRoutes from "./routes/payments.js";
 import {
   getAdmissionSettings,
   updateAdmissionSettings,
