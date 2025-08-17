@@ -52,6 +52,7 @@ export function createServer() {
   app.use("/api/programs", programRoutes);
   app.use("/api/referrers", referrerRoutes);
   app.use("/api/documents", documentRoutes);
+  app.use("/api/payments", paymentRoutes);
 
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
