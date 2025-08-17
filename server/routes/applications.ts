@@ -137,53 +137,8 @@ router.post("/", async (req, res) => {
   try {
     const applicationData = req.body;
 
-    // Generate tracking ID
-    const year = new Date().getFullYear().toString().slice(-2);
-    const randomNum = Math.floor(Math.random() * 900000) + 100000;
-    const tracking_id = `NU${year}${randomNum.toString().padStart(6, "0")}`;
-
-    // Create application
-    const applicationUuid = uuidv4();
-
-    // For public applications, use NULL user_id (guest applications)
-    // In a real implementation, you might want to create a guest user or require authentication
-    const user_id = null;
-
-    const applicationRecord = {
-      uuid: applicationUuid,
-      user_id: user_id,
-      tracking_id: tracking_id,
-      status: "pending",
-      program: applicationData.program,
-      department: applicationData.department,
-      session: applicationData.session || "Spring 2024",
-      campus: applicationData.campus || "main",
-      first_name: applicationData.firstName,
-      last_name: applicationData.lastName,
-      email: applicationData.email,
-      phone: applicationData.phone,
-      date_of_birth: applicationData.dateOfBirth,
-      gender: applicationData.gender,
-      address: applicationData.address,
-      city: applicationData.city,
-      postal_code: applicationData.postalCode,
-      country: applicationData.country || "Bangladesh",
-      guardian_name: applicationData.guardianName,
-      guardian_phone: applicationData.guardianPhone,
-      guardian_relation: applicationData.guardianRelation,
-      ssc_institution: applicationData.sscInstitution,
-      ssc_year: applicationData.sscYear,
-      ssc_gpa: applicationData.sscGPA,
-      hsc_institution: applicationData.hscInstitution,
-      hsc_year: applicationData.hscYear,
-      hsc_gpa: applicationData.hscGPA,
-      total_cost: applicationData.totalCost || 0,
-      final_amount: applicationData.finalAmount || 0,
-      referrer_id: applicationData.referrerId,
-      referrer_name: applicationData.referrerName,
-    };
-
-    await supabaseRun("applications", "insert", applicationRecord);
+    // Use the database adapter to create application
+    const { tracking_id } = await createApplicationRecord(applicationData);
 
     res.json({
       success: true,
