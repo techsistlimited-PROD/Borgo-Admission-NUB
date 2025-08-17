@@ -88,7 +88,6 @@ export default function PersonalInformation() {
   const [emailVerified, setEmailVerified] = useState(
     applicationData.emailVerified || false,
   );
-  const [developerMode, setDeveloperMode] = useState(false);
 
   // Referrer system state
   const [referenceId, setReferenceId] = useState(
@@ -201,7 +200,7 @@ export default function PersonalInformation() {
       fatherMobile: "পিতার মোবাইল",
       motherName: "মাতার নাম",
       motherOccupation: "মাতার পেশা",
-      motherMobile: "মাতার মোবাইল",
+      motherMobile: "মাতার মোবাই��",
       guardianName: "অভিভাবকের নাম",
       guardianContact: "অভিভাবকের যোগাযোগ",
       nationalId: "জাতীয় পরিচয়পত্র / পাসপোর্ট / জন্ম সনদ নাম্বার",
