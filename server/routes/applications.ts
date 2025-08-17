@@ -170,8 +170,8 @@ router.post("/", async (req, res) => {
         address, city, postal_code, country, guardian_name,
         guardian_phone, guardian_relation, ssc_institution, ssc_year,
         ssc_gpa, hsc_institution, hsc_year, hsc_gpa, total_cost,
-        final_amount, referrer_id, referrer_name
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        final_amount, referrer_id, referrer_name, payment_status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
         applicationUuid,
@@ -203,6 +203,7 @@ router.post("/", async (req, res) => {
         applicationData.finalAmount || 0,
         applicationData.referrerId,
         applicationData.referrerName,
+        applicationData.paymentCleared ? "paid" : "pending",
       ],
     );
 
