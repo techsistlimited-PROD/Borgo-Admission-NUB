@@ -188,7 +188,7 @@ export default function PersonalInformation() {
       religion: "ধর্ম",
       bloodGroup: "রক্তের গ্রুপ",
       presentAddress: "বর্তমান ঠিকানা",
-      postcode: "পোস্টকোড",
+      postcode: "পো��্টকোড",
       permanentAddress: "স্থায়ী ঠিকানা",
       district: "জেলা",
       division: "বিভাগ",
@@ -200,7 +200,7 @@ export default function PersonalInformation() {
       fatherMobile: "পিতার মোবাইল",
       motherName: "মাতার নাম",
       motherOccupation: "মাতার পেশা",
-      motherMobile: "মাতার মোবাই��",
+      motherMobile: "মাতার মোবাইল",
       guardianName: "অভিভাবকের নাম",
       guardianContact: "অভিভাবকের যোগাযোগ",
       nationalId: "জাতীয় পরিচয়পত্র / পাসপোর্ট / জন্ম সনদ নাম্বার",
@@ -211,7 +211,7 @@ export default function PersonalInformation() {
       female: "মহ��লা",
       other: "অন্যান্য",
       photoUpload: "ছব�� আপলোড",
-      nidCertificate: "এনআইডি/পাসপোর্ট/জন্ম সনদ",
+      nidCertificate: "এনআইডি/পাসপোর্ট/জ���্ম সনদ",
       sscCertificate: "এসএসসি সনদপত্র",
       hscCertificate: "এইচএসসি সনদপত্র",
       feeBreakdown: "ফি বিভাজন",
@@ -252,32 +252,6 @@ export default function PersonalInformation() {
         setReferrerError("");
       }
     }
-  }, []);
-
-  // Check for developer mode and auto-verify
-  useEffect(() => {
-    const checkDeveloperMode = async () => {
-      try {
-        const response = await fetch('/api/admission-settings');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.data?.developer_mode) {
-            setDeveloperMode(true);
-            setMobileVerified(true);
-            setEmailVerified(true);
-            toast({
-              title: "🚀 Developer Mode Active",
-              description: "All verifications automatically bypassed for testing.",
-              duration: 3000,
-            });
-          }
-        }
-      } catch (error) {
-        console.log("Could not check developer mode:", error);
-      }
-    };
-
-    checkDeveloperMode();
   }, []);
 
   // Auto-save data when form values change
