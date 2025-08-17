@@ -130,7 +130,7 @@ export default function ReviewPayment() {
       pin: "পিন",
       payNow: "এখনই পেমেন্ট করুন",
       uploadPayslip: "পে-স্লিপ আপলোড করুন",
-      paymentInstructions: "পেমেন্ট নির্দেশাবলী",
+      paymentInstructions: "পেমেন্ট নির্দেশ���বলী",
       bkashInstructions:
         "এই নাম্বার�� টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       rocketInstructions:
@@ -312,6 +312,9 @@ export default function ReviewPayment() {
         // Referrer Information
         referrerId: applicationData.referrerId,
         referrerName: applicationData.referrerName,
+
+        // Payment Status
+        paymentCleared: paymentCleared,
       };
 
       console.log("🚀 Submitting application data:", submissionData);
