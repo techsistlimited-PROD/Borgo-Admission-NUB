@@ -673,7 +673,6 @@ export default function AdmissionConfiguration() {
                     <Switch
                       id="email_verification"
                       checked={settings.require_email_verification}
-                      disabled={settings.developer_mode}
                       onCheckedChange={(checked) => setSettings({
                         ...settings,
                         require_email_verification: checked
@@ -685,7 +684,6 @@ export default function AdmissionConfiguration() {
                     <Switch
                       id="document_upload"
                       checked={settings.require_document_upload}
-                      disabled={settings.developer_mode}
                       onCheckedChange={(checked) => setSettings({
                         ...settings,
                         require_document_upload: checked
