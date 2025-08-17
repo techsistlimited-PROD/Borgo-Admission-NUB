@@ -26,6 +26,8 @@ export default function DocumentScanner({
   const [extractedData, setExtractedData] = useState<any>(null);
   const [confidenceScore, setConfidenceScore] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadError, setUploadError] = useState<string>('');
 
   const texts = {
     en: {
@@ -152,6 +154,48 @@ export default function DocumentScanner({
     }
   };
 
+  const handleFileUpload = async (file: File) => {
+    setUploadError('');
+    setUploadedFile(file);
+
+    // Validate file
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+
+    if (!allowedTypes.includes(file.type)) {
+      setUploadError('Please upload a valid image (JPG, PNG) or PDF file.');
+      return;
+    }
+
+    if (file.size > maxSize) {
+      setUploadError('File size must be less than 5MB.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload/single', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const result = await response.json();
+      console.log('File uploaded successfully:', result.file.url);
+
+      // Start scanning process after successful upload
+      handleStartScan('upload');
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Upload failed. Please try again.');
+    }
+  };
+
   const handleStartScan = async (mode: 'camera' | 'upload') => {
     setScanMode(mode);
     setIsScanning(true);
@@ -163,13 +207,13 @@ export default function DocumentScanner({
         if (prev >= 100) {
           clearInterval(interval);
           setIsScanning(false);
-          
+
           // Simulate data extraction
           const mockData = getMockExtractedData();
           setExtractedData(mockData);
           setConfidenceScore(Math.floor(Math.random() * 20) + 80); // 80-100%
           setShowPreview(true);
-          
+
           return 100;
         }
         return prev + 10;
@@ -194,6 +238,8 @@ export default function DocumentScanner({
     setExtractedData(null);
     setConfidenceScore(0);
     setShowPreview(false);
+    setUploadedFile(null);
+    setUploadError('');
   };
 
   const renderModeSelection = () => (
@@ -221,11 +267,36 @@ export default function DocumentScanner({
       </div>
 
       {scanMode === 'upload' && (
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-accent-purple transition-colors">
+        <div
+          className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-accent-purple transition-colors cursor-pointer"
+          onClick={() => document.getElementById('document-file-input')?.click()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const files = Array.from(e.dataTransfer.files);
+            if (files.length > 0) {
+              handleFileUpload(files[0]);
+            }
+          }}
+          onDragOver={(e) => e.preventDefault()}
+        >
           <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 mb-2">{t.dragDrop}</p>
           <p className="text-sm text-gray-500">{t.supportedFormats}</p>
-          <input type="file" className="hidden" accept="image/*,.pdf" />
+          {uploadError && (
+            <p className="text-sm text-red-600 mt-2">{uploadError}</p>
+          )}
+          <input
+            id="document-file-input"
+            type="file"
+            className="hidden"
+            accept="image/*,.pdf"
+            onChange={(e) => {
+              const files = Array.from(e.target.files || []);
+              if (files.length > 0) {
+                handleFileUpload(files[0]);
+              }
+            }}
+          />
         </div>
       )}
     </div>
