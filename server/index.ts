@@ -24,6 +24,11 @@ import {
   updateDocumentRequirement,
   deleteDocumentRequirement
 } from "./routes/admission-settings.js";
+import {
+  handleSingleUpload,
+  handleMultipleUpload,
+  handleDeleteFile
+} from "./routes/upload.js";
 
 export function createServer() {
   const app = express();
@@ -58,6 +63,14 @@ export function createServer() {
   app.post("/api/document-requirements", createDocumentRequirement);
   app.put("/api/document-requirements/:id", updateDocumentRequirement);
   app.delete("/api/document-requirements/:id", deleteDocumentRequirement);
+
+  // File upload routes
+  app.post("/api/upload/single", handleSingleUpload);
+  app.post("/api/upload/multiple", handleMultipleUpload);
+  app.delete("/api/upload/:filename", handleDeleteFile);
+
+  // Serve uploaded files
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
   // In development, Vite handles static file serving
   // Only serve static files in production
