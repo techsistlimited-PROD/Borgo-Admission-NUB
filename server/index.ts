@@ -98,10 +98,31 @@ export function createServer() {
 export async function initializeDatabase() {
   try {
     console.log("🔄 Initializing database...");
-    await connectDB();
-    await initializeSchema();
-    await runMigration();
-    await seedDatabase();
+
+    const databaseType = process.env.DATABASE_TYPE || 'sqlite';
+
+    if (databaseType === 'supabase') {
+      console.log("🌐 Using Supabase database");
+
+      // Test Supabase connection
+      const { data, error } = await supabase
+        .from('applications')
+        .select('count', { count: 'exact', head: true });
+
+      if (error) {
+        console.error("❌ Supabase connection failed:", error);
+        throw error;
+      }
+
+      console.log("✅ Supabase database connected successfully");
+    } else {
+      console.log("💾 Using SQLite database (local development)");
+      await connectDB();
+      await initializeSchema();
+      await runMigration();
+      await seedDatabase();
+    }
+
     console.log("✅ Database initialization completed");
   } catch (error) {
     console.error("❌ Database initialization failed:", error);
