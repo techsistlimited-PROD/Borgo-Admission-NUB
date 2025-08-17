@@ -45,9 +45,35 @@ export const dbRun = async (sql: string, params: any[] = []): Promise<any> => {
       const tableMatch = sql.match(/insert\s+(?:or\s+ignore\s+)?into\s+(\w+)/i);
       if (tableMatch) {
         const tableName = tableMatch[1];
-        // For now, we'll use a simple approach and let the caller handle specific inserts
-        console.log(`Insert operation detected for table: ${tableName}`);
-        return { lastID: null, changes: 1 };
+        
+        // Extract column names and values from INSERT statement
+        const columnsMatch = sql.match(/\(([^)]+)\)\s*values/i);
+        if (columnsMatch) {
+          const columns = columnsMatch[1].split(',').map(col => col.trim());
+          
+          // Create object from columns and params
+          const insertData: any = {};
+          columns.forEach((col, index) => {
+            if (params[index] !== undefined) {
+              insertData[col] = params[index];
+            }
+          });
+          
+          const { data, error } = await supabase
+            .from(tableName)
+            .insert(insertData)
+            .select();
+          
+          if (error) {
+            // Handle duplicate key errors gracefully for OR IGNORE
+            if (sql.toLowerCase().includes('or ignore') && error.code === '23505') {
+              return { lastID: null, changes: 0 };
+            }
+            throw error;
+          }
+          
+          return { lastID: data?.[0]?.id || null, changes: data?.length || 1 };
+        }
       }
     }
     
@@ -63,6 +89,26 @@ export const dbRun = async (sql: string, params: any[] = []): Promise<any> => {
 
 export const dbGet = async (sql: string, params: any[] = []): Promise<any> => {
   try {
+    // Handle COUNT queries specifically
+    if (sql.toLowerCase().includes('count(*)')) {
+      const tableMatch = sql.match(/from\s+(\w+)/i);
+      if (!tableMatch) {
+        throw new Error("Could not extract table name from query");
+      }
+      
+      const tableName = tableMatch[1];
+      
+      const { count, error } = await supabase
+        .from(tableName)
+        .select('*', { count: 'exact', head: true });
+      
+      if (error) {
+        throw error;
+      }
+      
+      return { count: count || 0 };
+    }
+    
     // Extract table name from SELECT query
     const tableMatch = sql.match(/from\s+(\w+)/i);
     if (!tableMatch) {
