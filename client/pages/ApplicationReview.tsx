@@ -11,6 +11,7 @@ import {
   Calendar,
   CheckCircle,
   Send,
+  Edit,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import {
@@ -70,6 +71,7 @@ export default function ApplicationReview() {
       submitError: "Failed to submit application. Please try again.",
       reviewNote: "Please review all information carefully before submitting. Once submitted, you cannot make changes.",
       dataIncomplete: "Please complete all previous steps before submitting.",
+      edit: "Edit",
     },
     bn: {
       title: "আবেদন পর্যালোচনা",
@@ -107,7 +109,7 @@ export default function ApplicationReview() {
       submitting: "আবেদন জমা দেওয়া হচ্ছে...",
       submitError: "আবেদন জমা দিতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।",
       reviewNote: "জমা দেওয়ার আগে সমস্ত তথ্য সাবধানে পর্যালোচনা করুন। একবার জমা দিলে, আপনি পরিবর্তন করতে পারবেন না।",
-      dataIncomplete: "জমা দেওয়ার আগে সমস্ত পূর্ববর্তী ধাপ সম্পূর্ণ করুন।",
+      dataIncomplete: "জমা দে��য়ার আগে সমস্ত পূর্ববর্তী ধাপ সম্পূর্ণ করুন।",
     },
   };
 
