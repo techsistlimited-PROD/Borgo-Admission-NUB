@@ -5,18 +5,8 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import apiClient, { LoginRequest, LoginResponse } from "../lib/api";
-
-export interface User {
-  id: number;
-  uuid: string;
-  name: string;
-  email: string;
-  type: "applicant" | "admin";
-  university_id?: string;
-  department?: string;
-  designation?: string;
-}
+import apiClient, { LoginRequest, getDemoCredentials } from "../lib/api";
+import type { User } from "../lib/api";
 
 interface AuthContextType {
   user: User | null;
@@ -45,21 +35,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const token = localStorage.getItem("nu_token");
         if (token) {
-          // Handle demo token specially
-          if (token === "demo_token_123") {
-            setUser({
-              id: 1,
-              uuid: "demo-uuid-123",
-              name: "Demo Applicant",
-              email: "demo@applicant.com",
-              type: "applicant",
-              university_id: "APP123456",
-            });
-            setIsLoading(false);
-            return;
-          }
-
-          // For real tokens, validate with API
           const response = await apiClient.getCurrentUser();
           if (response.success && response.data?.user) {
             setUser(response.data.user);
@@ -85,24 +60,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     try {
-      // Demo authentication for testing
-      if (
-        credentials.identifier === "APP123456" &&
-        credentials.password === "temp123456" &&
-        credentials.type === "applicant"
-      ) {
-        setUser({
-          id: 1,
-          uuid: "demo-uuid-123",
-          name: "Demo Applicant",
-          email: "demo@applicant.com",
-          type: "applicant",
-          university_id: "APP123456",
-        });
-        localStorage.setItem("nu_token", "demo_token_123");
-        return true;
-      }
-
       const loginRequest: LoginRequest = {
         identifier: credentials.identifier,
         password: credentials.password,
@@ -165,14 +122,5 @@ export function useAuth() {
   return context;
 }
 
-// Mock credentials for demo purposes (for testing during development)
-export const getDemoCredentials = () => ({
-  applicant: {
-    university_id: "NU24BCS001",
-    password: "temp123456",
-  },
-  admin: {
-    email: "admin@nu.edu.bd",
-    password: "admin123",
-  },
-});
+// Export demo credentials for easy access
+export { getDemoCredentials };
