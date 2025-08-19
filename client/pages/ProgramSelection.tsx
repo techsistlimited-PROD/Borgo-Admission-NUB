@@ -174,6 +174,18 @@ export default function ProgramSelection() {
       saving: "Saving...",
       saved: "Data saved successfully!",
       saveError: "Failed to save data. Please try again.",
+
+      // Credit Transfer specific
+      creditTransferInfo: "Credit Transfer Information",
+      previousInstitution: "Previous Institution",
+      previousProgram: "Previous Program",
+      totalCredits: "Total Credits in Program",
+      completedCredits: "Completed Credits",
+      previousCGPA: "Previous CGPA",
+      reasonForTransfer: "Reason for Transfer",
+      uploadTranscript: "Upload Transcript",
+      creditTransferTitle: "Credit Transfer Application",
+      creditTransferSubtitle: "Step 1 of 4 - Program Selection & Previous Academic Information",
     },
     bn: {
       title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
@@ -223,7 +235,7 @@ export default function ProgramSelection() {
       costNote:
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
       saving: "সেভ করা হচ্ছে...",
-      saved: "ডেটা সফলভাবে সেভ হয়েছে!",
+      saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
     },
   };
