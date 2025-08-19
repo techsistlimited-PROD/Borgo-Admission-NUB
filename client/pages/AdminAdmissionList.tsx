@@ -117,7 +117,7 @@ export default function AdminAdmissionList() {
       searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
       filterByStatus: "অ��স্থা অনুযায়ী ফিল্টার",
       allStatus: "সব অবস্থা",
-      pending: "অপেক্ষমাণ",
+      pending: "অ���েক্ষমাণ",
       approved: "অনুমোদিত",
       rejected: "প্রত্যাখ্যাত",
       export: "তালিকা এক্সপোর্ট",
@@ -143,7 +143,7 @@ export default function AdminAdmissionList() {
       emailVerified: "ইমেইল যাচাইকৃত",
       phoneVerified: "ফোন য��চাইকৃত",
       documentsComplete: "কাগজপত্র সম্পূর্ণ",
-      refresh: "রিফ্রেশ",
+      refresh: "রিফ���রেশ",
       loading: "লোডিং...",
       error: "ডেটা লোড করতে ত্রুটি",
       approving: "অনুমোদন করা হচ্ছে...",
@@ -174,9 +174,9 @@ export default function AdminAdmissionList() {
 
       if (applicationsResponse.success && applicationsResponse.data) {
         setApplications(applicationsResponse.data.applications || []);
-        if (applicationsResponse.pagination) {
-          setTotalPages(applicationsResponse.pagination.totalPages);
-        }
+        // Calculate total pages based on total and current page size
+        const totalItems = applicationsResponse.data.total || 0;
+        setTotalPages(Math.ceil(totalItems / 10));
       }
 
       // Fetch dashboard stats
