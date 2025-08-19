@@ -601,9 +601,9 @@ export default function ReviewPayment() {
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="sm">
+                          <span className="px-3 py-1 text-xs border border-gray-300 rounded-md text-gray-600 hover:text-deep-plum hover:border-deep-plum transition-colors">
                             {t.edit}
-                          </Button>
+                          </span>
                           {expandedSections[section.id] ? (
                             <ChevronUp className="w-4 h-4" />
                           ) : (
