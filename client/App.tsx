@@ -6,8 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 // Application Pages
 import Index from "./pages/Index";
@@ -21,12 +22,18 @@ import NotFound from "./pages/NotFound";
 // Portal Pages
 import ApplicantLogin from "./pages/ApplicantLogin";
 import PaymentPortal from "./pages/PaymentPortal";
+import Dashboard from "./pages/Dashboard";
+import Notifications from "./pages/Notifications";
+import ReviewPayment from "./pages/ReviewPayment";
 
 // Admin Pages
 import AdminLogin from "./pages/AdminLogin";
 import AdminAdmissionList from "./pages/AdminAdmissionList";
 import ApplicantDetail from "./pages/ApplicantDetail";
 import AdmissionConfiguration from "./pages/AdmissionConfiguration";
+import FinancePanel from "./pages/FinancePanel";
+import Reports from "./pages/Reports";
+import EmailTemplates from "./pages/EmailTemplates";
 
 const queryClient = new QueryClient();
 
