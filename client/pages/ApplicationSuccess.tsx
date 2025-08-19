@@ -104,7 +104,7 @@ export default function ApplicationSuccess() {
         "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
       supportInfo: "সাহায্য প্রয়োজন?",
       supportDesc:
-        "যদি আপনার কোন প্রশ্ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
+        "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
       contactEmail: "ইমেইল: admission@nu.edu.bd",
       contactPhone: "ফোন: +৮৮০ ১৭০০-০০০০০০",
       credentialsCopied: "পরিচয়পত্র ক্লিপবোর্ডে কপি করা হয়েছে!",
@@ -220,26 +220,7 @@ Please keep this information safe and secure.
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Credentials */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="border border-gray-200">
-                <CardContent className="p-4 text-center">
-                  <FileText className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-                  <p className="text-sm text-gray-600 mb-1">{t.trackingId}</p>
-                  <p className="font-mono font-bold text-lg">{trackingId}</p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      copyToClipboard(trackingId || "", "tracking")
-                    }
-                    className="mt-2"
-                  >
-                    <Copy className="w-3 h-3 mr-1" />
-                    Copy
-                  </Button>
-                </CardContent>
-              </Card>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card className="border border-gray-200">
                 <CardContent className="p-4 text-center">
                   <User className="w-8 h-8 mx-auto mb-2 text-purple-600" />
