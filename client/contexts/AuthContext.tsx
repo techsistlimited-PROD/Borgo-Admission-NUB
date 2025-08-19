@@ -73,15 +73,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Demo authentication for testing
       if (credentials.identifier === "APP123456" && credentials.password === "temp123456" && credentials.type === "applicant") {
         setUser({
-          id: "1",
+          id: 1,
+          uuid: "demo-uuid-123",
+          name: "Demo Applicant",
           email: "demo@applicant.com",
-          firstName: "Demo",
-          lastName: "Applicant",
-          phone: "+880 1234567890",
           type: "applicant",
-          universityId: "APP123456"
+          university_id: "APP123456"
         });
-        setUserType("applicant");
         localStorage.setItem("nu_token", "demo_token_123");
         return true;
       }
