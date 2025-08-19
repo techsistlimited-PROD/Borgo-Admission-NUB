@@ -250,12 +250,12 @@ export default function AdminAdmissionList() {
     lockedApplications.includes(trackingId);
 
   const handleStatusUpdate = async (
-    applicationId: number,
+    applicationId: string,
     newStatus: "approved" | "rejected",
   ) => {
     try {
       const response = await apiClient.updateApplicationStatus(
-        applicationId.toString(),
+        applicationId,
         newStatus,
       );
 
