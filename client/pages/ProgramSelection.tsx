@@ -129,7 +129,7 @@ export default function ProgramSelection() {
 
   // Filter options
   const campusOptions = [
-    { id: "main", name: "Main Campus", namebn: "প��রধান ক্যাম্পাস" },
+    { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
     { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
   ];
 
@@ -223,13 +223,13 @@ export default function ProgramSelection() {
       selectSemesterType: "সেমিস্টার ধরন বেছে নিন",
       selectProgram: "আপনার প্রোগ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
-      programInfo: "প্রোগ্রামের তথ্য",
+      programInfo: "প্রোগ���রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
       waiverCalculator: "মওকুফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "এইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এইচএ���সি উভয়েই ৪র্থ বিষয় ছিল",
+      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
@@ -244,7 +244,7 @@ export default function ProgramSelection() {
       labFee: "ল্যাব ফি",
       others: "অন্যান্য",
       total: "মোট",
-      duration: "সময়কাল",
+      duration: "স���য়কাল",
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
@@ -257,7 +257,7 @@ export default function ProgramSelection() {
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
-      saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
+      saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
     },
   };
 
@@ -400,7 +400,8 @@ export default function ProgramSelection() {
 
     try {
       // Save current step data
-      updateApplicationData({
+      const saveData = {
+        admissionType,
         campus: selectedCampus,
         semester: selectedSemester,
         semesterType: selectedSemesterType,
@@ -413,7 +414,21 @@ export default function ProgramSelection() {
         waiverAmount: costCalculation.waiverAmount,
         finalAmount: costCalculation.finalAmount,
         session: "Spring 2024",
-      });
+      };
+
+      // Add credit transfer data if applicable
+      if (admissionType === "credit-transfer") {
+        Object.assign(saveData, {
+          previousInstitution,
+          previousProgram,
+          totalCreditsInProgram: totalCreditsInProgram ? parseInt(totalCreditsInProgram) : undefined,
+          completedCredits: completedCredits ? parseInt(completedCredits) : undefined,
+          previousCGPA: previousCGPA ? parseFloat(previousCGPA) : undefined,
+          reasonForTransfer,
+        });
+      }
+
+      updateApplicationData(saveData);
 
       const success = await saveCurrentStep("program-selection");
 
