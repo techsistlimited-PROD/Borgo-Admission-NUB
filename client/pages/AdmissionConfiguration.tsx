@@ -254,14 +254,14 @@ export default function AdmissionConfiguration() {
   const deletePaymentMethod = async (id: number) => {
     try {
       const response = await apiClient.deletePaymentMethod(id.toString());
-      if (data.success) {
+      if (response.success) {
         toast({
           title: "Success",
           description: "Payment method deleted successfully",
         });
         loadData();
       } else {
-        throw new Error(data.error);
+        throw new Error(response.error);
       }
     } catch (error) {
       console.error("Error deleting payment method:", error);
