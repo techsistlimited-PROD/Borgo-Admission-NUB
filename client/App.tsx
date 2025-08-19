@@ -38,7 +38,7 @@ import EmailTemplates from "./pages/EmailTemplates";
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const { userType } = useAuth();
+  const { userType, isAuthenticated } = useAuth();
   const location = useLocation();
 
   // Determine if sidebar should be shown based on route and user type
@@ -49,7 +49,14 @@ function AppContent() {
     if (path === '/admin' || path === '/admin/login') return false;
     if (path === '/applicant-portal' || path === '/portal') return false;
 
-    // Show sidebar for all other pages
+    // For admin routes, show sidebar only if user is admin
+    if (path.startsWith('/admin') && userType !== 'admin') return false;
+
+    // For applicant dashboard/portal routes, show sidebar only if authenticated as applicant
+    if ((path === '/dashboard' || path === '/payment-portal' || path === '/notifications') &&
+        !isAuthenticated) return false;
+
+    // Show sidebar for public application flow and authenticated users
     return true;
   };
 
