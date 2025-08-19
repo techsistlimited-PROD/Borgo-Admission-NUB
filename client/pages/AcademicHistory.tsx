@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
@@ -85,7 +85,7 @@ export default function AcademicHistory() {
       uploadDocs: "কাগজপত্র আপলোড করুন",
       documentScanner: "ডকুমেন্ট স্ক্যানার",
       scanToFill: "স্ক্যান করে অটো-ফিল করুন",
-      secondary: "মাধ্যমিক বা সমমান",
+      secondary: "��াধ্যমিক বা সমমান",
       higherSecondary: "উচ্চ মাধ্যমিক বা সমমান",
       addRecord: "শিক্��াগত রেকর্ড যোগ করুন",
       certificate: "সনদপত্র",
