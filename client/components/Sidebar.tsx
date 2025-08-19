@@ -43,6 +43,7 @@ export default function Sidebar({ userType }: SidebarProps) {
 
   const applicantPages = [
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Payment", path: "/payment", icon: CreditCard },
     { name: "Notifications", path: "/notifications", icon: Bell },
   ];
 
