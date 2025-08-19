@@ -9,6 +9,7 @@ import {
   CheckCircle,
   AlertCircle,
   DollarSign,
+  Upload,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import {
@@ -210,7 +211,7 @@ export default function ProgramSelection() {
     },
     bn: {
       title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
-      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণনা করুন",
+      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
@@ -232,7 +233,7 @@ export default function ProgramSelection() {
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
-      resultBasedWaivers: "ফলা��ল ভিত্তিক মওকুফ",
+      resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "বিশেষ মওকুফ",
       additionalWaivers: "অতিরিক্ত মওকুফ",
       estimatedCost: "আনুমানিক খরচ",
@@ -248,10 +249,10 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "জিপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
+      noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
-      enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার ���সএসসি এবং এইচএসসি জিপিএ লিখুন",
+      enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
       costNote:
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
