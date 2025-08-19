@@ -135,6 +135,47 @@ class ApiClient {
   async getReferrerStats(employee_id: string): Promise<ApiResponse> {
     return await mockApi.getReferrerStats(employee_id);
   }
+
+  // Configuration methods
+  async getAdmissionSettings(): Promise<ApiResponse> {
+    return await mockApi.getAdmissionSettings();
+  }
+
+  async updateAdmissionSettings(settings: any): Promise<ApiResponse> {
+    return await mockApi.updateAdmissionSettings(settings);
+  }
+
+  async getPaymentMethods(): Promise<ApiResponse> {
+    return await mockApi.getPaymentMethods();
+  }
+
+  async createPaymentMethod(method: any): Promise<ApiResponse> {
+    return await mockApi.createPaymentMethod(method);
+  }
+
+  async updatePaymentMethod(id: string, method: any): Promise<ApiResponse> {
+    return await mockApi.updatePaymentMethod(id, method);
+  }
+
+  async deletePaymentMethod(id: string): Promise<ApiResponse> {
+    return await mockApi.deletePaymentMethod(id);
+  }
+
+  async getDocumentRequirements(): Promise<ApiResponse> {
+    return await mockApi.getDocumentRequirements();
+  }
+
+  async createDocumentRequirement(requirement: any): Promise<ApiResponse> {
+    return await mockApi.createDocumentRequirement(requirement);
+  }
+
+  async updateDocumentRequirement(id: string, requirement: any): Promise<ApiResponse> {
+    return await mockApi.updateDocumentRequirement(id, requirement);
+  }
+
+  async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
+    return await mockApi.deleteDocumentRequirement(id);
+  }
 }
 
 // Create singleton instance
