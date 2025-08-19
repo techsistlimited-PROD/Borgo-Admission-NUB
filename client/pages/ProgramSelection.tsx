@@ -232,7 +232,7 @@ export default function ProgramSelection() {
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
-      resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
+      resultBasedWaivers: "ফলা��ল ভিত্তিক মওকুফ",
       specialWaivers: "বিশেষ মওকুফ",
       additionalWaivers: "অতিরিক্ত মওকুফ",
       estimatedCost: "আনুমানিক খরচ",
@@ -251,7 +251,7 @@ export default function ProgramSelection() {
       noWaiverEligible: "জিপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
-      enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
+      enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার ���সএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
       costNote:
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
@@ -688,6 +688,123 @@ export default function ProgramSelection() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Credit Transfer Information (only for credit transfer applications) */}
+            {admissionType === "credit-transfer" && (
+              <Card className="bg-white shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                    <ArrowRight className="w-5 h-5" />
+                    {t.creditTransferInfo}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="previousInstitution">
+                        {t.previousInstitution} <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="previousInstitution"
+                        value={previousInstitution}
+                        onChange={(e) => setPreviousInstitution(e.target.value)}
+                        placeholder="Enter previous institution name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="previousProgram">
+                        {t.previousProgram} <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="previousProgram"
+                        value={previousProgram}
+                        onChange={(e) => setPreviousProgram(e.target.value)}
+                        placeholder="Enter previous program"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="totalCredits">
+                        {t.totalCredits} <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="totalCredits"
+                        type="number"
+                        min="1"
+                        value={totalCreditsInProgram}
+                        onChange={(e) => setTotalCreditsInProgram(e.target.value)}
+                        placeholder="120"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="completedCredits">
+                        {t.completedCredits} <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="completedCredits"
+                        type="number"
+                        min="1"
+                        value={completedCredits}
+                        onChange={(e) => setCompletedCredits(e.target.value)}
+                        placeholder="60"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="previousCGPA">
+                        {t.previousCGPA} <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="previousCGPA"
+                        type="number"
+                        min="0"
+                        max="4"
+                        step="0.01"
+                        value={previousCGPA}
+                        onChange={(e) => setPreviousCGPA(e.target.value)}
+                        placeholder="3.50"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="reasonForTransfer">
+                        {t.reasonForTransfer}
+                      </Label>
+                      <Input
+                        id="reasonForTransfer"
+                        value={reasonForTransfer}
+                        onChange={(e) => setReasonForTransfer(e.target.value)}
+                        placeholder="Optional reason for transfer"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Transcript Upload */}
+                  <div className="space-y-2">
+                    <Label>{t.uploadTranscript} <span className="text-red-500">*</span></Label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors">
+                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-sm text-gray-600">
+                        Click or drag transcript file here (.pdf, .jpg, .png)
+                      </p>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setTranscriptFile(file);
+                          }
+                        }}
+                      />
+                      {transcriptFile && (
+                        <p className="text-sm text-green-600 mt-2">
+                          Selected: {transcriptFile.name}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Waiver Calculator */}
             <Card className="bg-white shadow-lg">
