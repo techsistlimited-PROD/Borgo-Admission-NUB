@@ -98,10 +98,11 @@ interface DocumentRequirement {
   id: number;
   name: string;
   type: string;
-  required: boolean;
-  formats: string[];
-  maxSize: string;
+  is_required: boolean;
+  allowed_formats: string[];
+  max_file_size: string;
   description: string;
+  order_priority?: number;
 }
 
 export default function AdmissionConfiguration() {
