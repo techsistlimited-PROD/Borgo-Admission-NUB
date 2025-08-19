@@ -23,9 +23,36 @@ import PaymentPortal from "../../pages/PaymentPortal";
 import { AuthProvider, useAuth } from "../../contexts/AuthContext";
 import Sidebar from "../../components/Sidebar";
 
+// Applicant Portal Layout for production
+const ApplicantPortalLayout = () => {
+  const { user, userType } = useAuth();
+
+  if (!user || userType !== "applicant") {
+    return <ApplicantLogin />;
+  }
+
+  return (
+    <div className="min-h-screen bg-lavender-bg flex">
+      <Sidebar userType="applicant" />
+      <div className="flex-1 flex flex-col">
+        <Header showLogin={false} />
+        <main className="flex-1 p-6">
+          <Routes>
+            <Route path="/portal" element={<Navigate to="/portal/dashboard" replace />} />
+            <Route path="/applicant-portal" element={<Navigate to="/portal/dashboard" replace />} />
+            <Route path="/portal/dashboard" element={<Dashboard />} />
+            <Route path="/portal/notifications" element={<Notifications />} />
+            <Route path="/portal/payment" element={<PaymentPortal />} />
+            <Route path="/portal/*" element={<Dashboard />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
+};
+
 // Applicant Portal Route Handler
 const ApplicantPortalHandler = () => {
-  // In production, serve the applicant login directly
   // In development with multi-app setup, redirect to port 3003
   if (window.location.hostname === 'localhost' && window.location.port === '8080') {
     // Development environment - redirect to the applicant portal app
@@ -40,8 +67,12 @@ const ApplicantPortalHandler = () => {
     );
   }
 
-  // Production environment - serve applicant login directly
-  return <ApplicantLogin />;
+  // Production environment - serve full applicant portal
+  return (
+    <AuthProvider>
+      <ApplicantPortalLayout />
+    </AuthProvider>
+  );
 };
 
 const queryClient = new QueryClient();
