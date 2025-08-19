@@ -33,6 +33,8 @@ export default function AcademicHistory() {
     { id: 1, type: "secondary", filled: false },
     { id: 2, type: "higher_secondary", filled: false },
   ]);
+  const [uploadedFiles, setUploadedFiles] = useState<Record<string, File>>({});
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const texts = {
     en: {
@@ -97,7 +99,7 @@ export default function AcademicHistory() {
       division: "বিভাগ",
       required: "প্রয়োজনীয়",
       optional: "ঐচ্ছিক",
-      feeBreakdown: "ফি বিভাজন",
+      feeBreakdown: "ফি বি��াজন",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
       labFee: "ল্যাব ফি",
