@@ -192,7 +192,7 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "এইচএসসি জিপিএ",
-      fourthSubject: "এসএসসি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
+      fourthSubject: "এসএস��ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
@@ -212,7 +212,7 @@ export default function ProgramSelection() {
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "জিপিএর ভিত্তিতে কোনো মওকুফ যোগ্য নয়",
-      selectProgramFirst: "প্রথমে একটি প্রোগ্রাম নির্বাচন করুন",
+      selectProgramFirst: "প্রথমে একটি প্রোগ��রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওকুফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
@@ -295,8 +295,11 @@ export default function ProgramSelection() {
   // Auto-save data when form values change
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (selectedProgram || selectedDepartment || sscGPA || hscGPA) {
+      if (selectedCampus || selectedSemester || selectedSemesterType || selectedProgram || selectedDepartment || sscGPA || hscGPA) {
         updateApplicationData({
+          campus: selectedCampus,
+          semester: selectedSemester,
+          semesterType: selectedSemesterType,
           program: selectedProgram,
           department: selectedDepartment,
           sscGPA: sscGPA ? parseFloat(sscGPA) : undefined,
@@ -312,6 +315,9 @@ export default function ProgramSelection() {
 
     return () => clearTimeout(timeoutId);
   }, [
+    selectedCampus,
+    selectedSemester,
+    selectedSemesterType,
     selectedProgram,
     selectedDepartment,
     sscGPA,
