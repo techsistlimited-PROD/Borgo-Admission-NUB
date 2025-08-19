@@ -173,7 +173,7 @@ export default function AdminAdmissionList() {
       rejecting: "প্রত্যাখ্যান করা হচ্ছে...",
       approveSuccess: "আবেদন সফলভাবে অনুমোদিত হয়েছে",
       rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যান করা হয়েছে",
-      actionError: "আবেদনের স্ট্যাটাস আপডেট করতে ব্যর্থ",
+      actionError: "আবেদনের স্ট্যাটাস ���পডেট করতে ব্যর্থ",
       program: "���্রোগ্রাম",
       department: "বিভাগ",
       amount: "পরিমাণ",
@@ -488,7 +488,7 @@ export default function AdminAdmissionList() {
                     <TableCell>
                       <div>
                         <div className="font-medium">
-                          {app.first_name} {app.last_name}
+                          {app.applicant_name}
                         </div>
                         <div className="text-sm text-gray-500">
                           {new Date(app.created_at).toLocaleDateString()}
@@ -500,21 +500,21 @@ export default function AdminAdmissionList() {
                     <TableCell>
                       <div className="flex flex-col gap-1">
                         <Badge
-                          variant={app.email_verified ? "default" : "outline"}
+                          variant="default"
                           className="text-xs"
                         >
-                          Email: {app.email_verified ? t.yes : t.no}
+                          Email: {t.yes}
                         </Badge>
                         <Badge
-                          variant={app.phone_verified ? "default" : "outline"}
+                          variant="default"
                           className="text-xs"
                         >
-                          Phone: {app.phone_verified ? t.yes : t.no}
+                          Phone: {t.yes}
                         </Badge>
                       </div>
                     </TableCell>
                     <TableCell className="font-mono text-sm">
-                      {app.tracking_id}
+                      {app.university_id || app.id}
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
