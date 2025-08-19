@@ -50,7 +50,7 @@ export default function ApplicantLogin() {
     if (success) {
       navigate("/dashboard");
     } else {
-      setError("Invalid University ID or password. Please try again.");
+      setError("Invalid Applicant ID or password. Please try again.");
     }
 
     setIsSubmitting(false);
@@ -75,7 +75,7 @@ export default function ApplicantLogin() {
                 Applicant Portal Login
               </CardTitle>
               <p className="text-gray-600 mt-2">
-                Enter your University ID and temporary password
+                Enter your Applicant ID and temporary password
               </p>
             </div>
           </CardHeader>
