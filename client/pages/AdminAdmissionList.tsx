@@ -42,24 +42,27 @@ import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
 
 interface Application {
-  id: number;
-  tracking_id: string;
-  first_name: string;
-  last_name: string;
+  id: string;
+  uuid: string;
+  status: "pending" | "approved" | "rejected" | "payment_pending";
+  applicant_name: string;
+  university_id?: string;
+  student_id?: string;
   email: string;
   phone: string;
-  status: "pending" | "approved" | "rejected";
-  payment_status: "pending" | "paid" | "partial";
-  phone_verified: boolean;
-  email_verified: boolean;
-  documents_complete: boolean;
-  payslip_uploaded: boolean;
+  admission_type: "regular" | "credit_transfer";
+  program_code: string;
+  program_name: string;
+  department_code: string;
+  department_name: string;
+  campus: string;
+  semester: string;
+  semester_type: string;
   created_at: string;
-  referrer_id?: string;
-  referrer_name?: string;
-  program: string;
-  department: string;
-  final_amount: number;
+  personal_info?: any;
+  academic_history?: any;
+  documents?: any;
+  payment_info?: any;
 }
 
 interface DashboardStats {
@@ -135,7 +138,7 @@ export default function AdminAdmissionList() {
     bn: {
       title: "ভর্তি অফিস - নতুন ভর্তির তালিকা",
       searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
-      filterByStatus: "অবস্থা অনুযায়ী ফিল্টার",
+      filterByStatus: "অ��স্থা অনুযায়ী ফিল্টার",
       allStatus: "সব অবস্থা",
       pending: "অপেক্ষমাণ",
       approved: "অনুমোদিত",
@@ -161,7 +164,7 @@ export default function AdminAdmissionList() {
       totalApplications: "মোট আবেদন",
       needReview: "পর্যালোচনা প্রয়োজন",
       emailVerified: "ইমেইল যাচাইকৃত",
-      phoneVerified: "ফোন যাচাইকৃত",
+      phoneVerified: "ফোন য��চাইকৃত",
       documentsComplete: "কাগজপত্র সম্পূর্ণ",
       refresh: "রিফ্রেশ",
       loading: "লোডিং...",
