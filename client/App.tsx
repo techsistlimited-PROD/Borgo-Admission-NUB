@@ -57,10 +57,10 @@ function AppContent() {
     <div className="min-h-screen bg-lavender-bg">
       <Header showLogin={true} />
       <div className="flex">
-        {shouldShowSidebar(window.location.pathname) && (
+        {shouldShowSidebar() && (
           <Sidebar userType={userType} />
         )}
-        <main className={`flex-1 ${shouldShowSidebar(window.location.pathname) ? 'p-6' : 'p-0'}`}>
+        <main className={`flex-1 ${shouldShowSidebar() ? 'p-6' : 'p-0'}`}>
           <Routes>
             {/* Main Application Flow */}
             <Route path="/" element={<Index />} />
