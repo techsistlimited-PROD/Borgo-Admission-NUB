@@ -2,6 +2,9 @@ import { createContext, useContext, useState, ReactNode } from "react";
 
 export interface ApplicationData {
   // Program Selection Data
+  campus?: string;
+  semester?: string;
+  semesterType?: string;
   program?: string;
   department?: string;
   session?: string;
