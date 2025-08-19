@@ -17,38 +17,6 @@ import NotFound from "../../pages/NotFound";
 
 // Import applicant portal components
 import ApplicantLogin from "../../pages/ApplicantLogin";
-import Dashboard from "../../pages/Dashboard";
-import Notifications from "../../pages/Notifications";
-import PaymentPortal from "../../pages/PaymentPortal";
-import { AuthProvider, useAuth } from "../../contexts/AuthContext";
-import Sidebar from "../../components/Sidebar";
-
-// Applicant Portal Route Handler
-const ApplicantPortalHandler = () => {
-  // In development with multi-app setup, redirect to port 3003
-  if (window.location.hostname === 'localhost' && window.location.port === '8080') {
-    // Development environment - redirect to the applicant portal app
-    window.location.href = 'http://localhost:3003';
-    return (
-      <div className="min-h-screen bg-lavender-bg flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-deep-plum mb-4">Redirecting to Applicant Portal...</h2>
-          <p className="text-gray-600">If you are not redirected automatically, <a href="http://localhost:3003" className="text-accent-purple underline">click here</a>.</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Production environment - serve applicant login page
-  return (
-    <div className="min-h-screen bg-lavender-bg">
-      <Header showLogin={false} />
-      <main className="flex-1 p-6">
-        <ApplicantLogin />
-      </main>
-    </div>
-  );
-};
 
 const queryClient = new QueryClient();
 
