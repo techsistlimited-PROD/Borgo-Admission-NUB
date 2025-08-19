@@ -215,7 +215,7 @@ export default function ProgramSelection() {
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
-      waiverPolicyNote: "মওকুফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
+      waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
       costNote:
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে পারে",
       saving: "সেভ করা হচ্ছে...",
@@ -397,7 +397,7 @@ export default function ProgramSelection() {
     ? departments.find((d) => d.id === selectedDepartment)
     : null;
 
-  const canProceed = selectedProgram && selectedDepartment;
+  const canProceed = selectedCampus && selectedSemester && selectedSemesterType && selectedProgram && selectedDepartment;
 
   return (
     <div>
