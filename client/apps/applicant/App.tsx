@@ -83,24 +83,75 @@ const ApplicantApp = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <ApplicationProvider>
-          <div className="min-h-screen bg-lavender-bg">
-            <Header showLogin={true} />
-            <main className="p-6">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/program-selection" element={<ProgramSelection />} />
-                <Route path="/personal-information" element={<PersonalInformation />} />
-                <Route path="/academic-history" element={<AcademicHistory />} />
-                <Route path="/application-review" element={<ApplicationReview />} />
-                <Route path="/application-success" element={<ApplicationSuccess />} />
-                <Route path="/applicant-portal" element={<ApplicantPortalHandler />} />
-                <Route path="/portal" element={<ApplicantPortalHandler />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-          </div>
-        </ApplicationProvider>
+        <AuthProvider>
+          <ApplicationProvider>
+            <Routes>
+              {/* Public admission routes */}
+              <Route path="/" element={
+                <div className="min-h-screen bg-lavender-bg">
+                  <Header showLogin={true} />
+                  <main className="p-6">
+                    <Index />
+                  </main>
+                </div>
+              } />
+              <Route path="/program-selection" element={
+                <div className="min-h-screen bg-lavender-bg">
+                  <Header showLogin={true} />
+                  <main className="p-6">
+                    <ProgramSelection />
+                  </main>
+                </div>
+              } />
+              <Route path="/personal-information" element={
+                <div className="min-h-screen bg-lavender-bg">
+                  <Header showLogin={true} />
+                  <main className="p-6">
+                    <PersonalInformation />
+                  </main>
+                </div>
+              } />
+              <Route path="/academic-history" element={
+                <div className="min-h-screen bg-lavender-bg">
+                  <Header showLogin={true} />
+                  <main className="p-6">
+                    <AcademicHistory />
+                  </main>
+                </div>
+              } />
+              <Route path="/application-review" element={
+                <div className="min-h-screen bg-lavender-bg">
+                  <Header showLogin={true} />
+                  <main className="p-6">
+                    <ApplicationReview />
+                  </main>
+                </div>
+              } />
+              <Route path="/application-success" element={
+                <div className="min-h-screen bg-lavender-bg">
+                  <Header showLogin={true} />
+                  <main className="p-6">
+                    <ApplicationSuccess />
+                  </main>
+                </div>
+              } />
+
+              {/* Applicant portal routes */}
+              <Route path="/applicant-portal" element={<ApplicantPortalHandler />} />
+              <Route path="/portal" element={<ApplicantPortalHandler />} />
+              <Route path="/portal/*" element={<ApplicantPortalHandler />} />
+
+              <Route path="*" element={
+                <div className="min-h-screen bg-lavender-bg">
+                  <Header showLogin={true} />
+                  <main className="p-6">
+                    <NotFound />
+                  </main>
+                </div>
+              } />
+            </Routes>
+          </ApplicationProvider>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
