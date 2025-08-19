@@ -221,7 +221,7 @@ export default function ProgramSelection() {
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার নির্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
-      programSelection: "প্রোগ্রাম নির্বা��ন করুন",
+      programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস্টার বেছে নিন",
@@ -247,7 +247,7 @@ export default function ProgramSelection() {
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
       labFee: "ল্যাব ফি",
-      others: "অন্যান্য",
+      others: "অন্যান���য",
       total: "মোট",
       duration: "স���য়কাল",
       faculty: "অনুষদ",
@@ -256,7 +256,7 @@ export default function ProgramSelection() {
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
-      enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জি���িএ লিখুন",
+      enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
       costNote:
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
@@ -833,6 +833,27 @@ export default function ProgramSelection() {
                     <div
                       className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors cursor-pointer"
                       onClick={() => transcriptFileInputRef.current?.click()}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.add("border-accent-purple", "bg-purple-50");
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                        const files = e.dataTransfer.files;
+                        if (files.length > 0) {
+                          const file = files[0];
+                          const acceptedTypes = ['.pdf', '.jpg', '.jpeg', '.png'];
+                          const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+                          if (acceptedTypes.includes(fileExtension)) {
+                            setTranscriptFile(file);
+                          }
+                        }
+                      }}
                     >
                       <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                       <p className="text-sm text-gray-600">
