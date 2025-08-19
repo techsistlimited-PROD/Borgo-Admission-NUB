@@ -198,8 +198,8 @@ export function ApplicationProvider({ children }: { children: ReactNode }) {
         clearApplicationData();
         return {
           success: true,
-          trackingId: response.data?.university_id || 'APP123456',
-          password: response.data?.password || 'temp123456',
+          trackingId: response.data?.university_id || "APP123456",
+          password: response.data?.password || "temp123456",
         };
       } else {
         return {

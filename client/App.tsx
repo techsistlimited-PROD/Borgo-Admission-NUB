@@ -4,7 +4,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
@@ -46,15 +52,20 @@ function AppContent() {
     const path = location.pathname;
 
     // Don't show sidebar on login pages
-    if (path === '/admin' || path === '/admin/login') return false;
-    if (path === '/applicant-portal' || path === '/portal') return false;
+    if (path === "/admin" || path === "/admin/login") return false;
+    if (path === "/applicant-portal" || path === "/portal") return false;
 
     // For admin routes, show sidebar only if user is admin
-    if (path.startsWith('/admin') && userType !== 'admin') return false;
+    if (path.startsWith("/admin") && userType !== "admin") return false;
 
     // For applicant dashboard/portal routes, show sidebar only if authenticated as applicant
-    if ((path === '/dashboard' || path === '/payment-portal' || path === '/notifications') &&
-        !isAuthenticated) return false;
+    if (
+      (path === "/dashboard" ||
+        path === "/payment-portal" ||
+        path === "/notifications") &&
+      !isAuthenticated
+    )
+      return false;
 
     // Show sidebar for public application flow and authenticated users
     return true;
@@ -64,18 +75,22 @@ function AppContent() {
     <div className="min-h-screen bg-lavender-bg">
       <Header showLogin={true} />
       <div className="flex">
-        {shouldShowSidebar() && (
-          <Sidebar userType={userType} />
-        )}
-        <main className={`flex-1 ${shouldShowSidebar() ? 'p-6' : ''}`}>
+        {shouldShowSidebar() && <Sidebar userType={userType} />}
+        <main className={`flex-1 ${shouldShowSidebar() ? "p-6" : ""}`}>
           <Routes>
             {/* Main Application Flow */}
             <Route path="/" element={<Index />} />
             <Route path="/program-selection" element={<ProgramSelection />} />
-            <Route path="/personal-information" element={<PersonalInformation />} />
+            <Route
+              path="/personal-information"
+              element={<PersonalInformation />}
+            />
             <Route path="/academic-history" element={<AcademicHistory />} />
             <Route path="/application-review" element={<ApplicationReview />} />
-            <Route path="/application-success" element={<ApplicationSuccess />} />
+            <Route
+              path="/application-success"
+              element={<ApplicationSuccess />}
+            />
 
             {/* Applicant Portal */}
             <Route path="/applicant-portal" element={<ApplicantLogin />} />
@@ -83,26 +98,32 @@ function AppContent() {
             <Route
               path="/dashboard"
               element={
-                isAuthenticated && userType === 'applicant' ?
-                <Dashboard /> :
-                <Navigate to="/applicant-portal" replace />
+                isAuthenticated && userType === "applicant" ? (
+                  <Dashboard />
+                ) : (
+                  <Navigate to="/applicant-portal" replace />
+                )
               }
             />
             <Route
               path="/payment-portal"
               element={
-                isAuthenticated && userType === 'applicant' ?
-                <PaymentPortal /> :
-                <Navigate to="/applicant-portal" replace />
+                isAuthenticated && userType === "applicant" ? (
+                  <PaymentPortal />
+                ) : (
+                  <Navigate to="/applicant-portal" replace />
+                )
               }
             />
             <Route path="/payment" element={<PaymentPortal />} />
             <Route
               path="/notifications"
               element={
-                isAuthenticated && userType === 'applicant' ?
-                <Notifications /> :
-                <Navigate to="/applicant-portal" replace />
+                isAuthenticated && userType === "applicant" ? (
+                  <Notifications />
+                ) : (
+                  <Navigate to="/applicant-portal" replace />
+                )
               }
             />
 
@@ -112,57 +133,71 @@ function AppContent() {
             <Route
               path="/admin/admissions"
               element={
-                isAuthenticated && userType === 'admin' ?
-                <AdminAdmissionList /> :
-                <Navigate to="/admin" replace />
+                isAuthenticated && userType === "admin" ? (
+                  <AdminAdmissionList />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
               }
             />
             <Route
               path="/admin/applicant/:id"
               element={
-                isAuthenticated && userType === 'admin' ?
-                <ApplicantDetail /> :
-                <Navigate to="/admin" replace />
+                isAuthenticated && userType === "admin" ? (
+                  <ApplicantDetail />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
               }
             />
             <Route
               path="/admin/settings"
               element={
-                isAuthenticated && userType === 'admin' ?
-                <AdmissionConfiguration /> :
-                <Navigate to="/admin" replace />
+                isAuthenticated && userType === "admin" ? (
+                  <AdmissionConfiguration />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
               }
             />
             <Route
               path="/admin/configuration"
               element={
-                isAuthenticated && userType === 'admin' ?
-                <AdmissionConfiguration /> :
-                <Navigate to="/admin" replace />
+                isAuthenticated && userType === "admin" ? (
+                  <AdmissionConfiguration />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
               }
             />
             <Route
               path="/admin/finance"
               element={
-                isAuthenticated && userType === 'admin' ?
-                <FinancePanel /> :
-                <Navigate to="/admin" replace />
+                isAuthenticated && userType === "admin" ? (
+                  <FinancePanel />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
               }
             />
             <Route
               path="/admin/reports"
               element={
-                isAuthenticated && userType === 'admin' ?
-                <Reports /> :
-                <Navigate to="/admin" replace />
+                isAuthenticated && userType === "admin" ? (
+                  <Reports />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
               }
             />
             <Route
               path="/admin/templates"
               element={
-                isAuthenticated && userType === 'admin' ?
-                <EmailTemplates /> :
-                <Navigate to="/admin" replace />
+                isAuthenticated && userType === "admin" ? (
+                  <EmailTemplates />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
               }
             />
 

@@ -54,7 +54,12 @@ import {
   DialogTrigger,
 } from "../components/ui/dialog";
 import { Badge } from "../components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
@@ -112,13 +117,18 @@ export default function AdmissionConfiguration() {
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState<AdmissionSettings | null>(null);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-  const [documentRequirements, setDocumentRequirements] = useState<DocumentRequirement[]>([]);
-  
+  const [documentRequirements, setDocumentRequirements] = useState<
+    DocumentRequirement[]
+  >([]);
+
   // Dialog states
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [documentDialogOpen, setDocumentDialogOpen] = useState(false);
-  const [editingPayment, setEditingPayment] = useState<PaymentMethod | null>(null);
-  const [editingDocument, setEditingDocument] = useState<DocumentRequirement | null>(null);
+  const [editingPayment, setEditingPayment] = useState<PaymentMethod | null>(
+    null,
+  );
+  const [editingDocument, setEditingDocument] =
+    useState<DocumentRequirement | null>(null);
 
   // Form states
   const [paymentForm, setPaymentForm] = useState<Partial<PaymentMethod>>({
@@ -132,7 +142,9 @@ export default function AdmissionConfiguration() {
     order_priority: 0,
   });
 
-  const [documentForm, setDocumentForm] = useState<Partial<DocumentRequirement>>({
+  const [documentForm, setDocumentForm] = useState<
+    Partial<DocumentRequirement>
+  >({
     name: "",
     description: "",
     is_required: true,
@@ -232,7 +244,10 @@ export default function AdmissionConfiguration() {
   const savePaymentMethod = async () => {
     try {
       const response = editingPayment
-        ? await apiClient.updatePaymentMethod(editingPayment.id.toString(), paymentForm)
+        ? await apiClient.updatePaymentMethod(
+            editingPayment.id.toString(),
+            paymentForm,
+          )
         : await apiClient.createPaymentMethod(paymentForm);
 
       if (response.success) {
@@ -300,7 +315,10 @@ export default function AdmissionConfiguration() {
   const saveDocumentRequirement = async () => {
     try {
       const response = editingDocument
-        ? await apiClient.updateDocumentRequirement(editingDocument.id.toString(), documentForm)
+        ? await apiClient.updateDocumentRequirement(
+            editingDocument.id.toString(),
+            documentForm,
+          )
         : await apiClient.createDocumentRequirement(documentForm);
 
       if (response.success) {
@@ -381,7 +399,8 @@ export default function AdmissionConfiguration() {
               Admission Configuration
             </h1>
             <p className="text-gray-600 mt-1">
-              Manage admission settings, payment methods, and document requirements
+              Manage admission settings, payment methods, and document
+              requirements
             </p>
           </div>
 
@@ -392,7 +411,9 @@ export default function AdmissionConfiguration() {
               disabled={loading}
               className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white"
             >
-              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+              <RefreshCw
+                className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+              />
               Refresh
             </Button>
           </div>
@@ -432,10 +453,12 @@ export default function AdmissionConfiguration() {
                     id="start_date"
                     type="datetime-local"
                     value={settings.application_start_date?.slice(0, 16) || ""}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      application_start_date: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        application_start_date: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div>
@@ -444,10 +467,12 @@ export default function AdmissionConfiguration() {
                     id="deadline"
                     type="datetime-local"
                     value={settings.application_deadline?.slice(0, 16) || ""}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      application_deadline: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        application_deadline: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div>
@@ -456,10 +481,12 @@ export default function AdmissionConfiguration() {
                     id="late_deadline"
                     type="datetime-local"
                     value={settings.late_fee_deadline?.slice(0, 16) || ""}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      late_fee_deadline: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        late_fee_deadline: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div>
@@ -467,10 +494,12 @@ export default function AdmissionConfiguration() {
                   <Input
                     id="session_name"
                     value={settings.session_name || ""}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      session_name: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        session_name: e.target.value,
+                      })
+                    }
                     placeholder="e.g., Spring 2024"
                   />
                 </div>
@@ -493,10 +522,12 @@ export default function AdmissionConfiguration() {
                     id="admission_fee"
                     type="number"
                     value={settings.admission_fee || 0}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      admission_fee: Number(e.target.value)
-                    })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        admission_fee: Number(e.target.value),
+                      })
+                    }
                   />
                 </div>
                 <div>
@@ -505,10 +536,12 @@ export default function AdmissionConfiguration() {
                     id="late_fee"
                     type="number"
                     value={settings.late_fee || 0}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      late_fee: Number(e.target.value)
-                    })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        late_fee: Number(e.target.value),
+                      })
+                    }
                   />
                 </div>
                 <div>
@@ -518,10 +551,12 @@ export default function AdmissionConfiguration() {
                     type="number"
                     max="100"
                     value={settings.max_waiver_percentage || 0}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      max_waiver_percentage: Number(e.target.value)
-                    })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        max_waiver_percentage: Number(e.target.value),
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -543,21 +578,27 @@ export default function AdmissionConfiguration() {
                     <Switch
                       id="admission_open"
                       checked={settings.is_admission_open}
-                      onCheckedChange={(checked) => setSettings({
-                        ...settings,
-                        is_admission_open: checked
-                      })}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          is_admission_open: checked,
+                        })
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="editing_allowed">Allow Application Editing</Label>
+                    <Label htmlFor="editing_allowed">
+                      Allow Application Editing
+                    </Label>
                     <Switch
                       id="editing_allowed"
                       checked={settings.allow_application_editing}
-                      onCheckedChange={(checked) => setSettings({
-                        ...settings,
-                        allow_application_editing: checked
-                      })}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          allow_application_editing: checked,
+                        })
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -565,56 +606,74 @@ export default function AdmissionConfiguration() {
                     <Switch
                       id="waiver_enabled"
                       checked={settings.waiver_enabled}
-                      onCheckedChange={(checked) => setSettings({
-                        ...settings,
-                        waiver_enabled: checked
-                      })}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          waiver_enabled: checked,
+                        })
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="auto_approve">Auto-approve Applications</Label>
+                    <Label htmlFor="auto_approve">
+                      Auto-approve Applications
+                    </Label>
                     <Switch
                       id="auto_approve"
                       checked={settings.auto_approve_applications}
-                      onCheckedChange={(checked) => setSettings({
-                        ...settings,
-                        auto_approve_applications: checked
-                      })}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          auto_approve_applications: checked,
+                        })
+                      }
                     />
                   </div>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="phone_verification">Require Phone Verification</Label>
+                    <Label htmlFor="phone_verification">
+                      Require Phone Verification
+                    </Label>
                     <Switch
                       id="phone_verification"
                       checked={settings.require_phone_verification}
-                      onCheckedChange={(checked) => setSettings({
-                        ...settings,
-                        require_phone_verification: checked
-                      })}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          require_phone_verification: checked,
+                        })
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="email_verification">Require Email Verification</Label>
+                    <Label htmlFor="email_verification">
+                      Require Email Verification
+                    </Label>
                     <Switch
                       id="email_verification"
                       checked={settings.require_email_verification}
-                      onCheckedChange={(checked) => setSettings({
-                        ...settings,
-                        require_email_verification: checked
-                      })}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          require_email_verification: checked,
+                        })
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="document_upload">Require Document Upload</Label>
+                    <Label htmlFor="document_upload">
+                      Require Document Upload
+                    </Label>
                     <Switch
                       id="document_upload"
                       checked={settings.require_document_upload}
-                      onCheckedChange={(checked) => setSettings({
-                        ...settings,
-                        require_document_upload: checked
-                      })}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          require_document_upload: checked,
+                        })
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -622,26 +681,32 @@ export default function AdmissionConfiguration() {
                     <Switch
                       id="sms_notifications"
                       checked={settings.send_sms_notifications}
-                      onCheckedChange={(checked) => setSettings({
-                        ...settings,
-                        send_sms_notifications: checked
-                      })}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          send_sms_notifications: checked,
+                        })
+                      }
                     />
                   </div>
                 </div>
               </div>
               <div>
-                <Label htmlFor="max_applications">Max Applications per User</Label>
+                <Label htmlFor="max_applications">
+                  Max Applications per User
+                </Label>
                 <Input
                   id="max_applications"
                   type="number"
                   min="1"
                   max="10"
                   value={settings.max_applications_per_user || 1}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    max_applications_per_user: Number(e.target.value)
-                  })}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      max_applications_per_user: Number(e.target.value),
+                    })
+                  }
                 />
               </div>
             </CardContent>
@@ -662,10 +727,12 @@ export default function AdmissionConfiguration() {
                     id="contact_email"
                     type="email"
                     value={settings.contact_email || ""}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      contact_email: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        contact_email: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div>
@@ -673,10 +740,12 @@ export default function AdmissionConfiguration() {
                   <Input
                     id="contact_phone"
                     value={settings.contact_phone || ""}
-                    onChange={(e) => setSettings({
-                      ...settings,
-                      contact_phone: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        contact_phone: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -686,23 +755,29 @@ export default function AdmissionConfiguration() {
                   id="admission_notice"
                   rows={3}
                   value={settings.admission_notice || ""}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    admission_notice: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      admission_notice: e.target.value,
+                    })
+                  }
                   placeholder="Welcome message or important notice for applicants..."
                 />
               </div>
               <div>
-                <Label htmlFor="payment_instructions">Payment Instructions</Label>
+                <Label htmlFor="payment_instructions">
+                  Payment Instructions
+                </Label>
                 <Textarea
                   id="payment_instructions"
                   rows={3}
                   value={settings.payment_instructions || ""}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    payment_instructions: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      payment_instructions: e.target.value,
+                    })
+                  }
                   placeholder="Instructions for payment process..."
                 />
               </div>
@@ -710,8 +785,8 @@ export default function AdmissionConfiguration() {
           </Card>
 
           <div className="flex justify-end">
-            <Button 
-              onClick={saveSettings} 
+            <Button
+              onClick={saveSettings}
               disabled={saving}
               className="bg-deep-plum hover:bg-accent-purple"
             >
@@ -755,7 +830,9 @@ export default function AdmissionConfiguration() {
                 <TableBody>
                   {paymentMethods.map((method) => (
                     <TableRow key={method.id}>
-                      <TableCell className="font-medium">{method.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {method.name}
+                      </TableCell>
                       <TableCell>
                         <Badge variant="outline">{method.type}</Badge>
                       </TableCell>
@@ -763,7 +840,9 @@ export default function AdmissionConfiguration() {
                         {method.account_number}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={method.is_active ? "default" : "secondary"}>
+                        <Badge
+                          variant={method.is_active ? "default" : "secondary"}
+                        >
                           {method.is_active ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
@@ -824,7 +903,11 @@ export default function AdmissionConfiguration() {
                       <TableCell className="font-medium">{doc.name}</TableCell>
                       <TableCell>{doc.description}</TableCell>
                       <TableCell>
-                        <Badge variant={doc.is_required ? "destructive" : "secondary"}>
+                        <Badge
+                          variant={
+                            doc.is_required ? "destructive" : "secondary"
+                          }
+                        >
                           {doc.is_required ? "Required" : "Optional"}
                         </Badge>
                       </TableCell>
@@ -875,10 +958,12 @@ export default function AdmissionConfiguration() {
               <Input
                 id="payment_name"
                 value={paymentForm.name || ""}
-                onChange={(e) => setPaymentForm({
-                  ...paymentForm,
-                  name: e.target.value
-                })}
+                onChange={(e) =>
+                  setPaymentForm({
+                    ...paymentForm,
+                    name: e.target.value,
+                  })
+                }
                 placeholder="e.g., Dutch Bangla Bank"
               />
             </div>
@@ -886,10 +971,12 @@ export default function AdmissionConfiguration() {
               <Label htmlFor="payment_type">Type</Label>
               <Select
                 value={paymentForm.type}
-                onValueChange={(value) => setPaymentForm({
-                  ...paymentForm,
-                  type: value as "bank" | "mobile" | "online"
-                })}
+                onValueChange={(value) =>
+                  setPaymentForm({
+                    ...paymentForm,
+                    type: value as "bank" | "mobile" | "online",
+                  })
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -906,10 +993,12 @@ export default function AdmissionConfiguration() {
               <Input
                 id="account_number"
                 value={paymentForm.account_number || ""}
-                onChange={(e) => setPaymentForm({
-                  ...paymentForm,
-                  account_number: e.target.value
-                })}
+                onChange={(e) =>
+                  setPaymentForm({
+                    ...paymentForm,
+                    account_number: e.target.value,
+                  })
+                }
               />
             </div>
             <div>
@@ -917,10 +1006,12 @@ export default function AdmissionConfiguration() {
               <Input
                 id="account_name"
                 value={paymentForm.account_name || ""}
-                onChange={(e) => setPaymentForm({
-                  ...paymentForm,
-                  account_name: e.target.value
-                })}
+                onChange={(e) =>
+                  setPaymentForm({
+                    ...paymentForm,
+                    account_name: e.target.value,
+                  })
+                }
               />
             </div>
             <div>
@@ -928,10 +1019,12 @@ export default function AdmissionConfiguration() {
               <Input
                 id="routing_number"
                 value={paymentForm.routing_number || ""}
-                onChange={(e) => setPaymentForm({
-                  ...paymentForm,
-                  routing_number: e.target.value
-                })}
+                onChange={(e) =>
+                  setPaymentForm({
+                    ...paymentForm,
+                    routing_number: e.target.value,
+                  })
+                }
               />
             </div>
             <div>
@@ -939,10 +1032,12 @@ export default function AdmissionConfiguration() {
               <Textarea
                 id="payment_instructions"
                 value={paymentForm.instructions || ""}
-                onChange={(e) => setPaymentForm({
-                  ...paymentForm,
-                  instructions: e.target.value
-                })}
+                onChange={(e) =>
+                  setPaymentForm({
+                    ...paymentForm,
+                    instructions: e.target.value,
+                  })
+                }
                 rows={3}
               />
             </div>
@@ -951,10 +1046,12 @@ export default function AdmissionConfiguration() {
               <Switch
                 id="payment_active"
                 checked={paymentForm.is_active}
-                onCheckedChange={(checked) => setPaymentForm({
-                  ...paymentForm,
-                  is_active: checked
-                })}
+                onCheckedChange={(checked) =>
+                  setPaymentForm({
+                    ...paymentForm,
+                    is_active: checked,
+                  })
+                }
               />
             </div>
             <div>
@@ -963,14 +1060,19 @@ export default function AdmissionConfiguration() {
                 id="payment_priority"
                 type="number"
                 value={paymentForm.order_priority || 0}
-                onChange={(e) => setPaymentForm({
-                  ...paymentForm,
-                  order_priority: Number(e.target.value)
-                })}
+                onChange={(e) =>
+                  setPaymentForm({
+                    ...paymentForm,
+                    order_priority: Number(e.target.value),
+                  })
+                }
               />
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setPaymentDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setPaymentDialogOpen(false)}
+              >
                 Cancel
               </Button>
               <Button onClick={savePaymentMethod}>
@@ -986,7 +1088,9 @@ export default function AdmissionConfiguration() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {editingDocument ? "Edit Document Requirement" : "Add Document Requirement"}
+              {editingDocument
+                ? "Edit Document Requirement"
+                : "Add Document Requirement"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -995,10 +1099,12 @@ export default function AdmissionConfiguration() {
               <Input
                 id="doc_name"
                 value={documentForm.name || ""}
-                onChange={(e) => setDocumentForm({
-                  ...documentForm,
-                  name: e.target.value
-                })}
+                onChange={(e) =>
+                  setDocumentForm({
+                    ...documentForm,
+                    name: e.target.value,
+                  })
+                }
                 placeholder="e.g., SSC Certificate"
               />
             </div>
@@ -1007,10 +1113,12 @@ export default function AdmissionConfiguration() {
               <Textarea
                 id="doc_description"
                 value={documentForm.description || ""}
-                onChange={(e) => setDocumentForm({
-                  ...documentForm,
-                  description: e.target.value
-                })}
+                onChange={(e) =>
+                  setDocumentForm({
+                    ...documentForm,
+                    description: e.target.value,
+                  })
+                }
                 rows={2}
                 placeholder="Brief description of the document requirement"
               />
@@ -1020,10 +1128,12 @@ export default function AdmissionConfiguration() {
               <Input
                 id="file_types"
                 value={documentForm.file_types || ""}
-                onChange={(e) => setDocumentForm({
-                  ...documentForm,
-                  file_types: e.target.value
-                })}
+                onChange={(e) =>
+                  setDocumentForm({
+                    ...documentForm,
+                    file_types: e.target.value,
+                  })
+                }
                 placeholder="pdf,jpg,jpeg,png"
               />
             </div>
@@ -1033,10 +1143,12 @@ export default function AdmissionConfiguration() {
                 id="max_size"
                 type="number"
                 value={documentForm.max_file_size_mb || 5}
-                onChange={(e) => setDocumentForm({
-                  ...documentForm,
-                  max_file_size_mb: Number(e.target.value)
-                })}
+                onChange={(e) =>
+                  setDocumentForm({
+                    ...documentForm,
+                    max_file_size_mb: Number(e.target.value),
+                  })
+                }
               />
             </div>
             <div className="flex items-center justify-between">
@@ -1044,10 +1156,12 @@ export default function AdmissionConfiguration() {
               <Switch
                 id="doc_required"
                 checked={documentForm.is_required}
-                onCheckedChange={(checked) => setDocumentForm({
-                  ...documentForm,
-                  is_required: checked
-                })}
+                onCheckedChange={(checked) =>
+                  setDocumentForm({
+                    ...documentForm,
+                    is_required: checked,
+                  })
+                }
               />
             </div>
             <div className="flex items-center justify-between">
@@ -1055,10 +1169,12 @@ export default function AdmissionConfiguration() {
               <Switch
                 id="doc_active"
                 checked={documentForm.is_active}
-                onCheckedChange={(checked) => setDocumentForm({
-                  ...documentForm,
-                  is_active: checked
-                })}
+                onCheckedChange={(checked) =>
+                  setDocumentForm({
+                    ...documentForm,
+                    is_active: checked,
+                  })
+                }
               />
             </div>
             <div>
@@ -1067,14 +1183,19 @@ export default function AdmissionConfiguration() {
                 id="doc_priority"
                 type="number"
                 value={documentForm.order_priority || 0}
-                onChange={(e) => setDocumentForm({
-                  ...documentForm,
-                  order_priority: Number(e.target.value)
-                })}
+                onChange={(e) =>
+                  setDocumentForm({
+                    ...documentForm,
+                    order_priority: Number(e.target.value),
+                  })
+                }
               />
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDocumentDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setDocumentDialogOpen(false)}
+              >
                 Cancel
               </Button>
               <Button onClick={saveDocumentRequirement}>

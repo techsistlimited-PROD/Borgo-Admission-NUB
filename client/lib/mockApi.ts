@@ -293,9 +293,7 @@ class MockApiService {
     return { success: false, error: "Application not found" };
   }
 
-  async createApplication(
-    data: any,
-  ): Promise<
+  async createApplication(data: any): Promise<
     ApiResponse<{
       application: Application;
       university_id: string;
@@ -525,7 +523,7 @@ class MockApiService {
       enable_email_notifications: true,
       contact_email: "admissions@nu.edu.bd",
       contact_phone: "+8801234567890",
-      help_desk_hours: "9:00 AM - 5:00 PM (Monday to Friday)"
+      help_desk_hours: "9:00 AM - 5:00 PM (Monday to Friday)",
     };
 
     return { success: true, data: settings };
@@ -551,7 +549,7 @@ class MockApiService {
         minimum_amount: 100,
         maximum_amount: 500000,
         is_active: true,
-        order_priority: 1
+        order_priority: 1,
       },
       {
         id: 2,
@@ -564,7 +562,7 @@ class MockApiService {
         minimum_amount: 100,
         maximum_amount: 500000,
         is_active: true,
-        order_priority: 2
+        order_priority: 2,
       },
       {
         id: 3,
@@ -579,8 +577,8 @@ class MockApiService {
         minimum_amount: 1000,
         maximum_amount: 1000000,
         is_active: true,
-        order_priority: 3
-      }
+        order_priority: 3,
+      },
     ];
 
     return { success: true, data: paymentMethods };
@@ -613,7 +611,7 @@ class MockApiService {
         allowed_formats: ["PDF", "JPG", "PNG"],
         max_file_size: "5MB",
         description: "Original SSC certificate or equivalent",
-        order_priority: 1
+        order_priority: 1,
       },
       {
         id: 2,
@@ -623,7 +621,7 @@ class MockApiService {
         allowed_formats: ["PDF", "JPG", "PNG"],
         max_file_size: "5MB",
         description: "Original HSC certificate or equivalent",
-        order_priority: 2
+        order_priority: 2,
       },
       {
         id: 3,
@@ -633,7 +631,7 @@ class MockApiService {
         allowed_formats: ["JPG", "PNG"],
         max_file_size: "2MB",
         description: "Recent passport-size photograph",
-        order_priority: 3
+        order_priority: 3,
       },
       {
         id: 4,
@@ -643,7 +641,7 @@ class MockApiService {
         allowed_formats: ["PDF", "JPG", "PNG"],
         max_file_size: "3MB",
         description: "National ID card or birth certificate",
-        order_priority: 4
+        order_priority: 4,
       },
       {
         id: 5,
@@ -653,8 +651,8 @@ class MockApiService {
         allowed_formats: ["PDF"],
         max_file_size: "10MB",
         description: "Official academic transcript for credit transfer",
-        order_priority: 5
-      }
+        order_priority: 5,
+      },
     ];
 
     return { success: true, data: requirements };
@@ -662,17 +660,29 @@ class MockApiService {
 
   async createDocumentRequirement(requirement: any): Promise<ApiResponse> {
     await this.delay();
-    return { success: true, message: "Document requirement created successfully" };
+    return {
+      success: true,
+      message: "Document requirement created successfully",
+    };
   }
 
-  async updateDocumentRequirement(id: string, requirement: any): Promise<ApiResponse> {
+  async updateDocumentRequirement(
+    id: string,
+    requirement: any,
+  ): Promise<ApiResponse> {
     await this.delay();
-    return { success: true, message: "Document requirement updated successfully" };
+    return {
+      success: true,
+      message: "Document requirement updated successfully",
+    };
   }
 
   async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
     await this.delay();
-    return { success: true, message: "Document requirement deleted successfully" };
+    return {
+      success: true,
+      message: "Document requirement deleted successfully",
+    };
   }
 }
 

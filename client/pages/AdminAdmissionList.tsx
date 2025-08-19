@@ -41,7 +41,6 @@ import { Switch } from "../components/ui/switch";
 import { useToast } from "../hooks/use-toast";
 import apiClient, { Application } from "../lib/api";
 
-
 interface DashboardStats {
   totalApplications: number;
   needReview: number;
@@ -263,10 +262,14 @@ export default function AdminAdmissionList() {
       pending: { color: "bg-yellow-100 text-yellow-800", label: t.pending },
       approved: { color: "bg-green-100 text-green-800", label: t.approved },
       rejected: { color: "bg-red-100 text-red-800", label: t.rejected },
-      payment_pending: { color: "bg-blue-100 text-blue-800", label: "Payment Pending" },
+      payment_pending: {
+        color: "bg-blue-100 text-blue-800",
+        label: "Payment Pending",
+      },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+    const config =
+      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
     return <Badge className={config.color}>{config.label}</Badge>;
   };
 
@@ -277,7 +280,8 @@ export default function AdminAdmissionList() {
       partial: { color: "bg-blue-100 text-blue-800", label: "Partial" },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+    const config =
+      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
     return <Badge className={config.color}>{config.label}</Badge>;
   };
 
@@ -465,9 +469,7 @@ export default function AdminAdmissionList() {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">
-                          {app.applicant_name}
-                        </div>
+                        <div className="font-medium">{app.applicant_name}</div>
                         <div className="text-sm text-gray-500">
                           {new Date(app.created_at).toLocaleDateString()}
                         </div>
@@ -477,16 +479,10 @@ export default function AdminAdmissionList() {
                     <TableCell>{app.phone}</TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        <Badge
-                          variant="default"
-                          className="text-xs"
-                        >
+                        <Badge variant="default" className="text-xs">
                           Email: {t.yes}
                         </Badge>
-                        <Badge
-                          variant="default"
-                          className="text-xs"
-                        >
+                        <Badge variant="default" className="text-xs">
                           Phone: {t.yes}
                         </Badge>
                       </div>
@@ -497,7 +493,9 @@ export default function AdminAdmissionList() {
                     <TableCell>
                       <div className="text-sm">
                         <div className="font-medium">{app.program_name}</div>
-                        <div className="text-gray-500">{app.department_name}</div>
+                        <div className="text-gray-500">
+                          {app.department_name}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -561,7 +559,9 @@ export default function AdminAdmissionList() {
                           )}
                           <Switch
                             checked={isLocked(app.university_id || app.id)}
-                            onCheckedChange={() => toggleLock(app.university_id || app.id)}
+                            onCheckedChange={() =>
+                              toggleLock(app.university_id || app.id)
+                            }
                           />
                         </div>
                       </div>

@@ -1,7 +1,12 @@
 // Frontend-Only API Client (Uses Mock Data - No Backend Required)
 
 import { mockApi } from "./mockApi";
-import type { LoginCredentials, ApiResponse, User, Application } from "./mockApi";
+import type {
+  LoginCredentials,
+  ApiResponse,
+  User,
+  Application,
+} from "./mockApi";
 
 export type { LoginCredentials, ApiResponse, User, Application };
 
@@ -169,7 +174,10 @@ class ApiClient {
     return await mockApi.createDocumentRequirement(requirement);
   }
 
-  async updateDocumentRequirement(id: string, requirement: any): Promise<ApiResponse> {
+  async updateDocumentRequirement(
+    id: string,
+    requirement: any,
+  ): Promise<ApiResponse> {
     return await mockApi.updateDocumentRequirement(id, requirement);
   }
 
