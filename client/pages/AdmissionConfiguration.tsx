@@ -56,11 +56,7 @@ import { Badge } from "../components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { useToast } from "../hooks/use-toast";
-import {
-  AdmissionSettings,
-  PaymentMethod,
-  DocumentRequirement,
-} from "@shared/api";
+import apiClient from "../lib/api";
 
 export default function AdmissionConfiguration() {
   const { toast } = useToast();
