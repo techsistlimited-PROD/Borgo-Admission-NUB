@@ -55,6 +55,16 @@ export default function ProgramSelection() {
     useApplication();
 
   const [language, setLanguage] = useState<"en" | "bn">("en");
+  // Filter selections
+  const [selectedCampus, setSelectedCampus] = useState<string>(
+    applicationData.campus || "",
+  );
+  const [selectedSemester, setSelectedSemester] = useState<string>(
+    applicationData.semester || "",
+  );
+  const [selectedSemesterType, setSelectedSemesterType] = useState<string>(
+    applicationData.semesterType || "",
+  );
   const [selectedProgram, setSelectedProgram] = useState<string>(
     applicationData.program || "",
   );
@@ -149,7 +159,7 @@ export default function ProgramSelection() {
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ্রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
-      waiverCalculator: "মওকুফ ক্যালকুলেটর",
+      waiverCalculator: "মওকু�� ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "এইচএসসি জিপিএ",
@@ -171,7 +181,7 @@ export default function ProgramSelection() {
       duration: "সময়কাল",
       faculty: "অনুষদ",
       description: "বিবরণ",
-      waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
+      waiverApplied: "মওকুফ প্���য়োগ করা হয়েছে",
       noWaiverEligible: "জিপিএর ভিত্তিতে কোনো মওকুফ যোগ্য নয়",
       selectProgramFirst: "প্রথমে একটি প্রোগ্রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
