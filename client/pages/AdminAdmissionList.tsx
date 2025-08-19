@@ -137,7 +137,7 @@ export default function AdminAdmissionList() {
     },
     bn: {
       title: "ভর্তি অফিস - নতুন ভর্তির তালিকা",
-      searchPlaceholder: "নাম, ইমেইল, বা ট্��্যাকিং আইডি দিয়ে খুঁজুন...",
+      searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
       filterByStatus: "অ��স্থা অনুযায়ী ফিল্টার",
       allStatus: "সব অবস্থা",
       pending: "অপেক্ষমাণ",
@@ -159,7 +159,7 @@ export default function AdminAdmissionList() {
       unlock: "আনলক",
       yes: "হ্যাঁ",
       no: "না",
-      todayApplicants: "আজকের নতুন আবেদনকারী",
+      todayApplicants: "আজকের নত��ন আবেদনকারী",
       pendingPayments: "অপেক্ষমাণ পেমেন্ট",
       totalApplications: "মোট আবেদন",
       needReview: "পর্যালোচনা প্রয়োজন",
@@ -523,18 +523,9 @@ export default function AdminAdmissionList() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {app.referrer_id ? (
-                        <div className="text-xs">
-                          <div className="font-medium text-green-700">
-                            {app.referrer_name}
-                          </div>
-                          <div className="text-gray-500">{app.referrer_id}</div>
-                        </div>
-                      ) : (
-                        <Badge variant="outline" className="text-gray-500">
-                          No Referrer
-                        </Badge>
-                      )}
+                      <Badge variant="outline" className="text-gray-500">
+                        No Referrer
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">
