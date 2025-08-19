@@ -295,21 +295,11 @@ export default function AdmissionConfiguration() {
 
   const saveDocumentRequirement = async () => {
     try {
-      const url = editingDocument 
-        ? `/api/document-requirements/${editingDocument.id}`
-        : "/api/document-requirements";
-      const method = editingDocument ? "PUT" : "POST";
+      const response = editingDocument
+        ? await apiClient.updateDocumentRequirement(editingDocument.id.toString(), documentForm)
+        : await apiClient.createDocumentRequirement(documentForm);
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(documentForm),
-      });
-
-      const data = await response.json();
-      if (data.success) {
+      if (response.success) {
         toast({
           title: "Success",
           description: `Document requirement ${editingDocument ? "updated" : "created"} successfully`,
@@ -317,7 +307,7 @@ export default function AdmissionConfiguration() {
         setDocumentDialogOpen(false);
         loadData();
       } else {
-        throw new Error(data.error);
+        throw new Error(response.error);
       }
     } catch (error) {
       console.error("Error saving document requirement:", error);
