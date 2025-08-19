@@ -253,11 +253,7 @@ export default function AdmissionConfiguration() {
 
   const deletePaymentMethod = async (id: number) => {
     try {
-      const response = await fetch(`/api/payment-methods/${id}`, {
-        method: "DELETE",
-      });
-
-      const data = await response.json();
+      const response = await apiClient.deletePaymentMethod(id.toString());
       if (data.success) {
         toast({
           title: "Success",
