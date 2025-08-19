@@ -2,6 +2,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 
 export interface ApplicationData {
   // Program Selection Data
+  admissionType?: "regular" | "credit-transfer";
   campus?: string;
   semester?: string;
   semesterType?: string;
@@ -16,6 +17,15 @@ export interface ApplicationData {
   finalAmount?: number;
   referrerId?: string;
   referrerName?: string;
+
+  // Credit Transfer Data (for credit-transfer applicants)
+  previousInstitution?: string;
+  previousProgram?: string;
+  totalCreditsInProgram?: number;
+  completedCredits?: number;
+  previousCGPA?: number;
+  reasonForTransfer?: string;
+  transcriptUrl?: string;
 
   // Personal Information Data
   firstName?: string;
