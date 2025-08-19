@@ -98,6 +98,7 @@ interface ApplicationContextType {
   submitApplication: () => Promise<{
     success: boolean;
     trackingId?: string;
+    password?: string;
     error?: string;
   }>;
 }
