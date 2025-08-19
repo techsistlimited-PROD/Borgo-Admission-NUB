@@ -59,8 +59,6 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
 
-// @ts-nocheck - Temporarily disable type checking for this component
-
 interface AdmissionSettings {
   application_start_date: string;
   application_deadline: string;
