@@ -182,23 +182,15 @@ export default function AdmissionConfiguration() {
 
     try {
       setSaving(true);
-      const response = await fetch("/api/admission-settings", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ settings }),
-      });
+      const response = await apiClient.updateAdmissionSettings(settings);
 
-      const data = await response.json();
-      if (data.success) {
+      if (response.success) {
         toast({
           title: "Success",
           description: "Admission settings saved successfully",
         });
-        setSettings(data.data);
       } else {
-        throw new Error(data.error);
+        throw new Error(response.error);
       }
     } catch (error) {
       console.error("Error saving settings:", error);
