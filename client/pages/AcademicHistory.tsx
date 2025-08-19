@@ -363,16 +363,60 @@ export default function AcademicHistory() {
                               </span>
                             )}
                           </Label>
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-accent-purple transition-colors">
+                          <div
+                            className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-accent-purple transition-colors cursor-pointer"
+                            onClick={() => {
+                              const inputKey = `${record.id}-${docType.key}`;
+                              fileInputRefs.current[inputKey]?.click();
+                            }}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              e.currentTarget.classList.add("border-accent-purple", "bg-purple-50");
+                            }}
+                            onDragLeave={(e) => {
+                              e.preventDefault();
+                              e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                            }}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                              const files = e.dataTransfer.files;
+                              if (files.length > 0) {
+                                const file = files[0];
+                                const acceptedTypes = ['.pdf', '.jpg', '.jpeg', '.png'];
+                                const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+                                if (acceptedTypes.includes(fileExtension)) {
+                                  const inputKey = `${record.id}-${docType.key}`;
+                                  setUploadedFiles(prev => ({ ...prev, [inputKey]: file }));
+                                }
+                              }
+                            }}
+                          >
                             <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
                             <p className="text-sm text-gray-600">
                               Click or drag file here
                             </p>
                             <input
+                              ref={(el) => {
+                                const inputKey = `${record.id}-${docType.key}`;
+                                fileInputRefs.current[inputKey] = el;
+                              }}
                               type="file"
                               className="hidden"
                               accept=".pdf,.jpg,.jpeg,.png"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const inputKey = `${record.id}-${docType.key}`;
+                                  setUploadedFiles(prev => ({ ...prev, [inputKey]: file }));
+                                }
+                              }}
                             />
+                            {uploadedFiles[`${record.id}-${docType.key}`] && (
+                              <p className="text-sm text-green-600 mt-2">
+                                Selected: {uploadedFiles[`${record.id}-${docType.key}`].name}
+                              </p>
+                            )}
                           </div>
                         </div>
                       ))}
