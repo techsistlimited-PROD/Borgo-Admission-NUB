@@ -67,7 +67,7 @@ function AppContent() {
         {shouldShowSidebar() && (
           <Sidebar userType={userType} />
         )}
-        <main className={`flex-1 ${shouldShowSidebar() ? 'p-6' : 'p-0'}`}>
+        <main className={`flex-1 ${shouldShowSidebar() ? 'p-6' : ''}`}>
           <Routes>
             {/* Main Application Flow */}
             <Route path="/" element={<Index />} />
