@@ -38,17 +38,17 @@ export default function Sidebar({ userType }: SidebarProps) {
     },
     { name: "Personal Info", path: "/personal-information", icon: User },
     { name: "Academic History", path: "/academic-history", icon: FileText },
+    { name: "Review & Submit", path: "/application-review", icon: FileText },
   ];
 
   const applicantPages = [
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Payment", path: "/payment", icon: CreditCard },
+    { name: "Payment Portal", path: "/payment-portal", icon: CreditCard },
     { name: "Notifications", path: "/notifications", icon: Bell },
   ];
 
   const adminPages = [
     { name: "Admissions", path: "/admin/admissions", icon: Users },
-    { name: "Applicant Detail", path: "/admin/applicant/1", icon: Shield },
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
     { name: "Reports", path: "/admin/reports", icon: PieChart },
     { name: "Templates", path: "/admin/templates", icon: Mail },
