@@ -16,6 +16,8 @@ import ProgramSelection from "./pages/ProgramSelection";
 import PersonalInformation from "./pages/PersonalInformation";
 import AcademicHistory from "./pages/AcademicHistory";
 import ReviewPayment from "./pages/ReviewPayment";
+import ApplicationReview from "./pages/ApplicationReview";
+import ApplicationSuccess from "./pages/ApplicationSuccess";
 import Dashboard from "./pages/Dashboard";
 import AdminAdmissionList from "./pages/AdminAdmissionList";
 import ApplicantDetail from "./pages/ApplicantDetail";
