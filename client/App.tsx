@@ -80,21 +80,91 @@ function AppContent() {
             {/* Applicant Portal */}
             <Route path="/applicant-portal" element={<ApplicantLogin />} />
             <Route path="/portal" element={<ApplicantLogin />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/payment-portal" element={<PaymentPortal />} />
+            <Route
+              path="/dashboard"
+              element={
+                isAuthenticated && userType === 'applicant' ?
+                <Dashboard /> :
+                <Navigate to="/applicant-portal" replace />
+              }
+            />
+            <Route
+              path="/payment-portal"
+              element={
+                isAuthenticated && userType === 'applicant' ?
+                <PaymentPortal /> :
+                <Navigate to="/applicant-portal" replace />
+              }
+            />
             <Route path="/payment" element={<PaymentPortal />} />
-            <Route path="/notifications" element={<Notifications />} />
+            <Route
+              path="/notifications"
+              element={
+                isAuthenticated && userType === 'applicant' ?
+                <Notifications /> :
+                <Navigate to="/applicant-portal" replace />
+              }
+            />
 
             {/* Admin Portal */}
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/admissions" element={<AdminAdmissionList />} />
-            <Route path="/admin/applicant/:id" element={<ApplicantDetail />} />
-            <Route path="/admin/settings" element={<AdmissionConfiguration />} />
-            <Route path="/admin/configuration" element={<AdmissionConfiguration />} />
-            <Route path="/admin/finance" element={<FinancePanel />} />
-            <Route path="/admin/reports" element={<Reports />} />
-            <Route path="/admin/templates" element={<EmailTemplates />} />
+            <Route
+              path="/admin/admissions"
+              element={
+                isAuthenticated && userType === 'admin' ?
+                <AdminAdmissionList /> :
+                <Navigate to="/admin" replace />
+              }
+            />
+            <Route
+              path="/admin/applicant/:id"
+              element={
+                isAuthenticated && userType === 'admin' ?
+                <ApplicantDetail /> :
+                <Navigate to="/admin" replace />
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                isAuthenticated && userType === 'admin' ?
+                <AdmissionConfiguration /> :
+                <Navigate to="/admin" replace />
+              }
+            />
+            <Route
+              path="/admin/configuration"
+              element={
+                isAuthenticated && userType === 'admin' ?
+                <AdmissionConfiguration /> :
+                <Navigate to="/admin" replace />
+              }
+            />
+            <Route
+              path="/admin/finance"
+              element={
+                isAuthenticated && userType === 'admin' ?
+                <FinancePanel /> :
+                <Navigate to="/admin" replace />
+              }
+            />
+            <Route
+              path="/admin/reports"
+              element={
+                isAuthenticated && userType === 'admin' ?
+                <Reports /> :
+                <Navigate to="/admin" replace />
+              }
+            />
+            <Route
+              path="/admin/templates"
+              element={
+                isAuthenticated && userType === 'admin' ?
+                <EmailTemplates /> :
+                <Navigate to="/admin" replace />
+              }
+            />
 
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
