@@ -137,7 +137,7 @@ export default function AdminAdmissionList() {
     },
     bn: {
       title: "ভর্তি অফিস - নতুন ভর্তির তালিকা",
-      searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
+      searchPlaceholder: "নাম, ইমেইল, বা ট্��্যাকিং আইডি দিয়ে খুঁজুন...",
       filterByStatus: "অ��স্থা অনুযায়ী ফিল্টার",
       allStatus: "সব অবস্থা",
       pending: "অপেক্ষমাণ",
@@ -518,8 +518,8 @@ export default function AdminAdmissionList() {
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
-                        <div className="font-medium">{app.program}</div>
-                        <div className="text-gray-500">{app.department}</div>
+                        <div className="font-medium">{app.program_name}</div>
+                        <div className="text-gray-500">{app.department_name}</div>
                       </div>
                     </TableCell>
                     <TableCell>
