@@ -59,23 +59,23 @@ import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
 
 interface AdmissionSettings {
-  applicationDeadline: string;
-  admissionStartDate: string;
-  admissionEndDate: string;
-  applicationFee: number;
-  lateFeePercentage: number;
-  maxApplicationsPerSession: number;
-  allowLateApplications: boolean;
-  requirePaymentForSubmission: boolean;
-  enableEmailNotifications: boolean;
-  enableSMSNotifications: boolean;
-  autoApprovalEnabled: boolean;
-  requireDocumentVerification: boolean;
-  allowPartialPayments: boolean;
-  refundPolicy: string;
-  contactEmail: string;
-  contactPhone: string;
-  helpDeskHours: string;
+  application_start_date: string;
+  application_deadline: string;
+  late_fee_deadline: string;
+  session_name: string;
+  admission_fee: number;
+  late_fee: number;
+  max_waiver_percentage: number;
+  is_admission_open: boolean;
+  allow_application_editing: boolean;
+  waiver_enabled: boolean;
+  auto_approve_applications: boolean;
+  require_payment_for_review: boolean;
+  enable_sms_notifications: boolean;
+  enable_email_notifications: boolean;
+  contact_email: string;
+  contact_phone: string;
+  help_desk_hours: string;
 }
 
 interface PaymentMethod {
