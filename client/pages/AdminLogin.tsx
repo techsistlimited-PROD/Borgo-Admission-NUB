@@ -174,7 +174,7 @@ export default function AdminLogin() {
             <div className="border-t pt-4">
               <div className="text-center">
                 <Link
-                  to="/applicant-login"
+                  to="/applicant-portal"
                   className="text-sm text-gray-600 hover:text-deep-plum"
                 >
                   ← Applicant Login
