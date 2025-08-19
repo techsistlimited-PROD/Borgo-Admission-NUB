@@ -171,7 +171,7 @@ export default function AdminAdmissionList() {
       approveSuccess: "আবেদন সফলভাবে অনুমোদিত হয়েছে",
       rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যান করা হয়েছে",
       actionError: "আবেদনের স্ট্যাটাস আপডেট করতে ব্যর্থ",
-      program: "প্রোগ্রাম",
+      program: "���্রোগ্রাম",
       department: "বিভাগ",
       amount: "পরিমাণ",
     },
@@ -193,7 +193,7 @@ export default function AdminAdmissionList() {
       });
 
       if (applicationsResponse.success && applicationsResponse.data) {
-        setApplications(applicationsResponse.data);
+        setApplications(applicationsResponse.data.applications || []);
         if (applicationsResponse.pagination) {
           setTotalPages(applicationsResponse.pagination.totalPages);
         }
