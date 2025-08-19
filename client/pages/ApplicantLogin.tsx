@@ -58,7 +58,7 @@ export default function ApplicantLogin() {
 
   const loadDemoCredentials = () => {
     // For testing purposes - in production, remove this function
-    setUniversityId("NU24BCS001");
+    setUniversityId("APP123456");
     setPassword("temp123456");
   };
 
