@@ -76,10 +76,10 @@ export default function ApplicationSuccess() {
       subtitle: "আপনার আবেদন গ্রহণ করা হয়েছে এবং পর্যালোচনাধীন রয়েছে",
       congratulations: "অভিনন্দন!",
       applicationSubmitted:
-        "আপনার আবেদন সফলভাবে নর্দার্ন ইউনিভার্সিটি বাংলাদ���শে জমা দেওয়া হয়েছে।",
+        "আপনার আবেদন সফলভাবে নর্দার্ন ইউনিভার্সিটি বাংলাদেশে জমা দেওয়া হয়েছে।",
       importantInfo: "গুরুত্বপূর্ণ তথ্য",
       trackingId: "আবেদন ট্র্যাকিং আইডি",
-      applicantId: "আবেদনকারী আইডি",
+      applicantId: "আবেদন��ারী আইডি",
       temporaryPassword: "অস্থায়ী পাসওয়ার্ড",
       nextSteps: "পরবর্তী ধাপসমূহ",
       step1: "আবেদনকারী পোর্টালে লগইন",
@@ -375,12 +375,12 @@ Please keep this information safe and secure.
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="http://localhost:3003" target="_blank" rel="noopener noreferrer">
+          <Link to="/applicant-portal">
             <Button className="w-full sm:w-auto bg-deep-plum hover:bg-accent-purple">
               <ExternalLink className="w-4 h-4 mr-2" />
               {t.loginPortal}
             </Button>
-          </a>
+          </Link>
 
           <Button
             variant="outline"
