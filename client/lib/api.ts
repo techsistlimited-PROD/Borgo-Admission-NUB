@@ -115,6 +115,23 @@ class ApiClient {
   }
 
   async getCurrentUser(): Promise<ApiResponse> {
+    // Handle demo token
+    if (this.token === "demo_token_123") {
+      return {
+        success: true,
+        data: {
+          user: {
+            id: 1,
+            uuid: "demo-uuid-123",
+            name: "Demo Applicant",
+            email: "demo@applicant.com",
+            type: "applicant",
+            university_id: "APP123456"
+          }
+        }
+      };
+    }
+
     return this.request("/auth/me");
   }
 
