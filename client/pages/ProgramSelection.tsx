@@ -116,7 +116,7 @@ export default function ProgramSelection() {
 
   const semesterTypeOptions = [
     { id: "bi-semester", name: "Bi-Semester", namebn: "দ্বি-সেমিস্টার" },
-    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমিস্টার" },
+    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমি��্টার" },
   ];
 
   const texts = {
@@ -211,7 +211,7 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "জিপিএর ভিত্তিতে কোনো মওকুফ যোগ্য নয়",
+      noWaiverEligible: "জিপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
@@ -449,6 +449,84 @@ export default function ProgramSelection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Selection Forms */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Campus, Semester, and Semester Type Selection */}
+            <Card className="bg-white shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  Admission Preferences
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Campus Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="campus">
+                    {t.selectCampus} <span className="text-red-500">*</span>
+                  </Label>
+                  <Select
+                    value={selectedCampus}
+                    onValueChange={setSelectedCampus}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t.selectCampus} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {campusOptions.map((campus) => (
+                        <SelectItem key={campus.id} value={campus.id}>
+                          {language === "en" ? campus.name : campus.namebn}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Semester Selection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="semester">
+                      {t.selectSemester} <span className="text-red-500">*</span>
+                    </Label>
+                    <Select
+                      value={selectedSemester}
+                      onValueChange={setSelectedSemester}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t.selectSemester} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {semesterOptions.map((semester) => (
+                          <SelectItem key={semester.id} value={semester.id}>
+                            {language === "en" ? semester.name : semester.namebn}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Semester Type Selection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="semesterType">
+                      {t.selectSemesterType} <span className="text-red-500">*</span>
+                    </Label>
+                    <Select
+                      value={selectedSemesterType}
+                      onValueChange={setSelectedSemesterType}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t.selectSemesterType} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {semesterTypeOptions.map((type) => (
+                          <SelectItem key={type.id} value={type.id}>
+                            {language === "en" ? type.name : type.namebn}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Program and Department Selection */}
             <Card className="bg-white shadow-lg">
               <CardHeader>
