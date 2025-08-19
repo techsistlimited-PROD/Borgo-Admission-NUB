@@ -503,6 +503,166 @@ class MockApiService {
 
     return { success: true, data: stats };
   }
+
+  // Configuration Methods
+  async getAdmissionSettings(): Promise<ApiResponse> {
+    await this.delay();
+
+    const settings = {
+      applicationDeadline: "2024-12-31",
+      admissionStartDate: "2024-09-01",
+      admissionEndDate: "2024-12-31",
+      applicationFee: 2000,
+      lateFeePercentage: 10,
+      maxApplicationsPerSession: 1000,
+      allowLateApplications: true,
+      requirePaymentForSubmission: false,
+      enableEmailNotifications: true,
+      enableSMSNotifications: true,
+      autoApprovalEnabled: false,
+      requireDocumentVerification: true,
+      allowPartialPayments: true,
+      refundPolicy: "No refund after admission confirmation",
+      contactEmail: "admissions@nu.edu.bd",
+      contactPhone: "+8801234567890",
+      helpDeskHours: "9:00 AM - 5:00 PM (Monday to Friday)"
+    };
+
+    return { success: true, data: settings };
+  }
+
+  async updateAdmissionSettings(settings: any): Promise<ApiResponse> {
+    await this.delay();
+    return { success: true, message: "Settings updated successfully" };
+  }
+
+  async getPaymentMethods(): Promise<ApiResponse> {
+    await this.delay();
+
+    const paymentMethods = [
+      {
+        id: 1,
+        name: "bKash",
+        type: "mobile_banking",
+        enabled: true,
+        accountNumber: "01700000000",
+        instructions: "Send money to this number and upload receipt",
+        processingFee: 0,
+        minimumAmount: 100,
+        maximumAmount: 500000
+      },
+      {
+        id: 2,
+        name: "Rocket",
+        type: "mobile_banking",
+        enabled: true,
+        accountNumber: "017000000000",
+        instructions: "Send money to this number and upload receipt",
+        processingFee: 0,
+        minimumAmount: 100,
+        maximumAmount: 500000
+      },
+      {
+        id: 3,
+        name: "Bank Transfer",
+        type: "bank",
+        enabled: true,
+        accountNumber: "1234567890",
+        bankName: "Example Bank Ltd",
+        routingNumber: "123456789",
+        instructions: "Transfer to this bank account and upload receipt",
+        processingFee: 50,
+        minimumAmount: 1000,
+        maximumAmount: 1000000
+      }
+    ];
+
+    return { success: true, data: paymentMethods };
+  }
+
+  async createPaymentMethod(method: any): Promise<ApiResponse> {
+    await this.delay();
+    return { success: true, message: "Payment method created successfully" };
+  }
+
+  async updatePaymentMethod(id: string, method: any): Promise<ApiResponse> {
+    await this.delay();
+    return { success: true, message: "Payment method updated successfully" };
+  }
+
+  async deletePaymentMethod(id: string): Promise<ApiResponse> {
+    await this.delay();
+    return { success: true, message: "Payment method deleted successfully" };
+  }
+
+  async getDocumentRequirements(): Promise<ApiResponse> {
+    await this.delay();
+
+    const requirements = [
+      {
+        id: 1,
+        name: "SSC Certificate",
+        type: "academic",
+        required: true,
+        formats: ["PDF", "JPG", "PNG"],
+        maxSize: "5MB",
+        description: "Original SSC certificate or equivalent"
+      },
+      {
+        id: 2,
+        name: "HSC Certificate",
+        type: "academic",
+        required: true,
+        formats: ["PDF", "JPG", "PNG"],
+        maxSize: "5MB",
+        description: "Original HSC certificate or equivalent"
+      },
+      {
+        id: 3,
+        name: "Passport Photo",
+        type: "personal",
+        required: true,
+        formats: ["JPG", "PNG"],
+        maxSize: "2MB",
+        description: "Recent passport-size photograph"
+      },
+      {
+        id: 4,
+        name: "National ID",
+        type: "personal",
+        required: true,
+        formats: ["PDF", "JPG", "PNG"],
+        maxSize: "3MB",
+        description: "National ID card or birth certificate"
+      },
+      {
+        id: 5,
+        name: "Transcript",
+        type: "academic",
+        required: false,
+        formats: ["PDF"],
+        maxSize: "10MB",
+        description: "Official academic transcript for credit transfer"
+      }
+    ];
+
+    return { success: true, data: requirements };
+  }
+
+  async createDocumentRequirement(requirement: any): Promise<ApiResponse> {
+    await this.delay();
+    return { success: true, message: "Document requirement created successfully" };
+  }
+
+  async updateDocumentRequirement(id: string, requirement: any): Promise<ApiResponse> {
+    await this.delay();
+    return { success: true, message: "Document requirement updated successfully" };
+  }
+
+  async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
+    await this.delay();
+    return { success: true, message: "Document requirement deleted successfully" };
+  }
 }
 
 export const mockApi = new MockApiService();
