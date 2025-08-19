@@ -19,15 +19,21 @@ export default defineConfig({
     host: "::",
     port: 8080,
     proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
+      "/api": {
+        target: "http://localhost:3001",
         changeOrigin: true,
         secure: false,
       },
     },
     fs: {
       allow: [".", "../../shared", "../../.."],
-      deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "../../../server/**"],
+      deny: [
+        ".env",
+        ".env.*",
+        "*.{crt,pem}",
+        "**/.git/**",
+        "../../../server/**",
+      ],
     },
   },
 });

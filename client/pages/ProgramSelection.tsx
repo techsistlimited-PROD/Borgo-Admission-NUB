@@ -57,7 +57,8 @@ export default function ProgramSelection() {
 
   // Get admission type from URL parameter
   const searchParams = new URLSearchParams(window.location.search);
-  const admissionType = searchParams.get("type") as "regular" | "credit-transfer" || "regular";
+  const admissionType =
+    (searchParams.get("type") as "regular" | "credit-transfer") || "regular";
 
   const [language, setLanguage] = useState<"en" | "bn">("en");
   // Filter selections
@@ -109,22 +110,22 @@ export default function ProgramSelection() {
 
   // Credit Transfer specific state
   const [previousInstitution, setPreviousInstitution] = useState<string>(
-    applicationData.previousInstitution || ""
+    applicationData.previousInstitution || "",
   );
   const [previousProgram, setPreviousProgram] = useState<string>(
-    applicationData.previousProgram || ""
+    applicationData.previousProgram || "",
   );
   const [totalCreditsInProgram, setTotalCreditsInProgram] = useState<string>(
-    applicationData.totalCreditsInProgram?.toString() || ""
+    applicationData.totalCreditsInProgram?.toString() || "",
   );
   const [completedCredits, setCompletedCredits] = useState<string>(
-    applicationData.completedCredits?.toString() || ""
+    applicationData.completedCredits?.toString() || "",
   );
   const [previousCGPA, setPreviousCGPA] = useState<string>(
-    applicationData.previousCGPA?.toString() || ""
+    applicationData.previousCGPA?.toString() || "",
   );
   const [reasonForTransfer, setReasonForTransfer] = useState<string>(
-    applicationData.reasonForTransfer || ""
+    applicationData.reasonForTransfer || "",
   );
   const [transcriptFile, setTranscriptFile] = useState<File | null>(null);
 
@@ -207,11 +208,13 @@ export default function ProgramSelection() {
       reasonForTransfer: "Reason for Transfer",
       uploadTranscript: "Upload Transcript",
       creditTransferTitle: "Credit Transfer Application",
-      creditTransferSubtitle: "Step 1 of 4 - Program Selection & Previous Academic Information",
+      creditTransferSubtitle:
+        "Step 1 of 4 - Program Selection & Previous Academic Information",
     },
     bn: {
       title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
-      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
+      subtitle:
+        "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
@@ -333,7 +336,15 @@ export default function ProgramSelection() {
   // Auto-save data when form values change
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (selectedCampus || selectedSemester || selectedSemesterType || selectedProgram || selectedDepartment || sscGPA || hscGPA) {
+      if (
+        selectedCampus ||
+        selectedSemester ||
+        selectedSemesterType ||
+        selectedProgram ||
+        selectedDepartment ||
+        sscGPA ||
+        hscGPA
+      ) {
         updateApplicationData({
           campus: selectedCampus,
           semester: selectedSemester,
@@ -374,7 +385,13 @@ export default function ProgramSelection() {
   };
 
   const handleContinue = async () => {
-    if (!selectedCampus || !selectedSemester || !selectedSemesterType || !selectedProgram || !selectedDepartment) {
+    if (
+      !selectedCampus ||
+      !selectedSemester ||
+      !selectedSemesterType ||
+      !selectedProgram ||
+      !selectedDepartment
+    ) {
       toast({
         title: "Required Fields Missing",
         description:
@@ -386,7 +403,13 @@ export default function ProgramSelection() {
 
     // Additional validation for credit transfer
     if (admissionType === "credit-transfer") {
-      if (!previousInstitution || !previousProgram || !totalCreditsInProgram || !completedCredits || !previousCGPA) {
+      if (
+        !previousInstitution ||
+        !previousProgram ||
+        !totalCreditsInProgram ||
+        !completedCredits ||
+        !previousCGPA
+      ) {
         toast({
           title: "Credit Transfer Information Required",
           description:
@@ -422,8 +445,12 @@ export default function ProgramSelection() {
         Object.assign(saveData, {
           previousInstitution,
           previousProgram,
-          totalCreditsInProgram: totalCreditsInProgram ? parseInt(totalCreditsInProgram) : undefined,
-          completedCredits: completedCredits ? parseInt(completedCredits) : undefined,
+          totalCreditsInProgram: totalCreditsInProgram
+            ? parseInt(totalCreditsInProgram)
+            : undefined,
+          completedCredits: completedCredits
+            ? parseInt(completedCredits)
+            : undefined,
           previousCGPA: previousCGPA ? parseFloat(previousCGPA) : undefined,
           reasonForTransfer,
         });
@@ -463,7 +490,12 @@ export default function ProgramSelection() {
     ? departments.find((d) => d.id === selectedDepartment)
     : null;
 
-  const canProceed = selectedCampus && selectedSemester && selectedSemesterType && selectedProgram && selectedDepartment;
+  const canProceed =
+    selectedCampus &&
+    selectedSemester &&
+    selectedSemesterType &&
+    selectedProgram &&
+    selectedDepartment;
 
   return (
     <div>
@@ -481,10 +513,14 @@ export default function ProgramSelection() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-deep-plum font-poppins">
-                {admissionType === "credit-transfer" ? t.creditTransferTitle : t.title}
+                {admissionType === "credit-transfer"
+                  ? t.creditTransferTitle
+                  : t.title}
               </h1>
               <p className="text-accent-purple font-medium">
-                {admissionType === "credit-transfer" ? t.creditTransferSubtitle : t.subtitle}
+                {admissionType === "credit-transfer"
+                  ? t.creditTransferSubtitle
+                  : t.subtitle}
               </p>
             </div>
 
@@ -563,7 +599,9 @@ export default function ProgramSelection() {
                       <SelectContent>
                         {semesterOptions.map((semester) => (
                           <SelectItem key={semester.id} value={semester.id}>
-                            {language === "en" ? semester.name : semester.namebn}
+                            {language === "en"
+                              ? semester.name
+                              : semester.namebn}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -573,7 +611,8 @@ export default function ProgramSelection() {
                   {/* Semester Type Selection */}
                   <div className="space-y-2">
                     <Label htmlFor="semesterType">
-                      {t.selectSemesterType} <span className="text-red-500">*</span>
+                      {t.selectSemesterType}{" "}
+                      <span className="text-red-500">*</span>
                     </Label>
                     <Select
                       value={selectedSemesterType}
@@ -705,7 +744,8 @@ export default function ProgramSelection() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="previousInstitution">
-                        {t.previousInstitution} <span className="text-red-500">*</span>
+                        {t.previousInstitution}{" "}
+                        <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="previousInstitution"
@@ -716,7 +756,8 @@ export default function ProgramSelection() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="previousProgram">
-                        {t.previousProgram} <span className="text-red-500">*</span>
+                        {t.previousProgram}{" "}
+                        <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="previousProgram"
@@ -734,13 +775,16 @@ export default function ProgramSelection() {
                         type="number"
                         min="1"
                         value={totalCreditsInProgram}
-                        onChange={(e) => setTotalCreditsInProgram(e.target.value)}
+                        onChange={(e) =>
+                          setTotalCreditsInProgram(e.target.value)
+                        }
                         placeholder="120"
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="completedCredits">
-                        {t.completedCredits} <span className="text-red-500">*</span>
+                        {t.completedCredits}{" "}
+                        <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="completedCredits"
@@ -781,7 +825,10 @@ export default function ProgramSelection() {
 
                   {/* Transcript Upload */}
                   <div className="space-y-2">
-                    <Label>{t.uploadTranscript} <span className="text-red-500">*</span></Label>
+                    <Label>
+                      {t.uploadTranscript}{" "}
+                      <span className="text-red-500">*</span>
+                    </Label>
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors">
                       <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                       <p className="text-sm text-gray-600">

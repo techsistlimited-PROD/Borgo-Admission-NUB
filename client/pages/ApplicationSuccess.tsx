@@ -26,9 +26,9 @@ export default function ApplicationSuccess() {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [language, setLanguage] = useState<"en" | "bn">("en");
-  
+
   const trackingId = searchParams.get("trackingId");
-  
+
   // Generate applicant credentials (in real implementation, this would come from the API)
   const applicantId = trackingId ? `APP${trackingId.slice(-6)}` : "APP123456";
   const temporaryPassword = `NU${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
@@ -38,14 +38,16 @@ export default function ApplicationSuccess() {
       title: "Application Submitted Successfully!",
       subtitle: "Your application has been received and is under review",
       congratulations: "Congratulations!",
-      applicationSubmitted: "Your application has been successfully submitted to Northern University Bangladesh.",
+      applicationSubmitted:
+        "Your application has been successfully submitted to Northern University Bangladesh.",
       importantInfo: "Important Information",
       trackingId: "Application Tracking ID",
-      applicantId: "Applicant ID", 
+      applicantId: "Applicant ID",
       temporaryPassword: "Temporary Password",
       nextSteps: "Next Steps",
       step1: "Login to Applicant Portal",
-      step1Desc: "Use your Applicant ID and temporary password to access the applicant portal",
+      step1Desc:
+        "Use your Applicant ID and temporary password to access the applicant portal",
       step2: "Complete Payment",
       step2Desc: "Upload your payment receipt and complete the payment process",
       step3: "Upload Documents",
@@ -56,11 +58,14 @@ export default function ApplicationSuccess() {
       downloadInfo: "Download Application Info",
       copyCredentials: "Copy Credentials",
       saveInfo: "Save This Information",
-      saveInfoDesc: "Please save your Applicant ID and password. You will need them to access the applicant portal.",
+      saveInfoDesc:
+        "Please save your Applicant ID and password. You will need them to access the applicant portal.",
       adminReview: "Admin Review Process",
-      adminReviewDesc: "Your application will be reviewed by our admissions team. You will be notified of any updates via email and SMS.",
+      adminReviewDesc:
+        "Your application will be reviewed by our admissions team. You will be notified of any updates via email and SMS.",
       supportInfo: "Need Help?",
-      supportDesc: "If you have any questions, please contact our admissions office.",
+      supportDesc:
+        "If you have any questions, please contact our admissions office.",
       contactEmail: "Email: admission@nu.edu.bd",
       contactPhone: "Phone: +880 1700-000000",
       credentialsCopied: "Credentials copied to clipboard!",
@@ -70,29 +75,36 @@ export default function ApplicationSuccess() {
       title: "আবেদন সফলভাবে জমা দেওয়া হয়েছে!",
       subtitle: "আপনার আবেদন গ্রহণ করা হয়েছে এবং পর্যালোচনাধীন রয়েছে",
       congratulations: "অভিনন্দন!",
-      applicationSubmitted: "আপনার আবেদন সফলভাবে নর্দার্ন ইউনিভার্সিটি বাংলাদেশে জমা দেওয়া হয়েছে।",
+      applicationSubmitted:
+        "আপনার আবেদন সফলভাবে নর্দার্ন ইউনিভার্সিটি বাংলাদেশে জমা দেওয়া হয়েছে।",
       importantInfo: "গুরুত্বপূর্ণ তথ্য",
       trackingId: "আবেদন ট্র্যাকিং আইডি",
       applicantId: "আবেদনকারী আইডি",
       temporaryPassword: "অস্থায়ী পাসওয়ার্ড",
       nextSteps: "পরবর্তী ধাপসমূহ",
       step1: "আবেদনকারী পোর্টালে লগইন",
-      step1Desc: "আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার আবেদনকারী আইডি এবং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
+      step1Desc:
+        "আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার আবেদনকারী আইডি এবং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
       step2: "পেমেন্ট সম্পূর্ণ করুন",
-      step2Desc: "আপনার পেমেন্ট রসিদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
+      step2Desc:
+        "আপনার পেমেন্ট রসিদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
       step3: "ডকুমেন্ট আপলোড করুন",
       step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� এবং ব্যক্তিগত নথি আপলোড করুন",
       step4: "আবেদনের স্থিতি ট্র্যাক করুন",
-      step4Desc: "আপনার আবেদনের অগ্রগতি এবং প্রশাসনিক সিদ্ধান্ত পর্যবেক্ষণ করুন",
+      step4Desc:
+        "আপনার আবেদনের অগ্রগতি এবং প্রশাসনিক সিদ্ধান্ত পর্যবেক্ষণ করুন",
       loginPortal: "আবেদনকারী পোর্টালে লগইন",
       downloadInfo: "আবেদনের তথ্য ডাউনলোড করুন",
       copyCredentials: "পরিচয়পত্র কপি করুন",
       saveInfo: "এই তথ্য সংরক্ষণ করুন",
-      saveInfoDesc: "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
+      saveInfoDesc:
+        "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
       adminReview: "প্রশাসনিক পর্যালোচনা প্রক্রিয়া",
-      adminReviewDesc: "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
+      adminReviewDesc:
+        "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
       supportInfo: "সাহায্য প্রয়োজন?",
-      supportDesc: "যদি আপনার কোন প্রশ্ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
+      supportDesc:
+        "যদি আপনার কোন প্রশ্ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
       contactEmail: "ইমেইল: admission@nu.edu.bd",
       contactPhone: "ফোন: +৮৮০ ১৭০০-০০০০০০",
       credentialsCopied: "পরিচয়পত্র ক্লিপবোর্ডে কপি করা হয়েছে!",
@@ -106,7 +118,8 @@ export default function ApplicationSuccess() {
     navigator.clipboard.writeText(text).then(() => {
       toast({
         title: "Copied!",
-        description: type === "credentials" ? t.credentialsCopied : t.trackingCopied,
+        description:
+          type === "credentials" ? t.credentialsCopied : t.trackingCopied,
       });
     });
   };
@@ -188,7 +201,9 @@ Please keep this information safe and secure.
             <div className="flex items-start gap-3">
               <CheckCircle className="w-6 h-6 text-green-600 mt-1" />
               <div>
-                <h3 className="font-semibold text-green-800 mb-2">{t.congratulations}</h3>
+                <h3 className="font-semibold text-green-800 mb-2">
+                  {t.congratulations}
+                </h3>
                 <p className="text-green-700">{t.applicationSubmitted}</p>
               </div>
             </div>
@@ -214,7 +229,9 @@ Please keep this information safe and secure.
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => copyToClipboard(trackingId || "", "tracking")}
+                    onClick={() =>
+                      copyToClipboard(trackingId || "", "tracking")
+                    }
                     className="mt-2"
                   >
                     <Copy className="w-3 h-3 mr-1" />
@@ -231,7 +248,12 @@ Please keep this information safe and secure.
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => copyToClipboard(`${applicantId}:${temporaryPassword}`, "credentials")}
+                    onClick={() =>
+                      copyToClipboard(
+                        `${applicantId}:${temporaryPassword}`,
+                        "credentials",
+                      )
+                    }
                     className="mt-2"
                   >
                     <Copy className="w-3 h-3 mr-1" />
@@ -243,12 +265,18 @@ Please keep this information safe and secure.
               <Card className="border border-gray-200">
                 <CardContent className="p-4 text-center">
                   <Key className="w-8 h-8 mx-auto mb-2 text-orange-600" />
-                  <p className="text-sm text-gray-600 mb-1">{t.temporaryPassword}</p>
-                  <p className="font-mono font-bold text-lg">{temporaryPassword}</p>
+                  <p className="text-sm text-gray-600 mb-1">
+                    {t.temporaryPassword}
+                  </p>
+                  <p className="font-mono font-bold text-lg">
+                    {temporaryPassword}
+                  </p>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => copyToClipboard(temporaryPassword, "credentials")}
+                    onClick={() =>
+                      copyToClipboard(temporaryPassword, "credentials")
+                    }
                     className="mt-2"
                   >
                     <Copy className="w-3 h-3 mr-1" />
@@ -278,15 +306,19 @@ Please keep this information safe and secure.
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <Badge className="bg-blue-100 text-blue-800 text-sm font-semibold">1</Badge>
+                  <Badge className="bg-blue-100 text-blue-800 text-sm font-semibold">
+                    1
+                  </Badge>
                   <div>
                     <h4 className="font-semibold">{t.step1}</h4>
                     <p className="text-sm text-gray-600">{t.step1Desc}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start gap-3">
-                  <Badge className="bg-green-100 text-green-800 text-sm font-semibold">2</Badge>
+                  <Badge className="bg-green-100 text-green-800 text-sm font-semibold">
+                    2
+                  </Badge>
                   <div>
                     <h4 className="font-semibold">{t.step2}</h4>
                     <p className="text-sm text-gray-600">{t.step2Desc}</p>
@@ -296,15 +328,19 @@ Please keep this information safe and secure.
 
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <Badge className="bg-purple-100 text-purple-800 text-sm font-semibold">3</Badge>
+                  <Badge className="bg-purple-100 text-purple-800 text-sm font-semibold">
+                    3
+                  </Badge>
                   <div>
                     <h4 className="font-semibold">{t.step3}</h4>
                     <p className="text-sm text-gray-600">{t.step3Desc}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start gap-3">
-                  <Badge className="bg-orange-100 text-orange-800 text-sm font-semibold">4</Badge>
+                  <Badge className="bg-orange-100 text-orange-800 text-sm font-semibold">
+                    4
+                  </Badge>
                   <div>
                     <h4 className="font-semibold">{t.step4}</h4>
                     <p className="text-sm text-gray-600">{t.step4Desc}</p>
@@ -325,7 +361,9 @@ Please keep this information safe and secure.
           <CardContent>
             <p className="text-gray-600 mb-4">{t.adminReviewDesc}</p>
             <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-blue-800 mb-2">{t.supportInfo}</h4>
+              <h4 className="font-semibold text-blue-800 mb-2">
+                {t.supportInfo}
+              </h4>
               <p className="text-blue-700 text-sm mb-2">{t.supportDesc}</p>
               <div className="space-y-1 text-sm">
                 <p className="text-blue-700">{t.contactEmail}</p>
@@ -343,7 +381,7 @@ Please keep this information safe and secure.
               {t.loginPortal}
             </Button>
           </Link>
-          
+
           <Button
             variant="outline"
             onClick={downloadApplicationInfo}

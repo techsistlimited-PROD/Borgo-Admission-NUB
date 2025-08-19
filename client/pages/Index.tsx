@@ -89,7 +89,8 @@ export default function Index() {
       admissionProcess: "সহজ ৪-ধাপের ভর্তি প্রক্রিয়া",
       regularAdmission: "নিয়মিত ভর্তি",
       creditTransfer: "ক্রেডিট ট্রান্সফার",
-      regularAdmissionDesc: "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করুন",
+      regularAdmissionDesc:
+        "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করুন",
       creditTransferDesc: "অন্য প্রতিষ্ঠান থেকে আপনার ক্রেডিট স্থানান্তর করুন",
       step1: "প্রোগ্রাম নির্বাচন ও খরচ গণনা",
       step1Desc: "প্রোগ্রাম, বিভাগ নির্বাচন এবং উপলব্ধ মওকুফ দেখুন",
@@ -234,7 +235,9 @@ export default function Index() {
 
               {/* Admission Options */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-white/90">Choose Your Admission Path:</h3>
+                <h3 className="text-lg font-semibold text-white/90">
+                  Choose Your Admission Path:
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Link to="/program-selection?type=regular">
                     <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
@@ -245,8 +248,12 @@ export default function Index() {
                             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                           </div>
                           <div>
-                            <h4 className="font-bold text-lg font-poppins">{t.regularAdmission}</h4>
-                            <p className="text-sm text-white/80">{t.regularAdmissionDesc}</p>
+                            <h4 className="font-bold text-lg font-poppins">
+                              {t.regularAdmission}
+                            </h4>
+                            <p className="text-sm text-white/80">
+                              {t.regularAdmissionDesc}
+                            </p>
                           </div>
                         </div>
                       </CardContent>
@@ -262,8 +269,12 @@ export default function Index() {
                             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                           </div>
                           <div>
-                            <h4 className="font-bold text-lg font-poppins">{t.creditTransfer}</h4>
-                            <p className="text-sm text-white/80">{t.creditTransferDesc}</p>
+                            <h4 className="font-bold text-lg font-poppins">
+                              {t.creditTransfer}
+                            </h4>
+                            <p className="text-sm text-white/80">
+                              {t.creditTransferDesc}
+                            </p>
                           </div>
                         </div>
                       </CardContent>

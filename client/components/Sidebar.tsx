@@ -52,7 +52,11 @@ export default function Sidebar({ userType }: SidebarProps) {
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
     { name: "Reports", path: "/admin/reports", icon: PieChart },
     { name: "Templates", path: "/admin/templates", icon: Mail },
-    { name: "Configuration", path: "/admin/configuration", icon: LayoutDashboard },
+    {
+      name: "Configuration",
+      path: "/admin/configuration",
+      icon: LayoutDashboard,
+    },
   ];
 
   const loginPages = [

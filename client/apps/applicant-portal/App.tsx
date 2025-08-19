@@ -19,7 +19,7 @@ const queryClient = new QueryClient();
 const ProtectedLayout = () => {
   const { user, userType } = useAuth();
 
-  if (!user || userType !== 'applicant') {
+  if (!user || userType !== "applicant") {
     return <ApplicantLogin />;
   }
 

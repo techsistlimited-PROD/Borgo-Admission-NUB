@@ -458,11 +458,11 @@ export default function PaymentPortal() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="transactionId">{t.transactionId}</Label>
-                <Input 
-                  id="transactionId" 
+                <Input
+                  id="transactionId"
                   value={transactionId}
                   onChange={(e) => setTransactionId(e.target.value)}
-                  placeholder="Enter transaction ID" 
+                  placeholder="Enter transaction ID"
                 />
               </div>
               <div className="space-y-2">
@@ -490,7 +490,7 @@ export default function PaymentPortal() {
                   )}
                 </div>
               </div>
-              <Button 
+              <Button
                 className="w-full bg-deep-plum hover:bg-accent-purple"
                 onClick={handlePaymentSubmit}
                 disabled={!payslipFile || !transactionId}
@@ -553,7 +553,8 @@ export default function PaymentPortal() {
         <Alert className="mb-8 border-blue-200 bg-blue-50">
           <AlertTriangle className="w-4 h-4 text-blue-600" />
           <AlertDescription className="text-blue-800">
-            <strong>{t.paymentStatus}:</strong> {getPaymentStatusBadge(applicationData.paymentStatus)}
+            <strong>{t.paymentStatus}:</strong>{" "}
+            {getPaymentStatusBadge(applicationData.paymentStatus)}
             <span className="ml-2">{t.verificationNote}</span>
           </AlertDescription>
         </Alert>
@@ -574,19 +575,27 @@ export default function PaymentPortal() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <span className="text-gray-600">{t.trackingId}:</span>
-                    <span className="font-medium ml-2">{applicationData.trackingId}</span>
+                    <span className="font-medium ml-2">
+                      {applicationData.trackingId}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-600">{t.program}:</span>
-                    <span className="font-medium ml-2">{applicationData.program}</span>
+                    <span className="font-medium ml-2">
+                      {applicationData.program}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-600">{t.department}:</span>
-                    <span className="font-medium ml-2">{applicationData.department}</span>
+                    <span className="font-medium ml-2">
+                      {applicationData.department}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-600">{t.semester}:</span>
-                    <span className="font-medium ml-2">{applicationData.semester}</span>
+                    <span className="font-medium ml-2">
+                      {applicationData.semester}
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -687,7 +696,9 @@ export default function PaymentPortal() {
                   </div>
                   <div className="border-t-2 border-gray-200 pt-3 flex justify-between text-lg font-bold">
                     <span className="text-deep-plum">Total</span>
-                    <span className="text-accent-purple">BDT {applicationData.totalAmount.toLocaleString()}</span>
+                    <span className="text-accent-purple">
+                      BDT {applicationData.totalAmount.toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </CardContent>

@@ -40,7 +40,7 @@ export default function ApplicationReview() {
       backToAcademic: "Back to Academic History",
       submitApplication: "Submit Application",
       admissionPreferences: "Admission Preferences",
-      programInfo: "Program Information", 
+      programInfo: "Program Information",
       personalInfo: "Personal Information",
       familyInfo: "Family Information",
       academicInfo: "Academic History",
@@ -51,7 +51,7 @@ export default function ApplicationReview() {
       program: "Program",
       department: "Department",
       name: "Name",
-      dateOfBirth: "Date of Birth", 
+      dateOfBirth: "Date of Birth",
       gender: "Gender",
       phone: "Phone",
       email: "Email",
@@ -65,11 +65,12 @@ export default function ApplicationReview() {
       year: "Year",
       gpa: "GPA",
       originalAmount: "Original Amount",
-      waiverAmount: "Waiver Amount", 
+      waiverAmount: "Waiver Amount",
       finalAmount: "Final Amount",
       submitting: "Submitting Application...",
       submitError: "Failed to submit application. Please try again.",
-      reviewNote: "Please review all information carefully before submitting. Once submitted, you cannot make changes.",
+      reviewNote:
+        "Please review all information carefully before submitting. Once submitted, you cannot make changes.",
       dataIncomplete: "Please complete all previous steps before submitting.",
       edit: "Edit",
     },
@@ -80,7 +81,7 @@ export default function ApplicationReview() {
       submitApplication: "আবেদন জমা দিন",
       admissionPreferences: "ভর্তির পছন্দ",
       programInfo: "প্রোগ্রামের তথ্য",
-      personalInfo: "ব্যক্তিগত তথ্য", 
+      personalInfo: "ব্যক্তিগত তথ্য",
       familyInfo: "পারিবারিক তথ্য",
       academicInfo: "একাডেমিক ইতিহ���স",
       costSummary: "খ��চের সারসংক্ষেপ",
@@ -108,7 +109,8 @@ export default function ApplicationReview() {
       finalAmount: "চূড়ান্ত পরিমাণ",
       submitting: "আবেদন জমা দেওয়া হচ্ছে...",
       submitError: "আবেদন জমা দিতে ব্যর্থ। অনুগ্রহ কর��� আবার চেষ্টা করুন।",
-      reviewNote: "জমা দেওয়ার আগে সমস্ত তথ্য সাবধানে পর্যালোচনা করুন। একবার জমা দিলে, আপনি পরিবর্তন করতে পারবেন না।",
+      reviewNote:
+        "জমা দেওয়ার আগে সমস্ত তথ্য সাবধানে পর্যালোচনা করুন। একবার জমা দিলে, আপনি পরিবর্তন করতে পারবেন না।",
       dataIncomplete: "জমা দে��য়ার আগে সমস্ত পূর্ববর্তী ধাপ সম্পূর্ণ করুন।",
     },
   };
@@ -117,7 +119,12 @@ export default function ApplicationReview() {
 
   const handleSubmit = async () => {
     // Validate required data
-    if (!applicationData.program || !applicationData.department || !applicationData.firstName || !applicationData.lastName) {
+    if (
+      !applicationData.program ||
+      !applicationData.department ||
+      !applicationData.firstName ||
+      !applicationData.lastName
+    ) {
       toast({
         title: "Incomplete Application",
         description: t.dataIncomplete,
@@ -130,7 +137,7 @@ export default function ApplicationReview() {
 
     try {
       const result = await submitApplication();
-      
+
       if (result.success && result.trackingId) {
         // Navigate to success page with tracking ID
         navigate(`/application-success?trackingId=${result.trackingId}`);
@@ -206,7 +213,11 @@ export default function ApplicationReview() {
                   {t.admissionPreferences}
                 </div>
                 <Link to="/program-selection">
-                  <Button variant="outline" size="sm" className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white"
+                  >
                     <Edit className="w-4 h-4 mr-1" />
                     {t.edit}
                   </Button>
@@ -220,22 +231,34 @@ export default function ApplicationReview() {
                   <p className="capitalize">{applicationData.campus || "-"}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t.semester}:</span>
-                  <p className="capitalize">{applicationData.semester || "-"}</p>
+                  <span className="font-medium text-gray-600">
+                    {t.semester}:
+                  </span>
+                  <p className="capitalize">
+                    {applicationData.semester || "-"}
+                  </p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t.semesterType}:</span>
-                  <p className="capitalize">{applicationData.semesterType || "-"}</p>
+                  <span className="font-medium text-gray-600">
+                    {t.semesterType}:
+                  </span>
+                  <p className="capitalize">
+                    {applicationData.semesterType || "-"}
+                  </p>
                 </div>
               </div>
               <Separator />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <span className="font-medium text-gray-600">{t.program}:</span>
+                  <span className="font-medium text-gray-600">
+                    {t.program}:
+                  </span>
                   <p>{applicationData.program || "-"}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t.department}:</span>
+                  <span className="font-medium text-gray-600">
+                    {t.department}:
+                  </span>
                   <p>{applicationData.department || "-"}</p>
                 </div>
               </div>
@@ -251,7 +274,11 @@ export default function ApplicationReview() {
                   {t.personalInfo}
                 </div>
                 <Link to="/personal-information">
-                  <Button variant="outline" size="sm" className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white"
+                  >
                     <Edit className="w-4 h-4 mr-1" />
                     {t.edit}
                   </Button>
@@ -262,10 +289,15 @@ export default function ApplicationReview() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <span className="font-medium text-gray-600">{t.name}:</span>
-                  <p>{`${applicationData.firstName || ""} ${applicationData.lastName || ""}`.trim() || "-"}</p>
+                  <p>
+                    {`${applicationData.firstName || ""} ${applicationData.lastName || ""}`.trim() ||
+                      "-"}
+                  </p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t.dateOfBirth}:</span>
+                  <span className="font-medium text-gray-600">
+                    {t.dateOfBirth}:
+                  </span>
                   <p>{applicationData.dateOfBirth || "-"}</p>
                 </div>
                 <div>
@@ -281,7 +313,9 @@ export default function ApplicationReview() {
                   <p>{applicationData.email || "-"}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t.address}:</span>
+                  <span className="font-medium text-gray-600">
+                    {t.address}:
+                  </span>
                   <p>{applicationData.presentAddress || "-"}</p>
                 </div>
               </div>
@@ -297,7 +331,11 @@ export default function ApplicationReview() {
                   {t.familyInfo}
                 </div>
                 <Link to="/personal-information">
-                  <Button variant="outline" size="sm" className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white"
+                  >
                     <Edit className="w-4 h-4 mr-1" />
                     {t.edit}
                   </Button>
@@ -307,15 +345,21 @@ export default function ApplicationReview() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <span className="font-medium text-gray-600">{t.guardianName}:</span>
+                  <span className="font-medium text-gray-600">
+                    {t.guardianName}:
+                  </span>
                   <p>{applicationData.guardianName || "-"}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t.guardianPhone}:</span>
+                  <span className="font-medium text-gray-600">
+                    {t.guardianPhone}:
+                  </span>
                   <p>{applicationData.guardianPhone || "-"}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">{t.guardianRelation}:</span>
+                  <span className="font-medium text-gray-600">
+                    {t.guardianRelation}:
+                  </span>
                   <p>{applicationData.guardianRelation || "-"}</p>
                 </div>
               </div>
@@ -331,7 +375,11 @@ export default function ApplicationReview() {
                   {t.academicInfo}
                 </div>
                 <Link to="/academic-history">
-                  <Button variant="outline" size="sm" className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white"
+                  >
                     <Edit className="w-4 h-4 mr-1" />
                     {t.edit}
                   </Button>
@@ -340,10 +388,14 @@ export default function ApplicationReview() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h4 className="font-semibold text-gray-700 mb-2">{t.sscInfo}</h4>
+                <h4 className="font-semibold text-gray-700 mb-2">
+                  {t.sscInfo}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <span className="font-medium text-gray-600">{t.institution}:</span>
+                    <span className="font-medium text-gray-600">
+                      {t.institution}:
+                    </span>
                     <p>{applicationData.sscInstitution || "-"}</p>
                   </div>
                   <div>
@@ -358,10 +410,14 @@ export default function ApplicationReview() {
               </div>
               <Separator />
               <div>
-                <h4 className="font-semibold text-gray-700 mb-2">{t.hscInfo}</h4>
+                <h4 className="font-semibold text-gray-700 mb-2">
+                  {t.hscInfo}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <span className="font-medium text-gray-600">{t.institution}:</span>
+                    <span className="font-medium text-gray-600">
+                      {t.institution}:
+                    </span>
                     <p>{applicationData.hscInstitution || "-"}</p>
                   </div>
                   <div>
