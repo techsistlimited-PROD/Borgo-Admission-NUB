@@ -326,7 +326,7 @@ export default function AcademicHistory() {
                 <LogOut className="w-4 h-4 mr-2" />
                 {t.saveAndExit}
               </Button>
-              <Link to="/review-payment">
+              <Link to="/application-review">
                 <Button className="bg-deep-plum hover:bg-accent-purple">
                   <Save className="w-4 h-4 mr-2" />
                   {t.saveAndContinue}
