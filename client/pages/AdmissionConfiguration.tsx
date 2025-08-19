@@ -142,32 +142,23 @@ export default function AdmissionConfiguration() {
   const loadData = async () => {
     try {
       setLoading(true);
-      
+
       // Load admission settings
-      const settingsResponse = await fetch("/api/admission-settings");
-      if (settingsResponse.ok) {
-        const settingsData = await settingsResponse.json();
-        if (settingsData.success) {
-          setSettings(settingsData.data);
-        }
+      const settingsResponse = await apiClient.getAdmissionSettings();
+      if (settingsResponse.success && settingsResponse.data) {
+        setSettings(settingsResponse.data);
       }
 
       // Load payment methods
-      const paymentResponse = await fetch("/api/payment-methods");
-      if (paymentResponse.ok) {
-        const paymentData = await paymentResponse.json();
-        if (paymentData.success) {
-          setPaymentMethods(paymentData.data);
-        }
+      const paymentResponse = await apiClient.getPaymentMethods();
+      if (paymentResponse.success && paymentResponse.data) {
+        setPaymentMethods(paymentResponse.data);
       }
 
       // Load document requirements
-      const documentResponse = await fetch("/api/document-requirements");
-      if (documentResponse.ok) {
-        const documentData = await documentResponse.json();
-        if (documentData.success) {
-          setDocumentRequirements(documentData.data);
-        }
+      const documentResponse = await apiClient.getDocumentRequirements();
+      if (documentResponse.success && documentResponse.data) {
+        setDocumentRequirements(documentResponse.data);
       }
     } catch (error) {
       console.error("Error loading data:", error);
