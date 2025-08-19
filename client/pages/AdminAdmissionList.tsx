@@ -172,7 +172,7 @@ export default function AdminAdmissionList() {
       approving: "অনুমোদন করা হচ্ছে...",
       rejecting: "প্রত্যাখ্যান করা হচ্ছে...",
       approveSuccess: "আবেদন সফলভাবে অনুমোদিত হয়েছে",
-      rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যান করা হয়েছে",
+      rejectSuccess: "আবেদন সফলভা���ে প্রত্যাখ্যান করা হয়েছে",
       actionError: "��বেদনের স্ট্যাটাস ���পডেট করতে ব্যর্থ",
       program: "���্রোগ্রাম",
       department: "বিভাগ",
@@ -300,7 +300,7 @@ export default function AdminAdmissionList() {
       partial: { color: "bg-blue-100 text-blue-800", label: "Partial" },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig];
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
     return <Badge className={config.color}>{config.label}</Badge>;
   };
 
