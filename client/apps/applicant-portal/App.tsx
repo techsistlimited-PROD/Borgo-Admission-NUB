@@ -11,6 +11,7 @@ import { AuthProvider, useAuth } from "../../contexts/AuthContext";
 import Dashboard from "../../pages/Dashboard";
 import Notifications from "../../pages/Notifications";
 import ApplicantLogin from "../../pages/ApplicantLogin";
+import PaymentPortal from "../../pages/PaymentPortal";
 import NotFound from "../../pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const ProtectedLayout = () => {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/payment" element={<PaymentPortal />} />
             <Route path="/login" element={<ApplicantLogin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
