@@ -41,29 +41,6 @@ import { Switch } from "../components/ui/switch";
 import { useToast } from "../hooks/use-toast";
 import apiClient, { Application } from "../lib/api";
 
-interface Application {
-  id: string;
-  uuid: string;
-  status: "pending" | "approved" | "rejected" | "payment_pending";
-  applicant_name: string;
-  university_id?: string;
-  student_id?: string;
-  email: string;
-  phone: string;
-  admission_type: "regular" | "credit_transfer";
-  program_code: string;
-  program_name: string;
-  department_code: string;
-  department_name: string;
-  campus: string;
-  semester: string;
-  semester_type: string;
-  created_at: string;
-  personal_info?: any;
-  academic_history?: any;
-  documents?: any;
-  payment_info?: any;
-}
 
 interface DashboardStats {
   totalApplications: number;
@@ -137,7 +114,7 @@ export default function AdminAdmissionList() {
     },
     bn: {
       title: "ভর্তি অফিস - নতুন ভর্তির তালিকা",
-      searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয���ে খুঁজুন...",
+      searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
       filterByStatus: "অ��স্থা অনুযায়ী ফিল্টার",
       allStatus: "সব অবস্থা",
       pending: "অপেক্ষমাণ",
