@@ -221,7 +221,7 @@ export default function ProgramSelection() {
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস্টার বেছে নিন",
-      selectSemesterType: "সেমিস্টার ধরন বেছে নিন",
+      selectSemesterType: "সেমিস্টার ধরন বেছ�� নিন",
       selectProgram: "আপনার প্রোগ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
@@ -481,9 +481,11 @@ export default function ProgramSelection() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-deep-plum font-poppins">
-                {t.title}
+                {admissionType === "credit-transfer" ? t.creditTransferTitle : t.title}
               </h1>
-              <p className="text-accent-purple font-medium">{t.subtitle}</p>
+              <p className="text-accent-purple font-medium">
+                {admissionType === "credit-transfer" ? t.creditTransferSubtitle : t.subtitle}
+              </p>
             </div>
 
             {/* Language Toggle */}
