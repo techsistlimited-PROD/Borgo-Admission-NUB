@@ -142,7 +142,7 @@ export default function AdminAdmissionList() {
       allStatus: "সব অবস্থা",
       pending: "অপেক্ষমাণ",
       approved: "অনুমোদিত",
-      rejected: "প���রত্যাখ্যাত",
+      rejected: "প্রত্যাখ্যাত",
       export: "তালিকা এক্সপোর্ট",
       slNo: "ক্রমিক নং",
       name: "নাম",
@@ -173,7 +173,7 @@ export default function AdminAdmissionList() {
       rejecting: "প্রত্যাখ্যান করা হচ্ছে...",
       approveSuccess: "আবেদন সফলভাবে অনুমোদিত হয়েছে",
       rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যান করা হয়েছে",
-      actionError: "আবেদনের স্ট্যাটাস ���পডেট করতে ব্যর্থ",
+      actionError: "��বেদনের স্ট্যাটাস ���পডেট করতে ব্যর্থ",
       program: "���্রোগ্রাম",
       department: "বিভাগ",
       amount: "পরিমাণ",
@@ -576,14 +576,14 @@ export default function AdminAdmissionList() {
                           )}
 
                         <div className="flex items-center gap-1">
-                          {isLocked(app.tracking_id) ? (
+                          {isLocked(app.university_id || app.id) ? (
                             <Lock className="w-4 h-4 text-gray-400" />
                           ) : (
                             <Unlock className="w-4 h-4 text-gray-400" />
                           )}
                           <Switch
-                            checked={isLocked(app.tracking_id)}
-                            onCheckedChange={() => toggleLock(app.tracking_id)}
+                            checked={isLocked(app.university_id || app.id)}
+                            onCheckedChange={() => toggleLock(app.university_id || app.id)}
                           />
                         </div>
                       </div>
