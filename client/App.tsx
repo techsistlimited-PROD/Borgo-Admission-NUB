@@ -39,17 +39,17 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { userType } = useAuth();
+  const location = useLocation();
 
   // Determine if sidebar should be shown based on route and user type
-  const shouldShowSidebar = (path: string) => {
-    const location = window.location.pathname;
+  const shouldShowSidebar = () => {
+    const path = location.pathname;
 
     // Don't show sidebar on login pages
-    if (location.includes('/admin') && location.includes('/login')) return false;
-    if (location === '/applicant-portal' || location === '/portal') return false;
-    if (location === '/admin' && userType !== 'admin') return false;
+    if (path === '/admin' || path === '/admin/login') return false;
+    if (path === '/applicant-portal' || path === '/portal') return false;
 
-    // Show sidebar for authenticated users or public application flow
+    // Show sidebar for all other pages
     return true;
   };
 
