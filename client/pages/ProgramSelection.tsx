@@ -106,6 +106,27 @@ export default function ProgramSelection() {
   // Loading state
   const [isSaving, setIsSaving] = useState(false);
 
+  // Credit Transfer specific state
+  const [previousInstitution, setPreviousInstitution] = useState<string>(
+    applicationData.previousInstitution || ""
+  );
+  const [previousProgram, setPreviousProgram] = useState<string>(
+    applicationData.previousProgram || ""
+  );
+  const [totalCreditsInProgram, setTotalCreditsInProgram] = useState<string>(
+    applicationData.totalCreditsInProgram?.toString() || ""
+  );
+  const [completedCredits, setCompletedCredits] = useState<string>(
+    applicationData.completedCredits?.toString() || ""
+  );
+  const [previousCGPA, setPreviousCGPA] = useState<string>(
+    applicationData.previousCGPA?.toString() || ""
+  );
+  const [reasonForTransfer, setReasonForTransfer] = useState<string>(
+    applicationData.reasonForTransfer || ""
+  );
+  const [transcriptFile, setTranscriptFile] = useState<File | null>(null);
+
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
