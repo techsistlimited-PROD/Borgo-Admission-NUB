@@ -1,7 +1,6 @@
 // API Client for Northern University Backend
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 // Types
 export interface LoginRequest {
@@ -126,9 +125,9 @@ class ApiClient {
             name: "Demo Applicant",
             email: "demo@applicant.com",
             type: "applicant",
-            university_id: "APP123456"
-          }
-        }
+            university_id: "APP123456",
+          },
+        },
       };
     }
 

@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               name: "Demo Applicant",
               email: "demo@applicant.com",
               type: "applicant",
-              university_id: "APP123456"
+              university_id: "APP123456",
             });
             setIsLoading(false);
             return;
