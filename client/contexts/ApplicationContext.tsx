@@ -184,6 +184,7 @@ export function ApplicationProvider({ children }: { children: ReactNode }) {
   const submitApplication = async (): Promise<{
     success: boolean;
     trackingId?: string;
+    password?: string;
     error?: string;
   }> => {
     try {
