@@ -84,7 +84,7 @@ export default function ApplicationSuccess() {
       nextSteps: "পরবর্তী ধাপসমূহ",
       step1: "আবেদনকারী পোর্টালে লগইন",
       step1Desc:
-        "আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার আবেদনকারী আইডি এবং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
+        "আবেদনকারী পোর্টাল অ্যাক্স��স করতে আপনার আবেদনকারী আইডি এবং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
       step2: "পেমেন্ট সম্পূর্ণ করুন",
       step2Desc:
         "আপনার পেমেন্ট রসিদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
@@ -150,7 +150,7 @@ Please keep this information safe and secure.
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Application_${trackingId}_Info.txt`;
+    a.download = `Application_${applicantId}_Info.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
