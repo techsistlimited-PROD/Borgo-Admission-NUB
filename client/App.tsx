@@ -67,6 +67,8 @@ const Layout = () => {
               element={<PersonalInformation />}
             />
             <Route path="/academic-history" element={<AcademicHistory />} />
+            <Route path="/application-review" element={<ApplicationReview />} />
+            <Route path="/application-success" element={<ApplicationSuccess />} />
             <Route path="/review-payment" element={<ReviewPayment />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/notifications" element={<Notifications />} />
