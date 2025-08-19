@@ -321,19 +321,16 @@ export default function AdmissionConfiguration() {
 
   const deleteDocumentRequirement = async (id: number) => {
     try {
-      const response = await fetch(`/api/document-requirements/${id}`, {
-        method: "DELETE",
-      });
+      const response = await apiClient.deleteDocumentRequirement(id.toString());
 
-      const data = await response.json();
-      if (data.success) {
+      if (response.success) {
         toast({
           title: "Success",
           description: "Document requirement deleted successfully",
         });
         loadData();
       } else {
-        throw new Error(data.error);
+        throw new Error(response.error);
       }
     } catch (error) {
       console.error("Error deleting document requirement:", error);
