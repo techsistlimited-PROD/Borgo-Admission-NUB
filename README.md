@@ -18,6 +18,7 @@ npm run build
 ## 📱 Application Features
 
 ### 🎓 Public Application Flow
+
 - **Home Page** (`/`) - Choose admission type (Regular/Credit Transfer)
 - **Program Selection** (`/program-selection`) - Select program, department, campus, semester
 - **Personal Information** (`/personal-information`) - Enter personal details
@@ -26,11 +27,13 @@ npm run build
 - **Application Success** (`/application-success`) - Get Applicant ID and password
 
 ### 👤 Applicant Portal
+
 - **Login** (`/applicant-portal`) - Secure login with generated credentials
 - **Payment Portal** (`/payment-portal`) - Multiple payment methods (bKash, Rocket, Card, Offline)
 - **Dashboard** - View application status and make payments
 
-### 👨‍💼 Admin Portal  
+### 👨‍💼 Admin Portal
+
 - **Admin Login** (`/admin`) - Staff login
 - **Applications List** (`/admin/admissions`) - View and manage all applications
 - **Application Details** (`/admin/applicant/:id`) - Review individual applications
@@ -83,10 +86,12 @@ client/
 ## 🔐 Demo Credentials
 
 ### Applicant Portal
+
 - **Applicant ID**: `APP123456`
 - **Password**: `temp123456`
 
-### Admin Portal  
+### Admin Portal
+
 - **Email**: `admin@nu.edu.bd`
 - **Password**: `admin123`
 
@@ -105,6 +110,7 @@ The application uses a cohesive design system with:
 All application data is simulated using a comprehensive mock API system:
 
 ### Mock Services (`client/lib/mockApi.ts`)
+
 - **Authentication**: User login/logout simulation
 - **Applications**: CRUD operations for applications
 - **Programs**: University programs and departments data
@@ -112,6 +118,7 @@ All application data is simulated using a comprehensive mock API system:
 - **Referrers**: Faculty referrer system
 
 ### Features Included
+
 - Realistic data simulation with proper delays
 - Form validation and error handling
 - File upload simulation (transcripts, payslips)
@@ -121,18 +128,21 @@ All application data is simulated using a comprehensive mock API system:
 ## 🌐 Available Routes
 
 ### Public Routes
+
 - `/` - Home page (admission type selection)
 - `/program-selection` - Program selection form
-- `/personal-information` - Personal details form  
+- `/personal-information` - Personal details form
 - `/academic-history` - Academic records form
 - `/application-review` - Review and submit
 - `/application-success` - Success page with credentials
 
 ### Applicant Portal
+
 - `/applicant-portal` - Applicant login
 - `/payment-portal` - Payment interface (redirects from `/dashboard`)
 
 ### Admin Portal
+
 - `/admin` - Admin login
 - `/admin/admissions` - Applications management
 - `/admin/applicant/:id` - Application details
@@ -143,13 +153,15 @@ All application data is simulated using a comprehensive mock API system:
 ### API Endpoints to Implement
 
 #### Authentication
+
 ```typescript
-POST /api/auth/login
-POST /api/auth/logout  
-GET  /api/auth/me
+POST / api / auth / login;
+POST / api / auth / logout;
+GET / api / auth / me;
 ```
 
 #### Applications
+
 ```typescript
 GET    /api/applications
 POST   /api/applications
@@ -160,13 +172,15 @@ GET    /api/applications/stats/dashboard
 ```
 
 #### Programs & Departments
+
 ```typescript
-GET  /api/programs
-GET  /api/programs/departments
-POST /api/programs/calculate-cost
+GET / api / programs;
+GET / api / programs / departments;
+POST / api / programs / calculate - cost;
 ```
 
 #### Referrers
+
 ```typescript
 GET  /api/referrers
 POST /api/referrers/validate
@@ -176,6 +190,7 @@ GET  /api/referrers/:id/stats
 ### Data Models
 
 #### User Model
+
 ```typescript
 interface User {
   id: number;
@@ -189,7 +204,8 @@ interface User {
 }
 ```
 
-#### Application Model  
+#### Application Model
+
 ```typescript
 interface Application {
   id: string;
@@ -229,18 +245,21 @@ VITE_FILE_UPLOAD_URL=https://your-file-storage.com
 ## 🚀 Deployment
 
 ### Option 1: Netlify (Recommended)
+
 ```bash
 npm run build
 # Deploy dist/ folder to Netlify
 ```
 
 ### Option 2: Vercel
+
 ```bash
-npm run build  
+npm run build
 # Deploy using Vercel CLI or GitHub integration
 ```
 
 ### Option 3: Any Static Host
+
 ```bash
 npm run build
 # Upload dist/ folder to your hosting service
@@ -258,23 +277,27 @@ npm run build
 ## 🎯 Features Included
 
 ### ✅ Complete Application Flow
+
 - Multi-step application form with validation
 - File upload handling (transcripts, documents)
 - Application review and submission
 - Success page with generated credentials
 
 ### ✅ Applicant Portal
+
 - Secure login system
 - Payment portal with multiple methods
 - Application status tracking
 
-### ✅ Admin Portal  
+### ✅ Admin Portal
+
 - Application management dashboard
 - Individual application review
 - Status update functionality
 - Statistics and reporting
 
 ### ✅ Technical Features
+
 - Responsive design (mobile-first)
 - Form validation with error handling
 - Loading states and user feedback
@@ -297,6 +320,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Support
 
 For questions or support, please contact:
+
 - Email: support@nu.edu.bd
 - Phone: +880-XXX-XXXXXX
 

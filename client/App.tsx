@@ -45,24 +45,54 @@ function App() {
                   <Routes>
                     {/* Main Application Flow */}
                     <Route path="/" element={<Index />} />
-                    <Route path="/program-selection" element={<ProgramSelection />} />
-                    <Route path="/personal-information" element={<PersonalInformation />} />
-                    <Route path="/academic-history" element={<AcademicHistory />} />
-                    <Route path="/application-review" element={<ApplicationReview />} />
-                    <Route path="/application-success" element={<ApplicationSuccess />} />
+                    <Route
+                      path="/program-selection"
+                      element={<ProgramSelection />}
+                    />
+                    <Route
+                      path="/personal-information"
+                      element={<PersonalInformation />}
+                    />
+                    <Route
+                      path="/academic-history"
+                      element={<AcademicHistory />}
+                    />
+                    <Route
+                      path="/application-review"
+                      element={<ApplicationReview />}
+                    />
+                    <Route
+                      path="/application-success"
+                      element={<ApplicationSuccess />}
+                    />
 
                     {/* Applicant Portal */}
-                    <Route path="/applicant-portal" element={<ApplicantLogin />} />
+                    <Route
+                      path="/applicant-portal"
+                      element={<ApplicantLogin />}
+                    />
                     <Route path="/portal" element={<ApplicantLogin />} />
                     <Route path="/payment-portal" element={<PaymentPortal />} />
-                    <Route path="/dashboard" element={<Navigate to="/payment-portal" replace />} />
+                    <Route
+                      path="/dashboard"
+                      element={<Navigate to="/payment-portal" replace />}
+                    />
 
                     {/* Admin Portal */}
                     <Route path="/admin" element={<AdminLogin />} />
                     <Route path="/admin/login" element={<AdminLogin />} />
-                    <Route path="/admin/admissions" element={<AdminAdmissionList />} />
-                    <Route path="/admin/applicant/:id" element={<ApplicantDetail />} />
-                    <Route path="/admin/settings" element={<AdmissionConfiguration />} />
+                    <Route
+                      path="/admin/admissions"
+                      element={<AdminAdmissionList />}
+                    />
+                    <Route
+                      path="/admin/applicant/:id"
+                      element={<ApplicantDetail />}
+                    />
+                    <Route
+                      path="/admin/settings"
+                      element={<AdmissionConfiguration />}
+                    />
 
                     {/* Fallback */}
                     <Route path="*" element={<NotFound />} />

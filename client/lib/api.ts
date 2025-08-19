@@ -1,7 +1,7 @@
 // Frontend-Only API Client (Uses Mock Data - No Backend Required)
 
-import { mockApi } from './mockApi';
-import type { LoginCredentials, ApiResponse, User } from './mockApi';
+import { mockApi } from "./mockApi";
+import type { LoginCredentials, ApiResponse, User } from "./mockApi";
 
 export type { LoginCredentials, ApiResponse, User };
 
@@ -38,7 +38,7 @@ class ApiClient {
   // Authentication
   async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
     const response = await mockApi.login(credentials);
-    
+
     if (response.success && response.data?.token) {
       this.setToken(response.data.token);
       return {
@@ -46,14 +46,14 @@ class ApiClient {
         data: {
           success: true,
           token: response.data.token,
-          user: response.data.user
-        }
+          user: response.data.user,
+        },
       };
     }
 
     return {
       success: false,
-      error: response.error || "Login failed"
+      error: response.error || "Login failed",
     };
   }
 
@@ -91,7 +91,10 @@ class ApiClient {
     return await mockApi.createApplication(data);
   }
 
-  async updateApplicationStatus(id: string, status: string): Promise<ApiResponse> {
+  async updateApplicationStatus(
+    id: string,
+    status: string,
+  ): Promise<ApiResponse> {
     return await mockApi.updateApplicationStatus(id, status);
   }
 
@@ -150,11 +153,11 @@ export const getDemoCredentials = () => ({
   applicant: {
     identifier: "APP123456",
     password: "temp123456",
-    type: "applicant" as const
+    type: "applicant" as const,
   },
   admin: {
-    identifier: "admin@nu.edu.bd", 
+    identifier: "admin@nu.edu.bd",
     password: "admin123",
-    type: "admin" as const
-  }
+    type: "admin" as const,
+  },
 });

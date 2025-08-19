@@ -7,7 +7,9 @@ This document provides step-by-step instructions for deploying the Northern Univ
 ### Option 1: Netlify (Recommended)
 
 #### Manual Deployment
+
 1. **Build the application**:
+
    ```bash
    npm run build
    ```
@@ -18,7 +20,9 @@ This document provides step-by-step instructions for deploying the Northern Univ
    - Your site will be live instantly
 
 #### Git-based Deployment (Continuous Deployment)
+
 1. **Connect Repository**:
+
    - Connect your GitHub repository to Netlify
    - Set build command: `npm run build`
    - Set publish directory: `dist`
@@ -31,7 +35,9 @@ This document provides step-by-step instructions for deploying the Northern Univ
 ### Option 2: Vercel
 
 #### Using Vercel CLI
+
 1. **Install Vercel CLI**:
+
    ```bash
    npm i -g vercel
    ```
@@ -43,13 +49,16 @@ This document provides step-by-step instructions for deploying the Northern Univ
    ```
 
 #### Using GitHub Integration
+
 1. Connect your repository to Vercel
 2. Vercel will auto-detect Vite and deploy automatically
 
 ### Option 3: Static Hosting (Any Provider)
 
 #### Build and Upload
+
 1. **Build the application**:
+
    ```bash
    npm run build
    ```
@@ -74,16 +83,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./client"),
     },
   },
-  root: './client',
+  root: "./client",
   build: {
-    outDir: '../dist',
+    outDir: "../dist",
     emptyOutDir: true,
   },
   server: {
     port: 3000,
     host: true,
   },
-})
+});
 ```
 
 ## 📁 Build Output
@@ -104,24 +113,28 @@ dist/
 
 Since this is a Single Page Application (SPA), configure your hosting to redirect all routes to `index.html`:
 
-### Netlify (_redirects file)
+### Netlify (\_redirects file)
+
 Create `public/_redirects`:
+
 ```
 /*    /index.html   200
 ```
 
 ### Vercel (vercel.json)
+
 Create `vercel.json`:
+
 ```json
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
 ```
 
 ### Apache (.htaccess)
+
 Create `public/.htaccess`:
+
 ```apache
 Options -MultiViews
 RewriteEngine On
@@ -130,6 +143,7 @@ RewriteRule ^ index.html [QSA,L]
 ```
 
 ### Nginx
+
 ```nginx
 location / {
   try_files $uri $uri/ /index.html;
@@ -175,16 +189,18 @@ The build is already optimized with:
 ## 🔍 SEO Configuration
 
 ### Meta Tags
+
 The application includes proper meta tags in `index.html`:
 
 ```html
-<meta name="description" content="Northern University Admission Portal">
-<meta name="keywords" content="university, admission, bangladesh, education">
-<meta property="og:title" content="Northern University">
-<meta property="og:description" content="Apply for admission online">
+<meta name="description" content="Northern University Admission Portal" />
+<meta name="keywords" content="university, admission, bangladesh, education" />
+<meta property="og:title" content="Northern University" />
+<meta property="og:description" content="Apply for admission online" />
 ```
 
 ### Robots.txt
+
 Included in `public/robots.txt`:
 
 ```
@@ -197,12 +213,15 @@ Sitemap: https://yourdomain.com/sitemap.xml
 ## 🚨 Important Notes
 
 ### Demo Mode
+
 The application currently runs in **demo mode** with mock data:
+
 - No real backend required
 - All data is simulated
 - Perfect for showcasing features
 
 ### Production Readiness
+
 To make this production-ready:
 
 1. **Connect Real Backend**: Replace mock API with real endpoints
@@ -214,6 +233,7 @@ To make this production-ready:
 ### URLs and Routing
 
 The application supports these main routes:
+
 - `/` - Home page
 - `/program-selection` - Application form
 - `/applicant-portal` - Student login
@@ -223,6 +243,7 @@ The application supports these main routes:
 ## 🔧 Troubleshooting
 
 ### Build Issues
+
 ```bash
 # Clear node_modules and reinstall
 rm -rf node_modules package-lock.json
@@ -233,16 +254,19 @@ npx vite build --force
 ```
 
 ### Routing Issues
+
 - Ensure SPA redirect rules are configured
 - Check that `index.html` is served for all routes
 
 ### Asset Loading Issues
+
 - Verify all assets are in `dist/` after build
 - Check asset paths are relative, not absolute
 
 ## 📞 Support
 
 For deployment support:
+
 - **Technical Issues**: Check the GitHub repository issues
 - **Hosting Questions**: Contact your hosting provider
 - **General Support**: Refer to the main README.md

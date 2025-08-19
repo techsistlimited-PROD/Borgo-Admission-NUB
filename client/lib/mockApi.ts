@@ -57,7 +57,7 @@ class MockApiService {
       email: "admin@nu.edu.bd",
       type: "admin",
       department: "IT",
-      designation: "System Administrator"
+      designation: "System Administrator",
     },
     {
       id: 2,
@@ -65,8 +65,8 @@ class MockApiService {
       name: "John Doe",
       email: "john@example.com",
       type: "applicant",
-      university_id: "APP123456"
-    }
+      university_id: "APP123456",
+    },
   ];
 
   private applications: Application[] = [
@@ -86,7 +86,7 @@ class MockApiService {
       campus: "Main Campus",
       semester: "Spring 2024",
       semester_type: "Regular",
-      created_at: "2024-01-15T10:00:00Z"
+      created_at: "2024-01-15T10:00:00Z",
     },
     {
       id: "app-002",
@@ -105,8 +105,8 @@ class MockApiService {
       campus: "Main Campus",
       semester: "Spring 2024",
       semester_type: "Regular",
-      created_at: "2024-01-14T09:00:00Z"
-    }
+      created_at: "2024-01-14T09:00:00Z",
+    },
   ];
 
   private programs = [
@@ -118,17 +118,17 @@ class MockApiService {
       duration: "4 years",
       credit_hours: 144,
       tuition_fee: 125000,
-      campus: ["Main Campus", "Uttara Campus"]
+      campus: ["Main Campus", "Uttara Campus"],
     },
     {
-      code: "EEE101", 
+      code: "EEE101",
       name: "Electrical & Electronic Engineering",
       department_code: "EEE",
       department_name: "Electrical & Electronic Engineering",
       duration: "4 years",
       credit_hours: 144,
       tuition_fee: 120000,
-      campus: ["Main Campus"]
+      campus: ["Main Campus"],
     },
     {
       code: "BBA101",
@@ -138,8 +138,8 @@ class MockApiService {
       duration: "4 years",
       credit_hours: 120,
       tuition_fee: 95000,
-      campus: ["Main Campus", "Uttara Campus"]
-    }
+      campus: ["Main Campus", "Uttara Campus"],
+    },
   ];
 
   private departments = [
@@ -147,7 +147,7 @@ class MockApiService {
     { code: "EEE", name: "Electrical & Electronic Engineering" },
     { code: "BBA", name: "Business Administration" },
     { code: "ENG", name: "English" },
-    { code: "LAW", name: "Law" }
+    { code: "LAW", name: "Law" },
   ];
 
   private referrers = [
@@ -157,36 +157,48 @@ class MockApiService {
       department: "CSE",
       designation: "Professor",
       email: "smith@nu.edu.bd",
-      phone: "+8801234567890"
-    }
+      phone: "+8801234567890",
+    },
   ];
 
   // Simulate API delay
   private delay(ms: number = 500): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // Authentication
-  async login(credentials: LoginCredentials): Promise<ApiResponse<{ user: User; token: string }>> {
+  async login(
+    credentials: LoginCredentials,
+  ): Promise<ApiResponse<{ user: User; token: string }>> {
     await this.delay();
 
     // Demo credentials
     const demoCredentials = [
-      { identifier: "admin@nu.edu.bd", password: "admin123", type: "admin" as const },
-      { identifier: "APP123456", password: "temp123456", type: "applicant" as const }
+      {
+        identifier: "admin@nu.edu.bd",
+        password: "admin123",
+        type: "admin" as const,
+      },
+      {
+        identifier: "APP123456",
+        password: "temp123456",
+        type: "applicant" as const,
+      },
     ];
 
     const matchedDemo = demoCredentials.find(
-      cred => 
+      (cred) =>
         cred.identifier === credentials.identifier &&
         cred.password === credentials.password &&
-        cred.type === credentials.type
+        cred.type === credentials.type,
     );
 
     if (matchedDemo) {
-      const user = this.users.find(u => 
-        (u.email === credentials.identifier || u.university_id === credentials.identifier) &&
-        u.type === credentials.type
+      const user = this.users.find(
+        (u) =>
+          (u.email === credentials.identifier ||
+            u.university_id === credentials.identifier) &&
+          u.type === credentials.type,
       );
 
       if (user) {
@@ -194,15 +206,15 @@ class MockApiService {
           success: true,
           data: {
             user,
-            token: `mock_token_${user.type}_${Date.now()}`
-          }
+            token: `mock_token_${user.type}_${Date.now()}`,
+          },
         };
       }
     }
 
     return {
       success: false,
-      error: "Invalid credentials"
+      error: "Invalid credentials",
     };
   }
 
@@ -211,11 +223,15 @@ class MockApiService {
 
     // Extract user type from token
     if (token.includes("admin")) {
-      const user = this.users.find(u => u.type === "admin");
-      return user ? { success: true, data: { user } } : { success: false, error: "User not found" };
+      const user = this.users.find((u) => u.type === "admin");
+      return user
+        ? { success: true, data: { user } }
+        : { success: false, error: "User not found" };
     } else if (token.includes("applicant")) {
-      const user = this.users.find(u => u.type === "applicant");
-      return user ? { success: true, data: { user } } : { success: false, error: "User not found" };
+      const user = this.users.find((u) => u.type === "applicant");
+      return user
+        ? { success: true, data: { user } }
+        : { success: false, error: "User not found" };
     }
 
     return { success: false, error: "Invalid token" };
@@ -238,16 +254,17 @@ class MockApiService {
     let filteredApps = [...this.applications];
 
     if (params?.status && params.status !== "all") {
-      filteredApps = filteredApps.filter(app => app.status === params.status);
+      filteredApps = filteredApps.filter((app) => app.status === params.status);
     }
 
     if (params?.search) {
       const search = params.search.toLowerCase();
-      filteredApps = filteredApps.filter(app => 
-        app.applicant_name.toLowerCase().includes(search) ||
-        app.email.toLowerCase().includes(search) ||
-        app.university_id?.toLowerCase().includes(search) ||
-        app.student_id?.toLowerCase().includes(search)
+      filteredApps = filteredApps.filter(
+        (app) =>
+          app.applicant_name.toLowerCase().includes(search) ||
+          app.email.toLowerCase().includes(search) ||
+          app.university_id?.toLowerCase().includes(search) ||
+          app.student_id?.toLowerCase().includes(search),
       );
     }
 
@@ -255,16 +272,20 @@ class MockApiService {
       success: true,
       data: {
         applications: filteredApps,
-        total: filteredApps.length
-      }
+        total: filteredApps.length,
+      },
     };
   }
 
-  async getApplication(id: string): Promise<ApiResponse<{ application: Application }>> {
+  async getApplication(
+    id: string,
+  ): Promise<ApiResponse<{ application: Application }>> {
     await this.delay();
 
-    const application = this.applications.find(app => app.id === id || app.uuid === id);
-    
+    const application = this.applications.find(
+      (app) => app.id === id || app.uuid === id,
+    );
+
     if (application) {
       return { success: true, data: { application } };
     }
@@ -272,10 +293,18 @@ class MockApiService {
     return { success: false, error: "Application not found" };
   }
 
-  async createApplication(data: any): Promise<ApiResponse<{ application: Application; university_id: string; password: string }>> {
+  async createApplication(
+    data: any,
+  ): Promise<
+    ApiResponse<{
+      application: Application;
+      university_id: string;
+      password: string;
+    }>
+  > {
     await this.delay();
 
-    const newId = `app-${String(this.applications.length + 1).padStart(3, '0')}`;
+    const newId = `app-${String(this.applications.length + 1).padStart(3, "0")}`;
     const universityId = `APP${String(Date.now()).slice(-6)}`;
     const password = `temp${Math.random().toString().slice(-6)}`;
 
@@ -298,7 +327,7 @@ class MockApiService {
       created_at: new Date().toISOString(),
       personal_info: data,
       academic_history: data.academic_history,
-      documents: data.documents
+      documents: data.documents,
     };
 
     this.applications.push(newApplication);
@@ -308,16 +337,21 @@ class MockApiService {
       data: {
         application: newApplication,
         university_id: universityId,
-        password: password
-      }
+        password: password,
+      },
     };
   }
 
-  async updateApplicationStatus(id: string, status: string): Promise<ApiResponse> {
+  async updateApplicationStatus(
+    id: string,
+    status: string,
+  ): Promise<ApiResponse> {
     await this.delay();
 
-    const appIndex = this.applications.findIndex(app => app.id === id || app.uuid === id);
-    
+    const appIndex = this.applications.findIndex(
+      (app) => app.id === id || app.uuid === id,
+    );
+
     if (appIndex === -1) {
       return { success: false, error: "Application not found" };
     }
@@ -328,14 +362,23 @@ class MockApiService {
     if (status === "approved" && !this.applications[appIndex].student_id) {
       const year = new Date().getFullYear().toString().slice(-2);
       const deptCode = this.applications[appIndex].department_code;
-      const sequence = String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
-      this.applications[appIndex].student_id = `NU${year}${deptCode}${sequence}`;
+      const sequence = String(Math.floor(Math.random() * 999) + 1).padStart(
+        3,
+        "0",
+      );
+      this.applications[appIndex].student_id =
+        `NU${year}${deptCode}${sequence}`;
     }
 
-    return { success: true, message: "Application status updated successfully" };
+    return {
+      success: true,
+      message: "Application status updated successfully",
+    };
   }
 
-  async generateApplicationIds(id: string): Promise<ApiResponse<{ university_id: string; password: string }>> {
+  async generateApplicationIds(
+    id: string,
+  ): Promise<ApiResponse<{ university_id: string; password: string }>> {
     await this.delay();
 
     const universityId = `APP${String(Date.now()).slice(-6)}`;
@@ -345,8 +388,8 @@ class MockApiService {
       success: true,
       data: {
         university_id: universityId,
-        password: password
-      }
+        password: password,
+      },
     };
   }
 
@@ -355,10 +398,15 @@ class MockApiService {
 
     const stats = {
       total: this.applications.length,
-      pending: this.applications.filter(app => app.status === "pending").length,
-      approved: this.applications.filter(app => app.status === "approved").length,
-      rejected: this.applications.filter(app => app.status === "rejected").length,
-      payment_pending: this.applications.filter(app => app.status === "payment_pending").length
+      pending: this.applications.filter((app) => app.status === "pending")
+        .length,
+      approved: this.applications.filter((app) => app.status === "approved")
+        .length,
+      rejected: this.applications.filter((app) => app.status === "rejected")
+        .length,
+      payment_pending: this.applications.filter(
+        (app) => app.status === "payment_pending",
+      ).length,
     };
 
     return { success: true, data: stats };
@@ -382,7 +430,7 @@ class MockApiService {
   }): Promise<ApiResponse> {
     await this.delay();
 
-    const program = this.programs.find(p => p.code === data.program_code);
+    const program = this.programs.find((p) => p.code === data.program_code);
     if (!program) {
       return { success: false, error: "Program not found" };
     }
@@ -392,20 +440,29 @@ class MockApiService {
       admission_fee: 5000,
       registration_fee: 2000,
       library_fee: 1000,
-      lab_fee: 3000
+      lab_fee: 3000,
     };
 
     let waiverAmount = 0;
     if (data.waivers) {
-      waiverAmount = data.waivers.reduce((sum, waiver) => sum + waiver.value, 0);
+      waiverAmount = data.waivers.reduce(
+        (sum, waiver) => sum + waiver.value,
+        0,
+      );
     }
 
     const breakdown = {
       tuition_fee: program.tuition_fee,
       additional_fees: additionalFees,
-      total_additional: Object.values(additionalFees).reduce((sum, fee) => sum + fee, 0),
+      total_additional: Object.values(additionalFees).reduce(
+        (sum, fee) => sum + fee,
+        0,
+      ),
       waiver_amount: waiverAmount,
-      grand_total: totalCost + Object.values(additionalFees).reduce((sum, fee) => sum + fee, 0) - waiverAmount
+      grand_total:
+        totalCost +
+        Object.values(additionalFees).reduce((sum, fee) => sum + fee, 0) -
+        waiverAmount,
     };
 
     return { success: true, data: breakdown };
@@ -420,13 +477,17 @@ class MockApiService {
   async validateReferrer(employee_id: string): Promise<ApiResponse> {
     await this.delay();
 
-    const referrer = this.referrers.find(r => r.employee_id === employee_id);
-    
+    const referrer = this.referrers.find((r) => r.employee_id === employee_id);
+
     if (referrer) {
       return { success: true, data: { referrer, valid: true } };
     }
 
-    return { success: false, data: { valid: false }, error: "Referrer not found" };
+    return {
+      success: false,
+      data: { valid: false },
+      error: "Referrer not found",
+    };
   }
 
   async getReferrerStats(employee_id: string): Promise<ApiResponse> {
@@ -437,7 +498,7 @@ class MockApiService {
       total_referrals: Math.floor(Math.random() * 20) + 1,
       successful_admissions: Math.floor(Math.random() * 15) + 1,
       pending_applications: Math.floor(Math.random() * 5),
-      commission_earned: Math.floor(Math.random() * 50000) + 10000
+      commission_earned: Math.floor(Math.random() * 50000) + 10000,
     };
 
     return { success: true, data: stats };
