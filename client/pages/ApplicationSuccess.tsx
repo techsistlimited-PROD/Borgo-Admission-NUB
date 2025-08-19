@@ -31,7 +31,7 @@ export default function ApplicationSuccess() {
 
   // Generate applicant credentials (in real implementation, this would come from the API)
   const applicantId = trackingId ? `APP${trackingId.slice(-6)}` : "APP123456";
-  const temporaryPassword = `NU${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  const temporaryPassword = "temp123456"; // Fixed password for demo - in production this would be randomly generated and stored
 
   const texts = {
     en: {
