@@ -129,7 +129,7 @@ export default function ProgramSelection() {
 
   // Filter options
   const campusOptions = [
-    { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
+    { id: "main", name: "Main Campus", namebn: "প��রধান ক্যাম্পাস" },
     { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
   ];
 
@@ -229,7 +229,7 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "এইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
+      fourthSubject: "এসএস����ি ও এইচএ���সি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
@@ -381,6 +381,19 @@ export default function ProgramSelection() {
         variant: "destructive",
       });
       return;
+    }
+
+    // Additional validation for credit transfer
+    if (admissionType === "credit-transfer") {
+      if (!previousInstitution || !previousProgram || !totalCreditsInProgram || !completedCredits || !previousCGPA) {
+        toast({
+          title: "Credit Transfer Information Required",
+          description:
+            "Please fill in all credit transfer information before continuing.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setIsSaving(true);
