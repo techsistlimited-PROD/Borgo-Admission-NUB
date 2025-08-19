@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -128,6 +128,7 @@ export default function ProgramSelection() {
     applicationData.reasonForTransfer || "",
   );
   const [transcriptFile, setTranscriptFile] = useState<File | null>(null);
+  const transcriptFileInputRef = useRef<HTMLInputElement>(null);
 
   // Filter options
   const campusOptions = [
@@ -220,7 +221,7 @@ export default function ProgramSelection() {
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার নির্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
-      programSelection: "প্রোগ্রাম নির্বাচন করুন",
+      programSelection: "প্রোগ্রাম নির্বা��ন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস্টার বেছে নিন",
@@ -255,7 +256,7 @@ export default function ProgramSelection() {
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
-      enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
+      enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জি���িএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
       costNote:
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
@@ -829,12 +830,16 @@ export default function ProgramSelection() {
                       {t.uploadTranscript}{" "}
                       <span className="text-red-500">*</span>
                     </Label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors">
+                    <div
+                      className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors cursor-pointer"
+                      onClick={() => transcriptFileInputRef.current?.click()}
+                    >
                       <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                       <p className="text-sm text-gray-600">
                         Click or drag transcript file here (.pdf, .jpg, .png)
                       </p>
                       <input
+                        ref={transcriptFileInputRef}
                         type="file"
                         className="hidden"
                         accept=".pdf,.jpg,.jpeg,.png"
