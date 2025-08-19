@@ -54,6 +54,10 @@ export default function ProgramSelection() {
   const { applicationData, updateApplicationData, saveCurrentStep } =
     useApplication();
 
+  // Get admission type from URL parameter
+  const searchParams = new URLSearchParams(window.location.search);
+  const admissionType = searchParams.get("type") as "regular" | "credit-transfer" || "regular";
+
   const [language, setLanguage] = useState<"en" | "bn">("en");
   // Filter selections
   const [selectedCampus, setSelectedCampus] = useState<string>(
@@ -105,7 +109,7 @@ export default function ProgramSelection() {
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
-    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম্পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
   ];
 
   const semesterOptions = [
@@ -217,7 +221,7 @@ export default function ProgramSelection() {
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
       costNote:
-        "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে পারে",
+        "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফলভাবে সেভ হয়েছে!",
       saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
