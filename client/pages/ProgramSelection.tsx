@@ -102,6 +102,23 @@ export default function ProgramSelection() {
   // Loading state
   const [isSaving, setIsSaving] = useState(false);
 
+  // Filter options
+  const campusOptions = [
+    { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম্পাস" },
+  ];
+
+  const semesterOptions = [
+    { id: "fall", name: "Fall", namebn: "ফল" },
+    { id: "summer", name: "Summer", namebn: "গ্রীষ্ম" },
+    { id: "winter", name: "Winter", namebn: "শীত" },
+  ];
+
+  const semesterTypeOptions = [
+    { id: "bi-semester", name: "Bi-Semester", namebn: "দ্বি-সেমিস্টার" },
+    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমিস্টার" },
+  ];
+
   const texts = {
     en: {
       title: "Program & Department Selection",
@@ -155,8 +172,8 @@ export default function ProgramSelection() {
       saveError: "Failed to save data. Please try again.",
     },
     bn: {
-      title: "প্রোগ্রাম ও বিভাগ নির্বাচন",
-      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে ন���ন ও খরচ গণনা করুন",
+      title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
+      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণনা করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
@@ -203,7 +220,7 @@ export default function ProgramSelection() {
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে পারে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফলভাবে সেভ হয়েছে!",
-      saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ্টা করুন।",
+      saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
     },
   };
 
