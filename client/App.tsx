@@ -37,6 +37,67 @@ import EmailTemplates from "./pages/EmailTemplates";
 
 const queryClient = new QueryClient();
 
+function AppContent() {
+  const { userType } = useAuth();
+
+  // Determine if sidebar should be shown based on route and user type
+  const shouldShowSidebar = (path: string) => {
+    const location = window.location.pathname;
+
+    // Don't show sidebar on login pages
+    if (location.includes('/admin') && location.includes('/login')) return false;
+    if (location === '/applicant-portal' || location === '/portal') return false;
+    if (location === '/admin' && userType !== 'admin') return false;
+
+    // Show sidebar for authenticated users or public application flow
+    return true;
+  };
+
+  return (
+    <div className="min-h-screen bg-lavender-bg">
+      <Header showLogin={true} />
+      <div className="flex">
+        {shouldShowSidebar(window.location.pathname) && (
+          <Sidebar userType={userType} />
+        )}
+        <main className={`flex-1 ${shouldShowSidebar(window.location.pathname) ? 'p-6' : 'p-0'}`}>
+          <Routes>
+            {/* Main Application Flow */}
+            <Route path="/" element={<Index />} />
+            <Route path="/program-selection" element={<ProgramSelection />} />
+            <Route path="/personal-information" element={<PersonalInformation />} />
+            <Route path="/academic-history" element={<AcademicHistory />} />
+            <Route path="/application-review" element={<ApplicationReview />} />
+            <Route path="/application-success" element={<ApplicationSuccess />} />
+
+            {/* Applicant Portal */}
+            <Route path="/applicant-portal" element={<ApplicantLogin />} />
+            <Route path="/portal" element={<ApplicantLogin />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/payment-portal" element={<PaymentPortal />} />
+            <Route path="/payment" element={<PaymentPortal />} />
+            <Route path="/notifications" element={<Notifications />} />
+
+            {/* Admin Portal */}
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/admissions" element={<AdminAdmissionList />} />
+            <Route path="/admin/applicant/:id" element={<ApplicantDetail />} />
+            <Route path="/admin/settings" element={<AdmissionConfiguration />} />
+            <Route path="/admin/configuration" element={<AdmissionConfiguration />} />
+            <Route path="/admin/finance" element={<FinancePanel />} />
+            <Route path="/admin/reports" element={<Reports />} />
+            <Route path="/admin/templates" element={<EmailTemplates />} />
+
+            {/* Fallback */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -46,66 +107,7 @@ function App() {
         <BrowserRouter>
           <AuthProvider>
             <ApplicationProvider>
-              <div className="min-h-screen bg-lavender-bg">
-                <Header showLogin={true} />
-                <main className="p-6">
-                  <Routes>
-                    {/* Main Application Flow */}
-                    <Route path="/" element={<Index />} />
-                    <Route
-                      path="/program-selection"
-                      element={<ProgramSelection />}
-                    />
-                    <Route
-                      path="/personal-information"
-                      element={<PersonalInformation />}
-                    />
-                    <Route
-                      path="/academic-history"
-                      element={<AcademicHistory />}
-                    />
-                    <Route
-                      path="/application-review"
-                      element={<ApplicationReview />}
-                    />
-                    <Route
-                      path="/application-success"
-                      element={<ApplicationSuccess />}
-                    />
-
-                    {/* Applicant Portal */}
-                    <Route
-                      path="/applicant-portal"
-                      element={<ApplicantLogin />}
-                    />
-                    <Route path="/portal" element={<ApplicantLogin />} />
-                    <Route path="/payment-portal" element={<PaymentPortal />} />
-                    <Route
-                      path="/dashboard"
-                      element={<Navigate to="/payment-portal" replace />}
-                    />
-
-                    {/* Admin Portal */}
-                    <Route path="/admin" element={<AdminLogin />} />
-                    <Route path="/admin/login" element={<AdminLogin />} />
-                    <Route
-                      path="/admin/admissions"
-                      element={<AdminAdmissionList />}
-                    />
-                    <Route
-                      path="/admin/applicant/:id"
-                      element={<ApplicantDetail />}
-                    />
-                    <Route
-                      path="/admin/settings"
-                      element={<AdmissionConfiguration />}
-                    />
-
-                    {/* Fallback */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </main>
-              </div>
+              <AppContent />
             </ApplicationProvider>
           </AuthProvider>
         </BrowserRouter>
