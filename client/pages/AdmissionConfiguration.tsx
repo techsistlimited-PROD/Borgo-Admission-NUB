@@ -227,21 +227,11 @@ export default function AdmissionConfiguration() {
 
   const savePaymentMethod = async () => {
     try {
-      const url = editingPayment 
-        ? `/api/payment-methods/${editingPayment.id}`
-        : "/api/payment-methods";
-      const method = editingPayment ? "PUT" : "POST";
+      const response = editingPayment
+        ? await apiClient.updatePaymentMethod(editingPayment.id.toString(), paymentForm)
+        : await apiClient.createPaymentMethod(paymentForm);
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(paymentForm),
-      });
-
-      const data = await response.json();
-      if (data.success) {
+      if (response.success) {
         toast({
           title: "Success",
           description: `Payment method ${editingPayment ? "updated" : "created"} successfully`,
@@ -249,7 +239,7 @@ export default function AdmissionConfiguration() {
         setPaymentDialogOpen(false);
         loadData();
       } else {
-        throw new Error(data.error);
+        throw new Error(response.error);
       }
     } catch (error) {
       console.error("Error saving payment method:", error);
