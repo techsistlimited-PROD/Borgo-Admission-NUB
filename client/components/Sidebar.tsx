@@ -38,7 +38,6 @@ export default function Sidebar({ userType }: SidebarProps) {
     },
     { name: "Personal Info", path: "/personal-information", icon: User },
     { name: "Academic History", path: "/academic-history", icon: FileText },
-    { name: "Review & Payment", path: "/review-payment", icon: CreditCard },
   ];
 
   const applicantPages = [
