@@ -101,13 +101,13 @@ export default function ApplicantLogin() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="universityId">University ID</Label>
+                <Label htmlFor="universityId">Applicant ID</Label>
                 <Input
                   id="universityId"
                   type="text"
                   value={universityId}
                   onChange={(e) => setUniversityId(e.target.value)}
-                  placeholder="e.g., NU24BCS001"
+                  placeholder="e.g., APP123456"
                   className="font-mono"
                 />
               </div>
