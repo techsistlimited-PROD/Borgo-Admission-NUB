@@ -81,7 +81,7 @@ export default function ApplicationReview() {
       admissionPreferences: "ভর্তির পছন্দ",
       programInfo: "প্রোগ্রামের তথ্য",
       personalInfo: "ব্যক্তিগত তথ্য", 
-      familyInfo: "পারিবারিক তথ্য",
+      familyInfo: "পারিব���রিক তথ্য",
       academicInfo: "একাডেমিক ইতিহাস",
       costSummary: "খরচের সারসংক্ষেপ",
       campus: "ক্যাম্পাস",
@@ -200,9 +200,17 @@ export default function ApplicationReview() {
           {/* Admission Preferences */}
           <Card className="bg-white shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                <GraduationCap className="w-5 h-5" />
-                {t.admissionPreferences}
+              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5" />
+                  {t.admissionPreferences}
+                </div>
+                <Link to="/program-selection">
+                  <Button variant="outline" size="sm" className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white">
+                    <Edit className="w-4 h-4 mr-1" />
+                    {t.edit}
+                  </Button>
+                </Link>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -237,9 +245,17 @@ export default function ApplicationReview() {
           {/* Personal Information */}
           <Card className="bg-white shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                <User className="w-5 h-5" />
-                {t.personalInfo}
+              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  {t.personalInfo}
+                </div>
+                <Link to="/personal-information">
+                  <Button variant="outline" size="sm" className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white">
+                    <Edit className="w-4 h-4 mr-1" />
+                    {t.edit}
+                  </Button>
+                </Link>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
