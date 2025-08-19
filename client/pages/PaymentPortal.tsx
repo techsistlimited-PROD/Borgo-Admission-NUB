@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Upload,
   CreditCard,
@@ -42,6 +42,7 @@ export default function PaymentPortal() {
   });
   const [payslipFile, setPayslipFile] = useState<File | null>(null);
   const [transactionId, setTransactionId] = useState("");
+  const payslipFileInputRef = useRef<HTMLInputElement>(null);
 
   const texts = {
     en: {
@@ -118,7 +119,7 @@ export default function PaymentPortal() {
         "বিশ্ববিদ্যালয়ের ক্যাশ কাউন্টারে পেমেন্ট করুন এবং রসিদ আপলোড করুন",
       totalAmount: "মোট পরিমাণ",
       applicationInfo: "আবেদনের তথ্য",
-      trackingId: "ট্র্যাকিং আইডি",
+      trackingId: "ট্র্য���কিং আইডি",
       program: "প্রোগ্রাম",
       department: "বিভাগ",
       semester: "সেমিস্টার",
@@ -467,12 +468,37 @@ export default function PaymentPortal() {
               </div>
               <div className="space-y-2">
                 <Label>{t.payslipUpload}</Label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors">
+                <div
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors cursor-pointer"
+                  onClick={() => payslipFileInputRef.current?.click()}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.add("border-accent-purple", "bg-purple-50");
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                      const file = files[0];
+                      const acceptedTypes = ['.pdf', '.jpg', '.jpeg', '.png'];
+                      const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+                      if (acceptedTypes.includes(fileExtension)) {
+                        setPayslipFile(file);
+                      }
+                    }
+                  }}
+                >
                   <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                   <p className="text-sm text-gray-600">
                     Click or drag payslip here
                   </p>
                   <input
+                    ref={payslipFileInputRef}
                     type="file"
                     className="hidden"
                     accept=".pdf,.jpg,.jpeg,.png"
