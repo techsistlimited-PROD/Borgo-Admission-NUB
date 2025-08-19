@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "../../components/Header";
 import { ApplicationProvider } from "../../contexts/ApplicationContext";
+import { AuthProvider } from "../../contexts/AuthContext";
 import Index from "../../pages/Index";
 import ProgramSelection from "../../pages/ProgramSelection";
 import PersonalInformation from "../../pages/PersonalInformation";
@@ -26,24 +27,26 @@ const ApplicantApp = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <ApplicationProvider>
-          <div className="min-h-screen bg-lavender-bg">
-            <Header showLogin={true} />
-            <main className="p-6">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/program-selection" element={<ProgramSelection />} />
-                <Route path="/personal-information" element={<PersonalInformation />} />
-                <Route path="/academic-history" element={<AcademicHistory />} />
-                <Route path="/application-review" element={<ApplicationReview />} />
-                <Route path="/application-success" element={<ApplicationSuccess />} />
-                <Route path="/applicant-portal" element={<ApplicantLogin />} />
-                <Route path="/portal" element={<ApplicantLogin />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-          </div>
-        </ApplicationProvider>
+        <AuthProvider>
+          <ApplicationProvider>
+            <div className="min-h-screen bg-lavender-bg">
+              <Header showLogin={true} />
+              <main className="p-6">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/program-selection" element={<ProgramSelection />} />
+                  <Route path="/personal-information" element={<PersonalInformation />} />
+                  <Route path="/academic-history" element={<AcademicHistory />} />
+                  <Route path="/application-review" element={<ApplicationReview />} />
+                  <Route path="/application-success" element={<ApplicationSuccess />} />
+                  <Route path="/applicant-portal" element={<ApplicantLogin />} />
+                  <Route path="/portal" element={<ApplicantLogin />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+            </div>
+          </ApplicationProvider>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
