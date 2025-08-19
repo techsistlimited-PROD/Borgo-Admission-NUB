@@ -45,6 +45,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const token = localStorage.getItem("nu_token");
         if (token) {
+          // Handle demo token specially
+          if (token === "demo_token_123") {
+            setUser({
+              id: 1,
+              uuid: "demo-uuid-123",
+              name: "Demo Applicant",
+              email: "demo@applicant.com",
+              type: "applicant",
+              university_id: "APP123456"
+            });
+            setIsLoading(false);
+            return;
+          }
+
+          // For real tokens, validate with API
           const response = await apiClient.getCurrentUser();
           if (response.success && response.data?.user) {
             setUser(response.data.user);
