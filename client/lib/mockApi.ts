@@ -509,23 +509,23 @@ class MockApiService {
     await this.delay();
 
     const settings = {
-      applicationDeadline: "2024-12-31",
-      admissionStartDate: "2024-09-01",
-      admissionEndDate: "2024-12-31",
-      applicationFee: 2000,
-      lateFeePercentage: 10,
-      maxApplicationsPerSession: 1000,
-      allowLateApplications: true,
-      requirePaymentForSubmission: false,
-      enableEmailNotifications: true,
-      enableSMSNotifications: true,
-      autoApprovalEnabled: false,
-      requireDocumentVerification: true,
-      allowPartialPayments: true,
-      refundPolicy: "No refund after admission confirmation",
-      contactEmail: "admissions@nu.edu.bd",
-      contactPhone: "+8801234567890",
-      helpDeskHours: "9:00 AM - 5:00 PM (Monday to Friday)"
+      application_start_date: "2024-09-01",
+      application_deadline: "2024-12-31",
+      late_fee_deadline: "2024-12-15",
+      session_name: "Spring 2024",
+      admission_fee: 2000,
+      late_fee: 500,
+      max_waiver_percentage: 25,
+      is_admission_open: true,
+      allow_application_editing: true,
+      waiver_enabled: true,
+      auto_approve_applications: false,
+      require_payment_for_review: false,
+      enable_sms_notifications: true,
+      enable_email_notifications: true,
+      contact_email: "admissions@nu.edu.bd",
+      contact_phone: "+8801234567890",
+      help_desk_hours: "9:00 AM - 5:00 PM (Monday to Friday)"
     };
 
     return { success: true, data: settings };
