@@ -83,13 +83,15 @@ interface PaymentMethod {
   name: string;
   type: string;
   enabled: boolean;
-  accountNumber: string;
+  account_number: string;
   instructions: string;
-  processingFee: number;
-  minimumAmount: number;
-  maximumAmount: number;
-  bankName?: string;
-  routingNumber?: string;
+  processing_fee: number;
+  minimum_amount: number;
+  maximum_amount: number;
+  bank_name?: string;
+  routing_number?: string;
+  is_active?: boolean;
+  order_priority?: number;
 }
 
 interface DocumentRequirement {
