@@ -156,11 +156,17 @@ export default function ProgramSelection() {
     },
     bn: {
       title: "প্রোগ্রাম ও বিভাগ নির্বাচন",
-      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণনা করুন",
+      subtitle: "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে ন���ন ও খরচ গণনা করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
+      campusSelection: "ক্যাম্পাস নির্বাচন করুন",
+      semesterSelection: "সেমিস্টার নির্বাচন করুন",
+      semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
+      selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
+      selectSemester: "সেমিস্টার বেছে নিন",
+      selectSemesterType: "সেমিস্টার ধরন বেছে নিন",
       selectProgram: "আপনার প্রোগ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ্রামের তথ্য",
@@ -197,7 +203,7 @@ export default function ProgramSelection() {
         "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে পারে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফলভাবে সেভ হয়েছে!",
-      saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ্টা করু��।",
+      saveError: "ডেটা সেভ করতে ব্যর্থ। আবার চেষ্টা করুন।",
     },
   };
 
