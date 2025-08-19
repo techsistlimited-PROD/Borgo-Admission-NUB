@@ -137,12 +137,12 @@ export default function AdminAdmissionList() {
     },
     bn: {
       title: "ভর্তি অফিস - নতুন ভর্তির তালিকা",
-      searchPlaceholder: "নাম, ইমেইল, বা ট্���্যাকিং আইডি দিয়ে খুঁজুন...",
+      searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
       filterByStatus: "অ��স্থা অনুযায়ী ফিল্টার",
       allStatus: "সব অবস্থা",
       pending: "অপেক্ষমাণ",
       approved: "অনুমোদিত",
-      rejected: "প্রত্যাখ্যাত",
+      rejected: "প���রত্যাখ্যাত",
       export: "তালিকা এক্সপোর্ট",
       slNo: "ক্রমিক নং",
       name: "নাম",
@@ -547,7 +547,7 @@ export default function AdminAdmissionList() {
                           {t.view}
                         </Button>
 
-                        {!isLocked(app.tracking_id) &&
+                        {!isLocked(app.university_id || app.id) &&
                           app.status === "pending" && (
                             <>
                               <Button
