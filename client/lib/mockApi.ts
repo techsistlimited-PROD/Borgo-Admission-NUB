@@ -545,35 +545,41 @@ class MockApiService {
         name: "bKash",
         type: "mobile_banking",
         enabled: true,
-        accountNumber: "01700000000",
+        account_number: "01700000000",
         instructions: "Send money to this number and upload receipt",
-        processingFee: 0,
-        minimumAmount: 100,
-        maximumAmount: 500000
+        processing_fee: 0,
+        minimum_amount: 100,
+        maximum_amount: 500000,
+        is_active: true,
+        order_priority: 1
       },
       {
         id: 2,
         name: "Rocket",
         type: "mobile_banking",
         enabled: true,
-        accountNumber: "017000000000",
+        account_number: "017000000000",
         instructions: "Send money to this number and upload receipt",
-        processingFee: 0,
-        minimumAmount: 100,
-        maximumAmount: 500000
+        processing_fee: 0,
+        minimum_amount: 100,
+        maximum_amount: 500000,
+        is_active: true,
+        order_priority: 2
       },
       {
         id: 3,
         name: "Bank Transfer",
         type: "bank",
         enabled: true,
-        accountNumber: "1234567890",
-        bankName: "Example Bank Ltd",
-        routingNumber: "123456789",
+        account_number: "1234567890",
+        bank_name: "Example Bank Ltd",
+        routing_number: "123456789",
         instructions: "Transfer to this bank account and upload receipt",
-        processingFee: 50,
-        minimumAmount: 1000,
-        maximumAmount: 1000000
+        processing_fee: 50,
+        minimum_amount: 1000,
+        maximum_amount: 1000000,
+        is_active: true,
+        order_priority: 3
       }
     ];
 
