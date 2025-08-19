@@ -81,9 +81,9 @@ export default function ApplicationReview() {
       admissionPreferences: "ভর্তির পছন্দ",
       programInfo: "প্রোগ্রামের তথ্য",
       personalInfo: "ব্যক্তিগত তথ্য", 
-      familyInfo: "পারিব���রিক তথ্য",
+      familyInfo: "পারিবারিক তথ্য",
       academicInfo: "একাডেমিক ইতিহাস",
-      costSummary: "খরচের সারসংক্ষেপ",
+      costSummary: "খ��চের সারসংক্ষেপ",
       campus: "ক্যাম্পাস",
       semester: "সেমিস্টার",
       semesterType: "সেমিস্টার ধরন",
@@ -107,7 +107,7 @@ export default function ApplicationReview() {
       waiverAmount: "মওকুফের পরিমাণ",
       finalAmount: "চূড়ান্ত পরিমাণ",
       submitting: "আবেদন জমা দেওয়া হচ্ছে...",
-      submitError: "আবেদন জমা দিতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।",
+      submitError: "আবেদন জমা দিতে ব্যর্থ। অনুগ্রহ কর��� আবার চেষ্টা করুন।",
       reviewNote: "জমা দেওয়ার আগে সমস্ত তথ্য সাবধানে পর্যালোচনা করুন। একবার জমা দিলে, আপনি পরিবর্তন করতে পারবেন না।",
       dataIncomplete: "জমা দে��য়ার আগে সমস্ত পূর্ববর্তী ধাপ সম্পূর্ণ করুন।",
     },
@@ -291,9 +291,17 @@ export default function ApplicationReview() {
           {/* Family Information */}
           <Card className="bg-white shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                <User className="w-5 h-5" />
-                {t.familyInfo}
+              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  {t.familyInfo}
+                </div>
+                <Link to="/personal-information">
+                  <Button variant="outline" size="sm" className="text-accent-purple border-accent-purple hover:bg-accent-purple hover:text-white">
+                    <Edit className="w-4 h-4 mr-1" />
+                    {t.edit}
+                  </Button>
+                </Link>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
