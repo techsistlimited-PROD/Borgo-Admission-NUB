@@ -30,8 +30,11 @@ export default function Index() {
       heroSubtitle:
         "Join Northern University Bangladesh - Where Excellence Meets Opportunity",
       heroDescription:
-        "Begin your online admission process in just 5 simple steps. Our streamlined system makes it easy to apply for your dream program.",
-      startJourney: "Start Your Journey",
+        "Choose your admission path and begin your journey with us. We offer both regular admission and credit transfer options.",
+      regularAdmission: "Regular Admission",
+      creditTransfer: "Credit Transfer",
+      regularAdmissionDesc: "Apply for undergraduate and graduate programs",
+      creditTransferDesc: "Transfer your credits from another institution",
       uploadOffline: "Upload Offline Application",
       admissionProcess: "Simple 4-Step Admission Process",
       step1: "Choose Program & Calculate Costs",
@@ -85,7 +88,7 @@ export default function Index() {
       step2: "ব্যক্তিগত তথ্য",
       step2Desc: "আপনার ব্যক্তিগত তথ্য পূরণ করুন",
       step3: "শিক্ষাগত ইতিহাস",
-      step3Desc: "আপনার শিক্ষাগত কাগজপত্র আপলোড করুন",
+      step3Desc: "আপনার শিক্ষা��ত কাগজপত্র আপলোড করুন",
       step4: "পর্যালোচনা ও পেমেন্ট",
       step4Desc: "আপনার আবেদন সম্পূর্ণ করুন",
       whyChooseUs: "কেন নর্দার্ন ইউনিভার্সিটি বাংলাদেশ বেছে নেবেন?",
