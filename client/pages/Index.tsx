@@ -36,6 +36,10 @@ export default function Index() {
       regularAdmissionDesc: "Apply for undergraduate and graduate programs",
       creditTransferDesc: "Transfer your credits from another institution",
       uploadOffline: "Upload Offline Application",
+      regularAdmission: "Regular Admission",
+      creditTransfer: "Credit Transfer",
+      regularAdmissionDesc: "Apply for undergraduate and graduate programs",
+      creditTransferDesc: "Transfer your credits from another institution",
       admissionProcess: "Simple 4-Step Admission Process",
       step1: "Choose Program & Calculate Costs",
       step1Desc: "Select program, department and see available waivers",
@@ -106,7 +110,7 @@ export default function Index() {
       meritBasedDesc: "এসএসসি ও এইচএসসি ফলাফলের ভিত্তিতে ১০০% পর্যন্ত মওকুফ",
       specialWaivers: "বিশেষ মওকুফ উপলব্ধ",
       specialWaiversDesc:
-        "নারী, ���াইবোন এবং মুক্তিযোদ্ধাদের জন্য অতিরিক্ত সহায়তা",
+        "নারী, ���াইবোন এবং মুক্তিযোদ্ধাদের জন্য অতিরিক্ত সহায��তা",
       quickStats: "দ্রুত পরিসংখ্যান",
       totalApplicants: "মোট আবেদন���ারী",
       programs: "উপলব্ধ প্রোগ্রাম",
@@ -224,25 +228,55 @@ export default function Index() {
                 </p>
               </div>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/program-selection">
+              {/* Admission Options */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-white/90">Choose Your Admission Path:</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Link to="/program-selection?type=regular">
+                    <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
+                      <CardContent className="p-6">
+                        <div className="text-white space-y-3">
+                          <div className="flex items-center justify-between">
+                            <FileText className="w-6 h-6" />
+                            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-lg font-poppins">{t.regularAdmission}</h4>
+                            <p className="text-sm text-white/80">{t.regularAdmissionDesc}</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+
+                  <Link to="/program-selection?type=credit-transfer">
+                    <Card className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
+                      <CardContent className="p-6">
+                        <div className="text-white space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Award className="w-6 h-6" />
+                            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-lg font-poppins">{t.creditTransfer}</h4>
+                            <p className="text-sm text-white/80">{t.creditTransferDesc}</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
+
+                <div className="pt-4">
                   <Button
+                    variant="outline"
                     size="lg"
-                    className="w-full sm:w-auto bg-white text-deep-plum hover:bg-lavender-bg font-poppins text-lg px-8 py-4"
+                    className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-deep-plum text-lg px-8 py-4"
                   >
-                    {t.startJourney}
-                    <ChevronRight className="w-5 h-5 ml-2" />
+                    <Upload className="w-5 h-5 mr-2" />
+                    {t.uploadOffline}
                   </Button>
-                </Link>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-deep-plum text-lg px-8 py-4"
-                >
-                  <Upload className="w-5 h-5 mr-2" />
-                  {t.uploadOffline}
-                </Button>
+                </div>
               </div>
             </div>
 
