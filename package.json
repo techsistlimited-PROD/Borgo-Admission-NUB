@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "vite",
     "dev:backend": "tsx watch server/start.ts",
-    "dev:full": "concurrently \"npm run dev\" \"npm run dev:backend\"",
+    "dev:full": "concurrently \"npm run dev:applicant\" \"npm run dev:applicant-portal\" \"npm run dev:admin\" \"npm run dev:backend\"",
     "dev:applicant": "vite --config vite.config.applicant.ts",
     "dev:applicant-portal": "vite --config vite.config.applicant-portal.ts",
     "dev:admin": "vite --config vite.config.admin.ts",
