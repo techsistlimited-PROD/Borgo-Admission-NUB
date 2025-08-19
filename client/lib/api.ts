@@ -1,9 +1,9 @@
 // Frontend-Only API Client (Uses Mock Data - No Backend Required)
 
 import { mockApi } from "./mockApi";
-import type { LoginCredentials, ApiResponse, User } from "./mockApi";
+import type { LoginCredentials, ApiResponse, User, Application } from "./mockApi";
 
-export type { LoginCredentials, ApiResponse, User };
+export type { LoginCredentials, ApiResponse, User, Application };
 
 export interface LoginRequest {
   identifier: string;
