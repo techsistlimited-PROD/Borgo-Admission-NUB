@@ -58,6 +58,50 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
 
+interface AdmissionSettings {
+  applicationDeadline: string;
+  admissionStartDate: string;
+  admissionEndDate: string;
+  applicationFee: number;
+  lateFeePercentage: number;
+  maxApplicationsPerSession: number;
+  allowLateApplications: boolean;
+  requirePaymentForSubmission: boolean;
+  enableEmailNotifications: boolean;
+  enableSMSNotifications: boolean;
+  autoApprovalEnabled: boolean;
+  requireDocumentVerification: boolean;
+  allowPartialPayments: boolean;
+  refundPolicy: string;
+  contactEmail: string;
+  contactPhone: string;
+  helpDeskHours: string;
+}
+
+interface PaymentMethod {
+  id: number;
+  name: string;
+  type: string;
+  enabled: boolean;
+  accountNumber: string;
+  instructions: string;
+  processingFee: number;
+  minimumAmount: number;
+  maximumAmount: number;
+  bankName?: string;
+  routingNumber?: string;
+}
+
+interface DocumentRequirement {
+  id: number;
+  name: string;
+  type: string;
+  required: boolean;
+  formats: string[];
+  maxSize: string;
+  description: string;
+}
+
 export default function AdmissionConfiguration() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
