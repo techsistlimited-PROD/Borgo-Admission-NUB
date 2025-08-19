@@ -609,46 +609,51 @@ class MockApiService {
         id: 1,
         name: "SSC Certificate",
         type: "academic",
-        required: true,
-        formats: ["PDF", "JPG", "PNG"],
-        maxSize: "5MB",
-        description: "Original SSC certificate or equivalent"
+        is_required: true,
+        allowed_formats: ["PDF", "JPG", "PNG"],
+        max_file_size: "5MB",
+        description: "Original SSC certificate or equivalent",
+        order_priority: 1
       },
       {
         id: 2,
         name: "HSC Certificate",
         type: "academic",
-        required: true,
-        formats: ["PDF", "JPG", "PNG"],
-        maxSize: "5MB",
-        description: "Original HSC certificate or equivalent"
+        is_required: true,
+        allowed_formats: ["PDF", "JPG", "PNG"],
+        max_file_size: "5MB",
+        description: "Original HSC certificate or equivalent",
+        order_priority: 2
       },
       {
         id: 3,
         name: "Passport Photo",
         type: "personal",
-        required: true,
-        formats: ["JPG", "PNG"],
-        maxSize: "2MB",
-        description: "Recent passport-size photograph"
+        is_required: true,
+        allowed_formats: ["JPG", "PNG"],
+        max_file_size: "2MB",
+        description: "Recent passport-size photograph",
+        order_priority: 3
       },
       {
         id: 4,
         name: "National ID",
         type: "personal",
-        required: true,
-        formats: ["PDF", "JPG", "PNG"],
-        maxSize: "3MB",
-        description: "National ID card or birth certificate"
+        is_required: true,
+        allowed_formats: ["PDF", "JPG", "PNG"],
+        max_file_size: "3MB",
+        description: "National ID card or birth certificate",
+        order_priority: 4
       },
       {
         id: 5,
         name: "Transcript",
         type: "academic",
-        required: false,
-        formats: ["PDF"],
-        maxSize: "10MB",
-        description: "Official academic transcript for credit transfer"
+        is_required: false,
+        allowed_formats: ["PDF"],
+        max_file_size: "10MB",
+        description: "Official academic transcript for credit transfer",
+        order_priority: 5
       }
     ];
 
