@@ -17,6 +17,11 @@ import NotFound from "../../pages/NotFound";
 
 // Import applicant portal components
 import ApplicantLogin from "../../pages/ApplicantLogin";
+import Dashboard from "../../pages/Dashboard";
+import Notifications from "../../pages/Notifications";
+import PaymentPortal from "../../pages/PaymentPortal";
+import { AuthProvider, useAuth } from "../../contexts/AuthContext";
+import Sidebar from "../../components/Sidebar";
 
 // Applicant Portal Route Handler
 const ApplicantPortalHandler = () => {
