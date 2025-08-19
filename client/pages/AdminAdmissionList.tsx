@@ -286,9 +286,10 @@ export default function AdminAdmissionList() {
       pending: { color: "bg-yellow-100 text-yellow-800", label: t.pending },
       approved: { color: "bg-green-100 text-green-800", label: t.approved },
       rejected: { color: "bg-red-100 text-red-800", label: t.rejected },
+      payment_pending: { color: "bg-blue-100 text-blue-800", label: "Payment Pending" },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig];
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
     return <Badge className={config.color}>{config.label}</Badge>;
   };
 
