@@ -39,7 +39,7 @@ import {
 } from "../components/ui/table";
 import { Switch } from "../components/ui/switch";
 import { useToast } from "../hooks/use-toast";
-import apiClient from "../lib/api";
+import apiClient, { Application } from "../lib/api";
 
 interface Application {
   id: string;
@@ -137,7 +137,7 @@ export default function AdminAdmissionList() {
     },
     bn: {
       title: "ভর্তি অফিস - নতুন ভর্তির তালিকা",
-      searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
+      searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয���ে খুঁজুন...",
       filterByStatus: "অ��স্থা অনুযায়ী ফিল্টার",
       allStatus: "সব অবস্থা",
       pending: "অপেক্ষমাণ",
@@ -172,7 +172,7 @@ export default function AdminAdmissionList() {
       approving: "অনুমোদন করা হচ্ছে...",
       rejecting: "প্রত্যাখ্যান করা হচ্ছে...",
       approveSuccess: "আবেদন সফলভাবে অনুমোদিত হয়েছে",
-      rejectSuccess: "আবেদন সফলভা���ে প্রত্যাখ্যান করা হয়েছে",
+      rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যান করা হয়েছে",
       actionError: "��বেদনের স্ট্যাটাস ���পডেট করতে ব্যর্থ",
       program: "���্রোগ্রাম",
       department: "বিভাগ",
