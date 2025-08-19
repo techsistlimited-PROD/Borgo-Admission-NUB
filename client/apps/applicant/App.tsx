@@ -34,12 +34,30 @@ const ApplicantApp = () => (
               <main className="p-6">
                 <Routes>
                   <Route path="/" element={<Index />} />
-                  <Route path="/program-selection" element={<ProgramSelection />} />
-                  <Route path="/personal-information" element={<PersonalInformation />} />
-                  <Route path="/academic-history" element={<AcademicHistory />} />
-                  <Route path="/application-review" element={<ApplicationReview />} />
-                  <Route path="/application-success" element={<ApplicationSuccess />} />
-                  <Route path="/applicant-portal" element={<ApplicantLogin />} />
+                  <Route
+                    path="/program-selection"
+                    element={<ProgramSelection />}
+                  />
+                  <Route
+                    path="/personal-information"
+                    element={<PersonalInformation />}
+                  />
+                  <Route
+                    path="/academic-history"
+                    element={<AcademicHistory />}
+                  />
+                  <Route
+                    path="/application-review"
+                    element={<ApplicationReview />}
+                  />
+                  <Route
+                    path="/application-success"
+                    element={<ApplicationSuccess />}
+                  />
+                  <Route
+                    path="/applicant-portal"
+                    element={<ApplicantLogin />}
+                  />
                   <Route path="/portal" element={<ApplicantLogin />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

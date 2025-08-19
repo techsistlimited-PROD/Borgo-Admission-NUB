@@ -835,20 +835,35 @@ export default function ProgramSelection() {
                       onClick={() => transcriptFileInputRef.current?.click()}
                       onDragOver={(e) => {
                         e.preventDefault();
-                        e.currentTarget.classList.add("border-accent-purple", "bg-purple-50");
+                        e.currentTarget.classList.add(
+                          "border-accent-purple",
+                          "bg-purple-50",
+                        );
                       }}
                       onDragLeave={(e) => {
                         e.preventDefault();
-                        e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                        e.currentTarget.classList.remove(
+                          "border-accent-purple",
+                          "bg-purple-50",
+                        );
                       }}
                       onDrop={(e) => {
                         e.preventDefault();
-                        e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                        e.currentTarget.classList.remove(
+                          "border-accent-purple",
+                          "bg-purple-50",
+                        );
                         const files = e.dataTransfer.files;
                         if (files.length > 0) {
                           const file = files[0];
-                          const acceptedTypes = ['.pdf', '.jpg', '.jpeg', '.png'];
-                          const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+                          const acceptedTypes = [
+                            ".pdf",
+                            ".jpg",
+                            ".jpeg",
+                            ".png",
+                          ];
+                          const fileExtension =
+                            "." + file.name.split(".").pop()?.toLowerCase();
                           if (acceptedTypes.includes(fileExtension)) {
                             setTranscriptFile(file);
                           }

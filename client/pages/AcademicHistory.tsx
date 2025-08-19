@@ -373,23 +373,42 @@ export default function AcademicHistory() {
                             }}
                             onDragOver={(e) => {
                               e.preventDefault();
-                              e.currentTarget.classList.add("border-accent-purple", "bg-purple-50");
+                              e.currentTarget.classList.add(
+                                "border-accent-purple",
+                                "bg-purple-50",
+                              );
                             }}
                             onDragLeave={(e) => {
                               e.preventDefault();
-                              e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                              e.currentTarget.classList.remove(
+                                "border-accent-purple",
+                                "bg-purple-50",
+                              );
                             }}
                             onDrop={(e) => {
                               e.preventDefault();
-                              e.currentTarget.classList.remove("border-accent-purple", "bg-purple-50");
+                              e.currentTarget.classList.remove(
+                                "border-accent-purple",
+                                "bg-purple-50",
+                              );
                               const files = e.dataTransfer.files;
                               if (files.length > 0) {
                                 const file = files[0];
-                                const acceptedTypes = ['.pdf', '.jpg', '.jpeg', '.png'];
-                                const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+                                const acceptedTypes = [
+                                  ".pdf",
+                                  ".jpg",
+                                  ".jpeg",
+                                  ".png",
+                                ];
+                                const fileExtension =
+                                  "." +
+                                  file.name.split(".").pop()?.toLowerCase();
                                 if (acceptedTypes.includes(fileExtension)) {
                                   const inputKey = `${record.id}-${docType.key}`;
-                                  setUploadedFiles(prev => ({ ...prev, [inputKey]: file }));
+                                  setUploadedFiles((prev) => ({
+                                    ...prev,
+                                    [inputKey]: file,
+                                  }));
                                 }
                               }
                             }}
@@ -410,13 +429,20 @@ export default function AcademicHistory() {
                                 const file = e.target.files?.[0];
                                 if (file) {
                                   const inputKey = `${record.id}-${docType.key}`;
-                                  setUploadedFiles(prev => ({ ...prev, [inputKey]: file }));
+                                  setUploadedFiles((prev) => ({
+                                    ...prev,
+                                    [inputKey]: file,
+                                  }));
                                 }
                               }}
                             />
                             {uploadedFiles[`${record.id}-${docType.key}`] && (
                               <p className="text-sm text-green-600 mt-2">
-                                Selected: {uploadedFiles[`${record.id}-${docType.key}`].name}
+                                Selected:{" "}
+                                {
+                                  uploadedFiles[`${record.id}-${docType.key}`]
+                                    .name
+                                }
                               </p>
                             )}
                           </div>
