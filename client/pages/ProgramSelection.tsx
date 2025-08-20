@@ -301,7 +301,7 @@ export default function ProgramSelection() {
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড���ান্ত খরচ পরিবর্তিত হ��ে প��রে",
+        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -1131,64 +1131,94 @@ export default function ProgramSelection() {
               )}
 
               {/* Eligibility Checker */}
-              {selectedProgram && (sscGPA || hscGPA) && (
-                <Card className="bg-white shadow-lg">
-                  <CardHeader>
-                    <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5" />
-                      Eligibility Verification
-                    </CardTitle>
-                    <p className="text-sm text-gray-600 mt-2">
-                      We check your academic qualifications against the minimum
-                      requirements for your selected program
-                    </p>
-                  </CardHeader>
+            {selectedProgram && hasRequiredAcademicInfo() && (
+              <Card className="bg-white shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    Eligibility Verification & Admission Requirements
+                  </CardTitle>
+                  <p className="text-sm text-gray-600 mt-2">
+                    We check your academic qualifications against the official university requirements for your selected program
+                  </p>
+                </CardHeader>
                   <CardContent className="space-y-4">
                     {eligibilityResult ? (
-                      <div className="space-y-4">
-                        {/* Eligibility Status */}
-                        <div
-                          className={`p-4 rounded-lg border ${
-                            eligibilityResult.isEligible
-                              ? "bg-green-50 border-green-200"
-                              : "bg-red-50 border-red-200"
-                          }`}
-                        >
-                          <div className="flex items-start gap-3">
-                            {eligibilityResult.isEligible ? (
-                              <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                            ) : (
-                              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
-                            )}
-                            <div className="flex-1">
-                              <h4
-                                className={`font-semibold ${
-                                  eligibilityResult.isEligible
-                                    ? "text-green-800"
-                                    : "text-red-800"
-                                }`}
-                              >
-                                {eligibilityResult.isEligible
-                                  ? "✅ Eligible"
-                                  : "❌ Not Eligible"}
-                              </h4>
-                              <p
-                                className={`text-sm mt-1 ${
-                                  eligibilityResult.isEligible
-                                    ? "text-green-700"
-                                    : "text-red-700"
-                                }`}
-                              >
-                                {getEligibilityMessage(
-                                  eligibilityResult,
-                                  getProgramById(selectedProgram)?.name ||
-                                    selectedProgram,
-                                  language,
+                    <div className="space-y-4">
+                      {/* Eligibility Status */}
+                      <div
+                        className={`p-4 rounded-lg border ${
+                          eligibilityResult.isEligible
+                            ? "bg-green-50 border-green-200"
+                            : "bg-red-50 border-red-200"
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          {eligibilityResult.isEligible ? (
+                            <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+                          ) : (
+                            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                          )}
+                          <div className="flex-1">
+                            <h4
+                              className={`font-semibold ${
+                                eligibilityResult.isEligible
+                                  ? "text-green-800"
+                                  : "text-red-800"
+                              }`}
+                            >
+                              {eligibilityResult.isEligible
+                                ? "✅ Eligible for Admission"
+                                : "❌ Not Eligible"}
+                            </h4>
+                            {eligibilityResult.isEligible && (
+                              <div className="mt-2 space-y-2">
+                                <p className="text-sm text-green-700">
+                                  Congratulations! You meet the minimum eligibility requirements.
+                                </p>
+                                {eligibilityResult.requiresAdmissionTest && (
+                                  <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+                                    <h5 className="font-medium text-blue-800 mb-1">
+                                      📝 Admission Test Required
+                                    </h5>
+                                    <p className="text-sm text-blue-700 mb-2">
+                                      This program requires an admission test {eligibilityResult.requiresViva && 'and viva voce'}.
+                                    </p>
+                                    {eligibilityResult.admissionTestFee && (
+                                      <div className="bg-white p-2 rounded border">
+                                        <div className="flex justify-between items-center">
+                                          <span className="text-sm font-medium">Admission Test Fee:</span>
+                                          <span className="text-lg font-bold text-blue-800">
+                                            ৳{eligibilityResult.admissionTestFee}
+                                          </span>
+                                        </div>
+                                        <p className="text-xs text-gray-600 mt-1">
+                                          Payment required to download admit card
+                                        </p>
+                                      </div>
+                                    )}
+                                  </div>
                                 )}
+                                {!eligibilityResult.requiresAdmissionTest && (
+                                  <div className="p-3 bg-green-50 border border-green-200 rounded">
+                                    <h5 className="font-medium text-green-800">
+                                      🎉 Direct Admission Available
+                                    </h5>
+                                    <p className="text-sm text-green-700">
+                                      You qualify for direct admission {eligibilityResult.requiresViva ? 'subject to viva voce' : ''}.
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            {!eligibilityResult.isEligible && (
+                              <p className="text-sm mt-1 text-red-700">
+                                Please review the requirements below and consider improving your qualifications.
                               </p>
-                            </div>
+                            )}
                           </div>
                         </div>
+                      </div>
 
                         {/* Missing Requirements */}
                         {!eligibilityResult.isEligible &&
@@ -1263,26 +1293,128 @@ export default function ProgramSelection() {
                           )}
 
                         {/* Program Requirements Display */}
-                        {selectedProgram && (
-                          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                            <h5 className="font-semibold text-gray-800 mb-2">
-                              Program Requirements:
-                            </h5>
-                            <p className="text-sm text-gray-700">
-                              {
-                                getProgramById(selectedProgram)
-                                  ?.eligibilityRequirements.specificRequirements
-                              }
-                            </p>
+                      {selectedProgram && (
+                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                          <h5 className="font-semibold text-gray-800 mb-2">
+                            📋 Official Program Requirements:
+                          </h5>
+                          {(() => {
+                            const programRule = PROGRAM_ELIGIBILITY_RULES.find(r => r.programId === selectedProgram);
+                            const eligibilityRule = programRule?.eligibilityRules[academicBackgroundType];
+
+                            if (!programRule || !eligibilityRule) {
+                              return <p className="text-sm text-gray-600">Requirements not available for this background type.</p>;
+                            }
+
+                            return (
+                              <div className="space-y-2 text-sm text-gray-700">
+                                {academicBackgroundType === 'bangla_medium' && 'minimumSSCGPA' in eligibilityRule && (
+                                  <div>
+                                    <strong>Bangla Medium Requirements:</strong>
+                                    <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                                      <li>Minimum SSC GPA: {eligibilityRule.minimumSSCGPA}</li>
+                                      <li>Minimum HSC GPA: {eligibilityRule.minimumHSCGPA}</li>
+                                      <li>Total GPA (SSC + HSC): {eligibilityRule.minimumTotalGPA}</li>
+                                      {eligibilityRule.allowedGroups && (
+                                        <li>Allowed Groups: {eligibilityRule.allowedGroups.join(', ')}</li>
+                                      )}
+                                    </ul>
+                                  </div>
+                                )}
+                                {academicBackgroundType === 'english_medium' && 'minimumOLevelSubjects' in eligibilityRule && (
+                                  <div>
+                                    <strong>English Medium Requirements:</strong>
+                                    <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                                      <li>Minimum {eligibilityRule.minimumOLevelSubjects} O-Level subjects</li>
+                                      <li>Minimum {eligibilityRule.minimumALevelSubjects} A-Level subjects</li>
+                                      <li>Required: {eligibilityRule.requiredGrades.countOfBGrades} B grades (4.0 GPA)</li>
+                                      <li>Required: {eligibilityRule.requiredGrades.countOfCGrades} C grades (3.5 GPA)</li>
+                                    </ul>
+                                  </div>
+                                )}
+                                {academicBackgroundType === 'diploma' && 'minimumDiplomaCGPA' in eligibilityRule && (
+                                  <div>
+                                    <strong>Diploma Requirements:</strong>
+                                    <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                                      <li>Minimum SSC GPA: {eligibilityRule.minimumSSCGPA}</li>
+                                      <li>Minimum Diploma CGPA: {eligibilityRule.minimumDiplomaCGPA}</li>
+                                      <li>Total GPA (SSC + Diploma): {eligibilityRule.minimumTotalGPA}</li>
+                                      {eligibilityRule.requiresScienceBackground && (
+                                        <li>Science background in SSC required</li>
+                                      )}
+                                    </ul>
+                                  </div>
+                                )}
+                                {academicBackgroundType === 'postgraduate' && 'minimumBachelorCGPA' in eligibilityRule && (
+                                  <div>
+                                    <strong>Postgraduate Requirements:</strong>
+                                    <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                                      <li>Minimum Bachelor's CGPA: {eligibilityRule.minimumBachelorCGPA}</li>
+                                      {eligibilityRule.noThirdDivision && (
+                                        <li>No third division/class in any examination</li>
+                                      )}
+                                      {eligibilityRule.requiredBachelorDegree && (
+                                        <li>Required degree: {eligibilityRule.requiredBachelorDegree.join(' or ')}</li>
+                                      )}
+                                      {eligibilityRule.minimumWorkExperience && (
+                                        <li>Minimum {eligibilityRule.minimumWorkExperience} years work experience</li>
+                                      )}
+                                    </ul>
+                                  </div>
+                                )}
+                                {programRule.subjectRequirements && (
+                                  <div className="mt-3">
+                                    <strong>Additional Requirements:</strong>
+                                    <ul className="list-disc list-inside ml-4 mt-1">
+                                      {programRule.subjectRequirements.map((req, index) => (
+                                        <li key={index}>{req}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                                {programRule.allowedPassingYears && (
+                                  <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                                    <strong className="text-yellow-800">Year Restriction:</strong>
+                                    <p className="text-yellow-700">HSC passing years: {programRule.allowedPassingYears.join(', ')}</p>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      )}
+
+                      {/* Admit Card Generation */}
+                      {eligibilityResult.isEligible && eligibilityResult.requiresAdmissionTest && (
+                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                          <h5 className="font-semibold text-blue-800 mb-3">
+                            🎫 Admit Card Generation
+                          </h5>
+                          <p className="text-sm text-blue-700 mb-4">
+                            After completing your application, you'll need to pay the admission test fee to download your admit card.
+                          </p>
+                          <div className="bg-white p-3 rounded border">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-medium">Admission Test Fee:</span>
+                              <span className="text-xl font-bold text-blue-800">
+                                ৳{eligibilityResult.admissionTestFee}
+                              </span>
+                            </div>
+                            <div className="text-sm text-gray-600 space-y-1">
+                              <p>• Payment method: bKash</p>
+                              <p>• Admit card will be available after payment verification</p>
+                              <p>• Test date and venue will be on the admit card</p>
+                            </div>
                           </div>
-                        )}
+                        </div>
+                      )}
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        <div className="text-center py-4 text-gray-500">
-                          <Info className="w-8 h-8 mx-auto mb-2" />
-                          <p>Enter your SSC and HSC GPA to check eligibility</p>
-                        </div>
+                      <div className="text-center py-4 text-gray-500">
+                        <Info className="w-8 h-8 mx-auto mb-2" />
+                        <p>Complete your academic information above to check eligibility</p>
+                      </div>
 
                         {/* Test Buttons for Development */}
                         {process.env.NODE_ENV === "development" && (
