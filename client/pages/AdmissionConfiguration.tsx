@@ -1171,6 +1171,144 @@ export default function AdmissionConfiguration() {
                 </div>
               </div>
 
+              <Separator />
+
+              {/* Waiver Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-deep-plum">Waiver Configuration</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="waiver_enabled">Enable Waivers</Label>
+                      <Switch
+                        id="waiver_enabled"
+                        checked={settings?.waiver_enabled || false}
+                        onCheckedChange={(checked) =>
+                          settings &&
+                          setSettings({
+                            ...settings,
+                            waiver_enabled: checked,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="max_waiver">Maximum Waiver (%)</Label>
+                    <Input
+                      id="max_waiver"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={settings?.max_waiver_percentage || ""}
+                      onChange={(e) =>
+                        settings &&
+                        setSettings({
+                          ...settings,
+                          max_waiver_percentage: parseInt(e.target.value) || 0,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="max_combined_waiver">Max Combined Waiver (%)</Label>
+                    <Input
+                      id="max_combined_waiver"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={settings?.max_combined_waiver || ""}
+                      onChange={(e) =>
+                        settings &&
+                        setSettings({
+                          ...settings,
+                          max_combined_waiver: parseInt(e.target.value) || 0,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Program-wise Limits */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-deep-plum">Program Applicant Limits</h3>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Program</TableHead>
+                        <TableHead>Max Applicants</TableHead>
+                        <TableHead>Current Applied</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {Object.entries(programLimits).map(([programKey, limits]) => {
+                        const programName = programKey
+                          .split("_")
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(" ");
+
+                        return (
+                          <TableRow key={programKey}>
+                            <TableCell className="font-medium">{programName}</TableCell>
+                            <TableCell>
+                              <Input
+                                type="number"
+                                min="0"
+                                className="w-24"
+                                value={limits.max_applicants}
+                                onChange={(e) =>
+                                  setProgramLimits(prev => ({
+                                    ...prev,
+                                    [programKey]: {
+                                      ...prev[programKey],
+                                      max_applicants: parseInt(e.target.value) || 0,
+                                    },
+                                  }))
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={
+                                (limits.current_applicants || 0) >= limits.max_applicants
+                                  ? "destructive"
+                                  : "outline"
+                              }>
+                                {limits.current_applicants || 0} / {limits.max_applicants}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Switch
+                                checked={limits.enabled}
+                                onCheckedChange={(checked) =>
+                                  setProgramLimits(prev => ({
+                                    ...prev,
+                                    [programKey]: {
+                                      ...prev[programKey],
+                                      enabled: checked,
+                                    },
+                                  }))
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Button variant="ghost" size="sm">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+
               {/* Save Button */}
               <div className="flex justify-end">
                 <Button
@@ -1186,7 +1324,7 @@ export default function AdmissionConfiguration() {
                   ) : (
                     <>
                       <Save className="w-4 h-4 mr-2" />
-                      Save Eligibility Settings
+                      Save Eligibility & Waiver Settings
                     </>
                   )}
                 </Button>
