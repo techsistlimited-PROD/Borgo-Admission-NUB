@@ -189,7 +189,7 @@ export default function ProgramSelection() {
   ];
 
   const semesterTypeOptions = [
-    { id: "bi-semester", name: "Bi-Semester", namebn: "দ্বি-সেমিস্টার" },
+    { id: "bi-semester", name: "Bi-Semester", namebn: "দ্���ি-সেমিস্টার" },
     { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমি������্টার" },
   ];
 
@@ -262,7 +262,7 @@ export default function ProgramSelection() {
       title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
-      backToHome: "হোমে ফিরু���",
+      backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার নির্বাচন করুন",
@@ -278,14 +278,14 @@ export default function ProgramSelection() {
       costBreakdown: "খরচের বিভাজন",
       waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
-      sscGPA: "এসএ��সি জিপিএ",
+      sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
-      additionalWaivers: "অতিরিক্ত মওকুফ",
+      additionalWaivers: "অতিরিক্ত ম���কুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
       waiverAmount: "���ওকুফ পরিমাণ",
@@ -572,6 +572,7 @@ export default function ProgramSelection() {
     setEligibilityResult(null);
     setEligibilityChecked(false);
     setShowEligibilityCheck(false);
+    setIsCheckingEligibility(false);
 
     // Clear localStorage cache
     localStorage.removeItem("nu_application_draft");
