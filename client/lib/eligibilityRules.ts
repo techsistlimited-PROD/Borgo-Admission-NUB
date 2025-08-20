@@ -121,7 +121,7 @@ export interface EligibilityCheckResult {
   admissionTestFee?: number;
   missingRequirements: string[];
   warnings: string[];
-  suggestedPrograms: string[];
+  suggestedPrograms: ProgramEligibilityRule[];
   calculatedScores?: {
     totalGPA?: number;
     oALevelScore?: number;
@@ -599,12 +599,16 @@ export function checkProgramEligibility(
       break;
   }
 
-  // Check year restrictions
-  if (rule.allowedPassingYears && academicRecord.hscYear) {
-    if (!rule.allowedPassingYears.includes(academicRecord.hscYear)) {
+  // Check year restrictions (only for Bangla Medium and Diploma backgrounds)
+  if (rule.allowedPassingYears &&
+      (academicRecord.backgroundType === 'bangla_medium' || academicRecord.backgroundType === 'diploma')) {
+    if (!academicRecord.hscYear) {
+      // Don't fail eligibility if year is not provided, just add warning
+      warnings.push('HSC passing year is recommended for verification');
+    } else if (!rule.allowedPassingYears.includes(academicRecord.hscYear)) {
       isEligible = false;
       missingRequirements.push(
-        `HSC passing year must be one of: ${rule.allowedPassingYears.join(", ")}`,
+        `HSC passing year must be one of: ${rule.allowedPassingYears.join(", ")} (you entered: ${academicRecord.hscYear})`,
       );
     }
   }
@@ -631,12 +635,12 @@ function checkBanglaMediumEligibility(
 
   if (!record.sscGPA || record.sscGPA < rule.minimumSSCGPA) {
     isEligible = false;
-    missingRequirements.push(`Minimum SSC GPA ${rule.minimumSSCGPA} required`);
+    missingRequirements.push(`Minimum SSC GPA ${rule.minimumSSCGPA} required (you have: ${record.sscGPA || 'not provided'})`);
   }
 
   if (!record.hscGPA || record.hscGPA < rule.minimumHSCGPA) {
     isEligible = false;
-    missingRequirements.push(`Minimum HSC GPA ${rule.minimumHSCGPA} required`);
+    missingRequirements.push(`Minimum HSC GPA ${rule.minimumHSCGPA} required (you have: ${record.hscGPA || 'not provided'})`);
   }
 
   if (record.sscGPA && record.hscGPA) {
@@ -644,7 +648,7 @@ function checkBanglaMediumEligibility(
     if (totalGPA < rule.minimumTotalGPA) {
       isEligible = false;
       missingRequirements.push(
-        `Total GPA (SSC + HSC) must be at least ${rule.minimumTotalGPA}`,
+        `Total GPA (SSC + HSC) must be at least ${rule.minimumTotalGPA} (you have: ${totalGPA.toFixed(2)})`,
       );
     }
   }
@@ -840,10 +844,20 @@ function getGPAFromGrade(grade: string): number {
 function getSuggestedPrograms(
   record: AcademicRecord,
   currentRule: ProgramEligibilityRule,
-): string[] {
-  // Logic to suggest alternative programs based on the academic record
-  // This would be more sophisticated in a real implementation
-  return [];
+): ProgramEligibilityRule[] {
+  const suggestions: ProgramEligibilityRule[] = [];
+
+  // Find programs that the student might be eligible for
+  for (const rule of PROGRAM_ELIGIBILITY_RULES) {
+    if (rule.programId === currentRule.programId) continue; // Skip current program
+
+    const testResult = checkProgramEligibility(rule.programId, record);
+    if (testResult.isEligible) {
+      suggestions.push(rule);
+    }
+  }
+
+  return suggestions.slice(0, 3); // Return top 3 suggestions
 }
 
 export { PROGRAM_ELIGIBILITY_RULES };
