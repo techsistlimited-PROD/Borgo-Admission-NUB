@@ -16,7 +16,7 @@ export default defineConfig({
     host: true,
   },
   build: {
-    outDir: "../public/registration",
+    outDir: "../dist/registration",
     sourcemap: true,
     emptyOutDir: true,
   },
