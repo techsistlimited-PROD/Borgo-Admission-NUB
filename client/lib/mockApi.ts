@@ -580,6 +580,66 @@ class MockApiService {
         "Northern University Bangladesh, Main Campus, Dhaka - Drawing Hall",
       architecture_test_venue_khulna:
         "Northern University Bangladesh, Khulna Campus - Art Studio",
+      // Program Limits Configuration
+      program_limits: {
+        // Bachelor's programs
+        "bachelor_cse": {
+          max_applicants: 100,
+          current_applicants: 0,
+          enabled: true,
+        },
+        "bachelor_eee": {
+          max_applicants: 80,
+          current_applicants: 0,
+          enabled: true,
+        },
+        "bachelor_ce": {
+          max_applicants: 60,
+          current_applicants: 0,
+          enabled: true,
+        },
+        "bachelor_architecture": {
+          max_applicants: 40,
+          current_applicants: 0,
+          enabled: true,
+        },
+        "bachelor_bba": {
+          max_applicants: 120,
+          current_applicants: 0,
+          enabled: true,
+        },
+        "bachelor_law": {
+          max_applicants: 50,
+          current_applicants: 0,
+          enabled: true,
+        },
+        "bachelor_pharmacy": {
+          max_applicants: 60,
+          current_applicants: 0,
+          enabled: true,
+        },
+        "bachelor_english": {
+          max_applicants: 40,
+          current_applicants: 0,
+          enabled: true,
+        },
+        // Master's programs
+        "masters_cse": {
+          max_applicants: 30,
+          current_applicants: 0,
+          enabled: true,
+        },
+        "masters_eee": {
+          max_applicants: 25,
+          current_applicants: 0,
+          enabled: true,
+        },
+        "masters_bba": {
+          max_applicants: 40,
+          current_applicants: 0,
+          enabled: true,
+        },
+      },
     };
 
     return { success: true, data: settings };
