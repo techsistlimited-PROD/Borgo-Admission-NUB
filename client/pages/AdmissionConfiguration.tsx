@@ -209,9 +209,14 @@ export default function AdmissionConfiguration() {
     is_active: true,
   });
 
-  // Initialize program configurations with defaults
-  const initializeProgramConfigurations = () => {
-    // Common program-department combinations
+  // Initialize program configurations from settings
+  const initializeProgramConfigurations = (settingsData?: any) => {
+    // Load program limits from settings if available
+    if (settingsData?.program_limits) {
+      setProgramLimits(settingsData.program_limits);
+    }
+
+    // Initialize program eligibility configs with defaults
     const programDeptCombinations = [
       // Bachelor's programs
       { program: "bachelor", dept: "cse", name: "Bachelor in CSE" },
@@ -229,17 +234,6 @@ export default function AdmissionConfiguration() {
       { program: "masters", dept: "bba", name: "Master's in Business Administration (MBA)" },
     ];
 
-    // Initialize program limits
-    const defaultLimits: ProgramLimits = {};
-    programDeptCombinations.forEach(({ program, dept }) => {
-      const key = `${program}_${dept}`;
-      defaultLimits[key] = {
-        max_applicants: 100, // Default limit
-        current_applicants: 0,
-        enabled: true,
-      };
-    });
-
     // Initialize program eligibility configs
     const defaultEligibility: ProgramEligibilityConfig = {};
     programDeptCombinations.forEach(({ program, dept }) => {
@@ -255,7 +249,6 @@ export default function AdmissionConfiguration() {
       };
     });
 
-    setProgramLimits(defaultLimits);
     setProgramEligibility(defaultEligibility);
   };
 
