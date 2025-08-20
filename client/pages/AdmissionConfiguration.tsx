@@ -82,6 +82,22 @@ interface AdmissionSettings {
   contact_email: string;
   contact_phone: string;
   help_desk_hours: string;
+  // Eligibility Configuration
+  eligibility_check_enabled: boolean;
+  strict_eligibility_enforcement: boolean;
+  allow_eligibility_override: boolean;
+  minimum_ssc_gpa: number;
+  minimum_hsc_gpa: number;
+  minimum_bachelor_gpa: number;
+  minimum_master_gpa: number;
+  allow_alternative_qualifications: boolean;
+  show_suggested_programs: boolean;
+  eligibility_warning_threshold: number;
+  // Waiver Configuration
+  max_combined_waiver: number;
+  require_document_verification_for_waiver: boolean;
+  auto_calculate_result_waiver: boolean;
+  allow_manual_waiver_override: boolean;
 }
 
 interface PaymentMethod {
