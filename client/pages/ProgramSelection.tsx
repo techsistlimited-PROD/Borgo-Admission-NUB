@@ -273,10 +273,10 @@ export default function ProgramSelection() {
       selectSemester: "সেমিস��টার বেছে নিন",
       selectSemesterType: "সেমিস্টার ধরন বেছ�� ন��ন",
       selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
-      selectDepartment: "আপনার বিভাগ বেছে নিন",
+      selectDepartment: "আপনার বিভাগ ���েছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
-      waiverCalculator: "মওক��ফ ক্যালকুলেটর",
+      waiverCalculator: "মওক���� ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
@@ -518,6 +518,15 @@ export default function ProgramSelection() {
       return;
     }
 
+    if (!selectedDepartment) {
+      toast({
+        title: "Department Required",
+        description: "Please select a department first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Reset previous result and show loading
     setEligibilityResult(null);
     setEligibilityChecked(false);
@@ -526,9 +535,41 @@ export default function ProgramSelection() {
     // Perform fresh check after a small delay
     setTimeout(() => {
       const academicRecord = buildAcademicRecord();
-      console.log("Manual eligibility check with:", academicRecord);
-      const result = checkProgramEligibility(selectedProgram, academicRecord);
-      console.log("Manual eligibility result:", result);
+
+      // Get the correct eligibility program ID
+      const eligibilityProgramId = getEligibilityProgramId(selectedProgram, selectedDepartment);
+
+      // Check science background for engineering programs first
+      const scienceErrors = validateScienceBackground(selectedProgram, selectedDepartment, hasScienceBackground);
+
+      console.log('🔍 Manual eligibility check:', {
+        originalProgram: selectedProgram,
+        department: selectedDepartment,
+        eligibilityProgramId,
+        academicRecord,
+        scienceErrors
+      });
+
+      let result;
+
+      // If science background validation fails, create a failed result
+      if (scienceErrors.length > 0) {
+        result = {
+          isEligible: false,
+          route: 'regular' as const,
+          requiresAdmissionTest: false,
+          requiresViva: false,
+          missingRequirements: scienceErrors,
+          warnings: [],
+          suggestedPrograms: []
+        };
+        console.log('❌ Science background validation failed:', result);
+      } else {
+        // Perform normal eligibility check with mapped program ID
+        result = checkProgramEligibility(eligibilityProgramId, academicRecord);
+        console.log('✅ Eligibility check result:', result);
+      }
+
       setEligibilityResult(result);
       setEligibilityChecked(true);
       setShowEligibilityCheck(true);
