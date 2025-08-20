@@ -54,6 +54,9 @@ export default function Reports() {
   const [dateRange, setDateRange] = useState("last_30_days");
   const [selectedProgram, setSelectedProgram] = useState("all");
   const [selectedDepartment, setSelectedDepartment] = useState("all");
+  const [selectedSemester, setSelectedSemester] = useState("spring_2024");
+  const [selectedYear, setSelectedYear] = useState("2024");
+  const [activeReportCategory, setActiveReportCategory] = useState("overview");
 
   const texts = {
     en: {
@@ -115,7 +118,7 @@ export default function Reports() {
       generateReport: "রিপোর্ট তৈরি করুন",
       exportPDF: "পিডিএফ এক্সপোর্ট",
       last7Days: "গত ৭ দিন",
-      last30Days: "গত ৩০ দি���",
+      last30Days: "গত ৩০ দিন",
       last3Months: "গত ৩ মাস",
       lastYear: "গত বছর",
       custom: "কাস্টম রেঞ্জ",
@@ -130,7 +133,7 @@ export default function Reports() {
       admissionRate: "ভর্তির হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
       topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
-      revenueGenerated: "আয় সৃষ্টি",
+      revenueGenerated: "আ���় সৃষ্টি",
       departmentColumn: "বিভাগ",
       applications: "আবেদন",
       admitted: "ভর্তি",
