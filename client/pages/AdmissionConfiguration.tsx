@@ -461,7 +461,10 @@ export default function AdmissionConfiguration() {
             <Shield className="w-4 h-4" />
             Eligibility Rules
           </TabsTrigger>
-          <TabsTrigger value="admission-test" className="flex items-center gap-2">
+          <TabsTrigger
+            value="admission-test"
+            className="flex items-center gap-2"
+          >
             <Calendar className="w-4 h-4" />
             Admission Tests
           </TabsTrigger>
@@ -1153,7 +1156,9 @@ export default function AdmissionConfiguration() {
               {/* General Admission Test Settings */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="admission_test_fee">Admission Test Fee (৳)</Label>
+                  <Label htmlFor="admission_test_fee">
+                    Admission Test Fee (৳)
+                  </Label>
                   <Input
                     id="admission_test_fee"
                     type="number"
@@ -1173,14 +1178,18 @@ export default function AdmissionConfiguration() {
 
               {/* Law Department Test Configuration */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-deep-plum">Law Department</h3>
+                <h3 className="text-lg font-semibold text-deep-plum">
+                  Law Department
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="law_test_date">Test Date</Label>
                     <Input
                       id="law_test_date"
                       type="date"
-                      value={settings?.law_admission_test_date?.slice(0, 10) || ""}
+                      value={
+                        settings?.law_admission_test_date?.slice(0, 10) || ""
+                      }
                       onChange={(e) =>
                         setSettings({
                           ...settings!,
@@ -1220,7 +1229,9 @@ export default function AdmissionConfiguration() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="law_venue_khulna">Khulna Campus Venue</Label>
+                    <Label htmlFor="law_venue_khulna">
+                      Khulna Campus Venue
+                    </Label>
                     <Input
                       id="law_venue_khulna"
                       value={settings?.law_test_venue_khulna || ""}
@@ -1240,14 +1251,21 @@ export default function AdmissionConfiguration() {
 
               {/* Architecture Department Test Configuration */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-deep-plum">Architecture Department</h3>
+                <h3 className="text-lg font-semibold text-deep-plum">
+                  Architecture Department
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="architecture_test_date">Test Date</Label>
                     <Input
                       id="architecture_test_date"
                       type="date"
-                      value={settings?.architecture_admission_test_date?.slice(0, 10) || ""}
+                      value={
+                        settings?.architecture_admission_test_date?.slice(
+                          0,
+                          10,
+                        ) || ""
+                      }
                       onChange={(e) =>
                         setSettings({
                           ...settings!,
@@ -1273,7 +1291,9 @@ export default function AdmissionConfiguration() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="architecture_venue_main">Main Campus Venue</Label>
+                    <Label htmlFor="architecture_venue_main">
+                      Main Campus Venue
+                    </Label>
                     <Input
                       id="architecture_venue_main"
                       value={settings?.architecture_test_venue_main || ""}
@@ -1287,7 +1307,9 @@ export default function AdmissionConfiguration() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="architecture_venue_khulna">Khulna Campus Venue</Label>
+                    <Label htmlFor="architecture_venue_khulna">
+                      Khulna Campus Venue
+                    </Label>
                     <Input
                       id="architecture_venue_khulna"
                       value={settings?.architecture_test_venue_khulna || ""}

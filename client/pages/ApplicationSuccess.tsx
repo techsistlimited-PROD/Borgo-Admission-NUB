@@ -48,31 +48,46 @@ export default function ApplicationSuccess() {
 
   // Check if the applicant is from law or architecture department
   const selectedDepartment = applicationData?.department;
-  const requiresAdmissionTest = selectedDepartment === "law" || selectedDepartment === "architecture";
+  const requiresAdmissionTest =
+    selectedDepartment === "law" || selectedDepartment === "architecture";
 
   // Get admission test details from admin settings
   const admissionTestFee = adminSettings?.admission_test_fee || 1500;
   const selectedCampus = applicationData?.campus || "main";
 
   // Get test date and time based on department and admin settings
-  const admissionTestDate = selectedDepartment === "law"
-    ? (adminSettings?.law_admission_test_date ? new Date(adminSettings.law_admission_test_date).toLocaleDateString("en-GB") : "15 December 2024")
-    : (adminSettings?.architecture_admission_test_date ? new Date(adminSettings.architecture_admission_test_date).toLocaleDateString("en-GB") : "16 December 2024");
+  const admissionTestDate =
+    selectedDepartment === "law"
+      ? adminSettings?.law_admission_test_date
+        ? new Date(adminSettings.law_admission_test_date).toLocaleDateString(
+            "en-GB",
+          )
+        : "15 December 2024"
+      : adminSettings?.architecture_admission_test_date
+        ? new Date(
+            adminSettings.architecture_admission_test_date,
+          ).toLocaleDateString("en-GB")
+        : "16 December 2024";
 
-  const admissionTestTime = selectedDepartment === "law"
-    ? (adminSettings?.law_test_time || "10:00 AM - 12:00 PM")
-    : (adminSettings?.architecture_test_time || "2:00 PM - 4:00 PM");
+  const admissionTestTime =
+    selectedDepartment === "law"
+      ? adminSettings?.law_test_time || "10:00 AM - 12:00 PM"
+      : adminSettings?.architecture_test_time || "2:00 PM - 4:00 PM";
 
   // Get test venue based on department and campus
   const getTestVenue = () => {
     if (selectedDepartment === "law") {
       return selectedCampus === "main"
-        ? (adminSettings?.law_test_venue_main || "Northern University Bangladesh, Main Campus, Dhaka - Room 101")
-        : (adminSettings?.law_test_venue_khulna || "Northern University Bangladesh, Khulna Campus - Room 201");
+        ? adminSettings?.law_test_venue_main ||
+            "Northern University Bangladesh, Main Campus, Dhaka - Room 101"
+        : adminSettings?.law_test_venue_khulna ||
+            "Northern University Bangladesh, Khulna Campus - Room 201";
     } else {
       return selectedCampus === "main"
-        ? (adminSettings?.architecture_test_venue_main || "Northern University Bangladesh, Main Campus, Dhaka - Drawing Hall")
-        : (adminSettings?.architecture_test_venue_khulna || "Northern University Bangladesh, Khulna Campus - Art Studio");
+        ? adminSettings?.architecture_test_venue_main ||
+            "Northern University Bangladesh, Main Campus, Dhaka - Drawing Hall"
+        : adminSettings?.architecture_test_venue_khulna ||
+            "Northern University Bangladesh, Khulna Campus - Art Studio";
     }
   };
 
@@ -177,7 +192,8 @@ export default function ApplicationSuccess() {
     setShowPayment(false);
     toast({
       title: "Payment Successful!",
-      description: "Admission test fee paid successfully. You can now download your admit card.",
+      description:
+        "Admission test fee paid successfully. You can now download your admit card.",
     });
   };
 
@@ -189,7 +205,8 @@ export default function ApplicationSuccess() {
     if (!admissionTestPaid) {
       toast({
         title: "Payment Required",
-        description: "Please pay the admission test fee to download your admit card.",
+        description:
+          "Please pay the admission test fee to download your admit card.",
         variant: "destructive",
       });
       return;
@@ -204,7 +221,10 @@ export default function ApplicationSuccess() {
         email: applicationData?.email || "student@example.com",
       },
       programInfo: {
-        name: selectedDepartment === "law" ? "Bachelor of Laws (LL.B)" : "Bachelor of Architecture",
+        name:
+          selectedDepartment === "law"
+            ? "Bachelor of Laws (LL.B)"
+            : "Bachelor of Architecture",
         level: "undergraduate" as const,
       },
       testInfo: {
@@ -216,7 +236,7 @@ export default function ApplicationSuccess() {
           "Arrive at the venue 30 minutes before the test time",
           "No electronic devices are allowed in the test room",
           "Bring your own pen and pencil",
-          "Follow all COVID-19 safety protocols"
+          "Follow all COVID-19 safety protocols",
         ],
       },
     };
@@ -500,7 +520,9 @@ Please keep this information safe and secure.
                       <CreditCard className="w-4 h-4 text-accent-purple" />
                       <div>
                         <p className="text-sm text-gray-600">Test Fee:</p>
-                        <p className="font-semibold text-lg text-orange-600">৳{admissionTestFee}</p>
+                        <p className="font-semibold text-lg text-orange-600">
+                          ৳{admissionTestFee}
+                        </p>
                       </div>
                     </div>
                   </div>
