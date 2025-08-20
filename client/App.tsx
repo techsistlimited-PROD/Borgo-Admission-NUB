@@ -222,19 +222,23 @@ function AppContent() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <AuthProvider>
-          <ApplicationProvider>
-            <BrowserRouter>
-              <AppContent />
-            </BrowserRouter>
-          </ApplicationProvider>
-        </AuthProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AuthProvider>
+            <ApplicationProvider>
+              <BrowserRouter>
+                <ErrorBoundary>
+                  <AppContent />
+                </ErrorBoundary>
+              </BrowserRouter>
+            </ApplicationProvider>
+          </AuthProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
