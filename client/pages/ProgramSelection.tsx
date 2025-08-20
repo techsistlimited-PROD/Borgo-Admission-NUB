@@ -142,7 +142,7 @@ export default function ProgramSelection() {
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
-    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম���পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
   ];
 
   const semesterOptions = [
@@ -228,7 +228,7 @@ export default function ProgramSelection() {
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
-      semesterSelection: "সেমিস্টার নির���বাচন করুন",
+      semesterSelection: "সেমিস্টার নির্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
@@ -247,7 +247,7 @@ export default function ProgramSelection() {
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
-      specialWaivers: "বিশেষ মওকুফ",
+      specialWaivers: "বিশেষ মওকু��",
       additionalWaivers: "অতিরিক্ত মওকুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
@@ -264,7 +264,7 @@ export default function ProgramSelection() {
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
-      selectDepartmentFirst: "প���রথমে একটি বিভাগ নির্বাচন করুন",
+      selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
@@ -1083,6 +1083,37 @@ export default function ProgramSelection() {
                         <Info className="w-8 h-8 mx-auto mb-2" />
                         <p>Enter your SSC and HSC GPA to check eligibility</p>
                       </div>
+
+                      {/* Test Buttons for Development */}
+                      {process.env.NODE_ENV === 'development' && (
+                        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                          <p className="text-sm text-yellow-800 mb-2">Development Testing:</p>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setSscGPA("4.5");
+                                setHscGPA("4.2");
+                              }}
+                              className="text-xs"
+                            >
+                              Test Eligible (4.5/4.2)
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setSscGPA("2.0");
+                                setHscGPA("2.3");
+                              }}
+                              className="text-xs"
+                            >
+                              Test Not Eligible (2.0/2.3)
+                            </Button>
+                          </div>
+                        </div>
+                      )}
 
                       {/* General Eligibility Information */}
                       <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
