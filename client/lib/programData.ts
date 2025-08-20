@@ -87,7 +87,7 @@ export const departments: Department[] = [
   {
     id: 'me',
     name: 'Mechanical Engineering',
-    namebn: 'মেকানিক্যাল ইঞ্জিনিয়ারিং',
+    namebn: 'ম��কানিক্যাল ইঞ্জিনিয়ারিং',
     description: 'Mechanical systems and manufacturing',
     descriptionbn: 'যান্ত্রিক সিস্টেম এবং ��ৎপাদন',
     faculty: 'Faculty of Engineering',
@@ -145,7 +145,7 @@ export const departments: Department[] = [
     description: 'Public administration and policy studies',
     descriptionbn: 'জন প্রশাসন এবং ন���তি অধ্যয়ন',
     faculty: 'Faculty of Social Sciences',
-    facultybn: 'সামাজিক বিজ্ঞান অনুষদ'
+    facultybn: 'সামাজিক বিজ্ঞান অনুষ���'
   },
   {
     id: 'law',
@@ -289,7 +289,7 @@ export const waiverPolicies: WaiverPolicy[] = [
   {
     id: 'result_80',
     name: 'GPA 5.00 (With 4th Subject)',
-    namebn: 'জিপিএ ৫.০০ (৪র্থ বিষয় সহ)',
+    namebn: 'জিপিএ ৫.০০ (৪র্থ ���িষয় সহ)',
     type: 'result',
     percentage: 80,
     criteria: 'GPA 5.00 in both SSC and HSC with 4th subject',
@@ -463,4 +463,223 @@ export const getResultBasedWaiverByGPA = (sscGPA: number, hscGPA: number, hasFou
   }
   
   return null;
+};
+
+// Eligibility checking functions
+export interface EligibilityCheckResult {
+  isEligible: boolean;
+  missingRequirements: string[];
+  warningMessages: string[];
+  suggestedPrograms: Program[];
+  meetsCriteria: {
+    sscGPA: boolean;
+    hscGPA: boolean;
+    overallGPA: boolean;
+    alternativeQualification: boolean;
+  };
+}
+
+export interface StudentAcademicInfo {
+  sscGPA?: number;
+  hscGPA?: number;
+  bachelorGPA?: number;
+  masterGPA?: number;
+  oLevelSubjects?: number;
+  aLevelSubjects?: number;
+  hasAlternativeQualification?: string;
+  previousDegreeType?: string;
+  workExperience?: number;
+}
+
+export const checkEligibility = (
+  programId: string,
+  studentInfo: StudentAcademicInfo
+): EligibilityCheckResult => {
+  const program = getProgramById(programId);
+
+  if (!program) {
+    return {
+      isEligible: false,
+      missingRequirements: ['Invalid program selected'],
+      warningMessages: [],
+      suggestedPrograms: [],
+      meetsCriteria: {
+        sscGPA: false,
+        hscGPA: false,
+        overallGPA: false,
+        alternativeQualification: false
+      }
+    };
+  }
+
+  const requirements = program.eligibilityRequirements;
+  const missingRequirements: string[] = [];
+  const warningMessages: string[] = [];
+
+  let sscGPAMet = true;
+  let hscGPAMet = true;
+  let overallGPAMet = true;
+  let alternativeQualificationMet = false;
+
+  // Check for undergraduate programs
+  if (requirements.level === 'undergraduate') {
+    // Check SSC GPA
+    if (requirements.minSSCGPA && studentInfo.sscGPA) {
+      if (studentInfo.sscGPA < requirements.minSSCGPA) {
+        sscGPAMet = false;
+        missingRequirements.push(`SSC GPA must be at least ${requirements.minSSCGPA} (current: ${studentInfo.sscGPA})`);
+      }
+    } else if (requirements.minSSCGPA && !studentInfo.sscGPA) {
+      sscGPAMet = false;
+      missingRequirements.push(`SSC GPA information required (minimum: ${requirements.minSSCGPA})`);
+    }
+
+    // Check HSC GPA
+    if (requirements.minHSCGPA && studentInfo.hscGPA) {
+      if (studentInfo.hscGPA < requirements.minHSCGPA) {
+        hscGPAMet = false;
+        missingRequirements.push(`HSC GPA must be at least ${requirements.minHSCGPA} (current: ${studentInfo.hscGPA})`);
+      }
+    } else if (requirements.minHSCGPA && !studentInfo.hscGPA) {
+      hscGPAMet = false;
+      missingRequirements.push(`HSC GPA information required (minimum: ${requirements.minHSCGPA})`);
+    }
+
+    // Check overall GPA requirement
+    if (studentInfo.sscGPA && studentInfo.hscGPA && requirements.minSSCGPA && requirements.minHSCGPA) {
+      const avgGPA = (studentInfo.sscGPA + studentInfo.hscGPA) / 2;
+      const minAvgGPA = (requirements.minSSCGPA + requirements.minHSCGPA) / 2;
+
+      if (avgGPA < minAvgGPA) {
+        overallGPAMet = false;
+        missingRequirements.push(`Average GPA must be at least ${minAvgGPA.toFixed(2)} (current: ${avgGPA.toFixed(2)})`);
+      }
+    }
+
+    // Check O-Level and A-Level requirements
+    if (requirements.oLevelSubjects && studentInfo.oLevelSubjects) {
+      if (studentInfo.oLevelSubjects < requirements.oLevelSubjects) {
+        missingRequirements.push(`Minimum ${requirements.oLevelSubjects} O-Level subjects required (current: ${studentInfo.oLevelSubjects})`);
+      } else {
+        alternativeQualificationMet = true;
+      }
+    }
+
+    if (requirements.aLevelSubjects && studentInfo.aLevelSubjects) {
+      if (studentInfo.aLevelSubjects < requirements.aLevelSubjects) {
+        missingRequirements.push(`Minimum ${requirements.aLevelSubjects} A-Level subjects required (current: ${studentInfo.aLevelSubjects})`);
+      } else {
+        alternativeQualificationMet = true;
+      }
+    }
+
+    // Check alternative qualifications
+    if (studentInfo.hasAlternativeQualification && requirements.alternativeQualifications) {
+      if (requirements.alternativeQualifications.includes(studentInfo.hasAlternativeQualification)) {
+        alternativeQualificationMet = true;
+        warningMessages.push(`Accepted based on alternative qualification: ${studentInfo.hasAlternativeQualification}`);
+      }
+    }
+  }
+
+  // Check for postgraduate programs
+  if (requirements.level === 'postgraduate') {
+    if (requirements.minBachelorGPA && studentInfo.bachelorGPA) {
+      if (studentInfo.bachelorGPA < requirements.minBachelorGPA) {
+        overallGPAMet = false;
+        missingRequirements.push(`Bachelor GPA must be at least ${requirements.minBachelorGPA} (current: ${studentInfo.bachelorGPA})`);
+      }
+    } else if (requirements.minBachelorGPA && !studentInfo.bachelorGPA) {
+      overallGPAMet = false;
+      missingRequirements.push(`Bachelor GPA information required (minimum: ${requirements.minBachelorGPA})`);
+    }
+
+    // Check degree type requirement
+    if (requirements.requiredDegreeTypes && studentInfo.previousDegreeType) {
+      if (!requirements.requiredDegreeTypes.includes(studentInfo.previousDegreeType)) {
+        missingRequirements.push(`Required degree type: ${requirements.requiredDegreeTypes.join(' or ')} (current: ${studentInfo.previousDegreeType})`);
+      }
+    }
+  }
+
+  // Determine overall eligibility
+  const isEligible = missingRequirements.length === 0 &&
+    (sscGPAMet && hscGPAMet && overallGPAMet) || alternativeQualificationMet;
+
+  // Find suggested programs if not eligible
+  const suggestedPrograms: Program[] = [];
+  if (!isEligible) {
+    suggestedPrograms.push(...findSuitablePrograms(studentInfo));
+  }
+
+  return {
+    isEligible,
+    missingRequirements,
+    warningMessages,
+    suggestedPrograms,
+    meetsCriteria: {
+      sscGPA: sscGPAMet,
+      hscGPA: hscGPAMet,
+      overallGPA: overallGPAMet,
+      alternativeQualification: alternativeQualificationMet
+    }
+  };
+};
+
+export const findSuitablePrograms = (studentInfo: StudentAcademicInfo): Program[] => {
+  const suitablePrograms: Program[] = [];
+
+  programs.forEach(program => {
+    const requirements = program.eligibilityRequirements;
+    let isEligible = true;
+
+    if (requirements.level === 'undergraduate') {
+      // Check if student meets SSC/HSC requirements
+      if (requirements.minSSCGPA && studentInfo.sscGPA && studentInfo.sscGPA < requirements.minSSCGPA) {
+        isEligible = false;
+      }
+      if (requirements.minHSCGPA && studentInfo.hscGPA && studentInfo.hscGPA < requirements.minHSCGPA) {
+        isEligible = false;
+      }
+    }
+
+    if (requirements.level === 'postgraduate') {
+      // Check if student has bachelor's degree requirements
+      if (requirements.minBachelorGPA && studentInfo.bachelorGPA && studentInfo.bachelorGPA < requirements.minBachelorGPA) {
+        isEligible = false;
+      }
+    }
+
+    if (isEligible) {
+      suitablePrograms.push(program);
+    }
+  });
+
+  return suitablePrograms;
+};
+
+export const getEligibilityMessage = (
+  result: EligibilityCheckResult,
+  programName: string,
+  language: 'en' | 'bn' = 'en'
+): string => {
+  if (result.isEligible) {
+    return language === 'en'
+      ? `✅ Congratulations! You are eligible for the ${programName} program.`
+      : `✅ অভিনন্দন! আপনি ${programName} প্রোগ্রামের জন্য যোগ্য।`;
+  }
+
+  const missingReqs = result.missingRequirements.join(', ');
+  let message = language === 'en'
+    ? `❌ Sorry, you do not meet the eligibility requirements for ${programName}.\n\nMissing requirements: ${missingReqs}`
+    : `❌ দুঃখিত, আপনি ${programName} প্রোগ্রামের যোগ্যতার প্রয়োজনীয়তা পূরণ করেন না।\n\nঅনুপস্থিত প্রয়োজনীয়তা: ${missingReqs}`;
+
+  if (result.suggestedPrograms.length > 0) {
+    const suggestedNames = result.suggestedPrograms.map(p => language === 'en' ? p.name : p.namebn).join(', ');
+    message += language === 'en'
+      ? `\n\n💡 Suggested alternative programs: ${suggestedNames}`
+      : `\n\n💡 বিকল্প প্রোগ্রামের পরামর্শ: ${suggestedNames}`;
+  }
+
+  return message;
 };
