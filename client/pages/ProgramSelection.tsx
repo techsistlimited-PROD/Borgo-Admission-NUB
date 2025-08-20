@@ -44,14 +44,19 @@ import {
   getResultBasedWaivers,
   getSpecialWaivers,
   getAdditionalWaivers,
-  checkEligibility,
-  getEligibilityMessage,
   type Program,
   type Department,
   type WaiverPolicy,
-  type EligibilityCheckResult,
-  type StudentAcademicInfo,
 } from "../lib/programData";
+import {
+  checkProgramEligibility,
+  PROGRAM_ELIGIBILITY_RULES,
+  type AcademicBackgroundType,
+  type AcademicRecord,
+  type EligibilityCheckResult,
+  type OLevelSubject,
+  type ALevelSubject,
+} from "../lib/eligibilityRules";
 
 export default function ProgramSelection() {
   const navigate = useNavigate();
@@ -85,14 +90,41 @@ export default function ProgramSelection() {
     Department[]
   >([]);
 
-  // Academic Information for Waiver Calculation
+  // Academic Background Information
+  const [academicBackgroundType, setAcademicBackgroundType] = useState<AcademicBackgroundType>(
+    (applicationData.academicBackgroundType as AcademicBackgroundType) || 'bangla_medium'
+  );
+
+  // Bangla Medium (SSC + HSC)
   const [sscGPA, setSscGPA] = useState<string>(
     applicationData.sscGPA?.toString() || "",
   );
   const [hscGPA, setHscGPA] = useState<string>(
     applicationData.hscGPA?.toString() || "",
   );
+  const [sscYear, setSscYear] = useState<string>(
+    applicationData.sscYear?.toString() || "",
+  );
+  const [hscYear, setHscYear] = useState<string>(
+    applicationData.hscYear?.toString() || "",
+  );
   const [hasFourthSubject, setHasFourthSubject] = useState<boolean>(false);
+
+  // English Medium (O/A Level)
+  const [oLevelSubjects, setOLevelSubjects] = useState<OLevelSubject[]>([]);
+  const [aLevelSubjects, setALevelSubjects] = useState<ALevelSubject[]>([]);
+
+  // Diploma
+  const [diplomaCGPA, setDiplomaCGPA] = useState<string>("");
+  const [diplomaProgram, setDiplomaProgram] = useState<string>("");
+
+  // Postgraduate
+  const [bachelorCGPA, setBachelorCGPA] = useState<string>("");
+  const [bachelorDegree, setBachelorDegree] = useState<string>("");
+  const [bachelorInstitution, setBachelorInstitution] = useState<string>("");
+  const [workExperience, setWorkExperience] = useState<string>("");
+  const [hasThirdDivision, setHasThirdDivision] = useState<boolean>(false);
+  const [hasScienceBackground, setHasScienceBackground] = useState<boolean>(false);
 
   // Selected Waivers
   const [selectedWaivers, setSelectedWaivers] = useState<string[]>(
@@ -269,7 +301,7 @@ export default function ProgramSelection() {
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
+        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড���ান্ত খরচ পরিবর্তিত হ��ে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -344,43 +376,79 @@ export default function ProgramSelection() {
     }
   }, [sscGPA, hscGPA, hasFourthSubject]);
 
-  // Check eligibility when program or GPA changes
+  // Check eligibility when program or academic info changes
   useEffect(() => {
-    if (selectedProgram && sscGPA && hscGPA) {
-      const sscValue = parseFloat(sscGPA);
-      const hscValue = parseFloat(hscGPA);
+    if (selectedProgram && hasRequiredAcademicInfo()) {
+      const academicRecord = buildAcademicRecord();
+      const result = checkProgramEligibility(selectedProgram, academicRecord);
+      setEligibilityResult(result);
+      setEligibilityChecked(true);
 
-      if (sscValue >= 0 && sscValue <= 5 && hscValue >= 0 && hscValue <= 5) {
-        const studentInfo: StudentAcademicInfo = {
-          sscGPA: sscValue,
-          hscGPA: hscValue,
-        };
-
-        // Add credit transfer specific info if applicable
-        if (admissionType === "credit-transfer" && previousCGPA) {
-          studentInfo.bachelorGPA = parseFloat(previousCGPA);
-          studentInfo.previousDegreeType = "Bachelor";
-        }
-
-        const result = checkEligibility(selectedProgram, studentInfo);
-        setEligibilityResult(result);
-        setEligibilityChecked(true);
-
-        // Show eligibility check automatically
-        if (!result.isEligible) {
-          setShowEligibilityCheck(true);
-          toast({
-            title: "Eligibility Check",
-            description:
-              "Please review the eligibility requirements before proceeding.",
-            variant: "destructive",
-          });
-        } else {
-          setShowEligibilityCheck(false);
-        }
+      // Show eligibility check automatically
+      if (!result.isEligible) {
+        setShowEligibilityCheck(true);
+        toast({
+          title: "Eligibility Check",
+          description:
+            "Please review the eligibility requirements before proceeding.",
+          variant: "destructive",
+        });
+      } else {
+        setShowEligibilityCheck(false);
       }
     }
-  }, [selectedProgram, sscGPA, hscGPA, previousCGPA, admissionType, toast]);
+  }, [selectedProgram, academicBackgroundType, sscGPA, hscGPA, diplomaCGPA, bachelorCGPA, oLevelSubjects, aLevelSubjects, toast]);
+
+  // Helper function to check if required academic info is provided
+  const hasRequiredAcademicInfo = (): boolean => {
+    switch (academicBackgroundType) {
+      case 'bangla_medium':
+        return !!(sscGPA && hscGPA);
+      case 'english_medium':
+        return oLevelSubjects.length >= 5 && aLevelSubjects.length >= 2;
+      case 'diploma':
+        return !!(sscGPA && diplomaCGPA);
+      case 'postgraduate':
+        return !!bachelorCGPA;
+      default:
+        return false;
+    }
+  };
+
+  // Helper function to build academic record
+  const buildAcademicRecord = (): AcademicRecord => {
+    const record: AcademicRecord = {
+      backgroundType: academicBackgroundType,
+      hasThirdDivision,
+      hasScienceBackground,
+    };
+
+    switch (academicBackgroundType) {
+      case 'bangla_medium':
+        if (sscGPA) record.sscGPA = parseFloat(sscGPA);
+        if (hscGPA) record.hscGPA = parseFloat(hscGPA);
+        if (sscYear) record.sscYear = parseInt(sscYear);
+        if (hscYear) record.hscYear = parseInt(hscYear);
+        break;
+      case 'english_medium':
+        record.oLevelSubjects = oLevelSubjects;
+        record.aLevelSubjects = aLevelSubjects;
+        break;
+      case 'diploma':
+        if (sscGPA) record.sscGPA = parseFloat(sscGPA);
+        if (diplomaCGPA) record.diplomaCGPA = parseFloat(diplomaCGPA);
+        record.diplomaProgram = diplomaProgram;
+        break;
+      case 'postgraduate':
+        if (bachelorCGPA) record.bachelorCGPA = parseFloat(bachelorCGPA);
+        record.bachelorDegree = bachelorDegree;
+        record.bachelorInstitution = bachelorInstitution;
+        if (workExperience) record.workExperience = parseInt(workExperience);
+        break;
+    }
+
+    return record;
+  };
 
   // Clear form data when starting fresh (component mount)
   useEffect(() => {
@@ -1299,55 +1367,258 @@ export default function ProgramSelection() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {/* Academic Information */}
+                  {/* Academic Background Selection */}
                   <div>
                     <h3 className="font-semibold text-deep-plum mb-4">
-                      {t.academicInfo}
+                      Academic Background & Eligibility
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="sscGPA">{t.sscGPA}</Label>
-                        <Input
-                          id="sscGPA"
-                          type="number"
-                          min="0"
-                          max="5"
-                          step="0.01"
-                          value={sscGPA}
-                          onChange={(e) => setSscGPA(e.target.value)}
-                          placeholder="0.00"
-                          autoComplete="off"
-                          data-lpignore="true"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="hscGPA">{t.hscGPA}</Label>
-                        <Input
-                          id="hscGPA"
-                          type="number"
-                          min="0"
-                          max="5"
-                          step="0.01"
-                          value={hscGPA}
-                          onChange={(e) => setHscGPA(e.target.value)}
-                          placeholder="0.00"
-                          autoComplete="off"
-                          data-lpignore="true"
-                        />
-                      </div>
+
+                    {/* Background Type Selection */}
+                    <div className="space-y-2 mb-6">
+                      <Label>Select Your Academic Background</Label>
+                      <Select
+                        value={academicBackgroundType}
+                        onValueChange={(value) => setAcademicBackgroundType(value as AcademicBackgroundType)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose your academic background" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="bangla_medium">Bangla Medium (SSC + HSC)</SelectItem>
+                          <SelectItem value="english_medium">English Medium (O Level + A Level)</SelectItem>
+                          <SelectItem value="diploma">Diploma Background (SSC + Diploma)</SelectItem>
+                          <SelectItem value="postgraduate">Postgraduate Application (Bachelor's Degree)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                    <div className="mt-4 flex items-center space-x-2">
-                      <Checkbox
-                        id="fourthSubject"
-                        checked={hasFourthSubject}
-                        onCheckedChange={(checked) =>
-                          setHasFourthSubject(checked as boolean)
-                        }
-                      />
-                      <Label htmlFor="fourthSubject" className="text-sm">
-                        {t.fourthSubject}
-                      </Label>
-                    </div>
+
+                    {/* Dynamic Academic Fields based on Background Type */}
+                    {academicBackgroundType === 'bangla_medium' && (
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="sscGPA">SSC GPA <span className="text-red-500">*</span></Label>
+                            <Input
+                              id="sscGPA"
+                              type="number"
+                              min="0"
+                              max="5"
+                              step="0.01"
+                              value={sscGPA}
+                              onChange={(e) => setSscGPA(e.target.value)}
+                              placeholder="0.00"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="hscGPA">HSC GPA <span className="text-red-500">*</span></Label>
+                            <Input
+                              id="hscGPA"
+                              type="number"
+                              min="0"
+                              max="5"
+                              step="0.01"
+                              value={hscGPA}
+                              onChange={(e) => setHscGPA(e.target.value)}
+                              placeholder="0.00"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="sscYear">SSC Passing Year</Label>
+                            <Input
+                              id="sscYear"
+                              type="number"
+                              min="2015"
+                              max="2024"
+                              value={sscYear}
+                              onChange={(e) => setSscYear(e.target.value)}
+                              placeholder="2020"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="hscYear">HSC Passing Year <span className="text-red-500">*</span></Label>
+                            <Input
+                              id="hscYear"
+                              type="number"
+                              min="2015"
+                              max="2024"
+                              value={hscYear}
+                              onChange={(e) => setHscYear(e.target.value)}
+                              placeholder="2023"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="fourthSubject"
+                            checked={hasFourthSubject}
+                            onCheckedChange={(checked) => setHasFourthSubject(checked as boolean)}
+                          />
+                          <Label htmlFor="fourthSubject" className="text-sm">
+                            Had 4th subject in both SSC & HSC
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="scienceBackground"
+                            checked={hasScienceBackground}
+                            onCheckedChange={(checked) => setHasScienceBackground(checked as boolean)}
+                          />
+                          <Label htmlFor="scienceBackground" className="text-sm">
+                            Science background in SSC
+                          </Label>
+                        </div>
+                      </div>
+                    )}
+
+                    {academicBackgroundType === 'english_medium' && (
+                      <div className="space-y-4">
+                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                          <h4 className="font-medium text-blue-800 mb-2">O Level & A Level Requirements</h4>
+                          <p className="text-sm text-blue-700">
+                            You need at least 5 O Level subjects and 2 A Level subjects.
+                            Grading scale: A=5, B=4, C=3.5, D=3, E=2
+                          </p>
+                        </div>
+                        <div className="text-center py-8 text-gray-500">
+                          <p className="mb-4">O Level & A Level subject entry interface will be implemented here</p>
+                          <p className="text-sm">For now, please contact administration for English Medium applications</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {academicBackgroundType === 'diploma' && (
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="sscGPA">SSC GPA <span className="text-red-500">*</span></Label>
+                            <Input
+                              id="sscGPA"
+                              type="number"
+                              min="0"
+                              max="5"
+                              step="0.01"
+                              value={sscGPA}
+                              onChange={(e) => setSscGPA(e.target.value)}
+                              placeholder="0.00"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="diplomaCGPA">Diploma CGPA <span className="text-red-500">*</span></Label>
+                            <Input
+                              id="diplomaCGPA"
+                              type="number"
+                              min="0"
+                              max="4"
+                              step="0.01"
+                              value={diplomaCGPA}
+                              onChange={(e) => setDiplomaCGPA(e.target.value)}
+                              placeholder="0.00"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="diplomaProgram">Diploma Program <span className="text-red-500">*</span></Label>
+                            <Input
+                              id="diplomaProgram"
+                              value={diplomaProgram}
+                              onChange={(e) => setDiplomaProgram(e.target.value)}
+                              placeholder="e.g., Computer Science, Civil Engineering"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="scienceBackground"
+                            checked={hasScienceBackground}
+                            onCheckedChange={(checked) => setHasScienceBackground(checked as boolean)}
+                          />
+                          <Label htmlFor="scienceBackground" className="text-sm">
+                            Science background in SSC <span className="text-red-500">*</span>
+                          </Label>
+                        </div>
+                      </div>
+                    )}
+
+                    {academicBackgroundType === 'postgraduate' && (
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="bachelorCGPA">Bachelor's CGPA <span className="text-red-500">*</span></Label>
+                            <Input
+                              id="bachelorCGPA"
+                              type="number"
+                              min="0"
+                              max="4"
+                              step="0.01"
+                              value={bachelorCGPA}
+                              onChange={(e) => setBachelorCGPA(e.target.value)}
+                              placeholder="0.00"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="workExperience">Work Experience (Years)</Label>
+                            <Input
+                              id="workExperience"
+                              type="number"
+                              min="0"
+                              max="50"
+                              value={workExperience}
+                              onChange={(e) => setWorkExperience(e.target.value)}
+                              placeholder="0"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="bachelorDegree">Bachelor's Degree <span className="text-red-500">*</span></Label>
+                            <Input
+                              id="bachelorDegree"
+                              value={bachelorDegree}
+                              onChange={(e) => setBachelorDegree(e.target.value)}
+                              placeholder="e.g., Computer Science, Civil Engineering"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="bachelorInstitution">Bachelor's Institution</Label>
+                            <Input
+                              id="bachelorInstitution"
+                              value={bachelorInstitution}
+                              onChange={(e) => setBachelorInstitution(e.target.value)}
+                              placeholder="University name"
+                              autoComplete="off"
+                              data-lpignore="true"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="hasThirdDivision"
+                            checked={hasThirdDivision}
+                            onCheckedChange={(checked) => setHasThirdDivision(checked as boolean)}
+                          />
+                          <Label htmlFor="hasThirdDivision" className="text-sm">
+                            I have third division/class in any examination
+                          </Label>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Result-based Waiver Display */}
