@@ -25,6 +25,9 @@ import { Badge } from "../components/ui/badge";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { Separator } from "../components/ui/separator";
 import { useToast } from "../hooks/use-toast";
+import { useApplication } from "../contexts/ApplicationContext";
+import BkashPayment from "../components/BkashPayment";
+import AdmitCard from "../components/AdmitCard";
 
 export default function ApplicationSuccess() {
   const [searchParams] = useSearchParams();
@@ -91,11 +94,11 @@ export default function ApplicationSuccess() {
       step2Desc:
         "আপনার পেমেন্ট রসিদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
       step3: "ডকুমেন্ট আপলোড করুন",
-      step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� এবং ব্যক্তিগত নথ��� আপলোড করুন",
+      step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� এবং ব্যক্তিগত নথি আপলোড করুন",
       step4: "আবেদনের স্থিতি ট্র্যাক করুন",
       step4Desc:
         "আপনার আবেদনের অগ্রগতি এবং প্রশাসনিক সিদ্ধান্ত পর্যবেক্ষণ করুন",
-      loginPortal: "আবেদনকারী পোর্টালে লগইন",
+      loginPortal: "আব��দনকারী পোর্টালে লগইন",
       downloadInfo: "আবেদনের তথ্য ডাউনলোড করুন",
       copyCredentials: "পরিচয়পত্র কপি করুন",
       saveInfo: "এই তথ্য সংরক্ষণ করুন",
@@ -106,7 +109,7 @@ export default function ApplicationSuccess() {
         "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
       supportInfo: "সাহায্য প্রয়োজন?",
       supportDesc:
-        "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
+        "যদি আপনার কোন প্রশ��ন থাকে, ���নুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
       contactEmail: "ইমেইল: admission@nu.edu.bd",
       contactPhone: "ফোন: +৮৮০ ১৭০০-০০০০০০",
       credentialsCopied: "পরিচয়পত্র ক্লিপবোর্ডে কপি করা হয়েছে!",
