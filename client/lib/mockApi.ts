@@ -532,6 +532,89 @@ class MockApiService {
   async getAdmissionSettings(): Promise<ApiResponse> {
     await this.delay();
 
+    // Calculate current applicant counts for each program
+    const programLimits = {
+      // Bachelor's programs
+      "bachelor_cse": {
+        max_applicants: 100,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "bachelor" && app.department_code === "cse" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      "bachelor_eee": {
+        max_applicants: 80,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "bachelor" && app.department_code === "eee" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      "bachelor_ce": {
+        max_applicants: 60,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "bachelor" && app.department_code === "ce" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      "bachelor_architecture": {
+        max_applicants: 40,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "bachelor" && app.department_code === "architecture" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      "bachelor_bba": {
+        max_applicants: 120,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "bachelor" && app.department_code === "bba" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      "bachelor_law": {
+        max_applicants: 50,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "bachelor" && app.department_code === "law" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      "bachelor_pharmacy": {
+        max_applicants: 60,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "bachelor" && app.department_code === "pharmacy" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      "bachelor_english": {
+        max_applicants: 40,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "bachelor" && app.department_code === "english" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      // Master's programs
+      "masters_cse": {
+        max_applicants: 30,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "masters" && app.department_code === "cse" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      "masters_eee": {
+        max_applicants: 25,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "masters" && app.department_code === "eee" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+      "masters_bba": {
+        max_applicants: 40,
+        current_applicants: this.applications.filter(app =>
+          app.program_code === "masters" && app.department_code === "bba" && app.status !== "rejected"
+        ).length,
+        enabled: true,
+      },
+    };
+
     const settings = {
       application_start_date: "2024-09-01",
       application_deadline: "2024-12-31",
@@ -581,65 +664,7 @@ class MockApiService {
       architecture_test_venue_khulna:
         "Northern University Bangladesh, Khulna Campus - Art Studio",
       // Program Limits Configuration
-      program_limits: {
-        // Bachelor's programs
-        "bachelor_cse": {
-          max_applicants: 100,
-          current_applicants: 0,
-          enabled: true,
-        },
-        "bachelor_eee": {
-          max_applicants: 80,
-          current_applicants: 0,
-          enabled: true,
-        },
-        "bachelor_ce": {
-          max_applicants: 60,
-          current_applicants: 0,
-          enabled: true,
-        },
-        "bachelor_architecture": {
-          max_applicants: 40,
-          current_applicants: 0,
-          enabled: true,
-        },
-        "bachelor_bba": {
-          max_applicants: 120,
-          current_applicants: 0,
-          enabled: true,
-        },
-        "bachelor_law": {
-          max_applicants: 50,
-          current_applicants: 0,
-          enabled: true,
-        },
-        "bachelor_pharmacy": {
-          max_applicants: 60,
-          current_applicants: 0,
-          enabled: true,
-        },
-        "bachelor_english": {
-          max_applicants: 40,
-          current_applicants: 0,
-          enabled: true,
-        },
-        // Master's programs
-        "masters_cse": {
-          max_applicants: 30,
-          current_applicants: 0,
-          enabled: true,
-        },
-        "masters_eee": {
-          max_applicants: 25,
-          current_applicants: 0,
-          enabled: true,
-        },
-        "masters_bba": {
-          max_applicants: 40,
-          current_applicants: 0,
-          enabled: true,
-        },
-      },
+      program_limits: programLimits,
     };
 
     return { success: true, data: settings };
