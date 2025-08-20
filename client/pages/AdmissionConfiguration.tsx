@@ -1165,8 +1165,9 @@ export default function AdmissionConfiguration() {
                     min="0"
                     value={settings?.admission_test_fee || ""}
                     onChange={(e) =>
+                      settings &&
                       setSettings({
-                        ...settings!,
+                        ...settings,
                         admission_test_fee: parseInt(e.target.value) || 0,
                       })
                     }
