@@ -98,7 +98,6 @@ interface AdmissionSettings {
   minimum_master_gpa: number;
   allow_alternative_qualifications: boolean;
   show_suggested_programs: boolean;
-  eligibility_warning_threshold: number;
   // Waiver Configuration
   max_combined_waiver: number;
   require_document_verification_for_waiver: boolean;
