@@ -273,16 +273,16 @@ export default function ProgramSelection() {
       selectSemester: "সেমিস��টার বেছে নিন",
       selectSemesterType: "সেমিস্টার ধরন বেছ�� ন��ন",
       selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
-      selectDepartment: "আপনার বিভাগ ���েছে নিন",
+      selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
-      waiverCalculator: "মওক���� ক্যালকুলেটর",
+      waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
-      availableWaivers: "উপলব্ধ মওকুফ",
+      availableWaivers: "���পলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
       additionalWaivers: "অতি���িক্ত ম���কুফ",
@@ -872,6 +872,7 @@ export default function ProgramSelection() {
     selectedProgram &&
     selectedDepartment &&
     hasRequiredAcademicInfo() &&
+    eligibilityChecked &&
     eligibilityResult?.isEligible;
 
   return (
