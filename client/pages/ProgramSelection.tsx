@@ -308,7 +308,7 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "���িপিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
+      noWaiverEligible: "����িপিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চন করুন",
       selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues:
@@ -2738,6 +2738,8 @@ export default function ProgramSelection() {
                   </p>
                 ) : eligibilityResult && !eligibilityResult.isEligible ? (
                   <p>❌ You must be eligible to continue</p>
+                ) : currentProgramStatus && !currentProgramStatus.available ? (
+                  <p className="text-red-600">🚫 Application limit reached for this program. Please select a different program.</p>
                 ) : (
                   <p>⏳ Completing requirements...</p>
                 )}
