@@ -182,7 +182,7 @@ export default function Reports() {
       dateRange: "তারিখের পরিসীমা",
       program: "প্রোগ্রাম",
       department: "বিভাগ",
-      generateReport: "রিপোর্ট তৈরি করুন",
+      generateReport: "রিপোর্ট তৈর�� করুন",
       exportPDF: "পিডিএফ এক্সপোর্ট",
       last7Days: "গত ৭ দিন",
       last30Days: "গত ৩০ দিন",
@@ -397,6 +397,27 @@ export default function Reports() {
                     <SelectItem value="cse">{t.cse}</SelectItem>
                     <SelectItem value="eee">{t.eee}</SelectItem>
                     <SelectItem value="mech">{t.mech}</SelectItem>
+                    <SelectItem value="civil">{t.civil}</SelectItem>
+                    <SelectItem value="bba">{t.bba}</SelectItem>
+                    <SelectItem value="law">{t.law || "Law"}</SelectItem>
+                    <SelectItem value="architecture">{t.architecture || "Architecture"}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t.semester || "Semester"}</label>
+                <Select
+                  value={selectedSemester}
+                  onValueChange={setSelectedSemester}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="spring_2024">{t.spring2024 || "Spring 2024"}</SelectItem>
+                    <SelectItem value="fall_2024">{t.fall2024 || "Fall 2024"}</SelectItem>
+                    <SelectItem value="summer_2024">{t.summer2024 || "Summer 2024"}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
