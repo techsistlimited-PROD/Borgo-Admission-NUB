@@ -88,6 +88,17 @@ export default function Header({ showLogin = false }: HeaderProps) {
 
           {/* Right side */}
           <div className="flex items-center space-x-4">
+            {/* New Application Button */}
+            <Button
+              onClick={handleNewApplication}
+              variant="outline"
+              size="sm"
+              className="border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {t.newApplication}
+            </Button>
+
             {/* Language Toggle */}
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <button
