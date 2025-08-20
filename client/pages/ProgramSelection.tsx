@@ -186,7 +186,7 @@ export default function ProgramSelection() {
 
   const semesterTypeOptions = [
     { id: "bi-semester", name: "Bi-Semester", namebn: "দ্বি-সেমিস্টার" },
-    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমি��্টার" },
+    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমি����্টার" },
   ];
 
   const texts = {
@@ -284,7 +284,7 @@ export default function ProgramSelection() {
       additionalWaivers: "অতিরিক্ত মওকুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
-      waiverAmount: "মওকুফ পরিমাণ",
+      waiverAmount: "���ওকুফ পরিমাণ",
       finalAmount: "চূড়ান্ত পরিম��ণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
@@ -301,7 +301,7 @@ export default function ProgramSelection() {
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
+        "অতিরিক্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -576,6 +576,17 @@ export default function ProgramSelection() {
       return;
     }
 
+    // Check if required academic info is provided
+    if (!hasRequiredAcademicInfo()) {
+      toast({
+        title: "Academic Information Required",
+        description:
+          "Please complete your academic information for eligibility verification.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Check eligibility before allowing to continue
     if (eligibilityResult && !eligibilityResult.isEligible) {
       toast({
@@ -585,17 +596,6 @@ export default function ProgramSelection() {
         variant: "destructive",
       });
       setShowEligibilityCheck(true);
-      return;
-    }
-
-    // Require GPA information for eligibility check
-    if (!sscGPA || !hscGPA) {
-      toast({
-        title: "Academic Information Required",
-        description:
-          "Please provide your SSC and HSC GPA for eligibility verification.",
-        variant: "destructive",
-      });
       return;
     }
 
@@ -621,7 +621,8 @@ export default function ProgramSelection() {
     setIsSaving(true);
 
     try {
-      // Save current step data
+      // Build comprehensive save data
+      const academicRecord = buildAcademicRecord();
       const saveData = {
         admissionType,
         campus: selectedCampus,
@@ -629,13 +630,20 @@ export default function ProgramSelection() {
         semesterType: selectedSemesterType,
         program: selectedProgram,
         department: selectedDepartment,
-        sscGPA: sscGPA ? parseFloat(sscGPA) : undefined,
-        hscGPA: hscGPA ? parseFloat(hscGPA) : undefined,
+
+        // Academic background data
+        academicBackgroundType,
+        ...academicRecord,
+
+        // Waiver and cost data
         selectedWaivers,
         totalCost: costCalculation.originalAmount,
         waiverAmount: costCalculation.waiverAmount,
         finalAmount: costCalculation.finalAmount,
         session: "Spring 2024",
+
+        // Eligibility results
+        eligibilityResult,
       };
 
       // Add credit transfer data if applicable
@@ -663,6 +671,15 @@ export default function ProgramSelection() {
           title: t.saved,
           description: "Your program selection has been saved.",
         });
+
+        // If admission test is required, show payment info
+        if (eligibilityResult?.requiresAdmissionTest) {
+          toast({
+            title: "Next Step: Admission Test",
+            description: "Complete your application and pay admission test fee to get admit card.",
+          });
+        }
+
         navigate("/personal-information");
       } else {
         toast({
@@ -693,7 +710,9 @@ export default function ProgramSelection() {
     selectedSemester &&
     selectedSemesterType &&
     selectedProgram &&
-    selectedDepartment;
+    selectedDepartment &&
+    hasRequiredAcademicInfo() &&
+    eligibilityResult?.isEligible;
 
   return (
     <div>
