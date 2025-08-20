@@ -864,8 +864,9 @@ function getSuggestedPrograms(
   for (const rule of PROGRAM_ELIGIBILITY_RULES) {
     if (rule.programId === currentRule.programId) continue; // Skip current program
 
-    const testResult = checkProgramEligibility(rule.programId, record);
-    if (testResult.isEligible) {
+    // Use internal function to avoid recursion
+    const { isEligible } = checkProgramEligibilityInternal(rule, record);
+    if (isEligible) {
       suggestions.push(rule);
     }
   }
