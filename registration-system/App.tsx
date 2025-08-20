@@ -110,7 +110,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <RegistrationAuthProvider>
-            <BrowserRouter>
+            <BrowserRouter basename="/registration">
               <ErrorBoundary>
                 <Toaster />
                 <Sonner />
