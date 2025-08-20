@@ -44,19 +44,7 @@ import EmailTemplates from "./pages/EmailTemplates";
 const queryClient = new QueryClient();
 
 function AppContent() {
-  // Add error boundary around useAuth hook
-  let userType: "public" | "applicant" | "admin" = "public";
-  let isAuthenticated = false;
-
-  try {
-    const auth = useAuth();
-    userType = auth.userType;
-    isAuthenticated = auth.isAuthenticated;
-  } catch (error) {
-    console.error("Auth context error:", error);
-    // Fallback to default values
-  }
-
+  const { userType, isAuthenticated } = useAuth();
   const location = useLocation();
 
   // Determine if sidebar should be shown based on route and user type
