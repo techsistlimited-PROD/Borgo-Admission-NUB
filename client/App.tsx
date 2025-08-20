@@ -229,6 +229,12 @@ function AppContent() {
               }
             />
 
+            {/* Registration System Routes */}
+            <Route path="/registration" element={<RegistrationIndex />} />
+            <Route path="/registration/student-login" element={<StudentLogin />} />
+            <Route path="/registration/advisor-login" element={<AdvisorLogin />} />
+            <Route path="/registration/admin-login" element={<AdminRegLogin />} />
+
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
           </Routes>
