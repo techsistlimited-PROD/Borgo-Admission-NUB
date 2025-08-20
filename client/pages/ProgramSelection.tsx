@@ -302,7 +302,8 @@ export default function ProgramSelection() {
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চন করুন",
       selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
-      enterGPAValues: "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
+      enterGPAValues:
+        "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
         "অতিরি��্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
@@ -381,43 +382,72 @@ export default function ProgramSelection() {
   }, [sscGPA, hscGPA, hasFourthSubject]);
 
   // Helper function to map program + department to eligibility program ID
-  const getEligibilityProgramId = (programId: string, departmentId: string): string => {
+  const getEligibilityProgramId = (
+    programId: string,
+    departmentId: string,
+  ): string => {
     // Map the old generic program IDs to specific eligibility rule IDs
-    if (programId === 'bachelor') {
+    if (programId === "bachelor") {
       switch (departmentId) {
-        case 'cse': return 'bsc_cse';
-        case 'eee': return 'bsc_eee';
-        case 'ce': return 'bsc_ce';
-        case 'bba': return 'bba';
-        case 'english': return 'ba_english';
-        case 'law': return 'llb';
-        case 'pharmacy': return 'b_pharm';
-        default: return programId; // fallback
+        case "cse":
+          return "bsc_cse";
+        case "eee":
+          return "bsc_eee";
+        case "ce":
+          return "bsc_ce";
+        case "bba":
+          return "bba";
+        case "english":
+          return "ba_english";
+        case "law":
+          return "llb";
+        case "pharmacy":
+          return "b_pharm";
+        default:
+          return programId; // fallback
       }
-    } else if (programId === 'masters') {
+    } else if (programId === "masters") {
       switch (departmentId) {
-        case 'cse': return 'msc_cse';
-        case 'eee': return 'msc_eee';
-        case 'ce': return 'msc_ce';
-        case 'bba': return 'mba';
-        case 'english': return 'ma_linguistics';
-        case 'law': return 'llm';
-        case 'pharmacy': return 'm_pharm';
-        default: return programId;
+        case "cse":
+          return "msc_cse";
+        case "eee":
+          return "msc_eee";
+        case "ce":
+          return "msc_ce";
+        case "bba":
+          return "mba";
+        case "english":
+          return "ma_linguistics";
+        case "law":
+          return "llm";
+        case "pharmacy":
+          return "m_pharm";
+        default:
+          return programId;
       }
     }
     return programId;
   };
 
   // Validate science background for engineering programs
-  const validateScienceBackground = (programId: string, departmentId: string, hasScienceBackground: boolean): string[] => {
+  const validateScienceBackground = (
+    programId: string,
+    departmentId: string,
+    hasScienceBackground: boolean,
+  ): string[] => {
     const errors: string[] = [];
 
     // Engineering departments that require science background
-    const engineeringDepts = ['cse', 'eee', 'ce', 'me', 'te'];
+    const engineeringDepts = ["cse", "eee", "ce", "me", "te"];
 
-    if (programId === 'bachelor' && engineeringDepts.includes(departmentId) && !hasScienceBackground) {
-      errors.push(`❌ Science background in SSC is mandatory for ${getDepartmentById(departmentId)?.name || departmentId}`);
+    if (
+      programId === "bachelor" &&
+      engineeringDepts.includes(departmentId) &&
+      !hasScienceBackground
+    ) {
+      errors.push(
+        `❌ Science background in SSC is mandatory for ${getDepartmentById(departmentId)?.name || departmentId}`,
+      );
     }
 
     return errors;
@@ -537,17 +567,24 @@ export default function ProgramSelection() {
       const academicRecord = buildAcademicRecord();
 
       // Get the correct eligibility program ID
-      const eligibilityProgramId = getEligibilityProgramId(selectedProgram, selectedDepartment);
+      const eligibilityProgramId = getEligibilityProgramId(
+        selectedProgram,
+        selectedDepartment,
+      );
 
       // Check science background for engineering programs first
-      const scienceErrors = validateScienceBackground(selectedProgram, selectedDepartment, hasScienceBackground);
+      const scienceErrors = validateScienceBackground(
+        selectedProgram,
+        selectedDepartment,
+        hasScienceBackground,
+      );
 
-      console.log('🔍 Manual eligibility check:', {
+      console.log("🔍 Manual eligibility check:", {
         originalProgram: selectedProgram,
         department: selectedDepartment,
         eligibilityProgramId,
         academicRecord,
-        scienceErrors
+        scienceErrors,
       });
 
       let result;
@@ -556,18 +593,18 @@ export default function ProgramSelection() {
       if (scienceErrors.length > 0) {
         result = {
           isEligible: false,
-          route: 'regular' as const,
+          route: "regular" as const,
           requiresAdmissionTest: false,
           requiresViva: false,
           missingRequirements: scienceErrors,
           warnings: [],
-          suggestedPrograms: []
+          suggestedPrograms: [],
         };
-        console.log('❌ Science background validation failed:', result);
+        console.log("❌ Science background validation failed:", result);
       } else {
         // Perform normal eligibility check with mapped program ID
         result = checkProgramEligibility(eligibilityProgramId, academicRecord);
-        console.log('✅ Eligibility check result:', result);
+        console.log("✅ Eligibility check result:", result);
       }
 
       setEligibilityResult(result);
@@ -2475,7 +2512,10 @@ export default function ProgramSelection() {
                 ) : !hasRequiredAcademicInfo() ? (
                   <p>📝 Please complete your academic information</p>
                 ) : !eligibilityChecked ? (
-                  <p>🔍 Please click "Check Eligibility Details" button to verify requirements</p>
+                  <p>
+                    🔍 Please click "Check Eligibility Details" button to verify
+                    requirements
+                  </p>
                 ) : eligibilityResult && !eligibilityResult.isEligible ? (
                   <p>❌ You must be eligible to continue</p>
                 ) : (
