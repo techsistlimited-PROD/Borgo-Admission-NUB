@@ -235,6 +235,7 @@ function AppContent() {
             <Route path="/registration/student-login" element={<StudentLogin />} />
             <Route path="/registration/advisor-login" element={<AdvisorLogin />} />
             <Route path="/registration/admin-login" element={<AdminRegLogin />} />
+            <Route path="/registration/student-dashboard" element={<StudentDashboard />} />
 
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
