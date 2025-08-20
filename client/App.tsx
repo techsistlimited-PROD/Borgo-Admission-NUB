@@ -63,7 +63,10 @@ function AppContent() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-lavender-bg flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-deep-plum"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-deep-plum mx-auto mb-4"></div>
+          <p className="text-deep-plum">Loading...</p>
+        </div>
       </div>
     );
   }
