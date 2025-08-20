@@ -210,6 +210,56 @@ export default function AdmissionConfiguration() {
     is_active: true,
   });
 
+  // Initialize program configurations with defaults
+  const initializeProgramConfigurations = () => {
+    // Common program-department combinations
+    const programDeptCombinations = [
+      // Bachelor's programs
+      { program: "bachelor", dept: "cse", name: "Bachelor in CSE" },
+      { program: "bachelor", dept: "eee", name: "Bachelor in EEE" },
+      { program: "bachelor", dept: "ce", name: "Bachelor in Civil Engineering" },
+      { program: "bachelor", dept: "architecture", name: "Bachelor in Architecture" },
+      { program: "bachelor", dept: "bba", name: "Bachelor in Business Administration" },
+      { program: "bachelor", dept: "law", name: "Bachelor of Laws (LL.B)" },
+      { program: "bachelor", dept: "pharmacy", name: "Bachelor of Pharmacy" },
+      { program: "bachelor", dept: "english", name: "Bachelor in English" },
+
+      // Master's programs
+      { program: "masters", dept: "cse", name: "Master's in CSE" },
+      { program: "masters", dept: "eee", name: "Master's in EEE" },
+      { program: "masters", dept: "bba", name: "Master's in Business Administration (MBA)" },
+    ];
+
+    // Initialize program limits
+    const defaultLimits: ProgramLimits = {};
+    programDeptCombinations.forEach(({ program, dept }) => {
+      const key = `${program}_${dept}`;
+      defaultLimits[key] = {
+        max_applicants: 100, // Default limit
+        current_applicants: 0,
+        enabled: true,
+      };
+    });
+
+    // Initialize program eligibility configs
+    const defaultEligibility: ProgramEligibilityConfig = {};
+    programDeptCombinations.forEach(({ program, dept }) => {
+      const key = `${program}_${dept}`;
+      defaultEligibility[key] = {
+        min_ssc_gpa: 2.5,
+        min_hsc_gpa: 2.5,
+        min_total_gpa: 5.0,
+        requires_science_background: ["cse", "eee", "ce", "architecture", "pharmacy"].includes(dept),
+        allowed_backgrounds: ["bangla_medium", "english_medium"],
+        additional_requirements: [],
+        enabled: true,
+      };
+    });
+
+    setProgramLimits(defaultLimits);
+    setProgramEligibility(defaultEligibility);
+  };
+
   // Load data
   const loadData = async () => {
     try {
