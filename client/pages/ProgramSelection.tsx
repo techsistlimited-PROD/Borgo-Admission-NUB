@@ -178,7 +178,7 @@ export default function ProgramSelection() {
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
-    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম����পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
   ];
 
   const semesterOptions = [
@@ -263,8 +263,8 @@ export default function ProgramSelection() {
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
-      campusSelection: "ক্যাম্পাস নির্বাচন করুন",
-      semesterSelection: "সেমিস্���ার নির্বাচন করুন",
+      campusSelection: "ক্যাম্পাস নির্বাচন কর���ন",
+      semesterSelection: "সেমিস্টার নির্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
@@ -279,10 +279,10 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছি��",
+      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
-      resultBasedWaivers: "ফলাফল ভি���্তিক মওকুফ",
+      resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
       additionalWaivers: "অতিরিক্ত মওকুফ",
       estimatedCost: "আনুমানিক খরচ",
@@ -538,9 +538,13 @@ export default function ProgramSelection() {
     setSelectedDepartment("");
     setSscGPA("");
     setHscGPA("");
+    setSscYear("");
+    setHscYear("");
     setHasFourthSubject(false);
     setSelectedWaivers([]);
     setAutoSelectedResultWaiver("");
+
+    // Clear credit transfer fields
     setPreviousInstitution("");
     setPreviousProgram("");
     setTotalCreditsInProgram("");
@@ -548,6 +552,20 @@ export default function ProgramSelection() {
     setPreviousCGPA("");
     setReasonForTransfer("");
     setTranscriptFile(null);
+
+    // Clear academic background specific fields
+    setOLevelSubjects([]);
+    setALevelSubjects([]);
+    setDiplomaCGPA("");
+    setDiplomaProgram("");
+    setBachelorCGPA("");
+    setBachelorDegree("");
+    setBachelorInstitution("");
+    setWorkExperience("");
+    setHasThirdDivision(false);
+    setHasScienceBackground(false);
+
+    // Clear eligibility state
     setEligibilityResult(null);
     setEligibilityChecked(false);
     setShowEligibilityCheck(false);
@@ -571,6 +589,11 @@ export default function ProgramSelection() {
       } else if (element instanceof HTMLTextAreaElement) {
         element.value = "";
       }
+    });
+
+    toast({
+      title: "Form Cleared",
+      description: "All form data has been cleared successfully.",
     });
   };
 
