@@ -1168,30 +1168,6 @@ export default function AdmissionConfiguration() {
                       }
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="warning_threshold">
-                      Eligibility Warning Threshold
-                    </Label>
-                    <Input
-                      id="warning_threshold"
-                      type="number"
-                      step="0.1"
-                      min="0"
-                      max="1"
-                      value={settings.eligibility_warning_threshold}
-                      onChange={(e) =>
-                        setSettings({
-                          ...settings,
-                          eligibility_warning_threshold:
-                            parseFloat(e.target.value) || 0,
-                        })
-                      }
-                    />
-                    <p className="text-sm text-gray-600 mt-1">
-                      Show warning when GPA is within this threshold of minimum
-                      requirement
-                    </p>
-                  </div>
                 </div>
               </div>
 
