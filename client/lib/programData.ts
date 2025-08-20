@@ -134,7 +134,7 @@ export const departments: Department[] = [
     name: 'General Education',
     namebn: 'সাধারণ শিক্ষা',
     description: 'Foundational education program',
-    descriptionbn: 'ভিত্তিগত শিক্ষ�� প্রোগ্রাম',
+    descriptionbn: 'ভিত্তিগত শিক্ষা প্রোগ্রাম',
     faculty: 'Faculty of Arts',
     facultybn: 'কলা অনুষদ'
   },
@@ -168,9 +168,9 @@ export const departments: Department[] = [
   {
     id: 'ph',
     name: 'Public Health',
-    namebn: 'জনস্বা��্থ্য',
+    namebn: 'জনস্বাস্থ্য',
     description: 'Community health and healthcare management',
-    descriptionbn: 'কমিউনিটি স্বাস্থ্য এবং স্বাস্থ্যসেবা ব্যবস্থাপনা',
+    descriptionbn: 'কমিউনিটি ��্বাস্থ্য এবং স্বাস্থ্যসেবা ব্যবস্থাপনা',
     faculty: 'Faculty of Health Sciences',
     facultybn: 'স্বাস্থ্য বিজ্ঞান অনুষদ'
   }
@@ -260,6 +260,14 @@ export const programs: Program[] = [
       labFee: 5000,
       others: 3000,
       total: 43000
+    },
+    eligibilityRequirements: {
+      level: 'undergraduate',
+      minSSCGPA: 2.0,
+      minHSCGPA: 2.0,
+      alternativeQualifications: ['HSC/A-Level/Equivalent', 'Professional experience'],
+      additionalRequirements: ['Basic computer literacy for technical programs'],
+      specificRequirements: 'Minimum GPA 2.0 in SSC and HSC or equivalent examinations. Professional experience may substitute educational requirements.'
     }
   }
 ];
@@ -276,7 +284,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'GPA 5.00 in both SSC and HSC without 4th subject',
     criteriabn: 'এসএসসি ও এইচএসসি উভয়ে ৪র্থ বিষয় ছাড়া জিপিএ ৫.০০',
     description: 'Full tuition waiver for excellent academic performance',
-    descriptionbn: 'চমৎকার একাড���মিক পারফরম্যান্সের জন্য সম���পূর্ণ টিউশন ফি মওকুফ'
+    descriptionbn: 'চমৎকার একাডেমিক পারফরম্যান্সের জন্য সম���পূর্ণ টিউশন ফি মওকুফ'
   },
   {
     id: 'result_80',
@@ -296,7 +304,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     type: 'result',
     percentage: 40,
     criteria: 'GPA 4.80-4.99 in both SSC and HSC',
-    criteriabn: 'এসএসসি ও এইচএসসি উভয়ে জিপিএ ৪.৮০-৪.৯৯',
+    criteriabn: 'এস��সসি ও এইচএসসি উভয়ে জিপিএ ৪.৮০-৪.৯৯',
     description: '40% tuition waiver for very good academic performance',
     descriptionbn: 'খুব ভাল এক���ডেমিক পারফরম্যান্সের জন্য ৪০% টিউশন ফি মওকুফ'
   },
@@ -320,7 +328,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'GPA 4.00-4.49 in both SSC and HSC',
     criteriabn: 'এসএসসি ও এইচএসসি উভয়ে জিপিএ ৪.০০-৪.৪৯',
     description: '20% tuition waiver for satisfactory academic performance',
-    descriptionbn: 'সন্তোষজনক একাডেমিক পারফরম্যান্সের জন্য ২০% টিউশন ফি মওকুফ'
+    descriptionbn: 'সন্��োষজনক একাডেমিক পারফরম্যান্সের জন্য ২০% টিউশন ফি মওকুফ'
   },
   {
     id: 'result_10',
@@ -355,7 +363,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'Students from tribal population',
     criteriabn: 'আদিবাসী জনগোষ্ঠীর শিক্ষার্থী',
     description: 'Additional 5% waiver for tribal population students',
-    descriptionbn: 'আ���িবাসী জনগোষ্ঠীর শিক্ষার্থীদ��র জন্য অতিরিক্ত ৫% মওকুফ'
+    descriptionbn: 'আদিবাসী জনগোষ্ঠীর শিক্ষার্থীদ��র জন্য অতিরিক্ত ৫% মওকুফ'
   },
   {
     id: 'sibling',
@@ -377,7 +385,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'Wards of freedom fighters',
     criteriabn: 'মুক্তিযোদ্ধার সন্তান',
     description: 'Special waiver for wards of freedom fighters',
-    descriptionbn: 'মুক্তিযোদ্ধার সন্তানদের জন্য বিশেষ মওকুফ'
+    descriptionbn: 'মুক্তিযোদ্ধার সন্তানদের জন্য ব��শেষ মওকুফ'
   }
 ];
 
