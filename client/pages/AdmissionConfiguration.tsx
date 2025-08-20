@@ -1245,6 +1245,151 @@ export default function AdmissionConfiguration() {
                 </div>
               </div>
 
+              <Separator />
+
+              {/* Program-wise Eligibility Rules */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-deep-plum">Program-Specific Eligibility Rules</h3>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Program</TableHead>
+                        <TableHead>Min SSC GPA</TableHead>
+                        <TableHead>Min HSC GPA</TableHead>
+                        <TableHead>Min Total GPA</TableHead>
+                        <TableHead>Science Required</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {Object.entries(programEligibility).map(([programKey, config]) => {
+                        const programName = programKey
+                          .split("_")
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(" ");
+
+                        return (
+                          <TableRow key={programKey}>
+                            <TableCell className="font-medium">{programName}</TableCell>
+                            <TableCell>
+                              <Input
+                                type="number"
+                                min="0"
+                                max="5"
+                                step="0.1"
+                                className="w-20"
+                                value={config.min_ssc_gpa}
+                                onChange={(e) =>
+                                  setProgramEligibility(prev => ({
+                                    ...prev,
+                                    [programKey]: {
+                                      ...prev[programKey],
+                                      min_ssc_gpa: parseFloat(e.target.value) || 0,
+                                    },
+                                  }))
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Input
+                                type="number"
+                                min="0"
+                                max="5"
+                                step="0.1"
+                                className="w-20"
+                                value={config.min_hsc_gpa}
+                                onChange={(e) =>
+                                  setProgramEligibility(prev => ({
+                                    ...prev,
+                                    [programKey]: {
+                                      ...prev[programKey],
+                                      min_hsc_gpa: parseFloat(e.target.value) || 0,
+                                    },
+                                  }))
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Input
+                                type="number"
+                                min="0"
+                                max="10"
+                                step="0.1"
+                                className="w-20"
+                                value={config.min_total_gpa}
+                                onChange={(e) =>
+                                  setProgramEligibility(prev => ({
+                                    ...prev,
+                                    [programKey]: {
+                                      ...prev[programKey],
+                                      min_total_gpa: parseFloat(e.target.value) || 0,
+                                    },
+                                  }))
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Switch
+                                checked={config.requires_science_background}
+                                onCheckedChange={(checked) =>
+                                  setProgramEligibility(prev => ({
+                                    ...prev,
+                                    [programKey]: {
+                                      ...prev[programKey],
+                                      requires_science_background: checked,
+                                    },
+                                  }))
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Switch
+                                checked={config.enabled}
+                                onCheckedChange={(checked) =>
+                                  setProgramEligibility(prev => ({
+                                    ...prev,
+                                    [programKey]: {
+                                      ...prev[programKey],
+                                      enabled: checked,
+                                    },
+                                  }))
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  // Could open a dialog for more detailed editing
+                                  toast({
+                                    title: "Feature Coming Soon",
+                                    description: "Advanced rule editing will be available in the next update.",
+                                  });
+                                }}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+                <div className="text-sm text-gray-600">
+                  <p><strong>Note:</strong> These rules will be used for automatic eligibility checking during application.</p>
+                  <ul className="list-disc list-inside mt-2 space-y-1">
+                    <li><strong>Min SSC/HSC GPA:</strong> Minimum GPA required for each level</li>
+                    <li><strong>Min Total GPA:</strong> Combined minimum GPA requirement (SSC + HSC)</li>
+                    <li><strong>Science Required:</strong> Whether science background is mandatory for the program</li>
+                    <li><strong>Status:</strong> Enable/disable automatic eligibility checking for this program</li>
+                  </ul>
+                </div>
+              </div>
+
               {/* Save Button */}
               <div className="flex justify-end">
                 <Button
@@ -1866,7 +2011,7 @@ export default function AdmissionConfiguration() {
                             {rule.eligibilityRules.postgraduate && (
                               <div className="p-3 bg-purple-50 border border-purple-200 rounded">
                                 <h5 className="font-medium text-purple-800 mb-2 flex items-center gap-2">
-                                  🎓 Postgraduate
+                                  ��� Postgraduate
                                 </h5>
                                 <div className="space-y-1 text-purple-700">
                                   <p>
