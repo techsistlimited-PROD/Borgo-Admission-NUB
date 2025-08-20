@@ -13,6 +13,7 @@ import {
 } from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
