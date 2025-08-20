@@ -261,6 +261,11 @@ export default function AdmissionConfiguration() {
       const settingsResponse = await apiClient.getAdmissionSettings();
       if (settingsResponse.success && settingsResponse.data) {
         setSettings(settingsResponse.data);
+        // Initialize program configurations with settings data
+        initializeProgramConfigurations(settingsResponse.data);
+      } else {
+        // Initialize with defaults if settings failed to load
+        initializeProgramConfigurations();
       }
 
       // Load payment methods
@@ -274,9 +279,6 @@ export default function AdmissionConfiguration() {
       if (documentResponse.success && documentResponse.data) {
         setDocumentRequirements(documentResponse.data);
       }
-
-      // Initialize program configurations
-      initializeProgramConfigurations();
     } catch (error) {
       console.error("Error loading data:", error);
       toast({
