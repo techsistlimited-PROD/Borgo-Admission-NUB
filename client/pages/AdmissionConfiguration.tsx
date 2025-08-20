@@ -103,6 +103,16 @@ interface AdmissionSettings {
   require_document_verification_for_waiver: boolean;
   auto_calculate_result_waiver: boolean;
   allow_manual_waiver_override: boolean;
+  // Admission Test Configuration
+  law_admission_test_date: string;
+  architecture_admission_test_date: string;
+  admission_test_fee: number;
+  law_test_time: string;
+  architecture_test_time: string;
+  law_test_venue_main: string;
+  law_test_venue_khulna: string;
+  architecture_test_venue_main: string;
+  architecture_test_venue_khulna: string;
 }
 
 interface PaymentMethod {
