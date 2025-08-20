@@ -235,7 +235,7 @@ export default function ProgramSelection() {
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস��টার বেছে নিন",
       selectSemesterType: "সেমিস্টার ধরন বেছ�� নিন",
-      selectProgram: "আপনার প্রোগ্রাম বেছে নিন",
+      selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
@@ -268,7 +268,7 @@ export default function ProgramSelection() {
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
+        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -342,6 +342,43 @@ export default function ProgramSelection() {
       }
     }
   }, [sscGPA, hscGPA, hasFourthSubject]);
+
+  // Check eligibility when program or GPA changes
+  useEffect(() => {
+    if (selectedProgram && sscGPA && hscGPA) {
+      const sscValue = parseFloat(sscGPA);
+      const hscValue = parseFloat(hscGPA);
+
+      if (sscValue >= 0 && sscValue <= 5 && hscValue >= 0 && hscValue <= 5) {
+        const studentInfo: StudentAcademicInfo = {
+          sscGPA: sscValue,
+          hscGPA: hscValue,
+        };
+
+        // Add credit transfer specific info if applicable
+        if (admissionType === "credit-transfer" && previousCGPA) {
+          studentInfo.bachelorGPA = parseFloat(previousCGPA);
+          studentInfo.previousDegreeType = "Bachelor";
+        }
+
+        const result = checkEligibility(selectedProgram, studentInfo);
+        setEligibilityResult(result);
+        setEligibilityChecked(true);
+
+        // Show eligibility check automatically
+        if (!result.isEligible) {
+          setShowEligibilityCheck(true);
+          toast({
+            title: "Eligibility Check",
+            description: "Please review the eligibility requirements before proceeding.",
+            variant: "destructive",
+          });
+        } else {
+          setShowEligibilityCheck(false);
+        }
+      }
+    }
+  }, [selectedProgram, sscGPA, hscGPA, previousCGPA, admissionType, toast]);
 
   // Auto-save data when form values change
   useEffect(() => {
