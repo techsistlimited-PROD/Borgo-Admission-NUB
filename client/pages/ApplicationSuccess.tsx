@@ -167,7 +167,7 @@ export default function ApplicationSuccess() {
     },
     bn: {
       title: "আবেদন সফলভ��বে জমা দেওয়া হয়েছে!",
-      subtitle: "আপনার আবেদন গ্রহণ করা হয়েছে এবং পর্যালোচনাধীন রয়েছে",
+      subtitle: "আপনার আবেদন গ্রহণ করা হয়েছে এবং পর্যালোচনাধীন র��়েছে",
       congratulations: "অভিনন্দন!",
       applicationSubmitted:
         "আপনার আবেদন সফলভাবে নর্দার্ন ইউনিভার্স��টি বাংলাদেশে জমা দেওয়া হয়েছে।",
@@ -177,7 +177,7 @@ export default function ApplicationSuccess() {
       nextSteps: "পরবর্তী ধাপসমূহ",
       step1: "আবেদনকারী পোর্টালে লগইন",
       step1Desc:
-        "আবেদনকারী পোর্টাল অ���যাক্সেস করতে আপনার আবেদনকারী আইডি ��বং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
+        "আবেদনকারী পোর্টাল অ���যাক্সেস করতে আপনার আবেদনকারী আইডি এবং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
       step2: "পেমেন্ট সম্পূর্ণ করুন",
       step2Desc:
         "আপনার পেমেন্ট র���িদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
@@ -191,7 +191,7 @@ export default function ApplicationSuccess() {
       copyCredentials: "প��িচয়পত্র কপি করুন",
       saveInfo: "এই তথ্য সংরক্ষণ করুন",
       saveInfoDesc:
-        "অনুগ���রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
+        "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
       adminReview: "প্রশাসনিক পর্যালোচনা প্রক্রিয়া",
       adminReviewDesc:
         "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
@@ -486,7 +486,7 @@ Please keep this information safe and secure.
         </Card>
 
         {/* Admission Test Section - Only for Law and Architecture */}
-        {requiresAdmissionTest && (
+        {testRequiresAdmissionTest && (
           <Card className="mb-8 bg-white shadow-lg border-orange-200">
             <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50">
               <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
