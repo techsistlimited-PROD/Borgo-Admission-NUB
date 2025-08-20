@@ -809,6 +809,272 @@ export default function AdmissionConfiguration() {
           </div>
         </TabsContent>
 
+        {/* Eligibility & Waiver Configuration Tab */}
+        <TabsContent value="eligibility" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Eligibility Requirements Configuration</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Eligibility System Toggle */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="eligibility_enabled">Enable Eligibility Check</Label>
+                    <Switch
+                      id="eligibility_enabled"
+                      checked={settings.eligibility_check_enabled}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          eligibility_check_enabled: checked,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="strict_enforcement">Strict Enforcement</Label>
+                    <Switch
+                      id="strict_enforcement"
+                      checked={settings.strict_eligibility_enforcement}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          strict_eligibility_enforcement: checked,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="allow_override">Allow Admin Override</Label>
+                    <Switch
+                      id="allow_override"
+                      checked={settings.allow_eligibility_override}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          allow_eligibility_override: checked,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="show_suggestions">Show Suggested Programs</Label>
+                    <Switch
+                      id="show_suggestions"
+                      checked={settings.show_suggested_programs}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          show_suggested_programs: checked,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="alternative_quals">Allow Alternative Qualifications</Label>
+                    <Switch
+                      id="alternative_quals"
+                      checked={settings.allow_alternative_qualifications}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          allow_alternative_qualifications: checked,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="auto_waiver">Auto-Calculate Result Waiver</Label>
+                    <Switch
+                      id="auto_waiver"
+                      checked={settings.auto_calculate_result_waiver}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          auto_calculate_result_waiver: checked,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="waiver_override">Allow Waiver Override</Label>
+                    <Switch
+                      id="waiver_override"
+                      checked={settings.allow_manual_waiver_override}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          allow_manual_waiver_override: checked,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="waiver_docs">Require Documents for Waiver</Label>
+                    <Switch
+                      id="waiver_docs"
+                      checked={settings.require_document_verification_for_waiver}
+                      onCheckedChange={(checked) =>
+                        setSettings({
+                          ...settings,
+                          require_document_verification_for_waiver: checked,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Minimum GPA Requirements */}
+              <div>
+                <h3 className="text-lg font-semibold text-deep-plum mb-4">Minimum GPA Requirements</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <Label htmlFor="min_ssc">Minimum SSC GPA</Label>
+                    <Input
+                      id="min_ssc"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="5"
+                      value={settings.minimum_ssc_gpa}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          minimum_ssc_gpa: parseFloat(e.target.value) || 0,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="min_hsc">Minimum HSC GPA</Label>
+                    <Input
+                      id="min_hsc"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="5"
+                      value={settings.minimum_hsc_gpa}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          minimum_hsc_gpa: parseFloat(e.target.value) || 0,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="min_bachelor">Minimum Bachelor GPA</Label>
+                    <Input
+                      id="min_bachelor"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="4"
+                      value={settings.minimum_bachelor_gpa}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          minimum_bachelor_gpa: parseFloat(e.target.value) || 0,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="min_master">Minimum Master GPA</Label>
+                    <Input
+                      id="min_master"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="4"
+                      value={settings.minimum_master_gpa}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          minimum_master_gpa: parseFloat(e.target.value) || 0,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Waiver Configuration */}
+              <div>
+                <h3 className="text-lg font-semibold text-deep-plum mb-4">Waiver Configuration</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="max_waiver">Maximum Combined Waiver (%)</Label>
+                    <Input
+                      id="max_waiver"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={settings.max_combined_waiver}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          max_combined_waiver: parseInt(e.target.value) || 0,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="warning_threshold">Eligibility Warning Threshold</Label>
+                    <Input
+                      id="warning_threshold"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="1"
+                      value={settings.eligibility_warning_threshold}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          eligibility_warning_threshold: parseFloat(e.target.value) || 0,
+                        })
+                      }
+                    />
+                    <p className="text-sm text-gray-600 mt-1">
+                      Show warning when GPA is within this threshold of minimum requirement
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Save Button */}
+              <div className="flex justify-end">
+                <Button
+                  onClick={saveSettings}
+                  disabled={saving}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  {saving ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 mr-2" />
+                      Save Eligibility Settings
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* Payment Methods Tab */}
         <TabsContent value="payment" className="space-y-6">
           <Card>
