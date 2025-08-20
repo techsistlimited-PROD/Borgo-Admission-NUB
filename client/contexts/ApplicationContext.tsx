@@ -135,6 +135,25 @@ export function ApplicationProvider({ children }: { children: ReactNode }) {
   const clearApplicationData = () => {
     setApplicationData({});
     localStorage.removeItem("nu_application_draft");
+
+    // Also clear any other related localStorage keys
+    localStorage.removeItem("nu_user_session");
+    localStorage.removeItem("nu_form_cache");
+
+    // Force clear browser form cache by resetting all form fields
+    setTimeout(() => {
+      const allInputs = document.querySelectorAll('input, select, textarea');
+      allInputs.forEach((input) => {
+        if (input instanceof HTMLInputElement) {
+          input.value = '';
+          input.checked = false;
+        } else if (input instanceof HTMLSelectElement) {
+          input.selectedIndex = 0;
+        } else if (input instanceof HTMLTextAreaElement) {
+          input.value = '';
+        }
+      });
+    }, 100);
   };
 
   const isComplete = (step: string): boolean => {
