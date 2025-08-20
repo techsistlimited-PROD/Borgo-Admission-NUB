@@ -49,6 +49,7 @@ import RegistrationIndex from "./pages/registration/Index";
 import StudentLogin from "./pages/registration/StudentLogin";
 import AdvisorLogin from "./pages/registration/AdvisorLogin";
 import AdminRegLogin from "./pages/registration/AdminLogin";
+import StudentDashboard from "./pages/registration/StudentDashboard";
 
 const queryClient = new QueryClient();
 
