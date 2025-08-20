@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom CSS Variables matching the admission system theme */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 240 5.9% 10%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 5.9% 10%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
+}
+
+/* Custom color classes matching admission system */
+.bg-deep-plum {
+  background-color: #4A1D4A;
+}
+
+.text-deep-plum {
+  color: #4A1D4A;
+}
+
+.bg-accent-purple {
+  background-color: #8B4B9B;
+}
+
+.text-accent-purple {
+  color: #8B4B9B;
+}
+
+.bg-lavender-bg {
+  background-color: #F3F0FF;
+}
+
+.text-lavender-bg {
+  color: #F3F0FF;
+}
+
+.bg-gold-accent {
+  background-color: #D4AF37;
+}
+
+.text-gold-accent {
+  color: #D4AF37;
+}
+
+.border-deep-plum {
+  border-color: #4A1D4A;
+}
+
+.border-accent-purple {
+  border-color: #8B4B9B;
+}
+
+.hover\:bg-deep-plum:hover {
+  background-color: #4A1D4A;
+}
+
+.hover\:bg-accent-purple:hover {
+  background-color: #8B4B9B;
+}
+
+.hover\:text-deep-plum:hover {
+  color: #4A1D4A;
+}
+
+.hover\:text-accent-purple:hover {
+  color: #8B4B9B;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Form styling */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Disable browser form caching */
+input[data-lpignore="true"] {
+  background: transparent !important;
+}
+
+form {
+  autocomplete: off;
+}
+
+input {
+  autocomplete: new-password;
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+}
