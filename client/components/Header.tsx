@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { LogOut, User } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { LogOut, User, Plus } from 'lucide-react';
 import { Button } from './ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
 import { useAuth } from '../contexts/AuthContext';
+import { useApplication } from '../contexts/ApplicationContext';
 
 interface HeaderProps {
   showLogin?: boolean;
