@@ -224,7 +224,7 @@ export default function ProgramSelection() {
     bn: {
       title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
       subtitle:
-        "৪টি ধাপের ১ম ধাপ - আপনার ���কাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
+        "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
@@ -239,12 +239,12 @@ export default function ProgramSelection() {
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
-      waiverCalculator: "মওকু��� ক্যালকুলেটর",
+      waiverCalculator: "মওকুফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "এইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
-      calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
+      calculateWaiver: "যোগ্য মও��ুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "বিশেষ মওকুফ",
@@ -261,7 +261,7 @@ export default function ProgramSelection() {
       duration: "স���য়কাল",
       faculty: "অনুষদ",
       description: "বিবরণ",
-      waiverApplied: "���ওকুফ প্রয়োগ করা হয়েছে",
+      waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
@@ -981,6 +981,9 @@ export default function ProgramSelection() {
                     <CheckCircle className="w-5 h-5" />
                     Eligibility Verification
                   </CardTitle>
+                  <p className="text-sm text-gray-600 mt-2">
+                    We check your academic qualifications against the minimum requirements for your selected program
+                  </p>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {eligibilityResult ? (
