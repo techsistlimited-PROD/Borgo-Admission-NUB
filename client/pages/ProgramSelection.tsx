@@ -283,7 +283,7 @@ export default function ProgramSelection() {
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "���পলব্ধ মওকুফ",
-      resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
+      resultBasedWaivers: "ফ��াফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
       additionalWaivers: "অতি���িক্ত ম���কুফ",
       estimatedCost: "আনুমানিক খরচ",
@@ -2035,7 +2035,7 @@ export default function ProgramSelection() {
                             htmlFor="scienceBackground"
                             className="text-sm"
                           >
-                            Science background in SSC
+                            Science background in HSC
                           </Label>
                         </div>
                       </div>
