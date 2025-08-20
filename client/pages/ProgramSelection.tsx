@@ -262,7 +262,7 @@ export default function ProgramSelection() {
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
-      continue: "সেভ ��রে এগিয়ে যান",
+      continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার নির্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
@@ -278,7 +278,7 @@ export default function ProgramSelection() {
       waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
-      hscGPA: "��ইচএসসি জিপিএ",
+      hscGPA: "����ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
@@ -300,7 +300,7 @@ export default function ProgramSelection() {
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
-      selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
+      selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
@@ -1523,14 +1523,24 @@ export default function ProgramSelection() {
                                   {programRule.allowedPassingYears && (
                                     <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
                                       <strong className="text-yellow-800">
-                                        Year Restriction:
+                                        📅 Year Restriction:
                                       </strong>
                                       <p className="text-yellow-700">
-                                        HSC passing years:{" "}
+                                        HSC passing years allowed:{" "}
                                         {programRule.allowedPassingYears.join(
                                           ", ",
                                         )}
                                       </p>
+                                      {hscYear && !programRule.allowedPassingYears.includes(parseInt(hscYear)) && (
+                                        <p className="text-red-600 text-xs mt-1">
+                                          ❌ Your HSC year ({hscYear}) is not in the allowed range
+                                        </p>
+                                      )}
+                                      {!hscYear && (
+                                        <p className="text-blue-600 text-xs mt-1">
+                                          ℹ️ Please enter your HSC passing year above for verification
+                                        </p>
+                                      )}
                                     </div>
                                   )}
                                 </div>
