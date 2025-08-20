@@ -56,7 +56,9 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
 }
 
 function AppContent() {
-  const { userType, isAuthenticated, isLoading } = useAuth();
+  // Safely access auth context with error handling
+  const authContext = useAuth();
+  const { userType = "public", isAuthenticated = false, isLoading = false } = authContext || {};
   const location = useLocation();
 
   // Show loading spinner while auth is initializing
