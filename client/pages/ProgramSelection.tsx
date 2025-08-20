@@ -271,7 +271,7 @@ export default function ProgramSelection() {
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস��টার বেছে নিন",
-      selectSemesterType: "সেমিস্টার ধরন বেছ�� ন��ন",
+      selectSemesterType: "সে���িস্টার ধরন বেছ�� ন��ন",
       selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
@@ -288,14 +288,14 @@ export default function ProgramSelection() {
       additionalWaivers: "অতি���িক্ত ম���কুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
-      waiverAmount: "���ওকুফ পরিমাণ",
+      waiverAmount: "���ও��ুফ পরিমাণ",
       finalAmount: "চূড়ান্ত পরিম��ণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
       labFee: "ল্যাব ফি",
       others: "অন্যান���য",
       total: "মোট",
-      duration: "স����য়কাল",
+      duration: "স���য়কাল",
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
@@ -308,7 +308,7 @@ export default function ProgramSelection() {
       costNote:
         "অতিরি��্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
       saving: "সেভ করা হচ্ছে...",
-      saved: "ডেটা সফল��াবে ���েভ হয়েছে!",
+      saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
     },
   };
@@ -1988,6 +1988,29 @@ export default function ProgramSelection() {
                           >
                             Science background in HSC
                           </Label>
+                        </div>
+
+                        {/* Check Eligibility Button */}
+                        <div className="mt-6 text-center">
+                          <Button
+                            onClick={performEligibilityCheck}
+                            variant="default"
+                            size="lg"
+                            className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-3"
+                            disabled={
+                              !selectedProgram ||
+                              !selectedDepartment ||
+                              !hasRequiredAcademicInfo() ||
+                              isCheckingEligibility
+                            }
+                          >
+                            {isCheckingEligibility
+                              ? "⏳ Checking..."
+                              : "🔍 Check Eligibility"}
+                          </Button>
+                          <p className="text-sm text-gray-600 mt-2">
+                            Verify if you meet the requirements for this program
+                          </p>
                         </div>
                       </div>
                     )}
