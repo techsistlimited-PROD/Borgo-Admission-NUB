@@ -32,7 +32,11 @@ import AdmitCard from "../components/AdmitCard";
 export default function ApplicationSuccess() {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const { applicationData } = useApplication();
   const [language, setLanguage] = useState<"en" | "bn">("en");
+  const [showPayment, setShowPayment] = useState(false);
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
+  const [admissionTestPaid, setAdmissionTestPaid] = useState(false);
 
   const trackingId = searchParams.get("trackingId");
 
@@ -98,7 +102,7 @@ export default function ApplicationSuccess() {
       step4: "আবেদনের স্থিতি ট্র্যাক করুন",
       step4Desc:
         "আপনার আবেদনের অগ্রগতি এবং প্রশাসনিক সিদ্ধান্ত পর্যবেক্ষণ করুন",
-      loginPortal: "আব��দনকারী পোর্টালে লগইন",
+      loginPortal: "আবেদনকারী পোর্টালে লগইন",
       downloadInfo: "আবেদনের তথ্য ডাউনলোড করুন",
       copyCredentials: "পরিচয়পত্র কপি করুন",
       saveInfo: "এই তথ্য সংরক্ষণ করুন",
@@ -106,10 +110,10 @@ export default function ApplicationSuccess() {
         "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
       adminReview: "প্রশাসনিক পর্যালোচনা প্রক্রিয়া",
       adminReviewDesc:
-        "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
+        "আপনার আবেদন আম���দের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
       supportInfo: "সাহায্য প্রয়োজন?",
       supportDesc:
-        "যদি আপনার কোন প্রশ��ন থাকে, ���নুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
+        "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
       contactEmail: "ইমেইল: admission@nu.edu.bd",
       contactPhone: "ফোন: +৮৮০ ১৭০০-০০০০০০",
       credentialsCopied: "পরিচয়পত্র ক্লিপবোর্ডে কপি করা হয়েছে!",
