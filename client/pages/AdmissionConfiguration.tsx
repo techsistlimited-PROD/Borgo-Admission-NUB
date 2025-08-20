@@ -421,10 +421,14 @@ export default function AdmissionConfiguration() {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Settings className="w-4 h-4" />
             General Settings
+          </TabsTrigger>
+          <TabsTrigger value="eligibility" className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4" />
+            Eligibility & Waiver
           </TabsTrigger>
           <TabsTrigger value="payment" className="flex items-center gap-2">
             <CreditCard className="w-4 h-4" />
