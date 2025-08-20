@@ -152,6 +152,7 @@ export default function ProgramSelection() {
     useState<EligibilityCheckResult | null>(null);
   const [showEligibilityCheck, setShowEligibilityCheck] = useState(false);
   const [eligibilityChecked, setEligibilityChecked] = useState(false);
+  const [isCheckingEligibility, setIsCheckingEligibility] = useState(false);
 
   // Credit Transfer specific state
   const [previousInstitution, setPreviousInstitution] = useState<string>(
@@ -178,7 +179,7 @@ export default function ProgramSelection() {
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
-    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খুলন��� ক্যাম��পাস" },
   ];
 
   const semesterOptions = [
@@ -263,7 +264,7 @@ export default function ProgramSelection() {
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
-      campusSelection: "ক্যাম্পাস নির্বাচন কর���ন",
+      campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার নির্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
@@ -279,7 +280,7 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
+      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ ��িষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
