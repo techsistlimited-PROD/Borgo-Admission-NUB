@@ -28,6 +28,7 @@ import { useToast } from "../hooks/use-toast";
 import { useApplication } from "../contexts/ApplicationContext";
 import BkashPayment from "../components/BkashPayment";
 import AdmitCard from "../components/AdmitCard";
+import apiClient from "../lib/api";
 
 export default function ApplicationSuccess() {
   const [searchParams] = useSearchParams();
@@ -126,7 +127,7 @@ export default function ApplicationSuccess() {
         "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
       supportInfo: "সাহায্য প্রয়োজন?",
       supportDesc:
-        "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্���ি অফিসের সাথে যোগাযোগ করুন।",
+        "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
       contactEmail: "ইমেইল: admission@nu.edu.bd",
       contactPhone: "ফোন: +৮৮০ ১৭০০-০০০০০০",
       credentialsCopied: "পরিচয়পত্র ক্লিপবোর্ডে কপি করা হয়েছে!",
@@ -463,7 +464,7 @@ Please keep this information safe and secure.
                       <CreditCard className="w-4 h-4 text-accent-purple" />
                       <div>
                         <p className="text-sm text-gray-600">Test Fee:</p>
-                        <p className="font-semibold text-lg text-orange-600">���{admissionTestFee}</p>
+                        <p className="font-semibold text-lg text-orange-600">৳{admissionTestFee}</p>
                       </div>
                     </div>
                   </div>
