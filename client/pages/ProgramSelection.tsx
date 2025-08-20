@@ -265,7 +265,7 @@ export default function ProgramSelection() {
       backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
-      semesterSelection: "সেমিস্টার নির্বাচন করুন",
+      semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
@@ -300,9 +300,9 @@ export default function ProgramSelection() {
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
-      selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
+      selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চন করুন",
       selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
-      enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
+      enterGPAValues: "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
         "অতিরি��্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
@@ -2466,19 +2466,38 @@ export default function ProgramSelection() {
           </div>
 
           {/* Continue Button */}
-          <div className="mt-8 flex justify-end">
-            <Button
-              onClick={handleContinue}
-              className={`${
-                canProceed
-                  ? "bg-deep-plum hover:bg-accent-purple"
-                  : "bg-gray-300 cursor-not-allowed"
-              } font-poppins px-8 py-3`}
-              disabled={!canProceed || isSaving}
-            >
-              {isSaving ? t.saving : t.continue}
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+          <div className="mt-8 space-y-4">
+            {/* Status message */}
+            {!canProceed && (
+              <div className="text-center text-sm text-gray-600">
+                {!selectedProgram || !selectedDepartment ? (
+                  <p>📋 Please select program and department</p>
+                ) : !hasRequiredAcademicInfo() ? (
+                  <p>📝 Please complete your academic information</p>
+                ) : !eligibilityChecked ? (
+                  <p>🔍 Please click "Check Eligibility Details" button to verify requirements</p>
+                ) : eligibilityResult && !eligibilityResult.isEligible ? (
+                  <p>❌ You must be eligible to continue</p>
+                ) : (
+                  <p>⏳ Completing requirements...</p>
+                )}
+              </div>
+            )}
+
+            <div className="flex justify-end">
+              <Button
+                onClick={handleContinue}
+                className={`${
+                  canProceed
+                    ? "bg-deep-plum hover:bg-accent-purple"
+                    : "bg-gray-300 cursor-not-allowed"
+                } font-poppins px-8 py-3`}
+                disabled={!canProceed || isSaving}
+              >
+                {isSaving ? t.saving : t.continue}
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </div>
         </form>
       </div>
