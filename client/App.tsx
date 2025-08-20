@@ -44,6 +44,12 @@ import FinancePanel from "./pages/FinancePanel";
 import Reports from "./pages/Reports";
 import EmailTemplates from "./pages/EmailTemplates";
 
+// Registration System Pages
+import RegistrationIndex from "./pages/registration/Index";
+import StudentLogin from "./pages/registration/StudentLogin";
+import AdvisorLogin from "./pages/registration/AdvisorLogin";
+import AdminRegLogin from "./pages/registration/AdminLogin";
+
 const queryClient = new QueryClient();
 
 function AppContent() {
