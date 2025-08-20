@@ -1,17 +1,23 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, User, Plus } from 'lucide-react';
-import { Button } from './ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
-import { useAuth } from '../contexts/AuthContext';
-import { useApplication } from '../contexts/ApplicationContext';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { LogOut, User, Plus } from "lucide-react";
+import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "./ui/dropdown-menu";
+import { useAuth } from "../contexts/AuthContext";
+import { useApplication } from "../contexts/ApplicationContext";
 
 interface HeaderProps {
   showLogin?: boolean;
 }
 
 export default function Header({ showLogin = false }: HeaderProps) {
-  const [language, setLanguage] = useState<'en' | 'bn'>('en');
+  const [language, setLanguage] = useState<"en" | "bn">("en");
   const navigate = useNavigate();
 
   // Try to get auth context, but don't fail if it's not available
@@ -47,7 +53,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
     localStorage.removeItem("nu_form_cache");
 
     // Navigate to program selection with new=true parameter
-    navigate('/program-selection?new=true');
+    navigate("/program-selection?new=true");
 
     // Force page reload to ensure clean state
     window.location.reload();
@@ -55,19 +61,19 @@ export default function Header({ showLogin = false }: HeaderProps) {
 
   const texts = {
     en: {
-      login: 'Login',
-      logout: 'Logout',
-      profile: 'Profile',
-      universityName: 'Northern University Bangladesh',
-      newApplication: 'New Application'
+      login: "Login",
+      logout: "Logout",
+      profile: "Profile",
+      universityName: "Northern University Bangladesh",
+      newApplication: "New Application",
     },
     bn: {
-      login: 'লগইন',
-      logout: 'লগআউট',
-      profile: 'প্রোফাইল',
-      universityName: 'নর্দার্ন ইউনিভার্সিটি বাংলাদেশ',
-      newApplication: 'নতুন আবেদন'
-    }
+      login: "লগইন",
+      logout: "লগআউট",
+      profile: "প্রোফাইল",
+      universityName: "নর্দার্ন ইউনিভার্সিটি বাংলাদেশ",
+      newApplication: "নতুন আবেদন",
+    },
   };
 
   const t = texts[language];
@@ -102,21 +108,21 @@ export default function Header({ showLogin = false }: HeaderProps) {
             {/* Language Toggle */}
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <button
-                onClick={() => setLanguage('en')}
+                onClick={() => setLanguage("en")}
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  language === 'en'
-                    ? 'bg-white text-deep-plum shadow-sm'
-                    : 'text-gray-600 hover:text-deep-plum'
+                  language === "en"
+                    ? "bg-white text-deep-plum shadow-sm"
+                    : "text-gray-600 hover:text-deep-plum"
                 }`}
               >
                 EN
               </button>
               <button
-                onClick={() => setLanguage('bn')}
+                onClick={() => setLanguage("bn")}
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  language === 'bn'
-                    ? 'bg-white text-deep-plum shadow-sm'
-                    : 'text-gray-600 hover:text-deep-plum'
+                  language === "bn"
+                    ? "bg-white text-deep-plum shadow-sm"
+                    : "text-gray-600 hover:text-deep-plum"
                 }`}
               >
                 BN
@@ -139,7 +145,9 @@ export default function Header({ showLogin = false }: HeaderProps) {
                   <div className="px-2 py-1.5">
                     <p className="text-sm font-medium">{user.name}</p>
                     <p className="text-xs text-gray-500">
-                      {user.type === 'applicant' ? user.universityId : user.email}
+                      {user.type === "applicant"
+                        ? user.universityId
+                        : user.email}
                     </p>
                     <p className="text-xs text-gray-500">{user.department}</p>
                   </div>

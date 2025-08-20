@@ -142,15 +142,15 @@ export function ApplicationProvider({ children }: { children: ReactNode }) {
 
     // Force clear browser form cache by resetting all form fields
     setTimeout(() => {
-      const allInputs = document.querySelectorAll('input, select, textarea');
+      const allInputs = document.querySelectorAll("input, select, textarea");
       allInputs.forEach((input) => {
         if (input instanceof HTMLInputElement) {
-          input.value = '';
+          input.value = "";
           input.checked = false;
         } else if (input instanceof HTMLSelectElement) {
           input.selectedIndex = 0;
         } else if (input instanceof HTMLTextAreaElement) {
-          input.value = '';
+          input.value = "";
         }
       });
     }, 100);

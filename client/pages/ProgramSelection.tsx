@@ -386,7 +386,7 @@ export default function ProgramSelection() {
   useEffect(() => {
     // Check if this is a fresh start (no ongoing application)
     const urlParams = new URLSearchParams(window.location.search);
-    const isNewApplication = urlParams.get('new') === 'true';
+    const isNewApplication = urlParams.get("new") === "true";
 
     if (isNewApplication) {
       // Clear all form data for new application
@@ -422,20 +422,20 @@ export default function ProgramSelection() {
     localStorage.removeItem("nu_application_draft");
 
     // Clear form fields to prevent browser cache
-    const form = document.querySelector('form');
+    const form = document.querySelector("form");
     if (form) {
       form.reset();
     }
 
     // Clear all input fields manually
-    document.querySelectorAll('input, select, textarea').forEach((element) => {
+    document.querySelectorAll("input, select, textarea").forEach((element) => {
       if (element instanceof HTMLInputElement) {
-        element.value = '';
+        element.value = "";
         element.checked = false;
       } else if (element instanceof HTMLSelectElement) {
         element.selectedIndex = 0;
       } else if (element instanceof HTMLTextAreaElement) {
-        element.value = '';
+        element.value = "";
       }
     });
   };
@@ -692,910 +692,938 @@ export default function ProgramSelection() {
           </div>
         </div>
 
-        <form autoComplete="off" data-lpignore="true" onSubmit={(e) => e.preventDefault()}>
+        <form
+          autoComplete="off"
+          data-lpignore="true"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Selection Forms */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Campus, Semester, and Semester Type Selection */}
-            <Card className="bg-white shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum">
-                  Admission Preferences
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Campus Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="campus">
-                    {t.selectCampus} <span className="text-red-500">*</span>
-                  </Label>
-                  <Select
-                    value={selectedCampus}
-                    onValueChange={setSelectedCampus}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t.selectCampus} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {campusOptions.map((campus) => (
-                        <SelectItem key={campus.id} value={campus.id}>
-                          {language === "en" ? campus.name : campus.namebn}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Semester Selection */}
-                  <div className="space-y-2">
-                    <Label htmlFor="semester">
-                      {t.selectSemester} <span className="text-red-500">*</span>
-                    </Label>
-                    <Select
-                      value={selectedSemester}
-                      onValueChange={setSelectedSemester}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t.selectSemester} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {semesterOptions.map((semester) => (
-                          <SelectItem key={semester.id} value={semester.id}>
-                            {language === "en"
-                              ? semester.name
-                              : semester.namebn}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Semester Type Selection */}
-                  <div className="space-y-2">
-                    <Label htmlFor="semesterType">
-                      {t.selectSemesterType}{" "}
-                      <span className="text-red-500">*</span>
-                    </Label>
-                    <Select
-                      value={selectedSemesterType}
-                      onValueChange={setSelectedSemesterType}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t.selectSemesterType} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {semesterTypeOptions.map((type) => (
-                          <SelectItem key={type.id} value={type.id}>
-                            {language === "en" ? type.name : type.namebn}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Program and Department Selection */}
-            <Card className="bg-white shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum">
-                  {t.programSelection}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Program Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="program">
-                    {t.selectProgram} <span className="text-red-500">*</span>
-                  </Label>
-                  <Select
-                    value={selectedProgram}
-                    onValueChange={setSelectedProgram}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t.selectProgram} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {programs.map((program) => (
-                        <SelectItem key={program.id} value={program.id}>
-                          {language === "en" ? program.name : program.namebn} (
-                          {language === "en"
-                            ? program.duration
-                            : program.durationbn}
-                          )
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Department Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="department">
-                    {t.selectDepartment} <span className="text-red-500">*</span>
-                  </Label>
-                  <Select
-                    value={selectedDepartment}
-                    onValueChange={setSelectedDepartment}
-                    disabled={!selectedProgram}
-                  >
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={
-                          selectedProgram
-                            ? t.selectDepartment
-                            : t.selectProgramFirst
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableDepartments.map((department) => (
-                        <SelectItem key={department.id} value={department.id}>
-                          {language === "en"
-                            ? department.name
-                            : department.namebn}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Program Information */}
-                {selectedProgramData && selectedDepartmentData && (
-                  <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
-                    <h3 className="font-semibold text-deep-plum mb-3 flex items-center gap-2">
-                      <Info className="w-4 h-4" />
-                      {t.programInfo}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium">{t.duration}:</span>{" "}
-                        {language === "en"
-                          ? selectedProgramData.duration
-                          : selectedProgramData.durationbn}
-                      </div>
-                      <div>
-                        <span className="font-medium">{t.faculty}:</span>{" "}
-                        {language === "en"
-                          ? selectedDepartmentData.faculty
-                          : selectedDepartmentData.facultybn}
-                      </div>
-                      <div className="md:col-span-2">
-                        <span className="font-medium">{t.description}:</span>{" "}
-                        {language === "en"
-                          ? selectedDepartmentData.description
-                          : selectedDepartmentData.descriptionbn}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Credit Transfer Information (only for credit transfer applications) */}
-            {admissionType === "credit-transfer" && (
+            {/* Left Column - Selection Forms */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Campus, Semester, and Semester Type Selection */}
               <Card className="bg-white shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                    <ArrowRight className="w-5 h-5" />
-                    {t.creditTransferInfo}
+                  <CardTitle className="text-xl font-poppins text-deep-plum">
+                    Admission Preferences
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="previousInstitution">
-                        {t.previousInstitution}{" "}
-                        <span className="text-red-500">*</span>
-                      </Label>
-                      <Input
-                        id="previousInstitution"
-                        value={previousInstitution}
-                        onChange={(e) => setPreviousInstitution(e.target.value)}
-                        placeholder="Enter previous institution name"
-                        autoComplete="off"
-                        data-lpignore="true"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="previousProgram">
-                        {t.previousProgram}{" "}
-                        <span className="text-red-500">*</span>
-                      </Label>
-                      <Input
-                        id="previousProgram"
-                        value={previousProgram}
-                        onChange={(e) => setPreviousProgram(e.target.value)}
-                        placeholder="Enter previous program"
-                        autoComplete="off"
-                        data-lpignore="true"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="totalCredits">
-                        {t.totalCredits} <span className="text-red-500">*</span>
-                      </Label>
-                      <Input
-                        id="totalCredits"
-                        type="number"
-                        min="1"
-                        value={totalCreditsInProgram}
-                        onChange={(e) =>
-                          setTotalCreditsInProgram(e.target.value)
-                        }
-                        placeholder="120"
-                        autoComplete="off"
-                        data-lpignore="true"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="completedCredits">
-                        {t.completedCredits}{" "}
-                        <span className="text-red-500">*</span>
-                      </Label>
-                      <Input
-                        id="completedCredits"
-                        type="number"
-                        min="1"
-                        value={completedCredits}
-                        onChange={(e) => setCompletedCredits(e.target.value)}
-                        placeholder="60"
-                        autoComplete="off"
-                        data-lpignore="true"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="previousCGPA">
-                        {t.previousCGPA} <span className="text-red-500">*</span>
-                      </Label>
-                      <Input
-                        id="previousCGPA"
-                        type="number"
-                        min="0"
-                        max="4"
-                        step="0.01"
-                        value={previousCGPA}
-                        onChange={(e) => setPreviousCGPA(e.target.value)}
-                        placeholder="3.50"
-                        autoComplete="off"
-                        data-lpignore="true"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="reasonForTransfer">
-                        {t.reasonForTransfer}
-                      </Label>
-                      <Input
-                        id="reasonForTransfer"
-                        value={reasonForTransfer}
-                        onChange={(e) => setReasonForTransfer(e.target.value)}
-                        placeholder="Optional reason for transfer"
-                        autoComplete="off"
-                        data-lpignore="true"
-                      />
-                    </div>
+                  {/* Campus Selection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="campus">
+                      {t.selectCampus} <span className="text-red-500">*</span>
+                    </Label>
+                    <Select
+                      value={selectedCampus}
+                      onValueChange={setSelectedCampus}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t.selectCampus} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {campusOptions.map((campus) => (
+                          <SelectItem key={campus.id} value={campus.id}>
+                            {language === "en" ? campus.name : campus.namebn}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
-                  {/* Transcript Upload */}
-                  <div className="space-y-2">
-                    <Label>
-                      {t.uploadTranscript}{" "}
-                      <span className="text-red-500">*</span>
-                    </Label>
-                    <div
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors cursor-pointer"
-                      onClick={() => transcriptFileInputRef.current?.click()}
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                        e.currentTarget.classList.add(
-                          "border-accent-purple",
-                          "bg-purple-50",
-                        );
-                      }}
-                      onDragLeave={(e) => {
-                        e.preventDefault();
-                        e.currentTarget.classList.remove(
-                          "border-accent-purple",
-                          "bg-purple-50",
-                        );
-                      }}
-                      onDrop={(e) => {
-                        e.preventDefault();
-                        e.currentTarget.classList.remove(
-                          "border-accent-purple",
-                          "bg-purple-50",
-                        );
-                        const files = e.dataTransfer.files;
-                        if (files.length > 0) {
-                          const file = files[0];
-                          const acceptedTypes = [
-                            ".pdf",
-                            ".jpg",
-                            ".jpeg",
-                            ".png",
-                          ];
-                          const fileExtension =
-                            "." + file.name.split(".").pop()?.toLowerCase();
-                          if (acceptedTypes.includes(fileExtension)) {
-                            setTranscriptFile(file);
-                          }
-                        }
-                      }}
-                    >
-                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm text-gray-600">
-                        Click or drag transcript file here (.pdf, .jpg, .png)
-                      </p>
-                      <input
-                        ref={transcriptFileInputRef}
-                        type="file"
-                        className="hidden"
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            setTranscriptFile(file);
-                          }
-                        }}
-                      />
-                      {transcriptFile && (
-                        <p className="text-sm text-green-600 mt-2">
-                          Selected: {transcriptFile.name}
-                        </p>
-                      )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Semester Selection */}
+                    <div className="space-y-2">
+                      <Label htmlFor="semester">
+                        {t.selectSemester}{" "}
+                        <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        value={selectedSemester}
+                        onValueChange={setSelectedSemester}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={t.selectSemester} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {semesterOptions.map((semester) => (
+                            <SelectItem key={semester.id} value={semester.id}>
+                              {language === "en"
+                                ? semester.name
+                                : semester.namebn}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Semester Type Selection */}
+                    <div className="space-y-2">
+                      <Label htmlFor="semesterType">
+                        {t.selectSemesterType}{" "}
+                        <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        value={selectedSemesterType}
+                        onValueChange={setSelectedSemesterType}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={t.selectSemesterType} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {semesterTypeOptions.map((type) => (
+                            <SelectItem key={type.id} value={type.id}>
+                              {language === "en" ? type.name : type.namebn}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-            )}
 
-            {/* Eligibility Checker */}
-            {selectedProgram && (sscGPA || hscGPA) && (
+              {/* Program and Department Selection */}
               <Card className="bg-white shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5" />
-                    Eligibility Verification
+                  <CardTitle className="text-xl font-poppins text-deep-plum">
+                    {t.programSelection}
                   </CardTitle>
-                  <p className="text-sm text-gray-600 mt-2">
-                    We check your academic qualifications against the minimum
-                    requirements for your selected program
-                  </p>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {eligibilityResult ? (
-                    <div className="space-y-4">
-                      {/* Eligibility Status */}
-                      <div
-                        className={`p-4 rounded-lg border ${
-                          eligibilityResult.isEligible
-                            ? "bg-green-50 border-green-200"
-                            : "bg-red-50 border-red-200"
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          {eligibilityResult.isEligible ? (
-                            <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                          ) : (
-                            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
-                          )}
-                          <div className="flex-1">
-                            <h4
-                              className={`font-semibold ${
-                                eligibilityResult.isEligible
-                                  ? "text-green-800"
-                                  : "text-red-800"
-                              }`}
-                            >
-                              {eligibilityResult.isEligible
-                                ? "✅ Eligible"
-                                : "❌ Not Eligible"}
-                            </h4>
-                            <p
-                              className={`text-sm mt-1 ${
-                                eligibilityResult.isEligible
-                                  ? "text-green-700"
-                                  : "text-red-700"
-                              }`}
-                            >
-                              {getEligibilityMessage(
-                                eligibilityResult,
-                                getProgramById(selectedProgram)?.name ||
-                                  selectedProgram,
-                                language,
-                              )}
-                            </p>
-                          </div>
+                <CardContent className="space-y-6">
+                  {/* Program Selection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="program">
+                      {t.selectProgram} <span className="text-red-500">*</span>
+                    </Label>
+                    <Select
+                      value={selectedProgram}
+                      onValueChange={setSelectedProgram}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t.selectProgram} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {programs.map((program) => (
+                          <SelectItem key={program.id} value={program.id}>
+                            {language === "en" ? program.name : program.namebn}{" "}
+                            (
+                            {language === "en"
+                              ? program.duration
+                              : program.durationbn}
+                            )
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Department Selection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="department">
+                      {t.selectDepartment}{" "}
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <Select
+                      value={selectedDepartment}
+                      onValueChange={setSelectedDepartment}
+                      disabled={!selectedProgram}
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={
+                            selectedProgram
+                              ? t.selectDepartment
+                              : t.selectProgramFirst
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableDepartments.map((department) => (
+                          <SelectItem key={department.id} value={department.id}>
+                            {language === "en"
+                              ? department.name
+                              : department.namebn}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Program Information */}
+                  {selectedProgramData && selectedDepartmentData && (
+                    <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
+                      <h3 className="font-semibold text-deep-plum mb-3 flex items-center gap-2">
+                        <Info className="w-4 h-4" />
+                        {t.programInfo}
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium">{t.duration}:</span>{" "}
+                          {language === "en"
+                            ? selectedProgramData.duration
+                            : selectedProgramData.durationbn}
                         </div>
-                      </div>
-
-                      {/* Missing Requirements */}
-                      {!eligibilityResult.isEligible &&
-                        eligibilityResult.missingRequirements.length > 0 && (
-                          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                            <h5 className="font-semibold text-yellow-800 mb-2">
-                              Requirements Not Met:
-                            </h5>
-                            <ul className="text-sm text-yellow-700 space-y-1">
-                              {eligibilityResult.missingRequirements.map(
-                                (req, index) => (
-                                  <li
-                                    key={index}
-                                    className="flex items-start gap-2"
-                                  >
-                                    <span className="text-yellow-600">•</span>
-                                    <span>{req}</span>
-                                  </li>
-                                ),
-                              )}
-                            </ul>
-                          </div>
-                        )}
-
-                      {/* Suggested Programs */}
-                      {!eligibilityResult.isEligible &&
-                        eligibilityResult.suggestedPrograms.length > 0 && (
-                          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                            <h5 className="font-semibold text-blue-800 mb-2">
-                              💡 Suggested Alternative Programs:
-                            </h5>
-                            <div className="space-y-2">
-                              {eligibilityResult.suggestedPrograms.map(
-                                (program) => (
-                                  <div
-                                    key={program.id}
-                                    className="flex items-center justify-between p-2 bg-white rounded border"
-                                  >
-                                    <div>
-                                      <span className="font-medium text-blue-900">
-                                        {language === "en"
-                                          ? program.name
-                                          : program.namebn}
-                                      </span>
-                                      <span className="text-sm text-blue-600 ml-2">
-                                        (
-                                        {language === "en"
-                                          ? program.duration
-                                          : program.durationbn}
-                                        )
-                                      </span>
-                                    </div>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => {
-                                        setSelectedProgram(program.id);
-                                        setAvailableDepartments(
-                                          getDepartmentsByProgram(program.id),
-                                        );
-                                        setSelectedDepartment("");
-                                      }}
-                                      className="text-blue-600 border-blue-300 hover:bg-blue-100"
-                                    >
-                                      Select
-                                    </Button>
-                                  </div>
-                                ),
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                      {/* Program Requirements Display */}
-                      {selectedProgram && (
-                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                          <h5 className="font-semibold text-gray-800 mb-2">
-                            Program Requirements:
-                          </h5>
-                          <p className="text-sm text-gray-700">
-                            {
-                              getProgramById(selectedProgram)
-                                ?.eligibilityRequirements.specificRequirements
-                            }
-                          </p>
+                        <div>
+                          <span className="font-medium">{t.faculty}:</span>{" "}
+                          {language === "en"
+                            ? selectedDepartmentData.faculty
+                            : selectedDepartmentData.facultybn}
                         </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="text-center py-4 text-gray-500">
-                        <Info className="w-8 h-8 mx-auto mb-2" />
-                        <p>Enter your SSC and HSC GPA to check eligibility</p>
-                      </div>
-
-                      {/* Test Buttons for Development */}
-                      {process.env.NODE_ENV === "development" && (
-                        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                          <p className="text-sm text-yellow-800 mb-2">
-                            Development Testing:
-                          </p>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setSscGPA("4.5");
-                                setHscGPA("4.2");
-                              }}
-                              className="text-xs"
-                            >
-                              Test Eligible (4.5/4.2)
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setSscGPA("2.0");
-                                setHscGPA("2.3");
-                              }}
-                              className="text-xs"
-                            >
-                              Test Not Eligible (2.0/2.3)
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* General Eligibility Information */}
-                      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h5 className="font-semibold text-blue-800 mb-2">
-                          📋 General Eligibility Requirements:
-                        </h5>
-                        <div className="text-sm text-blue-700 space-y-2">
-                          <div>
-                            <strong>For Bachelor's Programs:</strong>
-                            <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
-                              <li>
-                                Minimum GPA 2.5 in both SSC and HSC or
-                                equivalent examinations
-                              </li>
-                              <li>
-                                OR 'O' level in five subjects and 'A' level in
-                                two subjects with minimum 'C' grade in each
-                              </li>
-                              <li>OR US High School Diploma</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <strong>For Postgraduate Programs:</strong>
-                            <ul className="list-disc list-inside ml-4 mt-1">
-                              <li>
-                                Minimum Bachelor degree relevant to the
-                                Postgraduate programs
-                              </li>
-                              <li>
-                                Please refer to specific admission requirements
-                                for your desired program
-                              </li>
-                            </ul>
-                          </div>
+                        <div className="md:col-span-2">
+                          <span className="font-medium">{t.description}:</span>{" "}
+                          {language === "en"
+                            ? selectedDepartmentData.description
+                            : selectedDepartmentData.descriptionbn}
                         </div>
                       </div>
                     </div>
                   )}
                 </CardContent>
               </Card>
-            )}
 
-            {/* Waiver Calculator */}
-            <Card className="bg-white shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <Calculator className="w-5 h-5" />
-                  {t.waiverCalculator}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Academic Information */}
-                <div>
-                  <h3 className="font-semibold text-deep-plum mb-4">
-                    {t.academicInfo}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="sscGPA">{t.sscGPA}</Label>
-                      <Input
-                        id="sscGPA"
-                        type="number"
-                        min="0"
-                        max="5"
-                        step="0.01"
-                        value={sscGPA}
-                        onChange={(e) => setSscGPA(e.target.value)}
-                        placeholder="0.00"
-                        autoComplete="off"
-                        data-lpignore="true"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="hscGPA">{t.hscGPA}</Label>
-                      <Input
-                        id="hscGPA"
-                        type="number"
-                        min="0"
-                        max="5"
-                        step="0.01"
-                        value={hscGPA}
-                        onChange={(e) => setHscGPA(e.target.value)}
-                        placeholder="0.00"
-                        autoComplete="off"
-                        data-lpignore="true"
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-center space-x-2">
-                    <Checkbox
-                      id="fourthSubject"
-                      checked={hasFourthSubject}
-                      onCheckedChange={(checked) =>
-                        setHasFourthSubject(checked as boolean)
-                      }
-                    />
-                    <Label htmlFor="fourthSubject" className="text-sm">
-                      {t.fourthSubject}
-                    </Label>
-                  </div>
-                </div>
-
-                {/* Result-based Waiver Display */}
-                {sscGPA && hscGPA && (
-                  <div>
-                    {autoSelectedResultWaiver ? (
-                      <Alert className="border-green-200 bg-green-50">
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                        <AlertDescription className="text-green-800">
-                          <strong>{t.waiverApplied}:</strong>{" "}
-                          {language === "en"
-                            ? waiverPolicies.find(
-                                (w) => w.id === autoSelectedResultWaiver,
-                              )?.name
-                            : waiverPolicies.find(
-                                (w) => w.id === autoSelectedResultWaiver,
-                              )?.namebn}{" "}
-                          (
-                          {
-                            waiverPolicies.find(
-                              (w) => w.id === autoSelectedResultWaiver,
-                            )?.percentage
+              {/* Credit Transfer Information (only for credit transfer applications) */}
+              {admissionType === "credit-transfer" && (
+                <Card className="bg-white shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                      <ArrowRight className="w-5 h-5" />
+                      {t.creditTransferInfo}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="previousInstitution">
+                          {t.previousInstitution}{" "}
+                          <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="previousInstitution"
+                          value={previousInstitution}
+                          onChange={(e) =>
+                            setPreviousInstitution(e.target.value)
                           }
-                          %)
-                        </AlertDescription>
-                      </Alert>
-                    ) : (
-                      <Alert className="border-orange-200 bg-orange-50">
-                        <AlertCircle className="w-4 h-4 text-orange-600" />
-                        <AlertDescription className="text-orange-800">
-                          {t.noWaiverEligible}
-                        </AlertDescription>
-                      </Alert>
-                    )}
-                  </div>
-                )}
-
-                {/* Available Waivers */}
-                <div>
-                  <h3 className="font-semibold text-deep-plum mb-4">
-                    {t.availableWaivers}
-                  </h3>
-
-                  {/* Special Waivers */}
-                  <div className="mb-4">
-                    <h4 className="font-medium text-gray-700 mb-2">
-                      {t.specialWaivers}
-                    </h4>
-                    <div className="space-y-2">
-                      {getSpecialWaivers().map((waiver) => (
-                        <div
-                          key={waiver.id}
-                          className="flex items-center space-x-2 p-2 bg-purple-50 rounded"
-                        >
-                          <Checkbox
-                            id={waiver.id}
-                            checked={selectedWaivers.includes(waiver.id)}
-                            onCheckedChange={(checked) =>
-                              handleWaiverToggle(waiver.id, checked as boolean)
-                            }
-                          />
-                          <Label htmlFor={waiver.id} className="text-sm flex-1">
-                            {language === "en" ? waiver.name : waiver.namebn} (
-                            {waiver.percentage}%)
-                          </Label>
-                          <Badge variant="outline" className="text-xs">
-                            {waiver.percentage}%
-                          </Badge>
-                        </div>
-                      ))}
+                          placeholder="Enter previous institution name"
+                          autoComplete="off"
+                          data-lpignore="true"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="previousProgram">
+                          {t.previousProgram}{" "}
+                          <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="previousProgram"
+                          value={previousProgram}
+                          onChange={(e) => setPreviousProgram(e.target.value)}
+                          placeholder="Enter previous program"
+                          autoComplete="off"
+                          data-lpignore="true"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="totalCredits">
+                          {t.totalCredits}{" "}
+                          <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="totalCredits"
+                          type="number"
+                          min="1"
+                          value={totalCreditsInProgram}
+                          onChange={(e) =>
+                            setTotalCreditsInProgram(e.target.value)
+                          }
+                          placeholder="120"
+                          autoComplete="off"
+                          data-lpignore="true"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="completedCredits">
+                          {t.completedCredits}{" "}
+                          <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="completedCredits"
+                          type="number"
+                          min="1"
+                          value={completedCredits}
+                          onChange={(e) => setCompletedCredits(e.target.value)}
+                          placeholder="60"
+                          autoComplete="off"
+                          data-lpignore="true"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="previousCGPA">
+                          {t.previousCGPA}{" "}
+                          <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="previousCGPA"
+                          type="number"
+                          min="0"
+                          max="4"
+                          step="0.01"
+                          value={previousCGPA}
+                          onChange={(e) => setPreviousCGPA(e.target.value)}
+                          placeholder="3.50"
+                          autoComplete="off"
+                          data-lpignore="true"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="reasonForTransfer">
+                          {t.reasonForTransfer}
+                        </Label>
+                        <Input
+                          id="reasonForTransfer"
+                          value={reasonForTransfer}
+                          onChange={(e) => setReasonForTransfer(e.target.value)}
+                          placeholder="Optional reason for transfer"
+                          autoComplete="off"
+                          data-lpignore="true"
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Additional Waivers */}
-                  <div className="mb-4">
-                    <h4 className="font-medium text-gray-700 mb-2">
-                      {t.additionalWaivers}
-                    </h4>
+                    {/* Transcript Upload */}
                     <div className="space-y-2">
-                      {getAdditionalWaivers().map((waiver) => (
-                        <div
-                          key={waiver.id}
-                          className="flex items-center space-x-2 p-2 bg-yellow-50 rounded"
-                        >
-                          <Checkbox
-                            id={waiver.id}
-                            checked={selectedWaivers.includes(waiver.id)}
-                            onCheckedChange={(checked) =>
-                              handleWaiverToggle(waiver.id, checked as boolean)
+                      <Label>
+                        {t.uploadTranscript}{" "}
+                        <span className="text-red-500">*</span>
+                      </Label>
+                      <div
+                        className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors cursor-pointer"
+                        onClick={() => transcriptFileInputRef.current?.click()}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.currentTarget.classList.add(
+                            "border-accent-purple",
+                            "bg-purple-50",
+                          );
+                        }}
+                        onDragLeave={(e) => {
+                          e.preventDefault();
+                          e.currentTarget.classList.remove(
+                            "border-accent-purple",
+                            "bg-purple-50",
+                          );
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.currentTarget.classList.remove(
+                            "border-accent-purple",
+                            "bg-purple-50",
+                          );
+                          const files = e.dataTransfer.files;
+                          if (files.length > 0) {
+                            const file = files[0];
+                            const acceptedTypes = [
+                              ".pdf",
+                              ".jpg",
+                              ".jpeg",
+                              ".png",
+                            ];
+                            const fileExtension =
+                              "." + file.name.split(".").pop()?.toLowerCase();
+                            if (acceptedTypes.includes(fileExtension)) {
+                              setTranscriptFile(file);
                             }
-                          />
-                          <Label htmlFor={waiver.id} className="text-sm flex-1">
-                            {language === "en" ? waiver.name : waiver.namebn} (
-                            {waiver.percentage}%)
-                          </Label>
-                          <Badge variant="outline" className="text-xs">
-                            {waiver.percentage}%
-                          </Badge>
-                        </div>
-                      ))}
+                          }
+                        }}
+                      >
+                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-sm text-gray-600">
+                          Click or drag transcript file here (.pdf, .jpg, .png)
+                        </p>
+                        <input
+                          ref={transcriptFileInputRef}
+                          type="file"
+                          className="hidden"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setTranscriptFile(file);
+                            }
+                          }}
+                        />
+                        {transcriptFile && (
+                          <p className="text-sm text-green-600 mt-2">
+                            Selected: {transcriptFile.name}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
+              )}
 
-                {/* Waiver Policy Notes */}
-                <Alert className="border-blue-200 bg-blue-50">
-                  <Info className="w-4 h-4 text-blue-600" />
-                  <AlertDescription className="text-blue-800 text-sm">
-                    {t.waiverPolicyNote}
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Column - Cost Breakdown */}
-          <div className="space-y-6">
-            {/* Cost Breakdown */}
-            <Card className="bg-white shadow-lg">
-              <CardHeader className="bg-deep-plum text-white">
-                <CardTitle className="font-poppins flex items-center gap-2">
-                  <DollarSign className="w-5 h-5" />
-                  {t.costBreakdown}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                {selectedProgramData ? (
-                  <div className="space-y-4">
-                    {/* Original Cost Breakdown */}
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">{t.admissionFee}</span>
-                        <span className="font-medium">
-                          ৳
-                          {selectedProgramData.costStructure.admissionFee.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">{t.courseFee}</span>
-                        <span className="font-medium">
-                          ৳
-                          {selectedProgramData.costStructure.courseFee.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">{t.labFee}</span>
-                        <span className="font-medium">
-                          ৳
-                          {selectedProgramData.costStructure.labFee.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">{t.others}</span>
-                        <span className="font-medium">
-                          ৳
-                          {selectedProgramData.costStructure.others.toLocaleString()}
-                        </span>
-                      </div>
-
-                      <Separator />
-
-                      <div className="flex justify-between font-semibold">
-                        <span className="text-deep-plum">
-                          {t.originalAmount}
-                        </span>
-                        <span className="text-deep-plum">
-                          ৳{costCalculation.originalAmount.toLocaleString()}
-                        </span>
-                      </div>
-
-                      {/* Waiver Amount */}
-                      {costCalculation.waiverAmount > 0 && (
-                        <>
-                          <div className="flex justify-between text-green-600 font-medium">
-                            <span>
-                              {t.waiverAmount} (
-                              {costCalculation.waiverPercentage}%)
-                            </span>
-                            <span>
-                              -৳{costCalculation.waiverAmount.toLocaleString()}
-                            </span>
+              {/* Eligibility Checker */}
+              {selectedProgram && (sscGPA || hscGPA) && (
+                <Card className="bg-white shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5" />
+                      Eligibility Verification
+                    </CardTitle>
+                    <p className="text-sm text-gray-600 mt-2">
+                      We check your academic qualifications against the minimum
+                      requirements for your selected program
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {eligibilityResult ? (
+                      <div className="space-y-4">
+                        {/* Eligibility Status */}
+                        <div
+                          className={`p-4 rounded-lg border ${
+                            eligibilityResult.isEligible
+                              ? "bg-green-50 border-green-200"
+                              : "bg-red-50 border-red-200"
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            {eligibilityResult.isEligible ? (
+                              <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+                            ) : (
+                              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                            )}
+                            <div className="flex-1">
+                              <h4
+                                className={`font-semibold ${
+                                  eligibilityResult.isEligible
+                                    ? "text-green-800"
+                                    : "text-red-800"
+                                }`}
+                              >
+                                {eligibilityResult.isEligible
+                                  ? "✅ Eligible"
+                                  : "❌ Not Eligible"}
+                              </h4>
+                              <p
+                                className={`text-sm mt-1 ${
+                                  eligibilityResult.isEligible
+                                    ? "text-green-700"
+                                    : "text-red-700"
+                                }`}
+                              >
+                                {getEligibilityMessage(
+                                  eligibilityResult,
+                                  getProgramById(selectedProgram)?.name ||
+                                    selectedProgram,
+                                  language,
+                                )}
+                              </p>
+                            </div>
                           </div>
+                        </div>
 
-                          <Separator />
-                        </>
-                      )}
+                        {/* Missing Requirements */}
+                        {!eligibilityResult.isEligible &&
+                          eligibilityResult.missingRequirements.length > 0 && (
+                            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                              <h5 className="font-semibold text-yellow-800 mb-2">
+                                Requirements Not Met:
+                              </h5>
+                              <ul className="text-sm text-yellow-700 space-y-1">
+                                {eligibilityResult.missingRequirements.map(
+                                  (req, index) => (
+                                    <li
+                                      key={index}
+                                      className="flex items-start gap-2"
+                                    >
+                                      <span className="text-yellow-600">•</span>
+                                      <span>{req}</span>
+                                    </li>
+                                  ),
+                                )}
+                              </ul>
+                            </div>
+                          )}
 
-                      {/* Final Amount */}
-                      <div className="flex justify-between text-xl font-bold">
-                        <span className="text-deep-plum">{t.finalAmount}</span>
-                        <span className="text-accent-purple">
-                          ৳{costCalculation.finalAmount.toLocaleString()}
-                        </span>
+                        {/* Suggested Programs */}
+                        {!eligibilityResult.isEligible &&
+                          eligibilityResult.suggestedPrograms.length > 0 && (
+                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                              <h5 className="font-semibold text-blue-800 mb-2">
+                                💡 Suggested Alternative Programs:
+                              </h5>
+                              <div className="space-y-2">
+                                {eligibilityResult.suggestedPrograms.map(
+                                  (program) => (
+                                    <div
+                                      key={program.id}
+                                      className="flex items-center justify-between p-2 bg-white rounded border"
+                                    >
+                                      <div>
+                                        <span className="font-medium text-blue-900">
+                                          {language === "en"
+                                            ? program.name
+                                            : program.namebn}
+                                        </span>
+                                        <span className="text-sm text-blue-600 ml-2">
+                                          (
+                                          {language === "en"
+                                            ? program.duration
+                                            : program.durationbn}
+                                          )
+                                        </span>
+                                      </div>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                          setSelectedProgram(program.id);
+                                          setAvailableDepartments(
+                                            getDepartmentsByProgram(program.id),
+                                          );
+                                          setSelectedDepartment("");
+                                        }}
+                                        className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                                      >
+                                        Select
+                                      </Button>
+                                    </div>
+                                  ),
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                        {/* Program Requirements Display */}
+                        {selectedProgram && (
+                          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h5 className="font-semibold text-gray-800 mb-2">
+                              Program Requirements:
+                            </h5>
+                            <p className="text-sm text-gray-700">
+                              {
+                                getProgramById(selectedProgram)
+                                  ?.eligibilityRequirements.specificRequirements
+                              }
+                            </p>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="text-center py-4 text-gray-500">
+                          <Info className="w-8 h-8 mx-auto mb-2" />
+                          <p>Enter your SSC and HSC GPA to check eligibility</p>
+                        </div>
 
-                    {/* Savings Display */}
-                    {costCalculation.waiverAmount > 0 && (
-                      <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
-                        <div className="flex items-center gap-2 text-green-800">
-                          <Award className="w-4 h-4" />
-                          <span className="font-medium">
-                            You Save: ৳
-                            {costCalculation.waiverAmount.toLocaleString()}
-                          </span>
+                        {/* Test Buttons for Development */}
+                        {process.env.NODE_ENV === "development" && (
+                          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <p className="text-sm text-yellow-800 mb-2">
+                              Development Testing:
+                            </p>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSscGPA("4.5");
+                                  setHscGPA("4.2");
+                                }}
+                                className="text-xs"
+                              >
+                                Test Eligible (4.5/4.2)
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSscGPA("2.0");
+                                  setHscGPA("2.3");
+                                }}
+                                className="text-xs"
+                              >
+                                Test Not Eligible (2.0/2.3)
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* General Eligibility Information */}
+                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                          <h5 className="font-semibold text-blue-800 mb-2">
+                            📋 General Eligibility Requirements:
+                          </h5>
+                          <div className="text-sm text-blue-700 space-y-2">
+                            <div>
+                              <strong>For Bachelor's Programs:</strong>
+                              <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                                <li>
+                                  Minimum GPA 2.5 in both SSC and HSC or
+                                  equivalent examinations
+                                </li>
+                                <li>
+                                  OR 'O' level in five subjects and 'A' level in
+                                  two subjects with minimum 'C' grade in each
+                                </li>
+                                <li>OR US High School Diploma</li>
+                              </ul>
+                            </div>
+                            <div>
+                              <strong>For Postgraduate Programs:</strong>
+                              <ul className="list-disc list-inside ml-4 mt-1">
+                                <li>
+                                  Minimum Bachelor degree relevant to the
+                                  Postgraduate programs
+                                </li>
+                                <li>
+                                  Please refer to specific admission
+                                  requirements for your desired program
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     )}
-                  </div>
-                ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <Calculator className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                    <p>{t.selectProgramFirst}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              )}
 
-            {/* Selected Waivers Summary */}
-            {selectedWaivers.length > 0 && (
-              <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
+              {/* Waiver Calculator */}
+              <Card className="bg-white shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-lg font-poppins text-green-800">
-                    Applied Waivers ({selectedWaivers.length})
+                  <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                    <Calculator className="w-5 h-5" />
+                    {t.waiverCalculator}
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {selectedWaivers.map((waiverId) => {
-                      const waiver = waiverPolicies.find(
-                        (w) => w.id === waiverId,
-                      );
-                      return waiver ? (
-                        <div
-                          key={waiverId}
-                          className="flex justify-between items-center p-2 bg-white rounded text-sm"
-                        >
-                          <span>
-                            {language === "en" ? waiver.name : waiver.namebn}
-                          </span>
-                          <Badge className="bg-green-600 text-white">
-                            {waiver.percentage}%
-                          </Badge>
-                        </div>
-                      ) : null;
-                    })}
+                <CardContent className="space-y-6">
+                  {/* Academic Information */}
+                  <div>
+                    <h3 className="font-semibold text-deep-plum mb-4">
+                      {t.academicInfo}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="sscGPA">{t.sscGPA}</Label>
+                        <Input
+                          id="sscGPA"
+                          type="number"
+                          min="0"
+                          max="5"
+                          step="0.01"
+                          value={sscGPA}
+                          onChange={(e) => setSscGPA(e.target.value)}
+                          placeholder="0.00"
+                          autoComplete="off"
+                          data-lpignore="true"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="hscGPA">{t.hscGPA}</Label>
+                        <Input
+                          id="hscGPA"
+                          type="number"
+                          min="0"
+                          max="5"
+                          step="0.01"
+                          value={hscGPA}
+                          onChange={(e) => setHscGPA(e.target.value)}
+                          placeholder="0.00"
+                          autoComplete="off"
+                          data-lpignore="true"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-4 flex items-center space-x-2">
+                      <Checkbox
+                        id="fourthSubject"
+                        checked={hasFourthSubject}
+                        onCheckedChange={(checked) =>
+                          setHasFourthSubject(checked as boolean)
+                        }
+                      />
+                      <Label htmlFor="fourthSubject" className="text-sm">
+                        {t.fourthSubject}
+                      </Label>
+                    </div>
                   </div>
+
+                  {/* Result-based Waiver Display */}
+                  {sscGPA && hscGPA && (
+                    <div>
+                      {autoSelectedResultWaiver ? (
+                        <Alert className="border-green-200 bg-green-50">
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                          <AlertDescription className="text-green-800">
+                            <strong>{t.waiverApplied}:</strong>{" "}
+                            {language === "en"
+                              ? waiverPolicies.find(
+                                  (w) => w.id === autoSelectedResultWaiver,
+                                )?.name
+                              : waiverPolicies.find(
+                                  (w) => w.id === autoSelectedResultWaiver,
+                                )?.namebn}{" "}
+                            (
+                            {
+                              waiverPolicies.find(
+                                (w) => w.id === autoSelectedResultWaiver,
+                              )?.percentage
+                            }
+                            %)
+                          </AlertDescription>
+                        </Alert>
+                      ) : (
+                        <Alert className="border-orange-200 bg-orange-50">
+                          <AlertCircle className="w-4 h-4 text-orange-600" />
+                          <AlertDescription className="text-orange-800">
+                            {t.noWaiverEligible}
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Available Waivers */}
+                  <div>
+                    <h3 className="font-semibold text-deep-plum mb-4">
+                      {t.availableWaivers}
+                    </h3>
+
+                    {/* Special Waivers */}
+                    <div className="mb-4">
+                      <h4 className="font-medium text-gray-700 mb-2">
+                        {t.specialWaivers}
+                      </h4>
+                      <div className="space-y-2">
+                        {getSpecialWaivers().map((waiver) => (
+                          <div
+                            key={waiver.id}
+                            className="flex items-center space-x-2 p-2 bg-purple-50 rounded"
+                          >
+                            <Checkbox
+                              id={waiver.id}
+                              checked={selectedWaivers.includes(waiver.id)}
+                              onCheckedChange={(checked) =>
+                                handleWaiverToggle(
+                                  waiver.id,
+                                  checked as boolean,
+                                )
+                              }
+                            />
+                            <Label
+                              htmlFor={waiver.id}
+                              className="text-sm flex-1"
+                            >
+                              {language === "en" ? waiver.name : waiver.namebn}{" "}
+                              ({waiver.percentage}%)
+                            </Label>
+                            <Badge variant="outline" className="text-xs">
+                              {waiver.percentage}%
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Additional Waivers */}
+                    <div className="mb-4">
+                      <h4 className="font-medium text-gray-700 mb-2">
+                        {t.additionalWaivers}
+                      </h4>
+                      <div className="space-y-2">
+                        {getAdditionalWaivers().map((waiver) => (
+                          <div
+                            key={waiver.id}
+                            className="flex items-center space-x-2 p-2 bg-yellow-50 rounded"
+                          >
+                            <Checkbox
+                              id={waiver.id}
+                              checked={selectedWaivers.includes(waiver.id)}
+                              onCheckedChange={(checked) =>
+                                handleWaiverToggle(
+                                  waiver.id,
+                                  checked as boolean,
+                                )
+                              }
+                            />
+                            <Label
+                              htmlFor={waiver.id}
+                              className="text-sm flex-1"
+                            >
+                              {language === "en" ? waiver.name : waiver.namebn}{" "}
+                              ({waiver.percentage}%)
+                            </Label>
+                            <Badge variant="outline" className="text-xs">
+                              {waiver.percentage}%
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Waiver Policy Notes */}
+                  <Alert className="border-blue-200 bg-blue-50">
+                    <Info className="w-4 h-4 text-blue-600" />
+                    <AlertDescription className="text-blue-800 text-sm">
+                      {t.waiverPolicyNote}
+                    </AlertDescription>
+                  </Alert>
                 </CardContent>
               </Card>
-            )}
+            </div>
 
-            {/* Cost Note */}
-            <Alert className="border-gray-200 bg-gray-50">
-              <Info className="w-4 h-4 text-gray-600" />
-              <AlertDescription className="text-gray-700 text-xs">
-                {t.costNote}
-              </AlertDescription>
-            </Alert>
-          </div>
+            {/* Right Column - Cost Breakdown */}
+            <div className="space-y-6">
+              {/* Cost Breakdown */}
+              <Card className="bg-white shadow-lg">
+                <CardHeader className="bg-deep-plum text-white">
+                  <CardTitle className="font-poppins flex items-center gap-2">
+                    <DollarSign className="w-5 h-5" />
+                    {t.costBreakdown}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  {selectedProgramData ? (
+                    <div className="space-y-4">
+                      {/* Original Cost Breakdown */}
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">
+                            {t.admissionFee}
+                          </span>
+                          <span className="font-medium">
+                            ৳
+                            {selectedProgramData.costStructure.admissionFee.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">{t.courseFee}</span>
+                          <span className="font-medium">
+                            ৳
+                            {selectedProgramData.costStructure.courseFee.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">{t.labFee}</span>
+                          <span className="font-medium">
+                            ৳
+                            {selectedProgramData.costStructure.labFee.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">{t.others}</span>
+                          <span className="font-medium">
+                            ৳
+                            {selectedProgramData.costStructure.others.toLocaleString()}
+                          </span>
+                        </div>
+
+                        <Separator />
+
+                        <div className="flex justify-between font-semibold">
+                          <span className="text-deep-plum">
+                            {t.originalAmount}
+                          </span>
+                          <span className="text-deep-plum">
+                            ৳{costCalculation.originalAmount.toLocaleString()}
+                          </span>
+                        </div>
+
+                        {/* Waiver Amount */}
+                        {costCalculation.waiverAmount > 0 && (
+                          <>
+                            <div className="flex justify-between text-green-600 font-medium">
+                              <span>
+                                {t.waiverAmount} (
+                                {costCalculation.waiverPercentage}%)
+                              </span>
+                              <span>
+                                -৳
+                                {costCalculation.waiverAmount.toLocaleString()}
+                              </span>
+                            </div>
+
+                            <Separator />
+                          </>
+                        )}
+
+                        {/* Final Amount */}
+                        <div className="flex justify-between text-xl font-bold">
+                          <span className="text-deep-plum">
+                            {t.finalAmount}
+                          </span>
+                          <span className="text-accent-purple">
+                            ৳{costCalculation.finalAmount.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Savings Display */}
+                      {costCalculation.waiverAmount > 0 && (
+                        <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                          <div className="flex items-center gap-2 text-green-800">
+                            <Award className="w-4 h-4" />
+                            <span className="font-medium">
+                              You Save: ৳
+                              {costCalculation.waiverAmount.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center text-gray-500 py-8">
+                      <Calculator className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                      <p>{t.selectProgramFirst}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Selected Waivers Summary */}
+              {selectedWaivers.length > 0 && (
+                <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-poppins text-green-800">
+                      Applied Waivers ({selectedWaivers.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {selectedWaivers.map((waiverId) => {
+                        const waiver = waiverPolicies.find(
+                          (w) => w.id === waiverId,
+                        );
+                        return waiver ? (
+                          <div
+                            key={waiverId}
+                            className="flex justify-between items-center p-2 bg-white rounded text-sm"
+                          >
+                            <span>
+                              {language === "en" ? waiver.name : waiver.namebn}
+                            </span>
+                            <Badge className="bg-green-600 text-white">
+                              {waiver.percentage}%
+                            </Badge>
+                          </div>
+                        ) : null;
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Cost Note */}
+              <Alert className="border-gray-200 bg-gray-50">
+                <Info className="w-4 h-4 text-gray-600" />
+                <AlertDescription className="text-gray-700 text-xs">
+                  {t.costNote}
+                </AlertDescription>
+              </Alert>
+            </div>
           </div>
 
           {/* Continue Button */}
