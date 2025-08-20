@@ -189,7 +189,7 @@ export default function ProgramSelection() {
 
   const semesterTypeOptions = [
     { id: "bi-semester", name: "Bi-Semester", namebn: "দ্বি-সেমিস্টার" },
-    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমি����্টার" },
+    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমি������্টার" },
   ];
 
   const texts = {
@@ -258,7 +258,7 @@ export default function ProgramSelection() {
         "Step 1 of 4 - Program Selection & Previous Academic Information",
     },
     bn: {
-      title: "প্রোগ্রাম ও বিভ���গ নির্ব��চন",
+      title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
@@ -273,11 +273,11 @@ export default function ProgramSelection() {
       selectSemesterType: "সেমিস্টার ধরন বেছ�� ন��ন",
       selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
-      programInfo: "প্রোগ���রামের তথ্��",
+      programInfo: "প্রোগ���রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
       waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
-      sscGPA: "এস���সসি জিপিএ",
+      sscGPA: "এসএসসি জিপিএ",
       hscGPA: "��ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
@@ -298,13 +298,13 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "�����পিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
+      noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরিক্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
+        "অতিরি��্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -1351,12 +1351,21 @@ export default function ProgramSelection() {
                                   academicBackgroundType
                                 ];
 
-                              if (!programRule || !eligibilityRule) {
+                              if (!programRule) {
+                                return <p className="text-sm text-gray-600">Program requirements not found.</p>;
+                              }
+
+                              if (!eligibilityRule) {
                                 return (
-                                  <p className="text-sm text-gray-600">
-                                    Requirements not available for this
-                                    background type.
-                                  </p>
+                                  <div className="text-sm text-gray-600">
+                                    <p className="mb-2">Your academic background type ({academicBackgroundType.replace('_', ' ')}) is not supported for this program.</p>
+                                    <p className="font-medium">Supported backgrounds:</p>
+                                    <ul className="list-disc list-inside ml-4 mt-1">
+                                      {Object.keys(programRule.eligibilityRules).map(bg => (
+                                        <li key={bg}>{bg.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
                                 );
                               }
 
