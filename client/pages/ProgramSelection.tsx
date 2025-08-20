@@ -258,7 +258,7 @@ export default function ProgramSelection() {
         "Step 1 of 4 - Program Selection & Previous Academic Information",
     },
     bn: {
-      title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
+      title: "প্রোগ্রাম ও বিভ���গ নির্ব��চন",
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
@@ -273,11 +273,11 @@ export default function ProgramSelection() {
       selectSemesterType: "সেমিস্টার ধরন বেছ�� ন��ন",
       selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
-      programInfo: "প্রোগ���রামের তথ্য",
+      programInfo: "প্রোগ���রামের তথ্��",
       costBreakdown: "খরচের বিভাজন",
       waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
-      sscGPA: "এসএসসি জিপিএ",
+      sscGPA: "এস���সসি জিপিএ",
       hscGPA: "��ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
@@ -298,7 +298,7 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
+      noWaiverEligible: "�����পিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
@@ -1301,42 +1301,36 @@ export default function ProgramSelection() {
                               </h5>
                               <div className="space-y-2">
                                 {eligibilityResult.suggestedPrograms.map(
-                                  (program) => (
-                                    <div
-                                      key={program.id}
-                                      className="flex items-center justify-between p-2 bg-white rounded border"
-                                    >
-                                      <div>
-                                        <span className="font-medium text-blue-900">
-                                          {language === "en"
-                                            ? program.name
-                                            : program.namebn}
-                                        </span>
-                                        <span className="text-sm text-blue-600 ml-2">
-                                          (
-                                          {language === "en"
-                                            ? program.duration
-                                            : program.durationbn}
-                                          )
-                                        </span>
-                                      </div>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => {
-                                          setSelectedProgram(program.id);
-                                          setAvailableDepartments(
-                                            getDepartmentsByProgram(program.id),
-                                          );
-                                          setSelectedDepartment("");
-                                        }}
-                                        className="text-blue-600 border-blue-300 hover:bg-blue-100"
-                                      >
-                                        Select
-                                      </Button>
+                                (program) => (
+                                  <div
+                                    key={program.programId}
+                                    className="flex items-center justify-between p-2 bg-white rounded border"
+                                  >
+                                    <div>
+                                      <span className="font-medium text-blue-900">
+                                        {program.programName}
+                                      </span>
+                                      <span className="text-sm text-blue-600 ml-2">
+                                        ({program.level})
+                                      </span>
                                     </div>
-                                  ),
-                                )}
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        setSelectedProgram(program.programId);
+                                        setAvailableDepartments(
+                                          getDepartmentsByProgram(program.programId),
+                                        );
+                                        setSelectedDepartment("");
+                                      }}
+                                      className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                                    >
+                                      Select
+                                    </Button>
+                                  </div>
+                                ),
+                              )}
                               </div>
                             </div>
                           )}
