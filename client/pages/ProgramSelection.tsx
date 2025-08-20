@@ -263,7 +263,7 @@ export default function ProgramSelection() {
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
-      continue: "সেভ ����রে এগিয়�� যান",
+      continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
       semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
@@ -299,7 +299,7 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "���িপিএর ভিত্তিত��� কোনো মওকু��� যোগ্য ���য়",
+      noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চন করুন",
       selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues:
@@ -562,6 +562,17 @@ export default function ProgramSelection() {
     setEligibilityChecked(false);
     setIsCheckingEligibility(true);
 
+    // Safety timeout to prevent infinite loading
+    const safetyTimeout = setTimeout(() => {
+      console.warn("⚠️ Safety timeout triggered - resetting loading state");
+      setIsCheckingEligibility(false);
+      toast({
+        title: "Timeout",
+        description: "Eligibility check took too long. Please try again.",
+        variant: "destructive",
+      });
+    }, 10000); // 10 second safety timeout
+
     // Perform fresh check after a small delay
     setTimeout(() => {
       try {
@@ -606,7 +617,7 @@ export default function ProgramSelection() {
             warnings: [],
             suggestedPrograms: [],
           };
-          console.log("❌ Science background validation failed:", result);
+          console.log("��� Science background validation failed:", result);
         } else {
           // Perform normal eligibility check with mapped program ID
           console.log("🔄 Running checkProgramEligibility...");
