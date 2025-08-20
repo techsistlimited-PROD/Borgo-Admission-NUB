@@ -51,46 +51,257 @@ import { getIDGenerationStats, sampleStudentIDs } from "../lib/idGeneration";
 
 // Dummy data for reports
 const programWiseData = [
-  { serial: 1, programName: "Bachelor in CSE", male: 89, female: 67, total: 156, semester: "spring_2024", department: "cse" },
-  { serial: 2, programName: "Bachelor in EEE", male: 78, female: 45, total: 123, semester: "spring_2024", department: "eee" },
-  { serial: 3, programName: "Bachelor in Civil", male: 92, female: 34, total: 126, semester: "spring_2024", department: "civil" },
-  { serial: 4, programName: "Bachelor in BBA", male: 65, female: 98, total: 163, semester: "spring_2024", department: "bba" },
-  { serial: 5, programName: "Bachelor in Law", male: 43, female: 57, total: 100, semester: "spring_2024", department: "law" },
-  { serial: 6, programName: "Bachelor in Architecture", male: 34, female: 46, total: 80, semester: "spring_2024", department: "architecture" },
-  { serial: 7, programName: "Masters in CSE", male: 25, female: 15, total: 40, semester: "fall_2024", department: "cse" },
-  { serial: 8, programName: "Masters in EEE", male: 30, female: 12, total: 42, semester: "fall_2024", department: "eee" },
+  {
+    serial: 1,
+    programName: "Bachelor in CSE",
+    male: 89,
+    female: 67,
+    total: 156,
+    semester: "spring_2024",
+    department: "cse",
+  },
+  {
+    serial: 2,
+    programName: "Bachelor in EEE",
+    male: 78,
+    female: 45,
+    total: 123,
+    semester: "spring_2024",
+    department: "eee",
+  },
+  {
+    serial: 3,
+    programName: "Bachelor in Civil",
+    male: 92,
+    female: 34,
+    total: 126,
+    semester: "spring_2024",
+    department: "civil",
+  },
+  {
+    serial: 4,
+    programName: "Bachelor in BBA",
+    male: 65,
+    female: 98,
+    total: 163,
+    semester: "spring_2024",
+    department: "bba",
+  },
+  {
+    serial: 5,
+    programName: "Bachelor in Law",
+    male: 43,
+    female: 57,
+    total: 100,
+    semester: "spring_2024",
+    department: "law",
+  },
+  {
+    serial: 6,
+    programName: "Bachelor in Architecture",
+    male: 34,
+    female: 46,
+    total: 80,
+    semester: "spring_2024",
+    department: "architecture",
+  },
+  {
+    serial: 7,
+    programName: "Masters in CSE",
+    male: 25,
+    female: 15,
+    total: 40,
+    semester: "fall_2024",
+    department: "cse",
+  },
+  {
+    serial: 8,
+    programName: "Masters in EEE",
+    male: 30,
+    female: 12,
+    total: 42,
+    semester: "fall_2024",
+    department: "eee",
+  },
 ];
 
 const employeeCollectionData = [
-  { employeeId: "EMP001", employeeName: "Ahmed Rahman", department: "cse", collectionAmount: 125000, date: "2024-01-15", applications: 25 },
-  { employeeId: "EMP002", employeeName: "Fatima Khan", department: "eee", collectionAmount: 98000, date: "2024-01-15", applications: 20 },
-  { employeeId: "EMP003", employeeName: "Mohammad Ali", department: "civil", collectionAmount: 156000, date: "2024-01-15", applications: 31 },
-  { employeeId: "EMP004", employeeName: "Rashida Begum", department: "bba", collectionAmount: 189000, date: "2024-01-15", applications: 38 },
-  { employeeId: "EMP005", employeeName: "Karim Hassan", department: "law", collectionAmount: 78000, date: "2024-01-15", applications: 16 },
-  { employeeId: "EMP006", employeeName: "Nasreen Ahmed", department: "architecture", collectionAmount: 134000, date: "2024-01-15", applications: 27 },
+  {
+    employeeId: "EMP001",
+    employeeName: "Ahmed Rahman",
+    department: "cse",
+    collectionAmount: 125000,
+    date: "2024-01-15",
+    applications: 25,
+  },
+  {
+    employeeId: "EMP002",
+    employeeName: "Fatima Khan",
+    department: "eee",
+    collectionAmount: 98000,
+    date: "2024-01-15",
+    applications: 20,
+  },
+  {
+    employeeId: "EMP003",
+    employeeName: "Mohammad Ali",
+    department: "civil",
+    collectionAmount: 156000,
+    date: "2024-01-15",
+    applications: 31,
+  },
+  {
+    employeeId: "EMP004",
+    employeeName: "Rashida Begum",
+    department: "bba",
+    collectionAmount: 189000,
+    date: "2024-01-15",
+    applications: 38,
+  },
+  {
+    employeeId: "EMP005",
+    employeeName: "Karim Hassan",
+    department: "law",
+    collectionAmount: 78000,
+    date: "2024-01-15",
+    applications: 16,
+  },
+  {
+    employeeId: "EMP006",
+    employeeName: "Nasreen Ahmed",
+    department: "architecture",
+    collectionAmount: 134000,
+    date: "2024-01-15",
+    applications: 27,
+  },
 ];
 
 const dailyCollectionData = [
-  { date: "2024-01-15", officerId: "OFF001", officerName: "Ahmed Rahman", dailyCollection: 25000, applications: 5 },
-  { date: "2024-01-15", officerId: "OFF002", officerName: "Fatima Khan", dailyCollection: 18000, applications: 4 },
-  { date: "2024-01-15", officerId: "OFF003", officerName: "Mohammad Ali", dailyCollection: 32000, applications: 6 },
-  { date: "2024-01-14", officerId: "OFF001", officerName: "Ahmed Rahman", dailyCollection: 28000, applications: 6 },
-  { date: "2024-01-14", officerId: "OFF002", officerName: "Fatima Khan", dailyCollection: 22000, applications: 5 },
-  { date: "2024-01-13", officerId: "OFF003", officerName: "Mohammad Ali", dailyCollection: 35000, applications: 7 },
+  {
+    date: "2024-01-15",
+    officerId: "OFF001",
+    officerName: "Ahmed Rahman",
+    dailyCollection: 25000,
+    applications: 5,
+  },
+  {
+    date: "2024-01-15",
+    officerId: "OFF002",
+    officerName: "Fatima Khan",
+    dailyCollection: 18000,
+    applications: 4,
+  },
+  {
+    date: "2024-01-15",
+    officerId: "OFF003",
+    officerName: "Mohammad Ali",
+    dailyCollection: 32000,
+    applications: 6,
+  },
+  {
+    date: "2024-01-14",
+    officerId: "OFF001",
+    officerName: "Ahmed Rahman",
+    dailyCollection: 28000,
+    applications: 6,
+  },
+  {
+    date: "2024-01-14",
+    officerId: "OFF002",
+    officerName: "Fatima Khan",
+    dailyCollection: 22000,
+    applications: 5,
+  },
+  {
+    date: "2024-01-13",
+    officerId: "OFF003",
+    officerName: "Mohammad Ali",
+    dailyCollection: 35000,
+    applications: 7,
+  },
 ];
 
 const studentListData = [
-  { studentId: "STU001", studentName: "Kamal Ahmed", department: "cse", program: "bachelor", semester: "spring_2024", district: "Dhaka", phone: "01712345678", email: "kamal@example.com" },
-  { studentId: "STU002", studentName: "Rashida Khatun", department: "eee", program: "bachelor", semester: "spring_2024", district: "Chittagong", phone: "01798765432", email: "rashida@example.com" },
-  { studentId: "STU003", studentName: "Abdul Rahman", department: "civil", program: "bachelor", semester: "spring_2024", district: "Sylhet", phone: "01634567890", email: "abdul@example.com" },
-  { studentId: "STU004", studentName: "Fatima Begum", department: "bba", program: "bachelor", semester: "fall_2024", district: "Dhaka", phone: "01856789012", email: "fatima@example.com" },
-  { studentId: "STU005", studentName: "Mohammad Hassan", department: "law", program: "bachelor", semester: "spring_2024", district: "Khulna", phone: "01723456789", email: "hassan@example.com" },
+  {
+    studentId: "STU001",
+    studentName: "Kamal Ahmed",
+    department: "cse",
+    program: "bachelor",
+    semester: "spring_2024",
+    district: "Dhaka",
+    phone: "01712345678",
+    email: "kamal@example.com",
+  },
+  {
+    studentId: "STU002",
+    studentName: "Rashida Khatun",
+    department: "eee",
+    program: "bachelor",
+    semester: "spring_2024",
+    district: "Chittagong",
+    phone: "01798765432",
+    email: "rashida@example.com",
+  },
+  {
+    studentId: "STU003",
+    studentName: "Abdul Rahman",
+    department: "civil",
+    program: "bachelor",
+    semester: "spring_2024",
+    district: "Sylhet",
+    phone: "01634567890",
+    email: "abdul@example.com",
+  },
+  {
+    studentId: "STU004",
+    studentName: "Fatima Begum",
+    department: "bba",
+    program: "bachelor",
+    semester: "fall_2024",
+    district: "Dhaka",
+    phone: "01856789012",
+    email: "fatima@example.com",
+  },
+  {
+    studentId: "STU005",
+    studentName: "Mohammad Hassan",
+    department: "law",
+    program: "bachelor",
+    semester: "spring_2024",
+    district: "Khulna",
+    phone: "01723456789",
+    email: "hassan@example.com",
+  },
 ];
 
 const creditTransferData = [
-  { studentId: "CT001", studentName: "Ahmed Ali", previousInstitution: "XYZ University", transferredCredits: 45, department: "cse", program: "bachelor", semester: "spring_2024" },
-  { studentId: "CT002", studentName: "Rashida Ahmed", previousInstitution: "ABC College", transferredCredits: 38, department: "bba", program: "bachelor", semester: "fall_2024" },
-  { studentId: "CT003", studentName: "Mohammad Khan", previousInstitution: "DEF University", transferredCredits: 52, department: "eee", program: "bachelor", semester: "spring_2024" },
+  {
+    studentId: "CT001",
+    studentName: "Ahmed Ali",
+    previousInstitution: "XYZ University",
+    transferredCredits: 45,
+    department: "cse",
+    program: "bachelor",
+    semester: "spring_2024",
+  },
+  {
+    studentId: "CT002",
+    studentName: "Rashida Ahmed",
+    previousInstitution: "ABC College",
+    transferredCredits: 38,
+    department: "bba",
+    program: "bachelor",
+    semester: "fall_2024",
+  },
+  {
+    studentId: "CT003",
+    studentName: "Mohammad Khan",
+    previousInstitution: "DEF University",
+    transferredCredits: 52,
+    department: "eee",
+    program: "bachelor",
+    semester: "spring_2024",
+  },
 ];
 
 const feederDistrictsData = [
@@ -104,30 +315,140 @@ const feederDistrictsData = [
 ];
 
 const studentWaiverData = [
-  { studentId: "SW001", studentName: "Kamal Ahmed", department: "cse", waiverAmount: 15000, waiverPercentage: 30, totalFee: 50000, semester: "spring_2024" },
-  { studentId: "SW002", studentName: "Rashida Khatun", department: "eee", waiverAmount: 12500, waiverPercentage: 25, totalFee: 50000, semester: "spring_2024" },
-  { studentId: "SW003", studentName: "Abdul Rahman", department: "civil", waiverAmount: 20000, waiverPercentage: 40, totalFee: 50000, semester: "fall_2024" },
-  { studentId: "SW004", studentName: "Fatima Begum", department: "bba", waiverAmount: 10000, waiverPercentage: 20, totalFee: 50000, semester: "spring_2024" },
+  {
+    studentId: "SW001",
+    studentName: "Kamal Ahmed",
+    department: "cse",
+    waiverAmount: 15000,
+    waiverPercentage: 30,
+    totalFee: 50000,
+    semester: "spring_2024",
+  },
+  {
+    studentId: "SW002",
+    studentName: "Rashida Khatun",
+    department: "eee",
+    waiverAmount: 12500,
+    waiverPercentage: 25,
+    totalFee: 50000,
+    semester: "spring_2024",
+  },
+  {
+    studentId: "SW003",
+    studentName: "Abdul Rahman",
+    department: "civil",
+    waiverAmount: 20000,
+    waiverPercentage: 40,
+    totalFee: 50000,
+    semester: "fall_2024",
+  },
+  {
+    studentId: "SW004",
+    studentName: "Fatima Begum",
+    department: "bba",
+    waiverAmount: 10000,
+    waiverPercentage: 20,
+    totalFee: 50000,
+    semester: "spring_2024",
+  },
 ];
 
 const studentCreditsData = [
-  { studentId: "SC001", studentName: "Kamal Ahmed", department: "cse", creditsRequired: 144, creditsCompleted: 89, remainingCredits: 55, semester: "spring_2024" },
-  { studentId: "SC002", studentName: "Rashida Khatun", department: "eee", creditsRequired: 144, creditsCompleted: 76, remainingCredits: 68, semester: "spring_2024" },
-  { studentId: "SC003", studentName: "Abdul Rahman", department: "civil", creditsRequired: 144, creditsCompleted: 92, remainingCredits: 52, semester: "fall_2024" },
+  {
+    studentId: "SC001",
+    studentName: "Kamal Ahmed",
+    department: "cse",
+    creditsRequired: 144,
+    creditsCompleted: 89,
+    remainingCredits: 55,
+    semester: "spring_2024",
+  },
+  {
+    studentId: "SC002",
+    studentName: "Rashida Khatun",
+    department: "eee",
+    creditsRequired: 144,
+    creditsCompleted: 76,
+    remainingCredits: 68,
+    semester: "spring_2024",
+  },
+  {
+    studentId: "SC003",
+    studentName: "Abdul Rahman",
+    department: "civil",
+    creditsRequired: 144,
+    creditsCompleted: 92,
+    remainingCredits: 52,
+    semester: "fall_2024",
+  },
 ];
 
 const idCardData = [
-  { studentId: "ID001", studentName: "Kamal Ahmed", department: "cse", program: "bachelor", semester: "spring_2024", cardGenerated: "Yes", generatedDate: "2024-01-20" },
-  { studentId: "ID002", studentName: "Rashida Khatun", department: "eee", program: "bachelor", semester: "spring_2024", cardGenerated: "Yes", generatedDate: "2024-01-21" },
-  { studentId: "ID003", studentName: "Abdul Rahman", department: "civil", program: "bachelor", semester: "spring_2024", cardGenerated: "No", generatedDate: "-" },
+  {
+    studentId: "ID001",
+    studentName: "Kamal Ahmed",
+    department: "cse",
+    program: "bachelor",
+    semester: "spring_2024",
+    cardGenerated: "Yes",
+    generatedDate: "2024-01-20",
+  },
+  {
+    studentId: "ID002",
+    studentName: "Rashida Khatun",
+    department: "eee",
+    program: "bachelor",
+    semester: "spring_2024",
+    cardGenerated: "Yes",
+    generatedDate: "2024-01-21",
+  },
+  {
+    studentId: "ID003",
+    studentName: "Abdul Rahman",
+    department: "civil",
+    program: "bachelor",
+    semester: "spring_2024",
+    cardGenerated: "No",
+    generatedDate: "-",
+  },
 ];
 
 const departmentTargetsData = [
-  { department: "cse", targetSet: 200, achieved: 156, percentage: 78, semester: "spring_2024" },
-  { department: "eee", targetSet: 150, achieved: 123, percentage: 82, semester: "spring_2024" },
-  { department: "civil", targetSet: 180, achieved: 126, percentage: 70, semester: "spring_2024" },
-  { department: "bba", targetSet: 220, achieved: 163, percentage: 74, semester: "spring_2024" },
-  { department: "law", targetSet: 120, achieved: 100, percentage: 83, semester: "spring_2024" },
+  {
+    department: "cse",
+    targetSet: 200,
+    achieved: 156,
+    percentage: 78,
+    semester: "spring_2024",
+  },
+  {
+    department: "eee",
+    targetSet: 150,
+    achieved: 123,
+    percentage: 82,
+    semester: "spring_2024",
+  },
+  {
+    department: "civil",
+    targetSet: 180,
+    achieved: 126,
+    percentage: 70,
+    semester: "spring_2024",
+  },
+  {
+    department: "bba",
+    targetSet: 220,
+    achieved: 163,
+    percentage: 74,
+    semester: "spring_2024",
+  },
+  {
+    department: "law",
+    targetSet: 120,
+    achieved: 100,
+    percentage: 83,
+    semester: "spring_2024",
+  },
 ];
 
 export default function Reports() {
@@ -310,7 +631,8 @@ export default function Reports() {
       topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
       revenueGenerated: "আয় সৃষ্টি",
 
-      programWiseAdmissions: "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
+      programWiseAdmissions:
+        "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
       employeeWiseCollection: "কর্মচারী অনুযায়ী ভর্তি ফি সংগ্রহ",
       dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্রহ রিপোর্ট",
 
@@ -334,66 +656,107 @@ export default function Reports() {
 
   // Filter functions for each report type
   const filteredProgramWiseData = useMemo(() => {
-    return programWiseData.filter(item => {
-      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
-      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+    return programWiseData.filter((item) => {
+      if (
+        selectedDepartment !== "all" &&
+        item.department !== selectedDepartment
+      )
+        return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester)
+        return false;
       return true;
     });
   }, [selectedDepartment, selectedSemester]);
 
   const filteredEmployeeData = useMemo(() => {
-    return employeeCollectionData.filter(item => {
-      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
+    return employeeCollectionData.filter((item) => {
+      if (
+        selectedDepartment !== "all" &&
+        item.department !== selectedDepartment
+      )
+        return false;
       return true;
     });
   }, [selectedDepartment]);
 
   const filteredStudentData = useMemo(() => {
-    return studentListData.filter(item => {
-      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
-      if (selectedProgram !== "all" && item.program !== selectedProgram) return false;
-      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+    return studentListData.filter((item) => {
+      if (
+        selectedDepartment !== "all" &&
+        item.department !== selectedDepartment
+      )
+        return false;
+      if (selectedProgram !== "all" && item.program !== selectedProgram)
+        return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester)
+        return false;
       return true;
     });
   }, [selectedDepartment, selectedProgram, selectedSemester]);
 
   const filteredCreditTransferData = useMemo(() => {
-    return creditTransferData.filter(item => {
-      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
-      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+    return creditTransferData.filter((item) => {
+      if (
+        selectedDepartment !== "all" &&
+        item.department !== selectedDepartment
+      )
+        return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester)
+        return false;
       return true;
     });
   }, [selectedDepartment, selectedSemester]);
 
   const filteredWaiverData = useMemo(() => {
-    return studentWaiverData.filter(item => {
-      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
-      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+    return studentWaiverData.filter((item) => {
+      if (
+        selectedDepartment !== "all" &&
+        item.department !== selectedDepartment
+      )
+        return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester)
+        return false;
       return true;
     });
   }, [selectedDepartment, selectedSemester]);
 
   const filteredCreditsData = useMemo(() => {
-    return studentCreditsData.filter(item => {
-      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
-      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+    return studentCreditsData.filter((item) => {
+      if (
+        selectedDepartment !== "all" &&
+        item.department !== selectedDepartment
+      )
+        return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester)
+        return false;
       return true;
     });
   }, [selectedDepartment, selectedSemester]);
 
   const filteredIdCardData = useMemo(() => {
-    return idCardData.filter(item => {
-      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
-      if (selectedProgram !== "all" && item.program !== selectedProgram) return false;
-      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+    return idCardData.filter((item) => {
+      if (
+        selectedDepartment !== "all" &&
+        item.department !== selectedDepartment
+      )
+        return false;
+      if (selectedProgram !== "all" && item.program !== selectedProgram)
+        return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester)
+        return false;
       return true;
     });
   }, [selectedDepartment, selectedProgram, selectedSemester]);
 
   const filteredTargetsData = useMemo(() => {
-    return departmentTargetsData.filter(item => {
-      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
-      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+    return departmentTargetsData.filter((item) => {
+      if (
+        selectedDepartment !== "all" &&
+        item.department !== selectedDepartment
+      )
+        return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester)
+        return false;
       return true;
     });
   }, [selectedDepartment, selectedSemester]);
@@ -477,7 +840,12 @@ export default function Reports() {
                   {t.programWiseAdmissions}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Program-wise Admissions", filteredProgramWiseData)}
+                  onClick={() =>
+                    exportToPDF(
+                      "Program-wise Admissions",
+                      filteredProgramWiseData,
+                    )
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -499,10 +867,14 @@ export default function Reports() {
                     {filteredProgramWiseData.map((item) => (
                       <TableRow key={item.serial}>
                         <TableCell>{item.serial}</TableCell>
-                        <TableCell className="font-medium">{item.programName}</TableCell>
+                        <TableCell className="font-medium">
+                          {item.programName}
+                        </TableCell>
                         <TableCell>{item.male}</TableCell>
                         <TableCell>{item.female}</TableCell>
-                        <TableCell className="font-semibold">{item.total}</TableCell>
+                        <TableCell className="font-semibold">
+                          {item.total}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -518,7 +890,12 @@ export default function Reports() {
                   {t.employeeWiseCollection}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Employee-wise Collection", filteredEmployeeData)}
+                  onClick={() =>
+                    exportToPDF(
+                      "Employee-wise Collection",
+                      filteredEmployeeData,
+                    )
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -539,10 +916,16 @@ export default function Reports() {
                   <TableBody>
                     {filteredEmployeeData.map((item) => (
                       <TableRow key={item.employeeId}>
-                        <TableCell className="font-mono">{item.employeeId}</TableCell>
-                        <TableCell className="font-medium">{item.employeeName}</TableCell>
+                        <TableCell className="font-mono">
+                          {item.employeeId}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {item.employeeName}
+                        </TableCell>
                         <TableCell>{item.department.toUpperCase()}</TableCell>
-                        <TableCell className="font-semibold">৳{item.collectionAmount.toLocaleString()}</TableCell>
+                        <TableCell className="font-semibold">
+                          ৳{item.collectionAmount.toLocaleString()}
+                        </TableCell>
                         <TableCell>{item.applications}</TableCell>
                       </TableRow>
                     ))}
@@ -559,7 +942,9 @@ export default function Reports() {
                   {t.dailyCollectionReport}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Daily Collection Report", dailyCollectionData)}
+                  onClick={() =>
+                    exportToPDF("Daily Collection Report", dailyCollectionData)
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -581,9 +966,15 @@ export default function Reports() {
                     {dailyCollectionData.map((item, index) => (
                       <TableRow key={index}>
                         <TableCell>{item.date}</TableCell>
-                        <TableCell className="font-mono">{item.officerId}</TableCell>
-                        <TableCell className="font-medium">{item.officerName}</TableCell>
-                        <TableCell className="font-semibold">৳{item.dailyCollection.toLocaleString()}</TableCell>
+                        <TableCell className="font-mono">
+                          {item.officerId}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {item.officerName}
+                        </TableCell>
+                        <TableCell className="font-semibold">
+                          ৳{item.dailyCollection.toLocaleString()}
+                        </TableCell>
                         <TableCell>{item.applications}</TableCell>
                       </TableRow>
                     ))}
@@ -600,7 +991,9 @@ export default function Reports() {
                   {t.studentList}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Student List", filteredStudentData)}
+                  onClick={() =>
+                    exportToPDF("Student List", filteredStudentData)
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -622,8 +1015,12 @@ export default function Reports() {
                   <TableBody>
                     {filteredStudentData.map((item) => (
                       <TableRow key={item.studentId}>
-                        <TableCell className="font-mono">{item.studentId}</TableCell>
-                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell className="font-mono">
+                          {item.studentId}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {item.studentName}
+                        </TableCell>
                         <TableCell>{item.department.toUpperCase()}</TableCell>
                         <TableCell>{item.program}</TableCell>
                         <TableCell>{item.district}</TableCell>
@@ -643,7 +1040,12 @@ export default function Reports() {
                   {t.creditTransferStudentList}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Credit Transfer Students", filteredCreditTransferData)}
+                  onClick={() =>
+                    exportToPDF(
+                      "Credit Transfer Students",
+                      filteredCreditTransferData,
+                    )
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -664,10 +1066,16 @@ export default function Reports() {
                   <TableBody>
                     {filteredCreditTransferData.map((item) => (
                       <TableRow key={item.studentId}>
-                        <TableCell className="font-mono">{item.studentId}</TableCell>
-                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell className="font-mono">
+                          {item.studentId}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {item.studentName}
+                        </TableCell>
                         <TableCell>{item.previousInstitution}</TableCell>
-                        <TableCell className="font-semibold">{item.transferredCredits}</TableCell>
+                        <TableCell className="font-semibold">
+                          {item.transferredCredits}
+                        </TableCell>
                         <TableCell>{item.department.toUpperCase()}</TableCell>
                       </TableRow>
                     ))}
@@ -684,7 +1092,9 @@ export default function Reports() {
                   {t.feederDistricts}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Feeder Districts", feederDistrictsData)}
+                  onClick={() =>
+                    exportToPDF("Feeder Districts", feederDistrictsData)
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -703,8 +1113,12 @@ export default function Reports() {
                   <TableBody>
                     {feederDistrictsData.map((item, index) => (
                       <TableRow key={index}>
-                        <TableCell className="font-medium">{item.districtName}</TableCell>
-                        <TableCell className="font-semibold">{item.studentsCount}</TableCell>
+                        <TableCell className="font-medium">
+                          {item.districtName}
+                        </TableCell>
+                        <TableCell className="font-semibold">
+                          {item.studentsCount}
+                        </TableCell>
                         <TableCell>{item.percentage}%</TableCell>
                       </TableRow>
                     ))}
@@ -721,7 +1135,9 @@ export default function Reports() {
                   {t.studentWaiverReport}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Student Waiver Report", filteredWaiverData)}
+                  onClick={() =>
+                    exportToPDF("Student Waiver Report", filteredWaiverData)
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -743,10 +1159,16 @@ export default function Reports() {
                   <TableBody>
                     {filteredWaiverData.map((item) => (
                       <TableRow key={item.studentId}>
-                        <TableCell className="font-mono">{item.studentId}</TableCell>
-                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell className="font-mono">
+                          {item.studentId}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {item.studentName}
+                        </TableCell>
                         <TableCell>{item.department.toUpperCase()}</TableCell>
-                        <TableCell className="font-semibold">৳{item.waiverAmount.toLocaleString()}</TableCell>
+                        <TableCell className="font-semibold">
+                          ৳{item.waiverAmount.toLocaleString()}
+                        </TableCell>
                         <TableCell>{item.waiverPercentage}%</TableCell>
                         <TableCell>৳{item.totalFee.toLocaleString()}</TableCell>
                       </TableRow>
@@ -764,7 +1186,9 @@ export default function Reports() {
                   {t.studentRequiredCredits}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Student Required Credits", filteredCreditsData)}
+                  onClick={() =>
+                    exportToPDF("Student Required Credits", filteredCreditsData)
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -786,11 +1210,17 @@ export default function Reports() {
                   <TableBody>
                     {filteredCreditsData.map((item) => (
                       <TableRow key={item.studentId}>
-                        <TableCell className="font-mono">{item.studentId}</TableCell>
-                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell className="font-mono">
+                          {item.studentId}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {item.studentName}
+                        </TableCell>
                         <TableCell>{item.department.toUpperCase()}</TableCell>
                         <TableCell>{item.creditsRequired}</TableCell>
-                        <TableCell className="font-semibold">{item.creditsCompleted}</TableCell>
+                        <TableCell className="font-semibold">
+                          {item.creditsCompleted}
+                        </TableCell>
                         <TableCell>{item.remainingCredits}</TableCell>
                       </TableRow>
                     ))}
@@ -807,7 +1237,9 @@ export default function Reports() {
                   {t.studentIdCards}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Student ID Cards", filteredIdCardData)}
+                  onClick={() =>
+                    exportToPDF("Student ID Cards", filteredIdCardData)
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -829,16 +1261,22 @@ export default function Reports() {
                   <TableBody>
                     {filteredIdCardData.map((item) => (
                       <TableRow key={item.studentId}>
-                        <TableCell className="font-mono">{item.studentId}</TableCell>
-                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell className="font-mono">
+                          {item.studentId}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {item.studentName}
+                        </TableCell>
                         <TableCell>{item.department.toUpperCase()}</TableCell>
                         <TableCell>{item.program}</TableCell>
                         <TableCell>
-                          <span className={`px-2 py-1 text-xs rounded-full ${
-                            item.cardGenerated === "Yes" 
-                              ? "bg-green-100 text-green-800" 
-                              : "bg-red-100 text-red-800"
-                          }`}>
+                          <span
+                            className={`px-2 py-1 text-xs rounded-full ${
+                              item.cardGenerated === "Yes"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
                             {item.cardGenerated}
                           </span>
                         </TableCell>
@@ -858,7 +1296,9 @@ export default function Reports() {
                   {t.departmentWiseTargets}
                 </CardTitle>
                 <Button
-                  onClick={() => exportToPDF("Department-wise Targets", filteredTargetsData)}
+                  onClick={() =>
+                    exportToPDF("Department-wise Targets", filteredTargetsData)
+                  }
                   className="bg-deep-plum hover:bg-accent-purple"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -878,17 +1318,23 @@ export default function Reports() {
                   <TableBody>
                     {filteredTargetsData.map((item) => (
                       <TableRow key={item.department}>
-                        <TableCell className="font-medium">{item.department.toUpperCase()}</TableCell>
+                        <TableCell className="font-medium">
+                          {item.department.toUpperCase()}
+                        </TableCell>
                         <TableCell>{item.targetSet}</TableCell>
-                        <TableCell className="font-semibold">{item.achieved}</TableCell>
+                        <TableCell className="font-semibold">
+                          {item.achieved}
+                        </TableCell>
                         <TableCell>
-                          <span className={`px-2 py-1 text-xs rounded-full ${
-                            item.percentage >= 80 
-                              ? "bg-green-100 text-green-800" 
-                              : item.percentage >= 60
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
-                          }`}>
+                          <span
+                            className={`px-2 py-1 text-xs rounded-full ${
+                              item.percentage >= 80
+                                ? "bg-green-100 text-green-800"
+                                : item.percentage >= 60
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                            }`}
+                          >
                             {item.percentage}%
                           </span>
                         </TableCell>
@@ -959,7 +1405,11 @@ export default function Reports() {
               {[
                 { id: "overview", label: t.overview, icon: BarChart3 },
                 { id: "student", label: t.studentReports, icon: Users },
-                { id: "financial", label: t.financialReports, icon: DollarSign },
+                {
+                  id: "financial",
+                  label: t.financialReports,
+                  icon: DollarSign,
+                },
                 { id: "waiver", label: t.waiverReports, icon: BookOpen },
                 { id: "idcards", label: t.idCardReports, icon: IdCard },
                 { id: "targets", label: t.targetReports, icon: Target },
@@ -1116,7 +1566,9 @@ export default function Reports() {
                     <div className="flex items-center gap-3">
                       <IdCard className="w-8 h-8 text-blue-600" />
                       <div>
-                        <p className="text-sm text-gray-600">{t.universityIds}</p>
+                        <p className="text-sm text-gray-600">
+                          {t.universityIds}
+                        </p>
                         <p className="text-2xl font-bold text-blue-800">
                           {getIDGenerationStats().totalGenerated}
                         </p>
@@ -1140,7 +1592,9 @@ export default function Reports() {
                     <div className="flex items-center gap-3">
                       <Users className="w-8 h-8 text-green-600" />
                       <div>
-                        <p className="text-sm text-gray-600">{t.activeStudents}</p>
+                        <p className="text-sm text-gray-600">
+                          {t.activeStudents}
+                        </p>
                         <p className="text-2xl font-bold text-green-800">
                           {getIDGenerationStats().activeStudents}
                         </p>
@@ -1155,7 +1609,9 @@ export default function Reports() {
                         <p className="text-sm text-gray-600">
                           {t.idGenerationRate}
                         </p>
-                        <p className="text-2xl font-bold text-orange-800">98.5%</p>
+                        <p className="text-2xl font-bold text-orange-800">
+                          98.5%
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1190,7 +1646,7 @@ export default function Reports() {
                           <TableCell>{student.studentName}</TableCell>
                           <TableCell>
                             {new Date(
-                              student.generatedDate
+                              student.generatedDate,
                             ).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
@@ -1310,7 +1766,9 @@ export default function Reports() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-accent-purple">7</div>
+                    <div className="text-4xl font-bold text-accent-purple">
+                      7
+                    </div>
                     <p className="text-sm text-gray-600 mt-1">{t.days}</p>
                   </div>
                 </CardContent>
@@ -1351,7 +1809,8 @@ export default function Reports() {
                     {
                       key: "programWiseAdmissions",
                       title: t.programWiseAdmissions,
-                      description: "Serial – Program Name – Male – Female – Total",
+                      description:
+                        "Serial – Program Name – Male – Female – Total",
                       icon: GraduationCap,
                       count: filteredProgramWiseData.length,
                     },
@@ -1398,7 +1857,11 @@ export default function Reports() {
                               <span className="text-xs text-gray-500">
                                 {report.count} records
                               </span>
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
                               </Button>
@@ -1437,7 +1900,8 @@ export default function Reports() {
                     {
                       key: "dailyCollectionReport",
                       title: t.dailyCollectionReport,
-                      description: "View daily collection by admission officers (ID-wise)",
+                      description:
+                        "View daily collection by admission officers (ID-wise)",
                       icon: Calendar,
                       count: dailyCollectionData.length,
                     },
@@ -1463,7 +1927,11 @@ export default function Reports() {
                               <span className="text-xs text-gray-500">
                                 {report.count} records
                               </span>
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
                               </Button>
@@ -1528,7 +1996,11 @@ export default function Reports() {
                               <span className="text-xs text-gray-500">
                                 {report.count} records
                               </span>
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
                               </Button>
@@ -1560,16 +2032,20 @@ export default function Reports() {
                     {
                       key: "studentIdCards",
                       title: t.studentIdCards,
-                      description: "Individual student ID card generation and status",
+                      description:
+                        "Individual student ID card generation and status",
                       icon: IdCard,
                       count: filteredIdCardData.length,
                     },
                     {
                       key: "bulkIdCardDownload",
                       title: t.bulkIdCardDownload,
-                      description: "Download all student ID cards for selected semester/program in one click",
+                      description:
+                        "Download all student ID cards for selected semester/program in one click",
                       icon: Package,
-                      count: filteredIdCardData.filter(item => item.cardGenerated === "Yes").length,
+                      count: filteredIdCardData.filter(
+                        (item) => item.cardGenerated === "Yes",
+                      ).length,
                     },
                   ].map((report, index) => (
                     <Card
@@ -1593,7 +2069,11 @@ export default function Reports() {
                               <span className="text-xs text-gray-500">
                                 {report.count} records
                               </span>
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
                               </Button>
@@ -1621,7 +2101,7 @@ export default function Reports() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4">
-                  <Card 
+                  <Card
                     className="border border-gray-200 hover:border-deep-plum transition-colors cursor-pointer"
                     onClick={() => setActiveReport("departmentWiseTargets")}
                   >
@@ -1635,13 +2115,18 @@ export default function Reports() {
                             {t.departmentWiseTargets}
                           </h4>
                           <p className="text-xs text-gray-600 mb-3">
-                            View admission targets by department with performance tracking
+                            View admission targets by department with
+                            performance tracking
                           </p>
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-gray-500">
                               {filteredTargetsData.length} departments
                             </span>
-                            <Button size="sm" variant="outline" className="text-xs">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-xs"
+                            >
                               <Eye className="w-3 h-3 mr-1" />
                               {t.viewReport}
                             </Button>
