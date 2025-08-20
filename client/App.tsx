@@ -238,15 +238,13 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <AuthProvider>
-            <ApplicationProvider>
-              <BrowserRouter>
-                <ErrorBoundary>
-                  <AppContent />
-                </ErrorBoundary>
-              </BrowserRouter>
-            </ApplicationProvider>
-          </AuthProvider>
+          <AuthWrapper>
+            <BrowserRouter>
+              <ErrorBoundary>
+                <AppContent />
+              </ErrorBoundary>
+            </BrowserRouter>
+          </AuthWrapper>
         </TooltipProvider>
       </QueryClientProvider>
     </ErrorBoundary>
