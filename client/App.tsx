@@ -48,9 +48,7 @@ const queryClient = new QueryClient();
 function AuthWrapper({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
-      <ApplicationProvider>
-        {children}
-      </ApplicationProvider>
+      <ApplicationProvider>{children}</ApplicationProvider>
     </AuthProvider>
   );
 }
@@ -58,7 +56,11 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
 function AppContent() {
   // Safely access auth context with error handling
   const authContext = useAuth();
-  const { userType = "public", isAuthenticated = false, isLoading = false } = authContext || {};
+  const {
+    userType = "public",
+    isAuthenticated = false,
+    isLoading = false,
+  } = authContext || {};
   const location = useLocation();
 
   // Show loading spinner while auth is initializing

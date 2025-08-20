@@ -1,7 +1,7 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 interface Props {
   children: ReactNode;
@@ -25,7 +25,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    console.error("Error caught by boundary:", error, errorInfo);
     this.setState({ error, errorInfo });
   }
 
@@ -58,10 +58,12 @@ class ErrorBoundary extends Component<Props, State> {
               <p className="text-gray-600 text-center">
                 An unexpected error occurred. Please try refreshing the page.
               </p>
-              
-              {process.env.NODE_ENV === 'development' && this.state.error && (
+
+              {process.env.NODE_ENV === "development" && this.state.error && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm font-medium text-red-800 mb-2">Error Details:</p>
+                  <p className="text-sm font-medium text-red-800 mb-2">
+                    Error Details:
+                  </p>
                   <pre className="text-xs text-red-700 whitespace-pre-wrap break-words">
                     {this.state.error.message}
                   </pre>
@@ -79,14 +81,14 @@ class ErrorBoundary extends Component<Props, State> {
               )}
 
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={this.handleReset}
                   variant="outline"
                   className="flex-1"
                 >
                   Try Again
                 </Button>
-                <Button 
+                <Button
                   onClick={this.handleReload}
                   className="flex-1 bg-deep-plum hover:bg-accent-purple"
                 >
