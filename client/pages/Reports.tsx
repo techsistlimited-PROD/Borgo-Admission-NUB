@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Download,
   BarChart3,
@@ -49,14 +49,96 @@ import {
 } from "../components/ui/table";
 import { getIDGenerationStats, sampleStudentIDs } from "../lib/idGeneration";
 
+// Dummy data for reports
+const programWiseData = [
+  { serial: 1, programName: "Bachelor in CSE", male: 89, female: 67, total: 156, semester: "spring_2024", department: "cse" },
+  { serial: 2, programName: "Bachelor in EEE", male: 78, female: 45, total: 123, semester: "spring_2024", department: "eee" },
+  { serial: 3, programName: "Bachelor in Civil", male: 92, female: 34, total: 126, semester: "spring_2024", department: "civil" },
+  { serial: 4, programName: "Bachelor in BBA", male: 65, female: 98, total: 163, semester: "spring_2024", department: "bba" },
+  { serial: 5, programName: "Bachelor in Law", male: 43, female: 57, total: 100, semester: "spring_2024", department: "law" },
+  { serial: 6, programName: "Bachelor in Architecture", male: 34, female: 46, total: 80, semester: "spring_2024", department: "architecture" },
+  { serial: 7, programName: "Masters in CSE", male: 25, female: 15, total: 40, semester: "fall_2024", department: "cse" },
+  { serial: 8, programName: "Masters in EEE", male: 30, female: 12, total: 42, semester: "fall_2024", department: "eee" },
+];
+
+const employeeCollectionData = [
+  { employeeId: "EMP001", employeeName: "Ahmed Rahman", department: "cse", collectionAmount: 125000, date: "2024-01-15", applications: 25 },
+  { employeeId: "EMP002", employeeName: "Fatima Khan", department: "eee", collectionAmount: 98000, date: "2024-01-15", applications: 20 },
+  { employeeId: "EMP003", employeeName: "Mohammad Ali", department: "civil", collectionAmount: 156000, date: "2024-01-15", applications: 31 },
+  { employeeId: "EMP004", employeeName: "Rashida Begum", department: "bba", collectionAmount: 189000, date: "2024-01-15", applications: 38 },
+  { employeeId: "EMP005", employeeName: "Karim Hassan", department: "law", collectionAmount: 78000, date: "2024-01-15", applications: 16 },
+  { employeeId: "EMP006", employeeName: "Nasreen Ahmed", department: "architecture", collectionAmount: 134000, date: "2024-01-15", applications: 27 },
+];
+
+const dailyCollectionData = [
+  { date: "2024-01-15", officerId: "OFF001", officerName: "Ahmed Rahman", dailyCollection: 25000, applications: 5 },
+  { date: "2024-01-15", officerId: "OFF002", officerName: "Fatima Khan", dailyCollection: 18000, applications: 4 },
+  { date: "2024-01-15", officerId: "OFF003", officerName: "Mohammad Ali", dailyCollection: 32000, applications: 6 },
+  { date: "2024-01-14", officerId: "OFF001", officerName: "Ahmed Rahman", dailyCollection: 28000, applications: 6 },
+  { date: "2024-01-14", officerId: "OFF002", officerName: "Fatima Khan", dailyCollection: 22000, applications: 5 },
+  { date: "2024-01-13", officerId: "OFF003", officerName: "Mohammad Ali", dailyCollection: 35000, applications: 7 },
+];
+
+const studentListData = [
+  { studentId: "STU001", studentName: "Kamal Ahmed", department: "cse", program: "bachelor", semester: "spring_2024", district: "Dhaka", phone: "01712345678", email: "kamal@example.com" },
+  { studentId: "STU002", studentName: "Rashida Khatun", department: "eee", program: "bachelor", semester: "spring_2024", district: "Chittagong", phone: "01798765432", email: "rashida@example.com" },
+  { studentId: "STU003", studentName: "Abdul Rahman", department: "civil", program: "bachelor", semester: "spring_2024", district: "Sylhet", phone: "01634567890", email: "abdul@example.com" },
+  { studentId: "STU004", studentName: "Fatima Begum", department: "bba", program: "bachelor", semester: "fall_2024", district: "Dhaka", phone: "01856789012", email: "fatima@example.com" },
+  { studentId: "STU005", studentName: "Mohammad Hassan", department: "law", program: "bachelor", semester: "spring_2024", district: "Khulna", phone: "01723456789", email: "hassan@example.com" },
+];
+
+const creditTransferData = [
+  { studentId: "CT001", studentName: "Ahmed Ali", previousInstitution: "XYZ University", transferredCredits: 45, department: "cse", program: "bachelor", semester: "spring_2024" },
+  { studentId: "CT002", studentName: "Rashida Ahmed", previousInstitution: "ABC College", transferredCredits: 38, department: "bba", program: "bachelor", semester: "fall_2024" },
+  { studentId: "CT003", studentName: "Mohammad Khan", previousInstitution: "DEF University", transferredCredits: 52, department: "eee", program: "bachelor", semester: "spring_2024" },
+];
+
+const feederDistrictsData = [
+  { districtName: "Dhaka", studentsCount: 234, percentage: 28.5 },
+  { districtName: "Chittagong", studentsCount: 189, percentage: 23.1 },
+  { districtName: "Sylhet", studentsCount: 156, percentage: 19.0 },
+  { districtName: "Khulna", studentsCount: 98, percentage: 12.0 },
+  { districtName: "Rajshahi", studentsCount: 78, percentage: 9.5 },
+  { districtName: "Barisal", studentsCount: 45, percentage: 5.5 },
+  { districtName: "Rangpur", studentsCount: 34, percentage: 4.1 },
+];
+
+const studentWaiverData = [
+  { studentId: "SW001", studentName: "Kamal Ahmed", department: "cse", waiverAmount: 15000, waiverPercentage: 30, totalFee: 50000, semester: "spring_2024" },
+  { studentId: "SW002", studentName: "Rashida Khatun", department: "eee", waiverAmount: 12500, waiverPercentage: 25, totalFee: 50000, semester: "spring_2024" },
+  { studentId: "SW003", studentName: "Abdul Rahman", department: "civil", waiverAmount: 20000, waiverPercentage: 40, totalFee: 50000, semester: "fall_2024" },
+  { studentId: "SW004", studentName: "Fatima Begum", department: "bba", waiverAmount: 10000, waiverPercentage: 20, totalFee: 50000, semester: "spring_2024" },
+];
+
+const studentCreditsData = [
+  { studentId: "SC001", studentName: "Kamal Ahmed", department: "cse", creditsRequired: 144, creditsCompleted: 89, remainingCredits: 55, semester: "spring_2024" },
+  { studentId: "SC002", studentName: "Rashida Khatun", department: "eee", creditsRequired: 144, creditsCompleted: 76, remainingCredits: 68, semester: "spring_2024" },
+  { studentId: "SC003", studentName: "Abdul Rahman", department: "civil", creditsRequired: 144, creditsCompleted: 92, remainingCredits: 52, semester: "fall_2024" },
+];
+
+const idCardData = [
+  { studentId: "ID001", studentName: "Kamal Ahmed", department: "cse", program: "bachelor", semester: "spring_2024", cardGenerated: "Yes", generatedDate: "2024-01-20" },
+  { studentId: "ID002", studentName: "Rashida Khatun", department: "eee", program: "bachelor", semester: "spring_2024", cardGenerated: "Yes", generatedDate: "2024-01-21" },
+  { studentId: "ID003", studentName: "Abdul Rahman", department: "civil", program: "bachelor", semester: "spring_2024", cardGenerated: "No", generatedDate: "-" },
+];
+
+const departmentTargetsData = [
+  { department: "cse", targetSet: 200, achieved: 156, percentage: 78, semester: "spring_2024" },
+  { department: "eee", targetSet: 150, achieved: 123, percentage: 82, semester: "spring_2024" },
+  { department: "civil", targetSet: 180, achieved: 126, percentage: 70, semester: "spring_2024" },
+  { department: "bba", targetSet: 220, achieved: 163, percentage: 74, semester: "spring_2024" },
+  { department: "law", targetSet: 120, achieved: 100, percentage: 83, semester: "spring_2024" },
+];
+
 export default function Reports() {
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const [dateRange, setDateRange] = useState("last_30_days");
   const [selectedProgram, setSelectedProgram] = useState("all");
   const [selectedDepartment, setSelectedDepartment] = useState("all");
-  const [selectedSemester, setSelectedSemester] = useState("spring_2024");
+  const [selectedSemester, setSelectedSemester] = useState("all");
   const [selectedYear, setSelectedYear] = useState("2024");
   const [activeReportCategory, setActiveReportCategory] = useState("overview");
+  const [activeReport, setActiveReport] = useState<string | null>(null);
 
   const texts = {
     en: {
@@ -69,7 +151,7 @@ export default function Reports() {
       year: "Year",
       generateReport: "Generate Report",
       exportPDF: "Export PDF",
-      downloadReport: "Download Report",
+      downloadReport: "Download PDF",
       viewReport: "View Report",
       last7Days: "Last 7 Days",
       last30Days: "Last 30 Days",
@@ -78,15 +160,16 @@ export default function Reports() {
       custom: "Custom Range",
       allPrograms: "All Programs",
       allDepartments: "All Departments",
+      allSemesters: "All Semesters",
       spring2024: "Spring 2024",
       fall2024: "Fall 2024",
       summer2024: "Summer 2024",
+      backToReports: "Back to Reports",
 
       // Report Categories
       reportCategories: "Report Categories",
       overview: "Overview",
       studentReports: "Student Reports",
-      admissionFlowcharts: "Admission Flowcharts",
       financialReports: "Financial Reports",
       waiverReports: "Waiver Reports",
       idCardReports: "ID Card Reports",
@@ -104,16 +187,11 @@ export default function Reports() {
       topPerformingDepartments: "Top Performing Departments",
       revenueGenerated: "Revenue Generated",
 
-      // New Report Types
-      programWiseAdmissions:
-        "Program-wise Number of Admitted Students per Semester",
+      // Report Types
+      programWiseAdmissions: "Program-wise Admitted Students per Semester",
       employeeWiseCollection: "Employee-wise Admission Fee Collection",
       dailyCollectionReport: "Daily Collection Report of Admission Officers",
       semesterWiseAdmissions: "Semester-wise Number of Admitted Students",
-      programWiseFlowchart: "Program-wise Admission Flowchart",
-      yearWiseAdmissionReport: "Year-wise Admission Report",
-      departmentWiseTargets:
-        "Department-wise Admission Target Input and View Report",
       feederDistricts: "List of Feeder Districts",
       studentList: "Student List",
       detailedStudentList: "Detailed Student List",
@@ -121,9 +199,8 @@ export default function Reports() {
       bulkIdCardDownload: "All Students ID Cards Download (Bulk)",
       studentRequiredCredits: "Student Required Credits",
       studentWaiverReport: "Student Waiver Report (Department-wise)",
-      previousSemesterFlowchart:
-        "Department-wise Admission Flowchart for Previous Semester",
       creditTransferStudentList: "Credit Transfer Student List",
+      departmentWiseTargets: "Department-wise Admission Targets",
 
       // Table Headers
       serial: "Serial",
@@ -133,25 +210,35 @@ export default function Reports() {
       total: "Total",
       employeeName: "Employee Name",
       employeeId: "Employee ID",
-      collectionAmount: "Collection Amount",
+      collectionAmount: "Collection Amount (৳)",
       date: "Date",
       officerId: "Officer ID",
-      dailyCollection: "Daily Collection",
+      officerName: "Officer Name",
+      dailyCollection: "Daily Collection (৳)",
       targetSet: "Target Set",
       achieved: "Achieved",
-      percentage: "Percentage",
+      percentage: "Percentage (%)",
       districtName: "District",
-      studentsFromDistrict: "Students from District",
+      studentsCount: "Students Count",
       studentId: "Student ID",
+      studentName: "Student Name",
       creditsRequired: "Credits Required",
       creditsCompleted: "Credits Completed",
-      waiverAmount: "Waiver Amount",
-      waiverPercentage: "Waiver Percentage",
+      remainingCredits: "Remaining Credits",
+      waiverAmount: "Waiver Amount (৳)",
+      waiverPercentage: "Waiver (%)",
+      totalFee: "Total Fee (৳)",
+      previousInstitution: "Previous Institution",
+      transferredCredits: "Transferred Credits",
+      phone: "Phone",
+      email: "Email",
+      district: "District",
+      cardGenerated: "Card Generated",
+      generatedDate: "Generated Date",
+      applications: "Applications",
 
       // Departments
       departmentColumn: "Department",
-      applications: "Applications",
-      admitted: "Admitted",
       rate: "Rate",
       cse: "Computer Science & Engineering",
       eee: "Electrical & Electronic Engineering",
@@ -173,8 +260,7 @@ export default function Reports() {
       recentlyGenerated: "Recently Generated IDs",
       universityId: "University ID",
       ugcId: "UGC ID",
-      studentName: "Student Name",
-      generatedDate: "Generated Date",
+      generatedDate2: "Generated Date",
       status: "Status",
       active: "Active",
       viewDetails: "View Details",
@@ -189,7 +275,7 @@ export default function Reports() {
       year: "বছর",
       generateReport: "রিপোর্ট তৈরি করুন",
       exportPDF: "পিডিএফ এক্সপোর্ট",
-      downloadReport: "রিপোর্ট ডাউনলোড",
+      downloadReport: "পিডিএফ ডাউনলোড",
       viewReport: "রিপোর্ট দেখুন",
       last7Days: "গত ৭ দিন",
       last30Days: "গত ৩০ দিন",
@@ -198,15 +284,16 @@ export default function Reports() {
       custom: "কাস্টম রেঞ্জ",
       allPrograms: "সব প্রোগ্রাম",
       allDepartments: "সব বিভাগ",
+      allSemesters: "সব সেমিস্টার",
       spring2024: "বসন্ত ২০২৪",
       fall2024: "শরৎ ২০২৪",
       summer2024: "গ্রীষ্ম ২০২৪",
+      backToReports: "রিপোর্টে ফিরুন",
 
       // Report Categories
       reportCategories: "রিপোর্ট বিভাগসমূহ",
       overview: "সারসংক্ষেপ",
-      studentReports: "শিক্ষার্থী রিপোর্ট",
-      admissionFlowcharts: "ভর্তি ফ্লোচার্ট",
+      studentReports: "শিক্ষার্��ী রিপোর্ট",
       financialReports: "আর্থিক রিপোর্ট",
       waiverReports: "মওকুফ রিপোর্ট",
       idCardReports: "আইডি কার্ড রিপোর্ট",
@@ -223,32 +310,14 @@ export default function Reports() {
       topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
       revenueGenerated: "আয় সৃষ্টি",
 
-      // New Report Types
-      programWiseAdmissions:
-        "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
+      programWiseAdmissions: "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
       employeeWiseCollection: "কর্মচারী অনুযায়ী ভর্তি ফি সংগ্রহ",
-      dailyCollectionReport: "ভর্তি কর্মকর্তাদের দৈনিক সংগ্রহ রিপোর্ট",
-      semesterWiseAdmissions: "সেমিস্টার অনুযায়ী ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
-      programWiseFlowchart: "প্রোগ্রাম অনুযায়ী ভর্তি ফ্লোচার্ট",
-      yearWiseAdmissionReport: "বছর অনুযায়ী ভর্তি রিপোর্ট",
-      departmentWiseTargets: "বিভাগ অনুযায়ী ভর্তি লক্ষ্য ইনপুট ও ভিউ রিপোর্ট",
-      feederDistricts: "ফিডার জেলার তালিকা",
-      studentList: "শি���্ষার্থীর তালিকা",
-      detailedStudentList: "বিস্তারিত শিক্ষার্থীর তালিকা",
-      studentIdCards: "শিক্ষার্থী আইডি কার্ড",
-      bulkIdCardDownload: "সকল শিক্ষার্থীর আইডি কার্ড ডাউনলোড (বাল্ক)",
-      studentRequiredCredits: "শিক্ষার্থীর প্রয়োজনীয় ক্রেডিট",
-      studentWaiverReport: "শিক্ষার্থী মওকুফ রিপোর্ট (বিভাগ অনুযায়ী)",
-      previousSemesterFlowchart:
-        "পূর্ববর্তী সেমিস্টারের জন্য বিভাগ অনুযায়ী ভর্তি ফ্লোচার্ট",
-      creditTransferStudentList: "ক্রেডিট ট্রান্সফার শিক্ষার্থীর তালিকা",
+      dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্রহ রিপোর্ট",
 
       departmentColumn: "বিভাগ",
-      applications: "আবেদন",
-      admitted: "ভর্তি",
       rate: "হার",
       cse: "কম্পিউটার সায়েন্স ও ইঞ্জিনিয়ারিং",
-      eee: "ইলেকট্রিক্যাল ও ই���েকট্রনিক ইঞ্জিনিয়ারিং",
+      eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জিনিয়ারিং",
       mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
       textile: "টেক্সটাইল ইঞ্জিনিয়ারিং",
@@ -258,23 +327,82 @@ export default function Reports() {
       pharmacy: "ফার্মেসি",
       english: "ইংরেজি",
       days: "দিন",
-      studentIdStats: "শিক্ষার্থী আইডি পরিসংখ্যান",
-      universityIds: "বিশ্ববিদ্যালয় আইডি তৈরি",
-      ugcIds: "ইউজিসি আইডি তৈরি",
-      activeStudents: "সক্রিয় শিক্ষার্থী",
-      idGenerationRate: "আইডি তৈরির হার",
-      recentlyGenerated: "সম্প্রতি তৈরি আইডি",
-      universityId: "বিশ্ববিদ্যালয় আইডি",
-      ugcId: "ইউজিসি আইডি",
-      studentName: "শিক্ষার্থীর নাম",
-      generatedDate: "তৈরির তারিখ",
-      status: "অবস্থা",
-      active: "সক্রিয়",
-      viewDetails: "বিস্তারিত দেখুন",
     },
   };
 
   const t = texts[language];
+
+  // Filter functions for each report type
+  const filteredProgramWiseData = useMemo(() => {
+    return programWiseData.filter(item => {
+      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+      return true;
+    });
+  }, [selectedDepartment, selectedSemester]);
+
+  const filteredEmployeeData = useMemo(() => {
+    return employeeCollectionData.filter(item => {
+      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
+      return true;
+    });
+  }, [selectedDepartment]);
+
+  const filteredStudentData = useMemo(() => {
+    return studentListData.filter(item => {
+      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
+      if (selectedProgram !== "all" && item.program !== selectedProgram) return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+      return true;
+    });
+  }, [selectedDepartment, selectedProgram, selectedSemester]);
+
+  const filteredCreditTransferData = useMemo(() => {
+    return creditTransferData.filter(item => {
+      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+      return true;
+    });
+  }, [selectedDepartment, selectedSemester]);
+
+  const filteredWaiverData = useMemo(() => {
+    return studentWaiverData.filter(item => {
+      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+      return true;
+    });
+  }, [selectedDepartment, selectedSemester]);
+
+  const filteredCreditsData = useMemo(() => {
+    return studentCreditsData.filter(item => {
+      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+      return true;
+    });
+  }, [selectedDepartment, selectedSemester]);
+
+  const filteredIdCardData = useMemo(() => {
+    return idCardData.filter(item => {
+      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
+      if (selectedProgram !== "all" && item.program !== selectedProgram) return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+      return true;
+    });
+  }, [selectedDepartment, selectedProgram, selectedSemester]);
+
+  const filteredTargetsData = useMemo(() => {
+    return departmentTargetsData.filter(item => {
+      if (selectedDepartment !== "all" && item.department !== selectedDepartment) return false;
+      if (selectedSemester !== "all" && item.semester !== selectedSemester) return false;
+      return true;
+    });
+  }, [selectedDepartment, selectedSemester]);
+
+  // Export to PDF function (dummy implementation)
+  const exportToPDF = (reportName: string, data: any[]) => {
+    // In a real implementation, you would use a library like jsPDF
+    alert(`Exporting ${reportName} to PDF with ${data.length} records`);
+  };
 
   const kpiData = [
     {
@@ -324,6 +452,457 @@ export default function Reports() {
     { month: "May", applications: 167, admitted: 123 },
     { month: "Jun", applications: 201, admitted: 156 },
   ];
+
+  // If viewing a specific report, show the report table
+  if (activeReport) {
+    return (
+      <div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Back Button */}
+          <div className="mb-6">
+            <Button
+              variant="outline"
+              onClick={() => setActiveReport(null)}
+              className="mb-4"
+            >
+              ← {t.backToReports}
+            </Button>
+          </div>
+
+          {/* Report Content */}
+          {activeReport === "programWiseAdmissions" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.programWiseAdmissions}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Program-wise Admissions", filteredProgramWiseData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.serial}</TableHead>
+                      <TableHead>{t.programName}</TableHead>
+                      <TableHead>{t.male}</TableHead>
+                      <TableHead>{t.female}</TableHead>
+                      <TableHead>{t.total}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredProgramWiseData.map((item) => (
+                      <TableRow key={item.serial}>
+                        <TableCell>{item.serial}</TableCell>
+                        <TableCell className="font-medium">{item.programName}</TableCell>
+                        <TableCell>{item.male}</TableCell>
+                        <TableCell>{item.female}</TableCell>
+                        <TableCell className="font-semibold">{item.total}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeReport === "employeeWiseCollection" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.employeeWiseCollection}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Employee-wise Collection", filteredEmployeeData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.employeeId}</TableHead>
+                      <TableHead>{t.employeeName}</TableHead>
+                      <TableHead>{t.departmentColumn}</TableHead>
+                      <TableHead>{t.collectionAmount}</TableHead>
+                      <TableHead>{t.applications}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredEmployeeData.map((item) => (
+                      <TableRow key={item.employeeId}>
+                        <TableCell className="font-mono">{item.employeeId}</TableCell>
+                        <TableCell className="font-medium">{item.employeeName}</TableCell>
+                        <TableCell>{item.department.toUpperCase()}</TableCell>
+                        <TableCell className="font-semibold">৳{item.collectionAmount.toLocaleString()}</TableCell>
+                        <TableCell>{item.applications}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeReport === "dailyCollectionReport" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.dailyCollectionReport}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Daily Collection Report", dailyCollectionData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.date}</TableHead>
+                      <TableHead>{t.officerId}</TableHead>
+                      <TableHead>{t.officerName}</TableHead>
+                      <TableHead>{t.dailyCollection}</TableHead>
+                      <TableHead>{t.applications}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {dailyCollectionData.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{item.date}</TableCell>
+                        <TableCell className="font-mono">{item.officerId}</TableCell>
+                        <TableCell className="font-medium">{item.officerName}</TableCell>
+                        <TableCell className="font-semibold">৳{item.dailyCollection.toLocaleString()}</TableCell>
+                        <TableCell>{item.applications}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeReport === "studentList" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.studentList}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Student List", filteredStudentData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.studentId}</TableHead>
+                      <TableHead>{t.studentName}</TableHead>
+                      <TableHead>{t.departmentColumn}</TableHead>
+                      <TableHead>{t.program}</TableHead>
+                      <TableHead>{t.district}</TableHead>
+                      <TableHead>{t.phone}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredStudentData.map((item) => (
+                      <TableRow key={item.studentId}>
+                        <TableCell className="font-mono">{item.studentId}</TableCell>
+                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell>{item.department.toUpperCase()}</TableCell>
+                        <TableCell>{item.program}</TableCell>
+                        <TableCell>{item.district}</TableCell>
+                        <TableCell>{item.phone}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeReport === "creditTransferStudentList" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.creditTransferStudentList}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Credit Transfer Students", filteredCreditTransferData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.studentId}</TableHead>
+                      <TableHead>{t.studentName}</TableHead>
+                      <TableHead>{t.previousInstitution}</TableHead>
+                      <TableHead>{t.transferredCredits}</TableHead>
+                      <TableHead>{t.departmentColumn}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredCreditTransferData.map((item) => (
+                      <TableRow key={item.studentId}>
+                        <TableCell className="font-mono">{item.studentId}</TableCell>
+                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell>{item.previousInstitution}</TableCell>
+                        <TableCell className="font-semibold">{item.transferredCredits}</TableCell>
+                        <TableCell>{item.department.toUpperCase()}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeReport === "feederDistricts" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.feederDistricts}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Feeder Districts", feederDistrictsData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.districtName}</TableHead>
+                      <TableHead>{t.studentsCount}</TableHead>
+                      <TableHead>{t.percentage}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {feederDistrictsData.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{item.districtName}</TableCell>
+                        <TableCell className="font-semibold">{item.studentsCount}</TableCell>
+                        <TableCell>{item.percentage}%</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeReport === "studentWaiverReport" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.studentWaiverReport}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Student Waiver Report", filteredWaiverData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.studentId}</TableHead>
+                      <TableHead>{t.studentName}</TableHead>
+                      <TableHead>{t.departmentColumn}</TableHead>
+                      <TableHead>{t.waiverAmount}</TableHead>
+                      <TableHead>{t.waiverPercentage}</TableHead>
+                      <TableHead>{t.totalFee}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredWaiverData.map((item) => (
+                      <TableRow key={item.studentId}>
+                        <TableCell className="font-mono">{item.studentId}</TableCell>
+                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell>{item.department.toUpperCase()}</TableCell>
+                        <TableCell className="font-semibold">৳{item.waiverAmount.toLocaleString()}</TableCell>
+                        <TableCell>{item.waiverPercentage}%</TableCell>
+                        <TableCell>৳{item.totalFee.toLocaleString()}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeReport === "studentRequiredCredits" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.studentRequiredCredits}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Student Required Credits", filteredCreditsData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.studentId}</TableHead>
+                      <TableHead>{t.studentName}</TableHead>
+                      <TableHead>{t.departmentColumn}</TableHead>
+                      <TableHead>{t.creditsRequired}</TableHead>
+                      <TableHead>{t.creditsCompleted}</TableHead>
+                      <TableHead>{t.remainingCredits}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredCreditsData.map((item) => (
+                      <TableRow key={item.studentId}>
+                        <TableCell className="font-mono">{item.studentId}</TableCell>
+                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell>{item.department.toUpperCase()}</TableCell>
+                        <TableCell>{item.creditsRequired}</TableCell>
+                        <TableCell className="font-semibold">{item.creditsCompleted}</TableCell>
+                        <TableCell>{item.remainingCredits}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeReport === "studentIdCards" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.studentIdCards}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Student ID Cards", filteredIdCardData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.studentId}</TableHead>
+                      <TableHead>{t.studentName}</TableHead>
+                      <TableHead>{t.departmentColumn}</TableHead>
+                      <TableHead>{t.program}</TableHead>
+                      <TableHead>{t.cardGenerated}</TableHead>
+                      <TableHead>{t.generatedDate}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredIdCardData.map((item) => (
+                      <TableRow key={item.studentId}>
+                        <TableCell className="font-mono">{item.studentId}</TableCell>
+                        <TableCell className="font-medium">{item.studentName}</TableCell>
+                        <TableCell>{item.department.toUpperCase()}</TableCell>
+                        <TableCell>{item.program}</TableCell>
+                        <TableCell>
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            item.cardGenerated === "Yes" 
+                              ? "bg-green-100 text-green-800" 
+                              : "bg-red-100 text-red-800"
+                          }`}>
+                            {item.cardGenerated}
+                          </span>
+                        </TableCell>
+                        <TableCell>{item.generatedDate}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeReport === "departmentWiseTargets" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  {t.departmentWiseTargets}
+                </CardTitle>
+                <Button
+                  onClick={() => exportToPDF("Department-wise Targets", filteredTargetsData)}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t.departmentColumn}</TableHead>
+                      <TableHead>{t.targetSet}</TableHead>
+                      <TableHead>{t.achieved}</TableHead>
+                      <TableHead>{t.percentage}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredTargetsData.map((item) => (
+                      <TableRow key={item.department}>
+                        <TableCell className="font-medium">{item.department.toUpperCase()}</TableCell>
+                        <TableCell>{item.targetSet}</TableCell>
+                        <TableCell className="font-semibold">{item.achieved}</TableCell>
+                        <TableCell>
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            item.percentage >= 80 
+                              ? "bg-green-100 text-green-800" 
+                              : item.percentage >= 60
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
+                          }`}>
+                            {item.percentage}%
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -380,16 +959,7 @@ export default function Reports() {
               {[
                 { id: "overview", label: t.overview, icon: BarChart3 },
                 { id: "student", label: t.studentReports, icon: Users },
-                {
-                  id: "flowcharts",
-                  label: t.admissionFlowcharts,
-                  icon: TrendingUp,
-                },
-                {
-                  id: "financial",
-                  label: t.financialReports,
-                  icon: DollarSign,
-                },
+                { id: "financial", label: t.financialReports, icon: DollarSign },
                 { id: "waiver", label: t.waiverReports, icon: BookOpen },
                 { id: "idcards", label: t.idCardReports, icon: IdCard },
                 { id: "targets", label: t.targetReports, icon: Target },
@@ -448,8 +1018,8 @@ export default function Reports() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{t.allPrograms}</SelectItem>
-                    <SelectItem value="undergraduate">Undergraduate</SelectItem>
-                    <SelectItem value="graduate">Graduate</SelectItem>
+                    <SelectItem value="bachelor">Bachelor</SelectItem>
+                    <SelectItem value="masters">Masters</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -465,15 +1035,12 @@ export default function Reports() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{t.allDepartments}</SelectItem>
-                    <SelectItem value="cse">{t.cse}</SelectItem>
-                    <SelectItem value="eee">{t.eee}</SelectItem>
-                    <SelectItem value="mech">{t.mech}</SelectItem>
-                    <SelectItem value="civil">{t.civil}</SelectItem>
-                    <SelectItem value="bba">{t.bba}</SelectItem>
-                    <SelectItem value="law">{t.law}</SelectItem>
-                    <SelectItem value="architecture">
-                      {t.architecture}
-                    </SelectItem>
+                    <SelectItem value="cse">CSE</SelectItem>
+                    <SelectItem value="eee">EEE</SelectItem>
+                    <SelectItem value="civil">Civil</SelectItem>
+                    <SelectItem value="bba">BBA</SelectItem>
+                    <SelectItem value="law">Law</SelectItem>
+                    <SelectItem value="architecture">Architecture</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -488,6 +1055,7 @@ export default function Reports() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">{t.allSemesters}</SelectItem>
                     <SelectItem value="spring_2024">{t.spring2024}</SelectItem>
                     <SelectItem value="fall_2024">{t.fall2024}</SelectItem>
                     <SelectItem value="summer_2024">{t.summer2024}</SelectItem>
@@ -548,9 +1116,7 @@ export default function Reports() {
                     <div className="flex items-center gap-3">
                       <IdCard className="w-8 h-8 text-blue-600" />
                       <div>
-                        <p className="text-sm text-gray-600">
-                          {t.universityIds}
-                        </p>
+                        <p className="text-sm text-gray-600">{t.universityIds}</p>
                         <p className="text-2xl font-bold text-blue-800">
                           {getIDGenerationStats().totalGenerated}
                         </p>
@@ -574,9 +1140,7 @@ export default function Reports() {
                     <div className="flex items-center gap-3">
                       <Users className="w-8 h-8 text-green-600" />
                       <div>
-                        <p className="text-sm text-gray-600">
-                          {t.activeStudents}
-                        </p>
+                        <p className="text-sm text-gray-600">{t.activeStudents}</p>
                         <p className="text-2xl font-bold text-green-800">
                           {getIDGenerationStats().activeStudents}
                         </p>
@@ -591,9 +1155,7 @@ export default function Reports() {
                         <p className="text-sm text-gray-600">
                           {t.idGenerationRate}
                         </p>
-                        <p className="text-2xl font-bold text-orange-800">
-                          98.5%
-                        </p>
+                        <p className="text-2xl font-bold text-orange-800">98.5%</p>
                       </div>
                     </div>
                   </div>
@@ -612,7 +1174,7 @@ export default function Reports() {
                         <TableHead>{t.universityId}</TableHead>
                         <TableHead>UGC ID (Admin)</TableHead>
                         <TableHead>{t.studentName}</TableHead>
-                        <TableHead>{t.generatedDate}</TableHead>
+                        <TableHead>{t.generatedDate2}</TableHead>
                         <TableHead>{t.status}</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -628,7 +1190,7 @@ export default function Reports() {
                           <TableCell>{student.studentName}</TableCell>
                           <TableCell>
                             {new Date(
-                              student.generatedDate,
+                              student.generatedDate
                             ).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
@@ -664,8 +1226,8 @@ export default function Reports() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>{t.departmentColumn}</TableHead>
-                        <TableHead>{t.applications}</TableHead>
-                        <TableHead>{t.admitted}</TableHead>
+                        <TableHead>Applications</TableHead>
+                        <TableHead>Admitted</TableHead>
                         <TableHead>{t.rate}</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -748,9 +1310,7 @@ export default function Reports() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-accent-purple">
-                      7
-                    </div>
+                    <div className="text-4xl font-bold text-accent-purple">7</div>
                     <p className="text-sm text-gray-600 mt-1">{t.days}</p>
                   </div>
                 </CardContent>
@@ -789,46 +1349,38 @@ export default function Reports() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[
                     {
+                      key: "programWiseAdmissions",
                       title: t.programWiseAdmissions,
-                      description:
-                        "Serial – Program Name – Male – Female – Total",
+                      description: "Serial – Program Name – Male – Female – Total",
                       icon: GraduationCap,
-                      action: "view",
+                      count: filteredProgramWiseData.length,
                     },
                     {
-                      title: t.semesterWiseAdmissions,
-                      description: "Total students admitted by semester",
-                      icon: Calendar,
-                      action: "view",
-                    },
-                    {
+                      key: "studentList",
                       title: t.studentList,
                       description: "Complete list of all students",
                       icon: Users,
-                      action: "view",
+                      count: filteredStudentData.length,
                     },
                     {
-                      title: t.detailedStudentList,
-                      description: "Comprehensive student information",
-                      icon: FileText,
-                      action: "view",
-                    },
-                    {
+                      key: "creditTransferStudentList",
                       title: t.creditTransferStudentList,
                       description: "List of credit transfer students",
                       icon: Archive,
-                      action: "view",
+                      count: filteredCreditTransferData.length,
                     },
                     {
+                      key: "feederDistricts",
                       title: t.feederDistricts,
                       description: "Districts with most students",
                       icon: MapPin,
-                      action: "view",
+                      count: feederDistrictsData.length,
                     },
                   ].map((report, index) => (
                     <Card
                       key={index}
-                      className="border border-gray-200 hover:border-deep-plum transition-colors"
+                      className="border border-gray-200 hover:border-deep-plum transition-colors cursor-pointer"
+                      onClick={() => setActiveReport(report.key)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
@@ -842,22 +1394,13 @@ export default function Reports() {
                             <p className="text-xs text-gray-600 mb-3">
                               {report.description}
                             </p>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs"
-                              >
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-500">
+                                {report.count} records
+                              </span>
+                              <Button size="sm" variant="outline" className="text-xs">
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                <Download className="w-3 h-3 mr-1" />
-                                {t.downloadReport}
                               </Button>
                             </div>
                           </div>
@@ -885,22 +1428,24 @@ export default function Reports() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     {
+                      key: "employeeWiseCollection",
                       title: t.employeeWiseCollection,
                       description: "Collection performance by employee",
                       icon: UserCheck,
-                      action: "view",
+                      count: filteredEmployeeData.length,
                     },
                     {
+                      key: "dailyCollectionReport",
                       title: t.dailyCollectionReport,
-                      description:
-                        "View daily collection by admission officers (ID-wise)",
+                      description: "View daily collection by admission officers (ID-wise)",
                       icon: Calendar,
-                      action: "view",
+                      count: dailyCollectionData.length,
                     },
                   ].map((report, index) => (
                     <Card
                       key={index}
-                      className="border border-gray-200 hover:border-deep-plum transition-colors"
+                      className="border border-gray-200 hover:border-deep-plum transition-colors cursor-pointer"
+                      onClick={() => setActiveReport(report.key)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
@@ -914,95 +1459,13 @@ export default function Reports() {
                             <p className="text-xs text-gray-600 mb-3">
                               {report.description}
                             </p>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs"
-                              >
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-500">
+                                {report.count} records
+                              </span>
+                              <Button size="sm" variant="outline" className="text-xs">
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                <Download className="w-3 h-3 mr-1" />
-                                {t.downloadReport}
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* ID Card Reports Category */}
-        {activeReportCategory === "idcards" && (
-          <div className="space-y-6">
-            <Card className="bg-white shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <IdCard className="w-5 h-5" />
-                  ID Card Management
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    {
-                      title: t.studentIdCards,
-                      description: "Individual student ID card generation",
-                      icon: IdCard,
-                      action: "view",
-                    },
-                    {
-                      title: t.bulkIdCardDownload,
-                      description:
-                        "Download all student ID cards for selected semester/program in one click",
-                      icon: Package,
-                      action: "download",
-                    },
-                  ].map((report, index) => (
-                    <Card
-                      key={index}
-                      className="border border-gray-200 hover:border-deep-plum transition-colors"
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-start gap-3">
-                          <div className="p-2 bg-purple-100 rounded-lg">
-                            <report.icon className="w-5 h-5 text-purple-600" />
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-sm text-deep-plum mb-1">
-                              {report.title}
-                            </h4>
-                            <p className="text-xs text-gray-600 mb-3">
-                              {report.description}
-                            </p>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                <Eye className="w-3 h-3 mr-1" />
-                                {t.viewReport}
-                              </Button>
-                              <Button
-                                size="sm"
-                                className="text-xs bg-deep-plum hover:bg-accent-purple"
-                              >
-                                <DownloadCloud className="w-3 h-3 mr-1" />
-                                {report.action === "download"
-                                  ? "Bulk Download"
-                                  : "Download"}
                               </Button>
                             </div>
                           </div>
@@ -1030,21 +1493,24 @@ export default function Reports() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     {
+                      key: "studentWaiverReport",
                       title: t.studentWaiverReport,
                       description: "Waiver details by department",
                       icon: BookOpen,
-                      action: "view",
+                      count: filteredWaiverData.length,
                     },
                     {
+                      key: "studentRequiredCredits",
                       title: t.studentRequiredCredits,
                       description: "Credit requirements and completion status",
                       icon: GraduationCap,
-                      action: "view",
+                      count: filteredCreditsData.length,
                     },
                   ].map((report, index) => (
                     <Card
                       key={index}
-                      className="border border-gray-200 hover:border-deep-plum transition-colors"
+                      className="border border-gray-200 hover:border-deep-plum transition-colors cursor-pointer"
+                      onClick={() => setActiveReport(report.key)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
@@ -1058,22 +1524,13 @@ export default function Reports() {
                             <p className="text-xs text-gray-600 mb-3">
                               {report.description}
                             </p>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs"
-                              >
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-500">
+                                {report.count} records
+                              </span>
+                              <Button size="sm" variant="outline" className="text-xs">
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                <Download className="w-3 h-3 mr-1" />
-                                {t.downloadReport}
                               </Button>
                             </div>
                           </div>
@@ -1087,48 +1544,43 @@ export default function Reports() {
           </div>
         )}
 
-        {/* Flowcharts Category */}
-        {activeReportCategory === "flowcharts" && (
+        {/* ID Card Reports Category */}
+        {activeReportCategory === "idcards" && (
           <div className="space-y-6">
             <Card className="bg-white shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
-                  Admission Flowcharts
+                  <IdCard className="w-5 h-5" />
+                  ID Card Management
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     {
-                      title: t.programWiseFlowchart,
-                      description:
-                        "Visual flowchart of admission process by program",
-                      icon: TrendingUp,
-                      action: "view",
+                      key: "studentIdCards",
+                      title: t.studentIdCards,
+                      description: "Individual student ID card generation and status",
+                      icon: IdCard,
+                      count: filteredIdCardData.length,
                     },
                     {
-                      title: t.previousSemesterFlowchart,
-                      description:
-                        "Department-wise admission flowchart for previous semester",
-                      icon: Building,
-                      action: "view",
-                    },
-                    {
-                      title: t.yearWiseAdmissionReport,
-                      description: "Annual admission trends and statistics",
-                      icon: Calendar,
-                      action: "view",
+                      key: "bulkIdCardDownload",
+                      title: t.bulkIdCardDownload,
+                      description: "Download all student ID cards for selected semester/program in one click",
+                      icon: Package,
+                      count: filteredIdCardData.filter(item => item.cardGenerated === "Yes").length,
                     },
                   ].map((report, index) => (
                     <Card
                       key={index}
-                      className="border border-gray-200 hover:border-deep-plum transition-colors"
+                      className="border border-gray-200 hover:border-deep-plum transition-colors cursor-pointer"
+                      onClick={() => setActiveReport(report.key)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
-                          <div className="p-2 bg-blue-100 rounded-lg">
-                            <report.icon className="w-5 h-5 text-blue-600" />
+                          <div className="p-2 bg-purple-100 rounded-lg">
+                            <report.icon className="w-5 h-5 text-purple-600" />
                           </div>
                           <div className="flex-1">
                             <h4 className="font-semibold text-sm text-deep-plum mb-1">
@@ -1137,22 +1589,13 @@ export default function Reports() {
                             <p className="text-xs text-gray-600 mb-3">
                               {report.description}
                             </p>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs"
-                              >
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-500">
+                                {report.count} records
+                              </span>
+                              <Button size="sm" variant="outline" className="text-xs">
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                <Download className="w-3 h-3 mr-1" />
-                                {t.downloadReport}
                               </Button>
                             </div>
                           </div>
@@ -1178,7 +1621,10 @@ export default function Reports() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4">
-                  <Card className="border border-gray-200 hover:border-deep-plum transition-colors">
+                  <Card 
+                    className="border border-gray-200 hover:border-deep-plum transition-colors cursor-pointer"
+                    onClick={() => setActiveReport("departmentWiseTargets")}
+                  >
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
                         <div className="p-2 bg-green-100 rounded-lg">
@@ -1189,24 +1635,15 @@ export default function Reports() {
                             {t.departmentWiseTargets}
                           </h4>
                           <p className="text-xs text-gray-600 mb-3">
-                            Input and view admission targets by department with
-                            performance tracking
+                            View admission targets by department with performance tracking
                           </p>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-xs"
-                            >
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-500">
+                              {filteredTargetsData.length} departments
+                            </span>
+                            <Button size="sm" variant="outline" className="text-xs">
                               <Eye className="w-3 h-3 mr-1" />
                               {t.viewReport}
-                            </Button>
-                            <Button
-                              size="sm"
-                              className="text-xs bg-deep-plum hover:bg-accent-purple"
-                            >
-                              <Target className="w-3 h-3 mr-1" />
-                              Set Targets
                             </Button>
                           </div>
                         </div>
