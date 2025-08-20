@@ -446,7 +446,7 @@ export default function ProgramSelection() {
       !hasScienceBackground
     ) {
       errors.push(
-        `❌ Science background in SSC is mandatory for ${getDepartmentById(departmentId)?.name || departmentId}`,
+        `❌ Science background in HSC is mandatory for ${getDepartmentById(departmentId)?.name || departmentId}`,
       );
     }
 
