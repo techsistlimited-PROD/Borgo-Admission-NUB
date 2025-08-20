@@ -58,13 +58,15 @@ export default function Header({ showLogin = false }: HeaderProps) {
       login: 'Login',
       logout: 'Logout',
       profile: 'Profile',
-      universityName: 'Northern University Bangladesh'
+      universityName: 'Northern University Bangladesh',
+      newApplication: 'New Application'
     },
     bn: {
       login: 'লগইন',
       logout: 'লগআউট',
       profile: 'প্রোফাইল',
-      universityName: 'নর্দার্ন ইউনিভার্সিটি বাংলাদেশ'
+      universityName: 'নর্দার্ন ইউনিভার্সিটি বাংলাদেশ',
+      newApplication: 'নতুন আবেদন'
     }
   };
 
