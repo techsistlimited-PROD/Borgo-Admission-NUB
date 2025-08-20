@@ -285,7 +285,7 @@ export default function ProgramSelection() {
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
-      additionalWaivers: "অতিরিক্ত ম���কুফ",
+      additionalWaivers: "অতি���িক্ত ম���কুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
       waiverAmount: "���ওকুফ পরিমাণ",
@@ -380,30 +380,55 @@ export default function ProgramSelection() {
     }
   }, [sscGPA, hscGPA, hasFourthSubject]);
 
-  // Auto-check eligibility when program or academic info changes
+  // Helper function to map program + department to eligibility program ID
+  const getEligibilityProgramId = (programId: string, departmentId: string): string => {
+    // Map the old generic program IDs to specific eligibility rule IDs
+    if (programId === 'bachelor') {
+      switch (departmentId) {
+        case 'cse': return 'bsc_cse';
+        case 'eee': return 'bsc_eee';
+        case 'ce': return 'bsc_ce';
+        case 'bba': return 'bba';
+        case 'english': return 'ba_english';
+        case 'law': return 'llb';
+        case 'pharmacy': return 'b_pharm';
+        default: return programId; // fallback
+      }
+    } else if (programId === 'masters') {
+      switch (departmentId) {
+        case 'cse': return 'msc_cse';
+        case 'eee': return 'msc_eee';
+        case 'ce': return 'msc_ce';
+        case 'bba': return 'mba';
+        case 'english': return 'ma_linguistics';
+        case 'law': return 'llm';
+        case 'pharmacy': return 'm_pharm';
+        default: return programId;
+      }
+    }
+    return programId;
+  };
+
+  // Validate science background for engineering programs
+  const validateScienceBackground = (programId: string, departmentId: string, hasScienceBackground: boolean): string[] => {
+    const errors: string[] = [];
+
+    // Engineering departments that require science background
+    const engineeringDepts = ['cse', 'eee', 'ce', 'me', 'te'];
+
+    if (programId === 'bachelor' && engineeringDepts.includes(departmentId) && !hasScienceBackground) {
+      errors.push(`❌ Science background in SSC is mandatory for ${getDepartmentById(departmentId)?.name || departmentId}`);
+    }
+
+    return errors;
+  };
+
+  // Reset eligibility state when key values change (but DON'T auto-check)
   useEffect(() => {
-    // Reset eligibility state when key values change to prevent stale state
+    // Only reset state, don't auto-check as requested by user
     setEligibilityResult(null);
     setEligibilityChecked(false);
-
-    if (selectedProgram && hasRequiredAcademicInfo()) {
-      // Debounce the check to avoid rapid fire updates
-      const timeoutId = setTimeout(() => {
-        const academicRecord = buildAcademicRecord();
-        console.log("Auto eligibility check with:", academicRecord);
-        const result = checkProgramEligibility(selectedProgram, academicRecord);
-        console.log("Auto eligibility result:", result);
-        setEligibilityResult(result);
-        setEligibilityChecked(true);
-
-        // Only auto-show for failures, not success (to avoid spam)
-        if (!result.isEligible) {
-          setShowEligibilityCheck(true);
-        }
-      }, 300); // 300ms debounce to prevent rapid updates
-
-      return () => clearTimeout(timeoutId);
-    }
+    setShowEligibilityCheck(false);
   }, [
     selectedProgram,
     academicBackgroundType,
@@ -1659,7 +1684,7 @@ export default function ProgramSelection() {
                           eligibilityResult.requiresAdmissionTest && (
                             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                               <h5 className="font-semibold text-blue-800 mb-3">
-                                🎫 Admit Card Generation
+                                �� Admit Card Generation
                               </h5>
                               <p className="text-sm text-blue-700 mb-4">
                                 After completing your application, you'll need
