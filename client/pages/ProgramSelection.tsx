@@ -1804,7 +1804,6 @@ export default function ProgramSelection() {
                           </p>
                         </div>
 
-
                         {/* General Eligibility Information */}
                         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                           <h5 className="font-semibold text-blue-800 mb-2">
