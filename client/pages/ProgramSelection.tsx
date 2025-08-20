@@ -226,9 +226,9 @@ export default function ProgramSelection() {
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
-      continue: "সেভ করে এগিয়ে যান",
+      continue: "সে��� করে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
-      semesterSelection: "সেমিস্টার নির্বাচন করুন",
+      semesterSelection: "সেমিস্টার নির্���াচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
@@ -264,7 +264,7 @@ export default function ProgramSelection() {
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
-      selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
+      selectDepartmentFirst: "���্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
@@ -960,6 +960,117 @@ export default function ProgramSelection() {
                       )}
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Eligibility Checker */}
+            {selectedProgram && (sscGPA || hscGPA) && (
+              <Card className="bg-white shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    Eligibility Verification
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {eligibilityResult ? (
+                    <div className="space-y-4">
+                      {/* Eligibility Status */}
+                      <div className={`p-4 rounded-lg border ${
+                        eligibilityResult.isEligible
+                          ? 'bg-green-50 border-green-200'
+                          : 'bg-red-50 border-red-200'
+                      }`}>
+                        <div className="flex items-start gap-3">
+                          {eligibilityResult.isEligible ? (
+                            <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+                          ) : (
+                            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                          )}
+                          <div className="flex-1">
+                            <h4 className={`font-semibold ${
+                              eligibilityResult.isEligible ? 'text-green-800' : 'text-red-800'
+                            }`}>
+                              {eligibilityResult.isEligible ? '✅ Eligible' : '❌ Not Eligible'}
+                            </h4>
+                            <p className={`text-sm mt-1 ${
+                              eligibilityResult.isEligible ? 'text-green-700' : 'text-red-700'
+                            }`}>
+                              {getEligibilityMessage(
+                                eligibilityResult,
+                                getProgramById(selectedProgram)?.name || selectedProgram,
+                                language
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Missing Requirements */}
+                      {!eligibilityResult.isEligible && eligibilityResult.missingRequirements.length > 0 && (
+                        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                          <h5 className="font-semibold text-yellow-800 mb-2">Requirements Not Met:</h5>
+                          <ul className="text-sm text-yellow-700 space-y-1">
+                            {eligibilityResult.missingRequirements.map((req, index) => (
+                              <li key={index} className="flex items-start gap-2">
+                                <span className="text-yellow-600">•</span>
+                                <span>{req}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Suggested Programs */}
+                      {!eligibilityResult.isEligible && eligibilityResult.suggestedPrograms.length > 0 && (
+                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                          <h5 className="font-semibold text-blue-800 mb-2">💡 Suggested Alternative Programs:</h5>
+                          <div className="space-y-2">
+                            {eligibilityResult.suggestedPrograms.map((program) => (
+                              <div key={program.id} className="flex items-center justify-between p-2 bg-white rounded border">
+                                <div>
+                                  <span className="font-medium text-blue-900">
+                                    {language === 'en' ? program.name : program.namebn}
+                                  </span>
+                                  <span className="text-sm text-blue-600 ml-2">
+                                    ({language === 'en' ? program.duration : program.durationbn})
+                                  </span>
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedProgram(program.id);
+                                    setAvailableDepartments(getDepartmentsByProgram(program.id));
+                                    setSelectedDepartment("");
+                                  }}
+                                  className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                                >
+                                  Select
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Program Requirements Display */}
+                      {selectedProgram && (
+                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                          <h5 className="font-semibold text-gray-800 mb-2">Program Requirements:</h5>
+                          <p className="text-sm text-gray-700">
+                            {getProgramById(selectedProgram)?.eligibilityRequirements.specificRequirements}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 text-gray-500">
+                      <Info className="w-8 h-8 mx-auto mb-2" />
+                      <p>Enter your SSC and HSC GPA to check eligibility</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
