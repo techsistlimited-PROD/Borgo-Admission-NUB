@@ -56,13 +56,8 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
 }
 
 function AppContent() {
-  // Safely access auth context with error handling
-  const authContext = useAuth();
-  const {
-    userType = "public",
-    isAuthenticated = false,
-    isLoading = false,
-  } = authContext || {};
+  // Access auth context - it will throw an error if not within provider
+  const { userType, isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
   // Set up form cache prevention on app load
