@@ -263,7 +263,7 @@ export default function ProgramSelection() {
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
-      continue: "সেভ ����রে এগিয়ে যান",
+      continue: "সেভ ����রে এগিয়�� যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
       semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
@@ -299,7 +299,7 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
+      noWaiverEligible: "���িপিএর ভিত্তিত��� কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চন করুন",
       selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues:
@@ -564,61 +564,116 @@ export default function ProgramSelection() {
 
     // Perform fresh check after a small delay
     setTimeout(() => {
-      const academicRecord = buildAcademicRecord();
+      try {
+        console.log("🚀 Starting eligibility check...");
 
-      // Get the correct eligibility program ID
-      const eligibilityProgramId = getEligibilityProgramId(
-        selectedProgram,
-        selectedDepartment,
-      );
+        const academicRecord = buildAcademicRecord();
+        console.log("📝 Academic record built:", academicRecord);
 
-      // Check science background for engineering programs first
-      const scienceErrors = validateScienceBackground(
-        selectedProgram,
-        selectedDepartment,
-        hasScienceBackground,
-      );
+        // Get the correct eligibility program ID
+        const eligibilityProgramId = getEligibilityProgramId(
+          selectedProgram,
+          selectedDepartment,
+        );
+        console.log("🎯 Eligibility program ID mapped:", eligibilityProgramId);
 
-      console.log("🔍 Manual eligibility check:", {
-        originalProgram: selectedProgram,
-        department: selectedDepartment,
-        eligibilityProgramId,
-        academicRecord,
-        scienceErrors,
-      });
+        // Check science background for engineering programs first
+        const scienceErrors = validateScienceBackground(
+          selectedProgram,
+          selectedDepartment,
+          hasScienceBackground,
+        );
+        console.log("🔬 Science background validation:", scienceErrors);
 
-      let result;
+        console.log("🔍 Manual eligibility check:", {
+          originalProgram: selectedProgram,
+          department: selectedDepartment,
+          eligibilityProgramId,
+          academicRecord,
+          scienceErrors,
+        });
 
-      // If science background validation fails, create a failed result
-      if (scienceErrors.length > 0) {
-        result = {
+        let result;
+
+        // If science background validation fails, create a failed result
+        if (scienceErrors.length > 0) {
+          result = {
+            isEligible: false,
+            route: "regular" as const,
+            requiresAdmissionTest: false,
+            requiresViva: false,
+            missingRequirements: scienceErrors,
+            warnings: [],
+            suggestedPrograms: [],
+          };
+          console.log("❌ Science background validation failed:", result);
+        } else {
+          // Perform normal eligibility check with mapped program ID
+          console.log("🔄 Running checkProgramEligibility...");
+          result = checkProgramEligibility(eligibilityProgramId, academicRecord);
+          console.log("✅ Eligibility check result:", result);
+        }
+
+        // Always ensure we have a valid result
+        if (!result) {
+          console.error("❌ No result from eligibility check - creating fallback");
+          result = {
+            isEligible: false,
+            route: "regular" as const,
+            requiresAdmissionTest: false,
+            requiresViva: false,
+            missingRequirements: ["Unable to determine eligibility - please try again"],
+            warnings: [],
+            suggestedPrograms: [],
+          };
+        }
+
+        console.log("📊 Final result:", result);
+
+        // Update state
+        setEligibilityResult(result);
+        setEligibilityChecked(true);
+        setShowEligibilityCheck(true);
+        setIsCheckingEligibility(false);
+
+        console.log("✨ State updated, showing toast...");
+
+        toast({
+          title: result.isEligible ? "✅ Eligible!" : "❌ Not Eligible",
+          description: result.isEligible
+            ? "You meet the requirements for this program."
+            : `Requirements not met: ${result.missingRequirements.length} issues found.`,
+          variant: result.isEligible ? "default" : "destructive",
+        });
+
+        console.log("🎉 Eligibility check completed successfully!");
+
+      } catch (error) {
+        console.error("💥 Error during eligibility check:", error);
+
+        // Create error result
+        const errorResult = {
           isEligible: false,
           route: "regular" as const,
           requiresAdmissionTest: false,
           requiresViva: false,
-          missingRequirements: scienceErrors,
+          missingRequirements: ["An error occurred during eligibility check. Please try again."],
           warnings: [],
           suggestedPrograms: [],
         };
-        console.log("❌ Science background validation failed:", result);
-      } else {
-        // Perform normal eligibility check with mapped program ID
-        result = checkProgramEligibility(eligibilityProgramId, academicRecord);
-        console.log("✅ Eligibility check result:", result);
+
+        // Always reset loading state even on error
+        setEligibilityResult(errorResult);
+        setEligibilityChecked(true);
+        setShowEligibilityCheck(true);
+        setIsCheckingEligibility(false);
+
+        toast({
+          title: "Error",
+          description: "An error occurred while checking eligibility. Please try again.",
+          variant: "destructive",
+        });
       }
-
-      setEligibilityResult(result);
-      setEligibilityChecked(true);
-      setShowEligibilityCheck(true);
-      setIsCheckingEligibility(false);
-
-      toast({
-        title: result.isEligible ? "✅ Eligible!" : "❌ Not Eligible",
-        description: result.isEligible
-          ? "You meet the requirements for this program."
-          : `Requirements not met: ${result.missingRequirements.length} issues found.`,
-        variant: result.isEligible ? "default" : "destructive",
-      });
     }, 500); // Slightly longer delay to show loading state
   };
 
