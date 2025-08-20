@@ -311,10 +311,43 @@ export default function Reports() {
           </div>
         </div>
 
+        {/* Report Categories Navigation */}
+        <Card className="bg-white shadow-lg mb-8">
+          <CardContent className="p-6">
+            <h3 className="text-lg font-semibold text-deep-plum mb-4">{t.reportCategories || "Report Categories"}</h3>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {[
+                { id: "overview", label: t.overview || "Overview", icon: BarChart3 },
+                { id: "student", label: t.studentReports || "Student Reports", icon: Users },
+                { id: "flowcharts", label: t.admissionFlowcharts || "Flowcharts", icon: TrendingUp },
+                { id: "financial", label: t.financialReports || "Financial", icon: DollarSign },
+                { id: "waiver", label: t.waiverReports || "Waiver Reports", icon: BookOpen },
+                { id: "idcards", label: t.idCardReports || "ID Cards", icon: IdCard },
+                { id: "targets", label: t.targetReports || "Targets", icon: Target },
+              ].map((category) => (
+                <Button
+                  key={category.id}
+                  variant={activeReportCategory === category.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setActiveReportCategory(category.id)}
+                  className={`${
+                    activeReportCategory === category.id
+                      ? "bg-deep-plum text-white"
+                      : "text-deep-plum border-deep-plum hover:bg-deep-plum hover:text-white"
+                  }`}
+                >
+                  <category.icon className="w-4 h-4 mr-2" />
+                  {category.label}
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Filters */}
         <Card className="bg-white shadow-lg mb-8">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t.dateRange}</label>
                 <Select value={dateRange} onValueChange={setDateRange}>
