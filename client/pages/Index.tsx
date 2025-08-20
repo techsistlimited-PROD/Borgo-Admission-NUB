@@ -36,10 +36,6 @@ export default function Index() {
       regularAdmissionDesc: "Apply for undergraduate and graduate programs",
       creditTransferDesc: "Transfer your credits from another institution",
       uploadOffline: "Upload Offline Application",
-      regularAdmission: "Regular Admission",
-      creditTransfer: "Credit Transfer",
-      regularAdmissionDesc: "Apply for undergraduate and graduate programs",
-      creditTransferDesc: "Transfer your credits from another institution",
       admissionProcess: "Simple 4-Step Admission Process",
       step1: "Choose Program & Calculate Costs",
       step1Desc: "Select program, department and see available waivers",
@@ -101,7 +97,7 @@ export default function Index() {
       step4: "পর্যালোচনা ও পেমেন্ট",
       step4Desc: "আপনার আবেদন সম্পূর্ণ করুন",
       whyChooseUs: "কেন নর্দার্ন ইউনিভার্সিটি বাংলাদেশ বেছে নেবেন?",
-      excellentFaculty: "উৎকৃষ্ট শিক্ষকমণ্ডলী",
+      excellentFaculty: "উৎকৃষ্ট শিক্ষকমণ্��লী",
       excellentFacultyDesc:
         "শিল্প বিশেষজ্ঞ এবং অভিজ্ঞ অধ্যাপকদের কাছ থেকে শিখুন",
       modernFacilities: "আধুনিক সুবিধা",
@@ -115,7 +111,7 @@ export default function Index() {
       meritBasedDesc: "এসএসসি ও এইচএসসি ফলাফলের ভিত্তিতে ১০০% পর্যন্ত মওকুফ",
       specialWaivers: "বিশেষ মওকুফ উপলব্ধ",
       specialWaiversDesc:
-        "নারী, ���াইবোন এবং মুক্তিযোদ্ধাদের জন্য অতিরিক্ত সহায��তা",
+        "নারী, ���া���বোন এবং মুক্তিযোদ্ধাদের জন্য অতিরিক্ত সহায��তা",
       quickStats: "দ্রুত পরিসংখ্যান",
       totalApplicants: "মোট আবেদন���ারী",
       programs: "উপলব্ধ প্রোগ্রাম",
