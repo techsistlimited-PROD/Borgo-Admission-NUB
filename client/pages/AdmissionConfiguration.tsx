@@ -929,7 +929,10 @@ export default function AdmissionConfiguration() {
         <TabsContent value="eligibility" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Eligibility Requirements Configuration</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                Eligibility & Waiver Settings
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Eligibility System Toggle */}
