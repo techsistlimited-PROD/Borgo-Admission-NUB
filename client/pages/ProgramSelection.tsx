@@ -270,7 +270,7 @@ export default function ProgramSelection() {
     bn: {
       title: "প্রোগ্রাম ও বিভ���গ নির্বা��ন",
       subtitle:
-        "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
+        "৪টি ধাপের ১ম ধাপ - আপনার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
@@ -308,7 +308,7 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
+      noWaiverEligible: "���িপিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চন করুন",
       selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues:
@@ -1277,6 +1277,39 @@ export default function ProgramSelection() {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* Program Limits Status */}
+                  {currentProgramStatus && (
+                    <Alert className={`mt-4 ${
+                      !currentProgramStatus.available
+                        ? "border-red-500 bg-red-50"
+                        : currentProgramStatus.current >= currentProgramStatus.max * 0.9
+                        ? "border-orange-500 bg-orange-50"
+                        : "border-blue-500 bg-blue-50"
+                    }`}>
+                      <AlertCircle className={`h-4 w-4 ${
+                        !currentProgramStatus.available
+                          ? "text-red-500"
+                          : currentProgramStatus.current >= currentProgramStatus.max * 0.9
+                          ? "text-orange-500"
+                          : "text-blue-500"
+                      }`} />
+                      <AlertDescription className={
+                        !currentProgramStatus.available
+                          ? "text-red-700"
+                          : currentProgramStatus.current >= currentProgramStatus.max * 0.9
+                          ? "text-orange-700"
+                          : "text-blue-700"
+                      }>
+                        <strong>Application Status:</strong> {currentProgramStatus.message}
+                        {!currentProgramStatus.available && (
+                          <span className="block mt-1 text-sm">
+                            Please select a different program or contact the admissions office.
+                          </span>
+                        )}
+                      </AlertDescription>
+                    </Alert>
+                  )}
 
                   {/* Program Information */}
                   {selectedProgramData && selectedDepartmentData && (
