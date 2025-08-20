@@ -44,8 +44,17 @@ import EmailTemplates from "./pages/EmailTemplates";
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const { userType, isAuthenticated } = useAuth();
+  const { userType, isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
+
+  // Show loading spinner while auth is initializing
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-lavender-bg flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-deep-plum"></div>
+      </div>
+    );
+  }
 
   // Determine if sidebar should be shown based on route and user type
   const shouldShowSidebar = () => {
