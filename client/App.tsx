@@ -237,15 +237,17 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AuthWrapper>
-            <BrowserRouter>
-              <ErrorBoundary>
-                <AppContent />
-              </ErrorBoundary>
-            </BrowserRouter>
-          </AuthWrapper>
+          <AuthProvider>
+            <ApplicationProvider>
+              <BrowserRouter>
+                <ErrorBoundary>
+                  <Toaster />
+                  <Sonner />
+                  <AppContent />
+                </ErrorBoundary>
+              </BrowserRouter>
+            </ApplicationProvider>
+          </AuthProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </ErrorBoundary>
