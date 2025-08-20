@@ -12,7 +12,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run build:registration",
+    "build:registration": "cd registration-system && npm install && npm run build",
     "preview": "vite preview",
     "test": "vitest --run",
     "format.fix": "prettier --write .",

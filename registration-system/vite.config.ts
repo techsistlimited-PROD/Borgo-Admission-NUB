@@ -5,6 +5,7 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: "/registration/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./"),
@@ -15,7 +16,8 @@ export default defineConfig({
     host: true,
   },
   build: {
-    outDir: "dist",
+    outDir: "../public/registration",
     sourcemap: true,
+    emptyOutDir: true,
   },
 });
