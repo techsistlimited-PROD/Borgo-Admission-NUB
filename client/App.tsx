@@ -65,6 +65,12 @@ function AppContent() {
   } = authContext || {};
   const location = useLocation();
 
+  // Set up form cache prevention on app load
+  useEffect(() => {
+    setupFormNoCache();
+    preventFormCaching();
+  }, []);
+
   // Show loading spinner while auth is initializing
   if (isLoading) {
     return (
