@@ -273,7 +273,7 @@ export default function ProgramSelection() {
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
-      campusSelection: "ক্যাম্পাস নির্বাচন করুন",
+      campusSelection: "ক্যাম্পা��� নির্বাচন করুন",
       semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
       semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
@@ -281,7 +281,7 @@ export default function ProgramSelection() {
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস��টার বেছে নিন",
       selectSemesterType: "সেমিস্টার ���রন বেছ�� ন��ন",
-      selectProgram: "আপনার প্র���গ্রাম বেছ�� নিন",
+      selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের ��থ্য",
       costBreakdown: "খরচের বিভাজন",
@@ -289,7 +289,7 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
+      fourthSubject: "���সএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা কর��ন",
       availableWaivers: "���পলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
@@ -299,7 +299,7 @@ export default function ProgramSelection() {
       originalAmount: "মূল পরিমাণ",
       waiverAmount: "���ওকুফ পর��মাণ",
       finalAmount: "চূড়ান্ত পরিম��ণ",
-      admissionFee: "ভর্ত�� ফি",
+      admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
       labFee: "ল্যাব ফি",
       others: "অন্যান���য",
@@ -315,7 +315,7 @@ export default function ProgramSelection() {
         "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরি����্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তি���� চূড়ান্ত খরচ পরিবর্তিত হ��ে প���রে",
+        "অতিরি����্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প���রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ড���টা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -723,6 +723,51 @@ export default function ProgramSelection() {
       clearAllFormData();
     }
   }, []);
+
+  // Function to check program limits
+  const checkProgramLimits = async (programCode: string, departmentCode: string) => {
+    if (!programCode || !departmentCode) {
+      setCurrentProgramStatus(null);
+      return;
+    }
+
+    try {
+      const settingsResponse = await apiClient.getAdmissionSettings();
+      if (settingsResponse.success && settingsResponse.data?.program_limits) {
+        const programKey = `${programCode}_${departmentCode}`;
+        const limits = settingsResponse.data.program_limits[programKey];
+
+        if (limits && limits.enabled) {
+          const current = limits.current_applicants || 0;
+          const max = limits.max_applicants || 0;
+          const available = current < max;
+
+          let message = "";
+          if (!available) {
+            message = `Application limit reached (${current}/${max})`;
+          } else if (current >= max * 0.9) {
+            message = `Almost full! Only ${max - current} spots remaining (${current}/${max})`;
+          } else if (current >= max * 0.7) {
+            message = `${max - current} spots remaining (${current}/${max})`;
+          } else {
+            message = `${max - current} spots available (${current}/${max})`;
+          }
+
+          setCurrentProgramStatus({
+            available,
+            current,
+            max,
+            message,
+          });
+        } else {
+          setCurrentProgramStatus(null);
+        }
+      }
+    } catch (error) {
+      console.error("Error checking program limits:", error);
+      setCurrentProgramStatus(null);
+    }
+  };
 
   // Function to clear all form data
   const clearAllFormData = () => {
