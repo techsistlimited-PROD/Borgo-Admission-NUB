@@ -1804,38 +1804,6 @@ export default function ProgramSelection() {
                           </p>
                         </div>
 
-                        {/* Test Buttons for Development */}
-                        {process.env.NODE_ENV === "development" && (
-                          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                            <p className="text-sm text-yellow-800 mb-2">
-                              Development Testing:
-                            </p>
-                            <div className="flex gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSscGPA("4.5");
-                                  setHscGPA("4.2");
-                                }}
-                                className="text-xs"
-                              >
-                                Test Eligible (4.5/4.2)
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSscGPA("2.0");
-                                  setHscGPA("2.3");
-                                }}
-                                className="text-xs"
-                              >
-                                Test Not Eligible (2.0/2.3)
-                              </Button>
-                            </div>
-                          </div>
-                        )}
 
                         {/* General Eligibility Information */}
                         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
