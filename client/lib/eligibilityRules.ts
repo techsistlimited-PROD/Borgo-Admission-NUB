@@ -521,38 +521,20 @@ const PROGRAM_ELIGIBILITY_RULES: ProgramEligibilityRule[] = [
   },
 ];
 
-// Eligibility checking functions
-export function checkProgramEligibility(
-  programId: string,
+// Internal function that checks eligibility without suggestions (to avoid recursion)
+function checkProgramEligibilityInternal(
+  rule: ProgramEligibilityRule,
   academicRecord: AcademicRecord,
-): EligibilityCheckResult {
-  const rule = PROGRAM_ELIGIBILITY_RULES.find((r) => r.programId === programId);
-
-  if (!rule) {
-    return {
-      isEligible: false,
-      route: "regular",
-      requiresAdmissionTest: false,
-      requiresViva: false,
-      missingRequirements: ["Program not found"],
-      warnings: [],
-      suggestedPrograms: [],
-    };
-  }
-
+): { isEligible: boolean; missingRequirements: string[]; warnings: string[] } {
   const eligibilityRule = rule.eligibilityRules[academicRecord.backgroundType];
 
   if (!eligibilityRule) {
     return {
       isEligible: false,
-      route: "regular",
-      requiresAdmissionTest: rule.requiresAdmissionTest,
-      requiresViva: rule.requiresViva,
       missingRequirements: [
         `${academicRecord.backgroundType} background not supported for this program`,
       ],
       warnings: [],
-      suggestedPrograms: [],
     };
   }
 
@@ -615,6 +597,30 @@ export function checkProgramEligibility(
       );
     }
   }
+
+  return { isEligible, missingRequirements, warnings };
+}
+
+// Main eligibility checking function (public API)
+export function checkProgramEligibility(
+  programId: string,
+  academicRecord: AcademicRecord,
+): EligibilityCheckResult {
+  const rule = PROGRAM_ELIGIBILITY_RULES.find((r) => r.programId === programId);
+
+  if (!rule) {
+    return {
+      isEligible: false,
+      route: "regular",
+      requiresAdmissionTest: false,
+      requiresViva: false,
+      missingRequirements: ["Program not found"],
+      warnings: [],
+      suggestedPrograms: [],
+    };
+  }
+
+  const { isEligible, missingRequirements, warnings } = checkProgramEligibilityInternal(rule, academicRecord);
 
   return {
     isEligible,
