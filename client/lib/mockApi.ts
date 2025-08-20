@@ -302,6 +302,32 @@ class MockApiService {
   > {
     await this.delay();
 
+    // Check program limits before creating application
+    const programKey = `${data.program_code}_${data.department_code}`;
+
+    // Get current settings (in real app, this would be from database)
+    const settings = await this.getAdmissionSettings();
+    const programLimits = settings.data?.program_limits || {};
+
+    // Check if program limit enforcement is enabled for this program
+    const programLimit = programLimits[programKey];
+    if (programLimit && programLimit.enabled) {
+      // Count current applications for this program-department combination
+      const currentCount = this.applications.filter(app =>
+        app.program_code === data.program_code &&
+        app.department_code === data.department_code &&
+        app.status !== 'rejected' // Don't count rejected applications
+      ).length;
+
+      // Check if limit is reached
+      if (currentCount >= programLimit.max_applicants) {
+        return {
+          success: false,
+          error: `Application limit reached for ${data.program_name} in ${data.department_name}. Maximum ${programLimit.max_applicants} applications allowed. Please try a different program or contact admissions office.`,
+        };
+      }
+    }
+
     const newId = `app-${String(this.applications.length + 1).padStart(3, "0")}`;
     const universityId = `APP${String(Date.now()).slice(-6)}`;
     const password = `temp${Math.random().toString().slice(-6)}`;
