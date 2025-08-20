@@ -524,6 +524,22 @@ class MockApiService {
       contact_email: "admissions@nu.edu.bd",
       contact_phone: "+8801234567890",
       help_desk_hours: "9:00 AM - 5:00 PM (Monday to Friday)",
+      // Eligibility Configuration
+      eligibility_check_enabled: true,
+      strict_eligibility_enforcement: true,
+      allow_eligibility_override: false,
+      minimum_ssc_gpa: 2.5,
+      minimum_hsc_gpa: 2.5,
+      minimum_bachelor_gpa: 2.5,
+      minimum_master_gpa: 3.0,
+      allow_alternative_qualifications: true,
+      show_suggested_programs: true,
+      eligibility_warning_threshold: 0.2,
+      // Waiver Configuration
+      max_combined_waiver: 100,
+      require_document_verification_for_waiver: true,
+      auto_calculate_result_waiver: true,
+      allow_manual_waiver_override: true,
     };
 
     return { success: true, data: settings };
