@@ -216,13 +216,13 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
-            <ApplicationProvider>
+        <AuthProvider>
+          <ApplicationProvider>
+            <BrowserRouter>
               <AppContent />
-            </ApplicationProvider>
-          </AuthProvider>
-        </BrowserRouter>
+            </BrowserRouter>
+          </ApplicationProvider>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
