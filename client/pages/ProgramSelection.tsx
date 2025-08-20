@@ -448,6 +448,27 @@ export default function ProgramSelection() {
       return;
     }
 
+    // Check eligibility before allowing to continue
+    if (eligibilityResult && !eligibilityResult.isEligible) {
+      toast({
+        title: "Eligibility Requirements Not Met",
+        description: "You do not meet the minimum eligibility requirements for this program. Please check the eligibility section below.",
+        variant: "destructive",
+      });
+      setShowEligibilityCheck(true);
+      return;
+    }
+
+    // Require GPA information for eligibility check
+    if (!sscGPA || !hscGPA) {
+      toast({
+        title: "Academic Information Required",
+        description: "Please provide your SSC and HSC GPA for eligibility verification.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Additional validation for credit transfer
     if (admissionType === "credit-transfer") {
       if (
