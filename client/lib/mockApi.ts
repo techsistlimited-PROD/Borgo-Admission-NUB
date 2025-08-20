@@ -540,6 +540,16 @@ class MockApiService {
       require_document_verification_for_waiver: true,
       auto_calculate_result_waiver: true,
       allow_manual_waiver_override: true,
+      // Admission Test Configuration
+      law_admission_test_date: "2024-12-15",
+      architecture_admission_test_date: "2024-12-16",
+      admission_test_fee: 1500,
+      law_test_time: "10:00 AM - 12:00 PM",
+      architecture_test_time: "2:00 PM - 4:00 PM",
+      law_test_venue_main: "Northern University Bangladesh, Main Campus, Dhaka - Room 101",
+      law_test_venue_khulna: "Northern University Bangladesh, Khulna Campus - Room 201",
+      architecture_test_venue_main: "Northern University Bangladesh, Main Campus, Dhaka - Drawing Hall",
+      architecture_test_venue_khulna: "Northern University Bangladesh, Khulna Campus - Art Studio",
     };
 
     return { success: true, data: settings };
