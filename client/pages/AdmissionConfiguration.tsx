@@ -836,7 +836,9 @@ export default function AdmissionConfiguration() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="eligibility_enabled">Enable Eligibility Check</Label>
+                    <Label htmlFor="eligibility_enabled">
+                      Enable Eligibility Check
+                    </Label>
                     <Switch
                       id="eligibility_enabled"
                       checked={settings.eligibility_check_enabled}
@@ -849,7 +851,9 @@ export default function AdmissionConfiguration() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="strict_enforcement">Strict Enforcement</Label>
+                    <Label htmlFor="strict_enforcement">
+                      Strict Enforcement
+                    </Label>
                     <Switch
                       id="strict_enforcement"
                       checked={settings.strict_eligibility_enforcement}
@@ -875,7 +879,9 @@ export default function AdmissionConfiguration() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="show_suggestions">Show Suggested Programs</Label>
+                    <Label htmlFor="show_suggestions">
+                      Show Suggested Programs
+                    </Label>
                     <Switch
                       id="show_suggestions"
                       checked={settings.show_suggested_programs}
@@ -891,7 +897,9 @@ export default function AdmissionConfiguration() {
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="alternative_quals">Allow Alternative Qualifications</Label>
+                    <Label htmlFor="alternative_quals">
+                      Allow Alternative Qualifications
+                    </Label>
                     <Switch
                       id="alternative_quals"
                       checked={settings.allow_alternative_qualifications}
@@ -904,7 +912,9 @@ export default function AdmissionConfiguration() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="auto_waiver">Auto-Calculate Result Waiver</Label>
+                    <Label htmlFor="auto_waiver">
+                      Auto-Calculate Result Waiver
+                    </Label>
                     <Switch
                       id="auto_waiver"
                       checked={settings.auto_calculate_result_waiver}
@@ -917,7 +927,9 @@ export default function AdmissionConfiguration() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="waiver_override">Allow Waiver Override</Label>
+                    <Label htmlFor="waiver_override">
+                      Allow Waiver Override
+                    </Label>
                     <Switch
                       id="waiver_override"
                       checked={settings.allow_manual_waiver_override}
@@ -930,10 +942,14 @@ export default function AdmissionConfiguration() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="waiver_docs">Require Documents for Waiver</Label>
+                    <Label htmlFor="waiver_docs">
+                      Require Documents for Waiver
+                    </Label>
                     <Switch
                       id="waiver_docs"
-                      checked={settings.require_document_verification_for_waiver}
+                      checked={
+                        settings.require_document_verification_for_waiver
+                      }
                       onCheckedChange={(checked) =>
                         setSettings({
                           ...settings,
@@ -949,7 +965,9 @@ export default function AdmissionConfiguration() {
 
               {/* Minimum GPA Requirements */}
               <div>
-                <h3 className="text-lg font-semibold text-deep-plum mb-4">Minimum GPA Requirements</h3>
+                <h3 className="text-lg font-semibold text-deep-plum mb-4">
+                  Minimum GPA Requirements
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
                     <Label htmlFor="min_ssc">Minimum SSC GPA</Label>
@@ -1026,10 +1044,14 @@ export default function AdmissionConfiguration() {
 
               {/* Waiver Configuration */}
               <div>
-                <h3 className="text-lg font-semibold text-deep-plum mb-4">Waiver Configuration</h3>
+                <h3 className="text-lg font-semibold text-deep-plum mb-4">
+                  Waiver Configuration
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="max_waiver">Maximum Combined Waiver (%)</Label>
+                    <Label htmlFor="max_waiver">
+                      Maximum Combined Waiver (%)
+                    </Label>
                     <Input
                       id="max_waiver"
                       type="number"
@@ -1045,7 +1067,9 @@ export default function AdmissionConfiguration() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="warning_threshold">Eligibility Warning Threshold</Label>
+                    <Label htmlFor="warning_threshold">
+                      Eligibility Warning Threshold
+                    </Label>
                     <Input
                       id="warning_threshold"
                       type="number"
@@ -1056,12 +1080,14 @@ export default function AdmissionConfiguration() {
                       onChange={(e) =>
                         setSettings({
                           ...settings,
-                          eligibility_warning_threshold: parseFloat(e.target.value) || 0,
+                          eligibility_warning_threshold:
+                            parseFloat(e.target.value) || 0,
                         })
                       }
                     />
                     <p className="text-sm text-gray-600 mt-1">
-                      Show warning when GPA is within this threshold of minimum requirement
+                      Show warning when GPA is within this threshold of minimum
+                      requirement
                     </p>
                   </div>
                 </div>

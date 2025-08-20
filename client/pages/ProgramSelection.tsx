@@ -113,7 +113,8 @@ export default function ProgramSelection() {
   const [isSaving, setIsSaving] = useState(false);
 
   // Eligibility checking state
-  const [eligibilityResult, setEligibilityResult] = useState<EligibilityCheckResult | null>(null);
+  const [eligibilityResult, setEligibilityResult] =
+    useState<EligibilityCheckResult | null>(null);
   const [showEligibilityCheck, setShowEligibilityCheck] = useState(false);
   const [eligibilityChecked, setEligibilityChecked] = useState(false);
 
@@ -370,7 +371,8 @@ export default function ProgramSelection() {
           setShowEligibilityCheck(true);
           toast({
             title: "Eligibility Check",
-            description: "Please review the eligibility requirements before proceeding.",
+            description:
+              "Please review the eligibility requirements before proceeding.",
             variant: "destructive",
           });
         } else {
@@ -461,7 +463,8 @@ export default function ProgramSelection() {
     if (eligibilityResult && !eligibilityResult.isEligible) {
       toast({
         title: "Eligibility Requirements Not Met",
-        description: "You do not meet the minimum eligibility requirements for this program. Please check the eligibility section below.",
+        description:
+          "You do not meet the minimum eligibility requirements for this program. Please check the eligibility section below.",
         variant: "destructive",
       });
       setShowEligibilityCheck(true);
@@ -472,7 +475,8 @@ export default function ProgramSelection() {
     if (!sscGPA || !hscGPA) {
       toast({
         title: "Academic Information Required",
-        description: "Please provide your SSC and HSC GPA for eligibility verification.",
+        description:
+          "Please provide your SSC and HSC GPA for eligibility verification.",
         variant: "destructive",
       });
       return;
@@ -982,18 +986,21 @@ export default function ProgramSelection() {
                     Eligibility Verification
                   </CardTitle>
                   <p className="text-sm text-gray-600 mt-2">
-                    We check your academic qualifications against the minimum requirements for your selected program
+                    We check your academic qualifications against the minimum
+                    requirements for your selected program
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {eligibilityResult ? (
                     <div className="space-y-4">
                       {/* Eligibility Status */}
-                      <div className={`p-4 rounded-lg border ${
-                        eligibilityResult.isEligible
-                          ? 'bg-green-50 border-green-200'
-                          : 'bg-red-50 border-red-200'
-                      }`}>
+                      <div
+                        className={`p-4 rounded-lg border ${
+                          eligibilityResult.isEligible
+                            ? "bg-green-50 border-green-200"
+                            : "bg-red-50 border-red-200"
+                        }`}
+                      >
                         <div className="flex items-start gap-3">
                           {eligibilityResult.isEligible ? (
                             <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
@@ -1001,18 +1008,29 @@ export default function ProgramSelection() {
                             <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
                           )}
                           <div className="flex-1">
-                            <h4 className={`font-semibold ${
-                              eligibilityResult.isEligible ? 'text-green-800' : 'text-red-800'
-                            }`}>
-                              {eligibilityResult.isEligible ? '✅ Eligible' : '❌ Not Eligible'}
+                            <h4
+                              className={`font-semibold ${
+                                eligibilityResult.isEligible
+                                  ? "text-green-800"
+                                  : "text-red-800"
+                              }`}
+                            >
+                              {eligibilityResult.isEligible
+                                ? "✅ Eligible"
+                                : "❌ Not Eligible"}
                             </h4>
-                            <p className={`text-sm mt-1 ${
-                              eligibilityResult.isEligible ? 'text-green-700' : 'text-red-700'
-                            }`}>
+                            <p
+                              className={`text-sm mt-1 ${
+                                eligibilityResult.isEligible
+                                  ? "text-green-700"
+                                  : "text-red-700"
+                              }`}
+                            >
                               {getEligibilityMessage(
                                 eligibilityResult,
-                                getProgramById(selectedProgram)?.name || selectedProgram,
-                                language
+                                getProgramById(selectedProgram)?.name ||
+                                  selectedProgram,
+                                language,
                               )}
                             </p>
                           </div>
@@ -1020,59 +1038,88 @@ export default function ProgramSelection() {
                       </div>
 
                       {/* Missing Requirements */}
-                      {!eligibilityResult.isEligible && eligibilityResult.missingRequirements.length > 0 && (
-                        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                          <h5 className="font-semibold text-yellow-800 mb-2">Requirements Not Met:</h5>
-                          <ul className="text-sm text-yellow-700 space-y-1">
-                            {eligibilityResult.missingRequirements.map((req, index) => (
-                              <li key={index} className="flex items-start gap-2">
-                                <span className="text-yellow-600">•</span>
-                                <span>{req}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                      {!eligibilityResult.isEligible &&
+                        eligibilityResult.missingRequirements.length > 0 && (
+                          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <h5 className="font-semibold text-yellow-800 mb-2">
+                              Requirements Not Met:
+                            </h5>
+                            <ul className="text-sm text-yellow-700 space-y-1">
+                              {eligibilityResult.missingRequirements.map(
+                                (req, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex items-start gap-2"
+                                  >
+                                    <span className="text-yellow-600">•</span>
+                                    <span>{req}</span>
+                                  </li>
+                                ),
+                              )}
+                            </ul>
+                          </div>
+                        )}
 
                       {/* Suggested Programs */}
-                      {!eligibilityResult.isEligible && eligibilityResult.suggestedPrograms.length > 0 && (
-                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                          <h5 className="font-semibold text-blue-800 mb-2">💡 Suggested Alternative Programs:</h5>
-                          <div className="space-y-2">
-                            {eligibilityResult.suggestedPrograms.map((program) => (
-                              <div key={program.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                                <div>
-                                  <span className="font-medium text-blue-900">
-                                    {language === 'en' ? program.name : program.namebn}
-                                  </span>
-                                  <span className="text-sm text-blue-600 ml-2">
-                                    ({language === 'en' ? program.duration : program.durationbn})
-                                  </span>
-                                </div>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedProgram(program.id);
-                                    setAvailableDepartments(getDepartmentsByProgram(program.id));
-                                    setSelectedDepartment("");
-                                  }}
-                                  className="text-blue-600 border-blue-300 hover:bg-blue-100"
-                                >
-                                  Select
-                                </Button>
-                              </div>
-                            ))}
+                      {!eligibilityResult.isEligible &&
+                        eligibilityResult.suggestedPrograms.length > 0 && (
+                          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h5 className="font-semibold text-blue-800 mb-2">
+                              💡 Suggested Alternative Programs:
+                            </h5>
+                            <div className="space-y-2">
+                              {eligibilityResult.suggestedPrograms.map(
+                                (program) => (
+                                  <div
+                                    key={program.id}
+                                    className="flex items-center justify-between p-2 bg-white rounded border"
+                                  >
+                                    <div>
+                                      <span className="font-medium text-blue-900">
+                                        {language === "en"
+                                          ? program.name
+                                          : program.namebn}
+                                      </span>
+                                      <span className="text-sm text-blue-600 ml-2">
+                                        (
+                                        {language === "en"
+                                          ? program.duration
+                                          : program.durationbn}
+                                        )
+                                      </span>
+                                    </div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        setSelectedProgram(program.id);
+                                        setAvailableDepartments(
+                                          getDepartmentsByProgram(program.id),
+                                        );
+                                        setSelectedDepartment("");
+                                      }}
+                                      className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                                    >
+                                      Select
+                                    </Button>
+                                  </div>
+                                ),
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
                       {/* Program Requirements Display */}
                       {selectedProgram && (
                         <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                          <h5 className="font-semibold text-gray-800 mb-2">Program Requirements:</h5>
+                          <h5 className="font-semibold text-gray-800 mb-2">
+                            Program Requirements:
+                          </h5>
                           <p className="text-sm text-gray-700">
-                            {getProgramById(selectedProgram)?.eligibilityRequirements.specificRequirements}
+                            {
+                              getProgramById(selectedProgram)
+                                ?.eligibilityRequirements.specificRequirements
+                            }
                           </p>
                         </div>
                       )}
@@ -1085,9 +1132,11 @@ export default function ProgramSelection() {
                       </div>
 
                       {/* Test Buttons for Development */}
-                      {process.env.NODE_ENV === 'development' && (
+                      {process.env.NODE_ENV === "development" && (
                         <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                          <p className="text-sm text-yellow-800 mb-2">Development Testing:</p>
+                          <p className="text-sm text-yellow-800 mb-2">
+                            Development Testing:
+                          </p>
                           <div className="flex gap-2">
                             <Button
                               variant="outline"
@@ -1117,21 +1166,35 @@ export default function ProgramSelection() {
 
                       {/* General Eligibility Information */}
                       <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h5 className="font-semibold text-blue-800 mb-2">📋 General Eligibility Requirements:</h5>
+                        <h5 className="font-semibold text-blue-800 mb-2">
+                          📋 General Eligibility Requirements:
+                        </h5>
                         <div className="text-sm text-blue-700 space-y-2">
                           <div>
                             <strong>For Bachelor's Programs:</strong>
                             <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
-                              <li>Minimum GPA 2.5 in both SSC and HSC or equivalent examinations</li>
-                              <li>OR 'O' level in five subjects and 'A' level in two subjects with minimum 'C' grade in each</li>
+                              <li>
+                                Minimum GPA 2.5 in both SSC and HSC or
+                                equivalent examinations
+                              </li>
+                              <li>
+                                OR 'O' level in five subjects and 'A' level in
+                                two subjects with minimum 'C' grade in each
+                              </li>
                               <li>OR US High School Diploma</li>
                             </ul>
                           </div>
                           <div>
                             <strong>For Postgraduate Programs:</strong>
                             <ul className="list-disc list-inside ml-4 mt-1">
-                              <li>Minimum Bachelor degree relevant to the Postgraduate programs</li>
-                              <li>Please refer to specific admission requirements for your desired program</li>
+                              <li>
+                                Minimum Bachelor degree relevant to the
+                                Postgraduate programs
+                              </li>
+                              <li>
+                                Please refer to specific admission requirements
+                                for your desired program
+                              </li>
                             </ul>
                           </div>
                         </div>
