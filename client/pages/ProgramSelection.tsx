@@ -734,7 +734,10 @@ export default function ProgramSelection() {
   }, [selectedProgram, selectedDepartment]);
 
   // Function to check program limits
-  const checkProgramLimits = async (programCode: string, departmentCode: string) => {
+  const checkProgramLimits = async (
+    programCode: string,
+    departmentCode: string,
+  ) => {
     if (!programCode || !departmentCode) {
       setCurrentProgramStatus(null);
       return;
@@ -1281,31 +1284,42 @@ export default function ProgramSelection() {
 
                   {/* Program Limits Status */}
                   {currentProgramStatus && (
-                    <Alert className={`mt-4 ${
-                      !currentProgramStatus.available
-                        ? "border-red-500 bg-red-50"
-                        : currentProgramStatus.current >= currentProgramStatus.max * 0.9
-                        ? "border-orange-500 bg-orange-50"
-                        : "border-blue-500 bg-blue-50"
-                    }`}>
-                      <AlertCircle className={`h-4 w-4 ${
+                    <Alert
+                      className={`mt-4 ${
                         !currentProgramStatus.available
-                          ? "text-red-500"
-                          : currentProgramStatus.current >= currentProgramStatus.max * 0.9
-                          ? "text-orange-500"
-                          : "text-blue-500"
-                      }`} />
-                      <AlertDescription className={
-                        !currentProgramStatus.available
-                          ? "text-red-700"
-                          : currentProgramStatus.current >= currentProgramStatus.max * 0.9
-                          ? "text-orange-700"
-                          : "text-blue-700"
-                      }>
-                        <strong>Application Status:</strong> {currentProgramStatus.message}
+                          ? "border-red-500 bg-red-50"
+                          : currentProgramStatus.current >=
+                              currentProgramStatus.max * 0.9
+                            ? "border-orange-500 bg-orange-50"
+                            : "border-blue-500 bg-blue-50"
+                      }`}
+                    >
+                      <AlertCircle
+                        className={`h-4 w-4 ${
+                          !currentProgramStatus.available
+                            ? "text-red-500"
+                            : currentProgramStatus.current >=
+                                currentProgramStatus.max * 0.9
+                              ? "text-orange-500"
+                              : "text-blue-500"
+                        }`}
+                      />
+                      <AlertDescription
+                        className={
+                          !currentProgramStatus.available
+                            ? "text-red-700"
+                            : currentProgramStatus.current >=
+                                currentProgramStatus.max * 0.9
+                              ? "text-orange-700"
+                              : "text-blue-700"
+                        }
+                      >
+                        <strong>Application Status:</strong>{" "}
+                        {currentProgramStatus.message}
                         {!currentProgramStatus.available && (
                           <span className="block mt-1 text-sm">
-                            Please select a different program or contact the admissions office.
+                            Please select a different program or contact the
+                            admissions office.
                           </span>
                         )}
                       </AlertDescription>
@@ -2739,7 +2753,10 @@ export default function ProgramSelection() {
                 ) : eligibilityResult && !eligibilityResult.isEligible ? (
                   <p>❌ You must be eligible to continue</p>
                 ) : currentProgramStatus && !currentProgramStatus.available ? (
-                  <p className="text-red-600">🚫 Application limit reached for this program. Please select a different program.</p>
+                  <p className="text-red-600">
+                    🚫 Application limit reached for this program. Please select
+                    a different program.
+                  </p>
                 ) : (
                   <p>⏳ Completing requirements...</p>
                 )}

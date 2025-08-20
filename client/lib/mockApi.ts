@@ -313,10 +313,11 @@ class MockApiService {
     const programLimit = programLimits[programKey];
     if (programLimit && programLimit.enabled) {
       // Count current applications for this program-department combination
-      const currentCount = this.applications.filter(app =>
-        app.program_code === data.program_code &&
-        app.department_code === data.department_code &&
-        app.status !== 'rejected' // Don't count rejected applications
+      const currentCount = this.applications.filter(
+        (app) =>
+          app.program_code === data.program_code &&
+          app.department_code === data.department_code &&
+          app.status !== "rejected", // Don't count rejected applications
       ).length;
 
       // Check if limit is reached
@@ -535,81 +536,114 @@ class MockApiService {
     // Calculate current applicant counts for each program
     const programLimits = {
       // Bachelor's programs
-      "bachelor_cse": {
+      bachelor_cse: {
         max_applicants: 100,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "bachelor" && app.department_code === "cse" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "bachelor" &&
+            app.department_code === "cse" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
-      "bachelor_eee": {
+      bachelor_eee: {
         max_applicants: 80,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "bachelor" && app.department_code === "eee" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "bachelor" &&
+            app.department_code === "eee" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
-      "bachelor_ce": {
+      bachelor_ce: {
         max_applicants: 60,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "bachelor" && app.department_code === "ce" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "bachelor" &&
+            app.department_code === "ce" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
-      "bachelor_architecture": {
+      bachelor_architecture: {
         max_applicants: 40,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "bachelor" && app.department_code === "architecture" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "bachelor" &&
+            app.department_code === "architecture" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
-      "bachelor_bba": {
+      bachelor_bba: {
         max_applicants: 120,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "bachelor" && app.department_code === "bba" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "bachelor" &&
+            app.department_code === "bba" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
-      "bachelor_law": {
+      bachelor_law: {
         max_applicants: 50,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "bachelor" && app.department_code === "law" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "bachelor" &&
+            app.department_code === "law" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
-      "bachelor_pharmacy": {
+      bachelor_pharmacy: {
         max_applicants: 60,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "bachelor" && app.department_code === "pharmacy" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "bachelor" &&
+            app.department_code === "pharmacy" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
-      "bachelor_english": {
+      bachelor_english: {
         max_applicants: 40,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "bachelor" && app.department_code === "english" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "bachelor" &&
+            app.department_code === "english" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
       // Master's programs
-      "masters_cse": {
+      masters_cse: {
         max_applicants: 30,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "masters" && app.department_code === "cse" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "masters" &&
+            app.department_code === "cse" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
-      "masters_eee": {
+      masters_eee: {
         max_applicants: 25,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "masters" && app.department_code === "eee" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "masters" &&
+            app.department_code === "eee" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },
-      "masters_bba": {
+      masters_bba: {
         max_applicants: 40,
-        current_applicants: this.applications.filter(app =>
-          app.program_code === "masters" && app.department_code === "bba" && app.status !== "rejected"
+        current_applicants: this.applications.filter(
+          (app) =>
+            app.program_code === "masters" &&
+            app.department_code === "bba" &&
+            app.status !== "rejected",
         ).length,
         enabled: true,
       },

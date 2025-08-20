@@ -174,7 +174,8 @@ export default function AdmissionConfiguration() {
     DocumentRequirement[]
   >([]);
   const [programLimits, setProgramLimits] = useState<ProgramLimits>({});
-  const [programEligibility, setProgramEligibility] = useState<ProgramEligibilityConfig>({});
+  const [programEligibility, setProgramEligibility] =
+    useState<ProgramEligibilityConfig>({});
 
   // Dialog states
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
@@ -221,9 +222,21 @@ export default function AdmissionConfiguration() {
       // Bachelor's programs
       { program: "bachelor", dept: "cse", name: "Bachelor in CSE" },
       { program: "bachelor", dept: "eee", name: "Bachelor in EEE" },
-      { program: "bachelor", dept: "ce", name: "Bachelor in Civil Engineering" },
-      { program: "bachelor", dept: "architecture", name: "Bachelor in Architecture" },
-      { program: "bachelor", dept: "bba", name: "Bachelor in Business Administration" },
+      {
+        program: "bachelor",
+        dept: "ce",
+        name: "Bachelor in Civil Engineering",
+      },
+      {
+        program: "bachelor",
+        dept: "architecture",
+        name: "Bachelor in Architecture",
+      },
+      {
+        program: "bachelor",
+        dept: "bba",
+        name: "Bachelor in Business Administration",
+      },
       { program: "bachelor", dept: "law", name: "Bachelor of Laws (LL.B)" },
       { program: "bachelor", dept: "pharmacy", name: "Bachelor of Pharmacy" },
       { program: "bachelor", dept: "english", name: "Bachelor in English" },
@@ -231,7 +244,11 @@ export default function AdmissionConfiguration() {
       // Master's programs
       { program: "masters", dept: "cse", name: "Master's in CSE" },
       { program: "masters", dept: "eee", name: "Master's in EEE" },
-      { program: "masters", dept: "bba", name: "Master's in Business Administration (MBA)" },
+      {
+        program: "masters",
+        dept: "bba",
+        name: "Master's in Business Administration (MBA)",
+      },
     ];
 
     // Initialize program eligibility configs
@@ -242,7 +259,13 @@ export default function AdmissionConfiguration() {
         min_ssc_gpa: 2.5,
         min_hsc_gpa: 2.5,
         min_total_gpa: 5.0,
-        requires_science_background: ["cse", "eee", "ce", "architecture", "pharmacy"].includes(dept),
+        requires_science_background: [
+          "cse",
+          "eee",
+          "ce",
+          "architecture",
+          "pharmacy",
+        ].includes(dept),
         allowed_backgrounds: ["bangla_medium", "english_medium"],
         additional_requirements: [],
         enabled: true,
@@ -309,12 +332,14 @@ export default function AdmissionConfiguration() {
         program_eligibility: programEligibility,
       };
 
-      const response = await apiClient.updateAdmissionSettings(combinedSettings);
+      const response =
+        await apiClient.updateAdmissionSettings(combinedSettings);
 
       if (response.success) {
         toast({
           title: "Success",
-          description: "Admission settings, program limits, and eligibility rules saved successfully",
+          description:
+            "Admission settings, program limits, and eligibility rules saved successfully",
         });
       } else {
         throw new Error(response.error);
@@ -1178,7 +1203,9 @@ export default function AdmissionConfiguration() {
 
               {/* Program-wise Limits */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-deep-plum">Program Applicant Limits</h3>
+                <h3 className="text-lg font-semibold text-deep-plum">
+                  Program Applicant Limits
+                </h3>
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
@@ -1191,63 +1218,75 @@ export default function AdmissionConfiguration() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {Object.entries(programLimits).map(([programKey, limits]) => {
-                        const programName = programKey
-                          .split("_")
-                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                          .join(" ");
+                      {Object.entries(programLimits).map(
+                        ([programKey, limits]) => {
+                          const programName = programKey
+                            .split("_")
+                            .map(
+                              (word) =>
+                                word.charAt(0).toUpperCase() + word.slice(1),
+                            )
+                            .join(" ");
 
-                        return (
-                          <TableRow key={programKey}>
-                            <TableCell className="font-medium">{programName}</TableCell>
-                            <TableCell>
-                              <Input
-                                type="number"
-                                min="0"
-                                className="w-24"
-                                value={limits.max_applicants}
-                                onChange={(e) =>
-                                  setProgramLimits(prev => ({
-                                    ...prev,
-                                    [programKey]: {
-                                      ...prev[programKey],
-                                      max_applicants: parseInt(e.target.value) || 0,
-                                    },
-                                  }))
-                                }
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={
-                                (limits.current_applicants || 0) >= limits.max_applicants
-                                  ? "destructive"
-                                  : "outline"
-                              }>
-                                {limits.current_applicants || 0} / {limits.max_applicants}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Switch
-                                checked={limits.enabled}
-                                onCheckedChange={(checked) =>
-                                  setProgramLimits(prev => ({
-                                    ...prev,
-                                    [programKey]: {
-                                      ...prev[programKey],
-                                      enabled: checked,
-                                    },
-                                  }))
-                                }
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Button variant="ghost" size="sm">
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
+                          return (
+                            <TableRow key={programKey}>
+                              <TableCell className="font-medium">
+                                {programName}
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  className="w-24"
+                                  value={limits.max_applicants}
+                                  onChange={(e) =>
+                                    setProgramLimits((prev) => ({
+                                      ...prev,
+                                      [programKey]: {
+                                        ...prev[programKey],
+                                        max_applicants:
+                                          parseInt(e.target.value) || 0,
+                                      },
+                                    }))
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={
+                                    (limits.current_applicants || 0) >=
+                                    limits.max_applicants
+                                      ? "destructive"
+                                      : "outline"
+                                  }
+                                >
+                                  {limits.current_applicants || 0} /{" "}
+                                  {limits.max_applicants}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Switch
+                                  checked={limits.enabled}
+                                  onCheckedChange={(checked) =>
+                                    setProgramLimits((prev) => ({
+                                      ...prev,
+                                      [programKey]: {
+                                        ...prev[programKey],
+                                        enabled: checked,
+                                      },
+                                    }))
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Button variant="ghost" size="sm">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        },
+                      )}
                     </TableBody>
                   </Table>
                 </div>
@@ -1257,7 +1296,9 @@ export default function AdmissionConfiguration() {
 
               {/* Program-wise Eligibility Rules */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-deep-plum">Program-Specific Eligibility Rules</h3>
+                <h3 className="text-lg font-semibold text-deep-plum">
+                  Program-Specific Eligibility Rules
+                </h3>
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
@@ -1272,128 +1313,154 @@ export default function AdmissionConfiguration() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {Object.entries(programEligibility).map(([programKey, config]) => {
-                        const programName = programKey
-                          .split("_")
-                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                          .join(" ");
+                      {Object.entries(programEligibility).map(
+                        ([programKey, config]) => {
+                          const programName = programKey
+                            .split("_")
+                            .map(
+                              (word) =>
+                                word.charAt(0).toUpperCase() + word.slice(1),
+                            )
+                            .join(" ");
 
-                        return (
-                          <TableRow key={programKey}>
-                            <TableCell className="font-medium">{programName}</TableCell>
-                            <TableCell>
-                              <Input
-                                type="number"
-                                min="0"
-                                max="5"
-                                step="0.1"
-                                className="w-20"
-                                value={config.min_ssc_gpa}
-                                onChange={(e) =>
-                                  setProgramEligibility(prev => ({
-                                    ...prev,
-                                    [programKey]: {
-                                      ...prev[programKey],
-                                      min_ssc_gpa: parseFloat(e.target.value) || 0,
-                                    },
-                                  }))
-                                }
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Input
-                                type="number"
-                                min="0"
-                                max="5"
-                                step="0.1"
-                                className="w-20"
-                                value={config.min_hsc_gpa}
-                                onChange={(e) =>
-                                  setProgramEligibility(prev => ({
-                                    ...prev,
-                                    [programKey]: {
-                                      ...prev[programKey],
-                                      min_hsc_gpa: parseFloat(e.target.value) || 0,
-                                    },
-                                  }))
-                                }
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Input
-                                type="number"
-                                min="0"
-                                max="10"
-                                step="0.1"
-                                className="w-20"
-                                value={config.min_total_gpa}
-                                onChange={(e) =>
-                                  setProgramEligibility(prev => ({
-                                    ...prev,
-                                    [programKey]: {
-                                      ...prev[programKey],
-                                      min_total_gpa: parseFloat(e.target.value) || 0,
-                                    },
-                                  }))
-                                }
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Switch
-                                checked={config.requires_science_background}
-                                onCheckedChange={(checked) =>
-                                  setProgramEligibility(prev => ({
-                                    ...prev,
-                                    [programKey]: {
-                                      ...prev[programKey],
-                                      requires_science_background: checked,
-                                    },
-                                  }))
-                                }
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Switch
-                                checked={config.enabled}
-                                onCheckedChange={(checked) =>
-                                  setProgramEligibility(prev => ({
-                                    ...prev,
-                                    [programKey]: {
-                                      ...prev[programKey],
-                                      enabled: checked,
-                                    },
-                                  }))
-                                }
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  // Could open a dialog for more detailed editing
-                                  toast({
-                                    title: "Feature Coming Soon",
-                                    description: "Advanced rule editing will be available in the next update.",
-                                  });
-                                }}
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
+                          return (
+                            <TableRow key={programKey}>
+                              <TableCell className="font-medium">
+                                {programName}
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  max="5"
+                                  step="0.1"
+                                  className="w-20"
+                                  value={config.min_ssc_gpa}
+                                  onChange={(e) =>
+                                    setProgramEligibility((prev) => ({
+                                      ...prev,
+                                      [programKey]: {
+                                        ...prev[programKey],
+                                        min_ssc_gpa:
+                                          parseFloat(e.target.value) || 0,
+                                      },
+                                    }))
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  max="5"
+                                  step="0.1"
+                                  className="w-20"
+                                  value={config.min_hsc_gpa}
+                                  onChange={(e) =>
+                                    setProgramEligibility((prev) => ({
+                                      ...prev,
+                                      [programKey]: {
+                                        ...prev[programKey],
+                                        min_hsc_gpa:
+                                          parseFloat(e.target.value) || 0,
+                                      },
+                                    }))
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  max="10"
+                                  step="0.1"
+                                  className="w-20"
+                                  value={config.min_total_gpa}
+                                  onChange={(e) =>
+                                    setProgramEligibility((prev) => ({
+                                      ...prev,
+                                      [programKey]: {
+                                        ...prev[programKey],
+                                        min_total_gpa:
+                                          parseFloat(e.target.value) || 0,
+                                      },
+                                    }))
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Switch
+                                  checked={config.requires_science_background}
+                                  onCheckedChange={(checked) =>
+                                    setProgramEligibility((prev) => ({
+                                      ...prev,
+                                      [programKey]: {
+                                        ...prev[programKey],
+                                        requires_science_background: checked,
+                                      },
+                                    }))
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Switch
+                                  checked={config.enabled}
+                                  onCheckedChange={(checked) =>
+                                    setProgramEligibility((prev) => ({
+                                      ...prev,
+                                      [programKey]: {
+                                        ...prev[programKey],
+                                        enabled: checked,
+                                      },
+                                    }))
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    // Could open a dialog for more detailed editing
+                                    toast({
+                                      title: "Feature Coming Soon",
+                                      description:
+                                        "Advanced rule editing will be available in the next update.",
+                                    });
+                                  }}
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        },
+                      )}
                     </TableBody>
                   </Table>
                 </div>
                 <div className="text-sm text-gray-600">
-                  <p><strong>Note:</strong> These rules will be used for automatic eligibility checking during application.</p>
+                  <p>
+                    <strong>Note:</strong> These rules will be used for
+                    automatic eligibility checking during application.
+                  </p>
                   <ul className="list-disc list-inside mt-2 space-y-1">
-                    <li><strong>Min SSC/HSC GPA:</strong> Minimum GPA required for each level</li>
-                    <li><strong>Min Total GPA:</strong> Combined minimum GPA requirement (SSC + HSC)</li>
-                    <li><strong>Science Required:</strong> Whether science background is mandatory for the program</li>
-                    <li><strong>Status:</strong> Enable/disable automatic eligibility checking for this program</li>
+                    <li>
+                      <strong>Min SSC/HSC GPA:</strong> Minimum GPA required for
+                      each level
+                    </li>
+                    <li>
+                      <strong>Min Total GPA:</strong> Combined minimum GPA
+                      requirement (SSC + HSC)
+                    </li>
+                    <li>
+                      <strong>Science Required:</strong> Whether science
+                      background is mandatory for the program
+                    </li>
+                    <li>
+                      <strong>Status:</strong> Enable/disable automatic
+                      eligibility checking for this program
+                    </li>
                   </ul>
                 </div>
               </div>
