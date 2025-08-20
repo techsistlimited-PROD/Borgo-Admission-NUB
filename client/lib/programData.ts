@@ -18,6 +18,20 @@ export interface Department {
   facultybn: string;
 }
 
+export interface EligibilityRequirement {
+  level: 'undergraduate' | 'postgraduate' | 'masters' | 'phd';
+  minSSCGPA?: number;
+  minHSCGPA?: number;
+  minBachelorGPA?: number;
+  minMasterGPA?: number;
+  requiredDegreeTypes?: string[];
+  oLevelSubjects?: number;
+  aLevelSubjects?: number;
+  alternativeQualifications?: string[];
+  additionalRequirements?: string[];
+  specificRequirements?: string;
+}
+
 export interface Program {
   id: string;
   name: string;
@@ -26,6 +40,7 @@ export interface Program {
   durationbn: string;
   departments: string[]; // Department IDs
   costStructure: CostStructure;
+  eligibilityRequirements: EligibilityRequirement;
 }
 
 export interface WaiverPolicy {
@@ -56,7 +71,7 @@ export const departments: Department[] = [
     name: 'Electrical and Electronic Engineering',
     namebn: 'ইলেকট্রিক্যাল এবং ইলেকট্রনিক ইঞ্জিনিয়ারিং',
     description: 'Power systems and electronics specialization',
-    descriptionbn: 'পাওয়ার সিস্টেম এবং ইলেকট্রনিক্স বিশেষজ্ঞতা',
+    descriptionbn: 'পাওয়���র সিস্টেম এবং ইলেকট্রনিক্স বিশেষজ্ঞতা',
     faculty: 'Faculty of Engineering',
     facultybn: 'ইঞ্জিনিয়ারিং অনুষদ'
   },
@@ -259,7 +274,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'GPA 4.80-4.99 in both SSC and HSC',
     criteriabn: 'এসএসসি ও এইচএসসি উভয়ে জিপিএ ৪.৮০-৪.৯৯',
     description: '40% tuition waiver for very good academic performance',
-    descriptionbn: 'খুব ভাল একাডেমিক পারফরম্যান্সের জন্য ৪০% টিউশন ফি মওকুফ'
+    descriptionbn: 'খুব ভাল এক���ডেমিক পারফরম্যান্সের জন্য ৪০% টিউশন ফি মওকুফ'
   },
   {
     id: 'result_30',
@@ -286,7 +301,7 @@ export const waiverPolicies: WaiverPolicy[] = [
   {
     id: 'result_10',
     name: 'GPA 3.50-3.99',
-    namebn: 'জিপিএ ৩.৫০-৩.৯৯',
+    namebn: '���িপিএ ৩.৫০-৩.৯৯',
     type: 'result',
     percentage: 10,
     criteria: 'GPA 3.50-3.99 in both SSC and HSC',
