@@ -620,7 +620,8 @@ export function checkProgramEligibility(
     };
   }
 
-  const { isEligible, missingRequirements, warnings } = checkProgramEligibilityInternal(rule, academicRecord);
+  const { isEligible, missingRequirements, warnings } =
+    checkProgramEligibilityInternal(rule, academicRecord);
 
   return {
     isEligible,
