@@ -301,12 +301,20 @@ export default function AdmissionConfiguration() {
 
     try {
       setSaving(true);
-      const response = await apiClient.updateAdmissionSettings(settings);
+
+      // Combine all settings including program limits and eligibility
+      const combinedSettings = {
+        ...settings,
+        program_limits: programLimits,
+        program_eligibility: programEligibility,
+      };
+
+      const response = await apiClient.updateAdmissionSettings(combinedSettings);
 
       if (response.success) {
         toast({
           title: "Success",
-          description: "Admission settings saved successfully",
+          description: "Admission settings, program limits, and eligibility rules saved successfully",
         });
       } else {
         throw new Error(response.error);
