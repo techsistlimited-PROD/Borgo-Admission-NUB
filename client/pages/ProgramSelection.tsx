@@ -271,13 +271,13 @@ export default function ProgramSelection() {
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস��টার বেছে নিন",
-      selectSemesterType: "সে���িস্টার ধরন বেছ�� ন��ন",
+      selectSemesterType: "সেমিস্টার ধরন বেছ�� ন��ন",
       selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
       waiverCalculator: "মওক��ফ ক্যালকুলেটর",
-      academicInfo: "একাডেমিক তথ্য",
+      academicInfo: "একাডেমিক তথ্��",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
@@ -288,7 +288,7 @@ export default function ProgramSelection() {
       additionalWaivers: "অতি���িক্ত ম���কুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
-      waiverAmount: "���ও��ুফ পরিমাণ",
+      waiverAmount: "���ওকুফ পরিমাণ",
       finalAmount: "চূড়ান্ত পরিম��ণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
@@ -298,7 +298,7 @@ export default function ProgramSelection() {
       duration: "স���য়কাল",
       faculty: "অনুষদ",
       description: "বিবরণ",
-      waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
+      waiverApplied: "মওকুফ প্রয়োগ করা হয়���ছে",
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চন করুন",
       selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
@@ -2034,6 +2034,29 @@ export default function ProgramSelection() {
                           <p className="text-sm">
                             For now, please contact administration for English
                             Medium applications
+                          </p>
+                        </div>
+
+                        {/* Check Eligibility Button */}
+                        <div className="mt-6 text-center">
+                          <Button
+                            onClick={performEligibilityCheck}
+                            variant="default"
+                            size="lg"
+                            className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-3"
+                            disabled={
+                              !selectedProgram ||
+                              !selectedDepartment ||
+                              !hasRequiredAcademicInfo() ||
+                              isCheckingEligibility
+                            }
+                          >
+                            {isCheckingEligibility
+                              ? "⏳ Checking..."
+                              : "🔍 Check Eligibility"}
+                          </Button>
+                          <p className="text-sm text-gray-600 mt-2">
+                            Verify if you meet the requirements for this program
                           </p>
                         </div>
                       </div>
