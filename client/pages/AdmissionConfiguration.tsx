@@ -116,6 +116,28 @@ interface AdmissionSettings {
   architecture_test_venue_khulna: string;
 }
 
+interface ProgramLimits {
+  [key: string]: {
+    // Program + Department combination (e.g., "bachelor_cse")
+    max_applicants: number;
+    current_applicants?: number;
+    enabled: boolean;
+  };
+}
+
+interface ProgramEligibilityConfig {
+  [key: string]: {
+    // Program + Department combination (e.g., "bachelor_cse")
+    min_ssc_gpa: number;
+    min_hsc_gpa: number;
+    min_total_gpa: number;
+    requires_science_background: boolean;
+    allowed_backgrounds: string[];
+    additional_requirements: string[];
+    enabled: boolean;
+  };
+}
+
 interface PaymentMethod {
   id: number;
   name: string;
