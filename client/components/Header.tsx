@@ -12,6 +12,7 @@ interface HeaderProps {
 
 export default function Header({ showLogin = false }: HeaderProps) {
   const [language, setLanguage] = useState<'en' | 'bn'>('en');
+  const navigate = useNavigate();
 
   // Try to get auth context, but don't fail if it's not available
   let user = null;
@@ -26,6 +27,31 @@ export default function Header({ showLogin = false }: HeaderProps) {
   } catch {
     // Auth context not available (applicant app)
   }
+
+  // Try to get application context for clearing form data
+  let clearApplicationData = () => {};
+  try {
+    const app = useApplication();
+    clearApplicationData = app.clearApplicationData;
+  } catch {
+    // Application context not available
+  }
+
+  const handleNewApplication = () => {
+    // Clear all form data
+    clearApplicationData();
+
+    // Clear localStorage completely
+    localStorage.removeItem("nu_application_draft");
+    localStorage.removeItem("nu_user_session");
+    localStorage.removeItem("nu_form_cache");
+
+    // Navigate to program selection with new=true parameter
+    navigate('/program-selection?new=true');
+
+    // Force page reload to ensure clean state
+    window.location.reload();
+  };
 
   const texts = {
     en: {
