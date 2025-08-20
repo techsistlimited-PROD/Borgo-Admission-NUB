@@ -183,7 +183,7 @@ export default function ApplicationSuccess() {
         "আবেদনকারী পোর্টাল অ���যাক্সেস করতে আপনার আবেদনকারী আইডি এবং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
       step2: "পেমেন্ট সম্পূর্ণ করুন",
       step2Desc:
-        "আপনার পেমেন্ট র���িদ আপলোড করুন এবং পেমেন��ট প্রক্রিয়া সম্পূর্ণ করুন",
+        "আপনার পেমেন্ট র���িদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
       step3: "ডকুমেন্ট আপলোড করুন",
       step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� এবং ব্যক্তিগত নথি আপলোড করুন",
       step4: "আবেদনের স্থিতি ট্র্যাক করুন",
@@ -600,7 +600,7 @@ Please keep this information safe and secure.
             <div className="bg-white rounded-lg p-6 max-w-md w-full">
               <BkashPayment
                 amount={admissionTestFee}
-                purpose={`Admission Test Fee - ${selectedDepartment === "law" ? "Law" : "Architecture"} Department`}
+                purpose={`Admission Test Fee - ${effectiveDepartment === "law" ? "Law" : "Architecture"} Department`}
                 onPaymentSuccess={handleAdmissionTestPayment}
                 onPaymentCancel={handlePaymentCancel}
               />
