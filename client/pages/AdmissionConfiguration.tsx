@@ -174,6 +174,8 @@ export default function AdmissionConfiguration() {
   const [documentRequirements, setDocumentRequirements] = useState<
     DocumentRequirement[]
   >([]);
+  const [programLimits, setProgramLimits] = useState<ProgramLimits>({});
+  const [programEligibility, setProgramEligibility] = useState<ProgramEligibilityConfig>({});
 
   // Dialog states
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
@@ -1816,7 +1818,7 @@ export default function AdmissionConfiguration() {
                               <div className="text-sm text-gray-700 space-y-1">
                                 {rule.subjectRequirements &&
                                   rule.subjectRequirements.map((req, index) => (
-                                    <p key={index}>• {req}</p>
+                                    <p key={index}>��� {req}</p>
                                   ))}
                                 {rule.specialRequirements &&
                                   rule.specialRequirements.map((req, index) => (
