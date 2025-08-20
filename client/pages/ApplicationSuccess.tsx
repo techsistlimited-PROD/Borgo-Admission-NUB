@@ -49,15 +49,50 @@ export default function ApplicationSuccess() {
   // Check if the applicant is from law or architecture department
   const selectedDepartment = applicationData?.department;
   const requiresAdmissionTest = selectedDepartment === "law" || selectedDepartment === "architecture";
-  const admissionTestFee = 1500; // Fixed fee for admission test
 
-  // Mock admission test date (in real implementation, this would come from admin configuration)
-  const admissionTestDate = "15 December 2024";
-  const admissionTestTime = "10:00 AM - 12:00 PM";
+  // Get admission test details from admin settings
+  const admissionTestFee = adminSettings?.admission_test_fee || 1500;
   const selectedCampus = applicationData?.campus || "main";
-  const testVenue = selectedCampus === "main"
-    ? "Northern University Bangladesh, Main Campus, Dhaka"
-    : "Northern University Bangladesh, Khulna Campus, Khulna";
+
+  // Get test date and time based on department and admin settings
+  const admissionTestDate = selectedDepartment === "law"
+    ? (adminSettings?.law_admission_test_date ? new Date(adminSettings.law_admission_test_date).toLocaleDateString("en-GB") : "15 December 2024")
+    : (adminSettings?.architecture_admission_test_date ? new Date(adminSettings.architecture_admission_test_date).toLocaleDateString("en-GB") : "16 December 2024");
+
+  const admissionTestTime = selectedDepartment === "law"
+    ? (adminSettings?.law_test_time || "10:00 AM - 12:00 PM")
+    : (adminSettings?.architecture_test_time || "2:00 PM - 4:00 PM");
+
+  // Get test venue based on department and campus
+  const getTestVenue = () => {
+    if (selectedDepartment === "law") {
+      return selectedCampus === "main"
+        ? (adminSettings?.law_test_venue_main || "Northern University Bangladesh, Main Campus, Dhaka - Room 101")
+        : (adminSettings?.law_test_venue_khulna || "Northern University Bangladesh, Khulna Campus - Room 201");
+    } else {
+      return selectedCampus === "main"
+        ? (adminSettings?.architecture_test_venue_main || "Northern University Bangladesh, Main Campus, Dhaka - Drawing Hall")
+        : (adminSettings?.architecture_test_venue_khulna || "Northern University Bangladesh, Khulna Campus - Art Studio");
+    }
+  };
+
+  const testVenue = getTestVenue();
+
+  // Load admin settings on component mount
+  useEffect(() => {
+    const loadAdminSettings = async () => {
+      try {
+        const response = await apiClient.getAdmissionSettings();
+        if (response.success && response.data) {
+          setAdminSettings(response.data);
+        }
+      } catch (error) {
+        console.error("Error loading admin settings:", error);
+      }
+    };
+
+    loadAdminSettings();
+  }, []);
 
   const texts = {
     en: {
@@ -119,7 +154,7 @@ export default function ApplicationSuccess() {
         "আপনার আবেদনের অগ্রগতি এবং প্রশাসনিক সিদ্ধান্ত পর্যবেক্ষণ করুন",
       loginPortal: "আবেদনকারী পোর্টালে লগইন",
       downloadInfo: "আবেদনের তথ্য ডাউনলোড করুন",
-      copyCredentials: "পরিচয়পত্র কপি করুন",
+      copyCredentials: "প��িচয়পত্র কপি করুন",
       saveInfo: "এই তথ্য সংরক্ষণ করুন",
       saveInfoDesc:
         "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
