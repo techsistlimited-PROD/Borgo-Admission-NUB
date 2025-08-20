@@ -1173,65 +1173,6 @@ export default function AdmissionConfiguration() {
 
               <Separator />
 
-              {/* Waiver Settings */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-deep-plum">Waiver Configuration</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="waiver_enabled">Enable Waivers</Label>
-                      <Switch
-                        id="waiver_enabled"
-                        checked={settings?.waiver_enabled || false}
-                        onCheckedChange={(checked) =>
-                          settings &&
-                          setSettings({
-                            ...settings,
-                            waiver_enabled: checked,
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="max_waiver">Maximum Waiver (%)</Label>
-                    <Input
-                      id="max_waiver"
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={settings?.max_waiver_percentage || ""}
-                      onChange={(e) =>
-                        settings &&
-                        setSettings({
-                          ...settings,
-                          max_waiver_percentage: parseInt(e.target.value) || 0,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="max_combined_waiver">Max Combined Waiver (%)</Label>
-                    <Input
-                      id="max_combined_waiver"
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={settings?.max_combined_waiver || ""}
-                      onChange={(e) =>
-                        settings &&
-                        setSettings({
-                          ...settings,
-                          max_combined_waiver: parseInt(e.target.value) || 0,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
               {/* Program-wise Limits */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-deep-plum">Program Applicant Limits</h3>
