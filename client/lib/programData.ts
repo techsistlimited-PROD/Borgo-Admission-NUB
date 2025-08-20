@@ -80,7 +80,7 @@ export const departments: Department[] = [
     name: "Textile Engineering",
     namebn: "টেক্সটাইল ইঞ্জিনিয়ারিং",
     description: "Textile technology and manufacturing",
-    descriptionbn: "টেক্সটাইল প্রযুক্তি এবং উৎপাদন",
+    descriptionbn: "টেক্সটাইল প্রযুক্তি এব��� উৎপাদন",
     faculty: "Faculty of Engineering",
     facultybn: "ইঞ্জিনিয়ারিং অনুষদ",
   },
@@ -114,7 +114,7 @@ export const departments: Department[] = [
   {
     id: "bba",
     name: "Business Administration",
-    namebn: "বিজনেস অ্যাডমি��িস্ট্রেশন",
+    namebn: "বিজনেস অ্যাডমিনিস্ট্রেশন",
     description: "Comprehensive business management program",
     descriptionbn: "ব্যাপক ব্যবসা ব্যবস্থাপনা প্রোগ্রাম",
     faculty: "Faculty of Business",
@@ -143,7 +143,7 @@ export const departments: Department[] = [
     name: "General Education",
     namebn: "সাধারণ শিক্ষা",
     description: "Foundational education program",
-    descriptionbn: "ভিত্তিগত শিক্ষ��� প্রোগ্রাম",
+    descriptionbn: "ভিত্তিগত শিক্ষা প্রোগ্রাম",
     faculty: "Faculty of Arts",
     facultybn: "কলা অনুষদ",
   },
@@ -170,7 +170,7 @@ export const departments: Department[] = [
     name: "Bachelor of Pharmacy",
     namebn: "ব্যাচেলর অফ ফার্মেসি",
     description: "Pharmaceutical sciences and drug development",
-    descriptionbn: "ফার্মাসিউটিক্যাল বিজ্ঞান এবং ওষুধ উন্নয়ন",
+    descriptionbn: "ফার্মাসিউটিক্যাল ব��জ্ঞান এবং ওষুধ উন্নয়ন",
     faculty: "Faculty of Pharmacy",
     facultybn: "ফার্মেসি অনুষদ",
   },
@@ -199,6 +199,7 @@ export const programs: Program[] = [
       "te",
       "me",
       "ce",
+      "architecture",
       "bba",
       "bangla",
       "english",
@@ -339,12 +340,12 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteriabn: "এসএসসি ও এইচএসসি উভয়ে ৪র্থ বিষয় ছাড়া জিপিএ ৫.০০",
     description: "Full tuition waiver for excellent academic performance",
     descriptionbn:
-      "চমৎকার একাডেমিক পারফরম্যান্সের জন্য সম���পূর্ণ টিউশন ফি মওকুফ",
+      "চমৎকার একাডেমিক পারফরম্যান্সের জন���য সম���পূর্ণ টিউশন ফি মওকুফ",
   },
   {
     id: "result_80",
     name: "GPA 5.00 (With 4th Subject)",
-    namebn: "জিপিএ ৫.০০ (৪র্থ �����িষয় সহ)",
+    namebn: "জিপিএ ৫.০০ (৪র্থ ���িষয় সহ)",
     type: "result",
     percentage: 80,
     criteria: "GPA 5.00 in both SSC and HSC with 4th subject",
@@ -361,7 +362,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: "GPA 4.80-4.99 in both SSC and HSC",
     criteriabn: "এস��সসি ও এইচএসসি উভয়ে জিপিএ ৪.৮০-৪.৯৯",
     description: "40% tuition waiver for very good academic performance",
-    descriptionbn: "খুব ভাল এক���ডেমিক পারফরম্যান্সের জন্য ৪০% টিউশন ফি মওকুফ",
+    descriptionbn: "খুব ভাল এক���ডেমিক পারফরম্যান্সের জন্য ৪০% টিউশন ফি মও��ুফ",
   },
   {
     id: "result_30",
@@ -440,7 +441,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: "Wards of freedom fighters",
     criteriabn: "মুক্তিযোদ্ধার সন্তান",
     description: "Special waiver for wards of freedom fighters",
-    descriptionbn: "মুক্তিযোদ্ধার সন্তানদের জন্য ব��শেষ মওকুফ",
+    descriptionbn: "মুক্তিযোদ্ধার সন্তানদের জন্য ব��শে�� মওকুফ",
   },
 ];
 
@@ -790,7 +791,7 @@ export const getEligibilityMessage = (
   let message =
     language === "en"
       ? `❌ Sorry, you do not meet the eligibility requirements for ${programName}.\n\nMissing requirements: ${missingReqs}`
-      : `❌ দুঃখিত, আপনি ${programName} প্রোগ্রামের যোগ্যতার প্রয়োজনীয়তা পূরণ করেন না।\n\nঅনুপস্থিত প্রয়োজনীয়তা: ${missingReqs}`;
+      : `❌ দুঃখিত, আপনি ${programName} প্রোগ্রামের যোগ্যতার প্রয়োজন���য়তা পূরণ করেন না।\n\nঅনুপস্থিত প্রয়োজনীয়তা: ${missingReqs}`;
 
   if (result.suggestedPrograms.length > 0) {
     const suggestedNames = result.suggestedPrograms
