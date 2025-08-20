@@ -178,7 +178,7 @@ export default function ProgramSelection() {
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
-    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম����পাস" },
   ];
 
   const semesterOptions = [
@@ -264,7 +264,7 @@ export default function ProgramSelection() {
       backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
-      semesterSelection: "সেমিস্টার নির্বাচন করুন",
+      semesterSelection: "সেমিস্���ার নির্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
@@ -279,15 +279,15 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
+      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছি��",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
-      resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
+      resultBasedWaivers: "ফলাফল ভি���্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
       additionalWaivers: "অতিরিক্ত মওকুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
-      waiverAmount: "����ওকুফ পরিমাণ",
+      waiverAmount: "���ওকুফ পরিমাণ",
       finalAmount: "চূড়ান্ত পরিম��ণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
@@ -304,7 +304,7 @@ export default function ProgramSelection() {
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরি��্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প����রে",
+        "অতিরি��্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -379,26 +379,29 @@ export default function ProgramSelection() {
     }
   }, [sscGPA, hscGPA, hasFourthSubject]);
 
-  // Check eligibility when program or academic info changes
+  // Auto-check eligibility when program or academic info changes
   useEffect(() => {
-    if (selectedProgram && hasRequiredAcademicInfo()) {
-      const academicRecord = buildAcademicRecord();
-      const result = checkProgramEligibility(selectedProgram, academicRecord);
-      setEligibilityResult(result);
-      setEligibilityChecked(true);
+    // Reset eligibility state when key values change to prevent stale state
+    setEligibilityResult(null);
+    setEligibilityChecked(false);
 
-      // Show eligibility check automatically
-      if (!result.isEligible) {
-        setShowEligibilityCheck(true);
-        toast({
-          title: "Eligibility Check",
-          description:
-            "Please review the eligibility requirements before proceeding.",
-          variant: "destructive",
-        });
-      } else {
-        setShowEligibilityCheck(false);
-      }
+    if (selectedProgram && hasRequiredAcademicInfo()) {
+      // Debounce the check to avoid rapid fire updates
+      const timeoutId = setTimeout(() => {
+        const academicRecord = buildAcademicRecord();
+        console.log('Auto eligibility check with:', academicRecord);
+        const result = checkProgramEligibility(selectedProgram, academicRecord);
+        console.log('Auto eligibility result:', result);
+        setEligibilityResult(result);
+        setEligibilityChecked(true);
+
+        // Only auto-show for failures, not success (to avoid spam)
+        if (!result.isEligible) {
+          setShowEligibilityCheck(true);
+        }
+      }, 300); // 300ms debounce to prevent rapid updates
+
+      return () => clearTimeout(timeoutId);
     }
   }, [
     selectedProgram,
@@ -416,7 +419,6 @@ export default function ProgramSelection() {
     hasScienceBackground,
     oLevelSubjects,
     aLevelSubjects,
-    toast,
   ]);
 
   // Helper function to check if required academic info is provided
@@ -1756,9 +1758,20 @@ export default function ProgramSelection() {
                 <CardContent className="space-y-6">
                   {/* Academic Background Selection */}
                   <div>
-                    <h3 className="font-semibold text-deep-plum mb-4">
-                      Academic Background & Eligibility
-                    </h3>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-semibold text-deep-plum">
+                        Academic Background & Eligibility
+                      </h3>
+                      <Button
+                        onClick={performEligibilityCheck}
+                        variant="outline"
+                        size="sm"
+                        className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
+                        disabled={!selectedProgram || !hasRequiredAcademicInfo()}
+                      >
+                        🔍 Check Eligibility Details
+                      </Button>
+                    </div>
 
                     {/* Background Type Selection */}
                     <div className="space-y-2 mb-6">
