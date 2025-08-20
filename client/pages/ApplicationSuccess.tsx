@@ -44,6 +44,19 @@ export default function ApplicationSuccess() {
   const applicantId = trackingId ? `APP${trackingId.slice(-6)}` : "APP123456";
   const temporaryPassword = "temp123456"; // Fixed password for demo - in production this would be randomly generated and stored
 
+  // Check if the applicant is from law or architecture department
+  const selectedDepartment = applicationData?.department;
+  const requiresAdmissionTest = selectedDepartment === "law" || selectedDepartment === "architecture";
+  const admissionTestFee = 1500; // Fixed fee for admission test
+
+  // Mock admission test date (in real implementation, this would come from admin configuration)
+  const admissionTestDate = "15 December 2024";
+  const admissionTestTime = "10:00 AM - 12:00 PM";
+  const selectedCampus = applicationData?.campus || "main";
+  const testVenue = selectedCampus === "main"
+    ? "Northern University Bangladesh, Main Campus, Dhaka"
+    : "Northern University Bangladesh, Khulna Campus, Khulna";
+
   const texts = {
     en: {
       title: "Application Submitted Successfully!",
@@ -110,7 +123,7 @@ export default function ApplicationSuccess() {
         "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
       adminReview: "প্রশাসনিক পর্যালোচনা প্রক্রিয়া",
       adminReviewDesc:
-        "আপনার আবেদন আম���দের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
+        "আপনার আব��দন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
       supportInfo: "সাহায্য প্রয়োজন?",
       supportDesc:
         "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
