@@ -63,6 +63,8 @@ import {
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
+import { PROGRAM_ELIGIBILITY_RULES, type ProgramEligibilityRule } from "../lib/eligibilityRules";
+import { GraduationCap } from "lucide-react";
 
 interface AdmissionSettings {
   application_start_date: string;
@@ -437,14 +439,14 @@ export default function AdmissionConfiguration() {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Settings className="w-4 h-4" />
             General Settings
           </TabsTrigger>
           <TabsTrigger value="eligibility" className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4" />
-            Eligibility & Waiver
+            <Shield className="w-4 h-4" />
+            Eligibility Rules
           </TabsTrigger>
           <TabsTrigger value="payment" className="flex items-center gap-2">
             <CreditCard className="w-4 h-4" />
@@ -453,6 +455,10 @@ export default function AdmissionConfiguration() {
           <TabsTrigger value="documents" className="flex items-center gap-2">
             <FileText className="w-4 h-4" />
             Document Requirements
+          </TabsTrigger>
+          <TabsTrigger value="waiver" className="flex items-center gap-2">
+            <DollarSign className="w-4 h-4" />
+            Waiver Config
           </TabsTrigger>
         </TabsList>
 
