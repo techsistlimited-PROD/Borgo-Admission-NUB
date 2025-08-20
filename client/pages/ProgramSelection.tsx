@@ -154,6 +154,15 @@ export default function ProgramSelection() {
   const [eligibilityChecked, setEligibilityChecked] = useState(false);
   const [isCheckingEligibility, setIsCheckingEligibility] = useState(false);
 
+  // Program limits checking state
+  const [programLimits, setProgramLimits] = useState<any>({});
+  const [currentProgramStatus, setCurrentProgramStatus] = useState<{
+    available: boolean;
+    current: number;
+    max: number;
+    message: string;
+  } | null>(null);
+
   // Credit Transfer specific state
   const [previousInstitution, setPreviousInstitution] = useState<string>(
     applicationData.previousInstitution || "",
@@ -272,7 +281,7 @@ export default function ProgramSelection() {
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস��টার বেছে নিন",
       selectSemesterType: "সেমিস্টার ���রন বেছ�� ন��ন",
-      selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
+      selectProgram: "আপনার প্র���গ্রাম বেছ�� নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের ��থ্য",
       costBreakdown: "খরচের বিভাজন",
@@ -290,7 +299,7 @@ export default function ProgramSelection() {
       originalAmount: "মূল পরিমাণ",
       waiverAmount: "���ওকুফ পর��মাণ",
       finalAmount: "চূড়ান্ত পরিম��ণ",
-      admissionFee: "ভর্তি ফি",
+      admissionFee: "ভর্ত�� ফি",
       courseFee: "কোর্স ফি",
       labFee: "ল্যাব ফি",
       others: "অন্যান���য",
@@ -306,7 +315,7 @@ export default function ProgramSelection() {
         "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরি����্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প���রে",
+        "অতিরি����্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তি���� চূড়ান্ত খরচ পরিবর্তিত হ��ে প���রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ড���টা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
