@@ -125,7 +125,7 @@ export const departments: Department[] = [
     name: 'English Language & Literature',
     namebn: 'ইংরেজি ভাষা ও সাহিত্য',
     description: 'English language proficiency and literary studies',
-    descriptionbn: 'ইংরেজি ভাষা দক্ষতা এবং সাহিত্য অধ্যয়ন',
+    descriptionbn: 'ইংরেজি ভাষা দক্���তা এবং সাহিত্য অধ্যয়ন',
     faculty: 'Faculty of Arts',
     facultybn: 'কলা অনুষদ'
   },
@@ -216,12 +216,19 @@ export const programs: Program[] = [
       labFee: 10000,
       others: 7000,
       total: 92000
+    },
+    eligibilityRequirements: {
+      level: 'postgraduate',
+      minBachelorGPA: 2.5,
+      requiredDegreeTypes: ['Bachelor'],
+      additionalRequirements: ['Bachelor degree in relevant field', 'Minimum 4 years undergraduate program'],
+      specificRequirements: 'Minimum Bachelor degree relevant to the desired program of study. Please refer the specific admission requirements relating to the desired program in the faculty.'
     }
   },
   {
     id: 'mba',
     name: 'MBA',
-    namebn: 'এমবিএ',
+    namebn: 'এম���িএ',
     duration: '2 Years',
     durationbn: '২ বছর',
     departments: ['bba'],
@@ -262,7 +269,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'GPA 5.00 in both SSC and HSC without 4th subject',
     criteriabn: 'এসএসসি ও এইচএসসি উভয়ে ৪র্থ বিষয় ছাড়া জিপিএ ৫.০০',
     description: 'Full tuition waiver for excellent academic performance',
-    descriptionbn: 'চমৎকার একাডেমিক পারফরম্যান্সের জন্য সম্পূর্ণ টিউশন ফি মওকুফ'
+    descriptionbn: 'চমৎকার একাডেমিক পারফরম্যান্সের জন্য সম���পূর্ণ টিউশন ফি মওকুফ'
   },
   {
     id: 'result_80',
@@ -341,7 +348,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'Students from tribal population',
     criteriabn: 'আদিবাসী জনগোষ্ঠীর শিক্ষার্থী',
     description: 'Additional 5% waiver for tribal population students',
-    descriptionbn: 'আদিবাসী জনগোষ্ঠীর শিক্ষার্থীদের জন্য অতিরিক্ত ৫% মওকুফ'
+    descriptionbn: 'আদিবাসী জনগোষ্ঠীর শিক্ষার্থীদ��র জন্য অতিরিক্ত ৫% মওকুফ'
   },
   {
     id: 'sibling',
