@@ -1,5 +1,6 @@
 import "./global.css";
 
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +17,7 @@ import Sidebar from "./components/Sidebar";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { setupFormNoCache, preventFormCaching } from "./lib/formUtils";
 
 // Application Pages
 import Index from "./pages/Index";
