@@ -57,8 +57,18 @@ export default function ApplicationSuccess() {
       selectedDepartment,
       requiresAdmissionTest,
       applicationData: applicationData,
+      hasApplicationData: !!applicationData,
+      departmentKeys: applicationData ? Object.keys(applicationData) : [],
     });
   }
+
+  // For testing: also check URL parameters for department
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlDepartment = urlParams.get("dept");
+  const testRequiresAdmissionTest =
+    requiresAdmissionTest ||
+    urlDepartment === "law" ||
+    urlDepartment === "architecture";
 
   // Get admission test details from admin settings
   const admissionTestFee = adminSettings?.admission_test_fee || 1500;
@@ -167,7 +177,7 @@ export default function ApplicationSuccess() {
       nextSteps: "পরবর্তী ধাপসমূহ",
       step1: "আবেদনকারী পোর্টালে লগইন",
       step1Desc:
-        "আবেদনকারী পোর্টাল অ���যাক্সেস করতে আপনার আবেদনকারী আইডি এবং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
+        "আবেদনকারী পোর্টাল অ���যাক্সেস করতে আপনার আবেদনকারী আইডি ��বং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
       step2: "পেমেন্ট সম্পূর্ণ করুন",
       step2Desc:
         "আপনার পেমেন্ট র���িদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
@@ -181,7 +191,7 @@ export default function ApplicationSuccess() {
       copyCredentials: "প��িচয়পত্র কপি করুন",
       saveInfo: "এই তথ্য সংরক্ষণ করুন",
       saveInfoDesc:
-        "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
+        "অনুগ���রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
       adminReview: "প্রশাসনিক পর্যালোচনা প্রক্রিয়া",
       adminReviewDesc:
         "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
