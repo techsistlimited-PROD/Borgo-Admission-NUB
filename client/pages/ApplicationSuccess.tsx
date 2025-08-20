@@ -111,7 +111,7 @@ export default function ApplicationSuccess() {
       step2Desc:
         "আপনার পেমেন্ট রসিদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
       step3: "ডকুমেন্ট আপলোড করুন",
-      step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� এবং ব্যক্তিগত নথি আপলোড করুন",
+      step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� ��বং ব্যক্তিগত নথি আপলোড করুন",
       step4: "আবেদনের স্থিতি ট্র্যাক করুন",
       step4Desc:
         "আপনার আবেদনের অগ্রগতি এবং প্রশাসনিক সিদ্ধান্ত পর্যবেক্ষণ করুন",
@@ -123,7 +123,7 @@ export default function ApplicationSuccess() {
         "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
       adminReview: "প্রশাসনিক পর্যালোচনা প্রক্রিয়া",
       adminReviewDesc:
-        "আপনার আব��দন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
+        "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যা��োচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
       supportInfo: "সাহায্য প্রয়োজন?",
       supportDesc:
         "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
@@ -134,6 +134,63 @@ export default function ApplicationSuccess() {
   };
 
   const t = texts[language];
+
+  const handleAdmissionTestPayment = (transactionId: string) => {
+    setAdmissionTestPaid(true);
+    setShowPayment(false);
+    toast({
+      title: "Payment Successful!",
+      description: "Admission test fee paid successfully. You can now download your admit card.",
+    });
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPayment(false);
+  };
+
+  const downloadAdmitCard = () => {
+    if (!admissionTestPaid) {
+      toast({
+        title: "Payment Required",
+        description: "Please pay the admission test fee to download your admit card.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Generate admit card PDF (in real implementation, this would generate a real PDF)
+    const admitCardData = {
+      studentInfo: {
+        name: `${applicationData?.firstName || "John"} ${applicationData?.lastName || "Doe"}`,
+        applicationId: applicantId,
+        phone: applicationData?.phone || "+880 1700-000000",
+        email: applicationData?.email || "student@example.com",
+      },
+      programInfo: {
+        name: selectedDepartment === "law" ? "Bachelor of Laws (LL.B)" : "Bachelor of Architecture",
+        level: "undergraduate" as const,
+      },
+      testInfo: {
+        date: admissionTestDate,
+        time: admissionTestTime,
+        venue: testVenue,
+        instructions: [
+          "Bring your National ID card and admit card on the test day",
+          "Arrive at the venue 30 minutes before the test time",
+          "No electronic devices are allowed in the test room",
+          "Bring your own pen and pencil",
+          "Follow all COVID-19 safety protocols"
+        ],
+      },
+    };
+
+    // Simulate PDF download
+    const fileName = `AdmitCard_${applicantId}_${selectedDepartment}.pdf`;
+    toast({
+      title: "Admit Card Downloaded",
+      description: `${fileName} has been downloaded successfully.`,
+    });
+  };
 
   const copyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text).then(() => {
