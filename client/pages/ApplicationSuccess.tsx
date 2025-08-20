@@ -111,7 +111,7 @@ export default function ApplicationSuccess() {
       step2Desc:
         "আপনার পেমেন্ট রসিদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
       step3: "ডকুমেন্ট আপলোড করুন",
-      step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� ��বং ব্যক্তিগত নথি আপলোড করুন",
+      step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� এবং ব্যক্তিগত নথি আপলোড করুন",
       step4: "আবেদনের স্থিতি ট্র্যাক করুন",
       step4Desc:
         "আপনার আবেদনের অগ্রগতি এবং প্রশাসনিক সিদ্ধান্ত পর্যবেক্ষণ করুন",
@@ -123,10 +123,10 @@ export default function ApplicationSuccess() {
         "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
       adminReview: "প্রশাসনিক পর্যালোচনা প্রক্রিয়া",
       adminReviewDesc:
-        "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যা��োচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
+        "আপনার আবেদন আমাদের ভর্তি দল দ্বারা পর্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
       supportInfo: "সাহায্য প্রয়োজন?",
       supportDesc:
-        "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
+        "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্���ি অফিসের সাথে যোগাযোগ করুন।",
       contactEmail: "ইমেইল: admission@nu.edu.bd",
       contactPhone: "ফোন: +৮৮০ ১৭০০-০০০০০০",
       credentialsCopied: "পরিচয়পত্র ক্লিপবোর্ডে কপি করা হয়েছে!",
@@ -408,6 +408,124 @@ Please keep this information safe and secure.
             </div>
           </CardContent>
         </Card>
+
+        {/* Admission Test Section - Only for Law and Architecture */}
+        {requiresAdmissionTest && (
+          <Card className="mb-8 bg-white shadow-lg border-orange-200">
+            <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50">
+              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                Admission Test Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6 p-6">
+              {/* Test Date */}
+              <Alert className="border-blue-200 bg-blue-50">
+                <Calendar className="w-4 h-4 text-blue-600" />
+                <AlertDescription className="text-blue-800">
+                  <strong>Your admission exam is on {admissionTestDate}</strong>
+                </AlertDescription>
+              </Alert>
+
+              {/* Admit Card Section */}
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Admit Card Details
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-4 h-4 text-accent-purple" />
+                      <div>
+                        <p className="text-sm text-gray-600">Date:</p>
+                        <p className="font-semibold">{admissionTestDate}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-4 h-4 text-accent-purple" />
+                      <div>
+                        <p className="text-sm text-gray-600">Time:</p>
+                        <p className="font-semibold">{admissionTestTime}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <MapPin className="w-4 h-4 text-accent-purple" />
+                      <div>
+                        <p className="text-sm text-gray-600">Location:</p>
+                        <p className="font-semibold">{testVenue}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CreditCard className="w-4 h-4 text-accent-purple" />
+                      <div>
+                        <p className="text-sm text-gray-600">Test Fee:</p>
+                        <p className="font-semibold text-lg text-orange-600">���{admissionTestFee}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Payment and Download Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                  {!admissionTestPaid ? (
+                    <>
+                      <Button
+                        onClick={() => setShowPayment(true)}
+                        className="bg-orange-600 hover:bg-orange-700 flex-1"
+                      >
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Pay Admission Test Fee (৳{admissionTestFee})
+                      </Button>
+                      <Button
+                        disabled
+                        variant="outline"
+                        className="flex-1 opacity-50 cursor-not-allowed"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Pay the fee to download admit card
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={downloadAdmitCard}
+                      className="bg-green-600 hover:bg-green-700 flex-1"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Admit Card
+                    </Button>
+                  )}
+                </div>
+
+                {admissionTestPaid && (
+                  <Alert className="border-green-200 bg-green-50 mt-4">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <AlertDescription className="text-green-800">
+                      Payment verified! You can now download your admit card.
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Payment Modal */}
+        {showPayment && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full">
+              <BkashPayment
+                amount={admissionTestFee}
+                purpose={`Admission Test Fee - ${selectedDepartment === "law" ? "Law" : "Architecture"} Department`}
+                onPaymentSuccess={handleAdmissionTestPayment}
+                onPaymentCancel={handlePaymentCancel}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Admin Review Info */}
         <Card className="mb-8 bg-white shadow-lg">
