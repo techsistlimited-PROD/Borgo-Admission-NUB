@@ -112,6 +112,11 @@ export default function ProgramSelection() {
   // Loading state
   const [isSaving, setIsSaving] = useState(false);
 
+  // Eligibility checking state
+  const [eligibilityResult, setEligibilityResult] = useState<EligibilityCheckResult | null>(null);
+  const [showEligibilityCheck, setShowEligibilityCheck] = useState(false);
+  const [eligibilityChecked, setEligibilityChecked] = useState(false);
+
   // Credit Transfer specific state
   const [previousInstitution, setPreviousInstitution] = useState<string>(
     applicationData.previousInstitution || "",
@@ -261,7 +266,7 @@ export default function ProgramSelection() {
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
-      waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
+      waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
         "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
       saving: "সেভ করা হচ্ছে...",
