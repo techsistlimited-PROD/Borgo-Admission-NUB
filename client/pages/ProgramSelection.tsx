@@ -266,7 +266,7 @@ export default function ProgramSelection() {
       continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
-      semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
+      semesterTypeSelection: "স��মিস্টার ধরন ��ির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
@@ -617,7 +617,7 @@ export default function ProgramSelection() {
             warnings: [],
             suggestedPrograms: [],
           };
-          console.log("��� Science background validation failed:", result);
+          console.log("❌ Science background validation failed:", result);
         } else {
           // Perform normal eligibility check with mapped program ID
           console.log("🔄 Running checkProgramEligibility...");
@@ -640,6 +640,9 @@ export default function ProgramSelection() {
         }
 
         console.log("📊 Final result:", result);
+
+        // Clear safety timeout since we completed successfully
+        clearTimeout(safetyTimeout);
 
         // Update state
         setEligibilityResult(result);
