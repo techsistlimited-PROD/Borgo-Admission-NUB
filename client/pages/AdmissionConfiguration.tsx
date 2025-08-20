@@ -1140,6 +1140,193 @@ export default function AdmissionConfiguration() {
           </Card>
         </TabsContent>
 
+        {/* Admission Test Configuration Tab */}
+        <TabsContent value="admission-test" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                Admission Test Schedule
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* General Admission Test Settings */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="admission_test_fee">Admission Test Fee (৳)</Label>
+                  <Input
+                    id="admission_test_fee"
+                    type="number"
+                    min="0"
+                    value={settings?.admission_test_fee || ""}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings!,
+                        admission_test_fee: parseInt(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Law Department Test Configuration */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-deep-plum">Law Department</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="law_test_date">Test Date</Label>
+                    <Input
+                      id="law_test_date"
+                      type="date"
+                      value={settings?.law_admission_test_date?.slice(0, 10) || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings!,
+                          law_admission_test_date: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="law_test_time">Test Time</Label>
+                    <Input
+                      id="law_test_time"
+                      value={settings?.law_test_time || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings!,
+                          law_test_time: e.target.value,
+                        })
+                      }
+                      placeholder="e.g., 10:00 AM - 12:00 PM"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="law_venue_main">Main Campus Venue</Label>
+                    <Input
+                      id="law_venue_main"
+                      value={settings?.law_test_venue_main || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings!,
+                          law_test_venue_main: e.target.value,
+                        })
+                      }
+                      placeholder="Room number and building"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="law_venue_khulna">Khulna Campus Venue</Label>
+                    <Input
+                      id="law_venue_khulna"
+                      value={settings?.law_test_venue_khulna || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings!,
+                          law_test_venue_khulna: e.target.value,
+                        })
+                      }
+                      placeholder="Room number and building"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Architecture Department Test Configuration */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-deep-plum">Architecture Department</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="architecture_test_date">Test Date</Label>
+                    <Input
+                      id="architecture_test_date"
+                      type="date"
+                      value={settings?.architecture_admission_test_date?.slice(0, 10) || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings!,
+                          architecture_admission_test_date: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="architecture_test_time">Test Time</Label>
+                    <Input
+                      id="architecture_test_time"
+                      value={settings?.architecture_test_time || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings!,
+                          architecture_test_time: e.target.value,
+                        })
+                      }
+                      placeholder="e.g., 2:00 PM - 4:00 PM"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="architecture_venue_main">Main Campus Venue</Label>
+                    <Input
+                      id="architecture_venue_main"
+                      value={settings?.architecture_test_venue_main || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings!,
+                          architecture_test_venue_main: e.target.value,
+                        })
+                      }
+                      placeholder="Room number and building"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="architecture_venue_khulna">Khulna Campus Venue</Label>
+                    <Input
+                      id="architecture_venue_khulna"
+                      value={settings?.architecture_test_venue_khulna || ""}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings!,
+                          architecture_test_venue_khulna: e.target.value,
+                        })
+                      }
+                      placeholder="Room number and building"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Save Button */}
+              <div className="flex justify-end">
+                <Button
+                  onClick={saveSettings}
+                  disabled={saving}
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  {saving ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 mr-2" />
+                      Save Admission Test Settings
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* Payment Methods Tab */}
         <TabsContent value="payment" className="space-y-6">
           <Card>
