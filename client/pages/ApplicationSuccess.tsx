@@ -9,6 +9,10 @@ import {
   Key,
   User,
   AlertCircle,
+  Calendar,
+  MapPin,
+  Clock,
+  CreditCard,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import {
@@ -87,7 +91,7 @@ export default function ApplicationSuccess() {
       step2Desc:
         "আপনার পেমেন্ট রসিদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া সম্পূর্ণ করুন",
       step3: "ডকুমেন্ট আপলোড করুন",
-      step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� এবং ব্যক্তিগত নথি আপলোড করুন",
+      step3Desc: "সমস্ত প্রয়োজনীয় একাডেমি��� এবং ব্যক্তিগত নথ��� আপলোড করুন",
       step4: "আবেদনের স্থিতি ট্র্যাক করুন",
       step4Desc:
         "আপনার আবেদনের অগ্রগতি এবং প্রশাসনিক সিদ্ধান্ত পর্যবেক্ষণ করুন",
