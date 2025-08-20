@@ -164,6 +164,14 @@ export default function Header({ showLogin = false }: HeaderProps) {
                   asChild
                   variant="outline"
                   size="sm"
+                  className="border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white"
+                >
+                  <a href="/registration">Registration System</a>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
                   className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white"
                 >
                   <a href="/applicant-portal">Applicant Portal</a>
