@@ -295,7 +295,7 @@ export default function ProgramSelection() {
       labFee: "ল্যাব ফি",
       others: "অন্যান���য",
       total: "মোট",
-      duration: "স���য়কাল",
+      duration: "স����য়কাল",
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
@@ -308,7 +308,7 @@ export default function ProgramSelection() {
       costNote:
         "অতিরি��্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
       saving: "সেভ করা হচ্ছে...",
-      saved: "ডেটা সফল��াবে সেভ হয়েছে!",
+      saved: "ডেটা সফল��াবে ���েভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
     },
   };
@@ -1857,26 +1857,9 @@ export default function ProgramSelection() {
                 <CardContent className="space-y-6">
                   {/* Academic Background Selection */}
                   <div>
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="font-semibold text-deep-plum">
-                        Academic Background & Eligibility
-                      </h3>
-                      <Button
-                        onClick={performEligibilityCheck}
-                        variant="outline"
-                        size="sm"
-                        className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
-                        disabled={
-                          !selectedProgram ||
-                          !hasRequiredAcademicInfo() ||
-                          isCheckingEligibility
-                        }
-                      >
-                        {isCheckingEligibility
-                          ? "⏳ Checking..."
-                          : "🔍 Check Eligibility Details"}
-                      </Button>
-                    </div>
+                    <h3 className="font-semibold text-deep-plum mb-4">
+                      Academic Background & Eligibility
+                    </h3>
 
                     {/* Background Type Selection */}
                     <div className="space-y-2 mb-6">
