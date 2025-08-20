@@ -1054,7 +1054,8 @@ export default function ProgramSelection() {
     selectedDepartment &&
     hasRequiredAcademicInfo() &&
     eligibilityChecked &&
-    eligibilityResult?.isEligible;
+    eligibilityResult?.isEligible &&
+    (!currentProgramStatus || currentProgramStatus.available); // Check program limits
 
   return (
     <div>
