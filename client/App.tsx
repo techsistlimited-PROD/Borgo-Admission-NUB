@@ -44,6 +44,17 @@ import EmailTemplates from "./pages/EmailTemplates";
 
 const queryClient = new QueryClient();
 
+// AuthWrapper to ensure proper provider initialization
+function AuthWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthProvider>
+      <ApplicationProvider>
+        {children}
+      </ApplicationProvider>
+    </AuthProvider>
+  );
+}
+
 function AppContent() {
   const { userType, isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
