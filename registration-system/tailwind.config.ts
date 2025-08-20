@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss";
+
+export default {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -8,6 +9,7 @@ module.exports = {
     "./src/**/*.{ts,tsx}",
     "./**/*.{ts,tsx}",
   ],
+  prefix: "",
   theme: {
     container: {
       center: true,
@@ -51,11 +53,9 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Custom colors for the university theme
+        "lavender-bg": "#F3F0FF",
         "deep-plum": "#4A1D4A",
         "accent-purple": "#8B4B9B",
-        "lavender-bg": "#F3F0FF",
-        "gold-accent": "#D4AF37",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -64,22 +64,19 @@ module.exports = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
+          to: { height: "0" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      fontFamily: {
-        poppins: ["Poppins", "sans-serif"],
-      },
     },
   },
   plugins: [require("tailwindcss-animate")],
-};
+} satisfies Config;
