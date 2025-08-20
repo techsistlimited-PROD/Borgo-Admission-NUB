@@ -227,7 +227,7 @@ export default function ProgramSelection() {
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
-      continue: "সেভ করে এগিয়ে যান",
+      continue: "সেভ ��রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার নির্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
@@ -243,7 +243,7 @@ export default function ProgramSelection() {
       waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
-      hscGPA: "এইচএসসি জিপিএ",
+      hscGPA: "��ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
@@ -263,7 +263,7 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
+      noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
       selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
@@ -654,28 +654,40 @@ export default function ProgramSelection() {
               </p>
             </div>
 
-            {/* Language Toggle */}
-            <div className="flex items-center bg-white rounded-lg p-1 shadow-sm">
-              <button
-                onClick={() => setLanguage("en")}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  language === "en"
-                    ? "bg-deep-plum text-white"
-                    : "text-gray-600 hover:text-deep-plum"
-                }`}
+            <div className="flex items-center gap-4">
+              {/* Clear Form Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearAllFormData}
+                className="bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
               >
-                EN
-              </button>
-              <button
-                onClick={() => setLanguage("bn")}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  language === "bn"
-                    ? "bg-deep-plum text-white"
-                    : "text-gray-600 hover:text-deep-plum"
-                }`}
-              >
-                BN
-              </button>
+                🗑️ Clear Form
+              </Button>
+
+              {/* Language Toggle */}
+              <div className="flex items-center bg-white rounded-lg p-1 shadow-sm">
+                <button
+                  onClick={() => setLanguage("en")}
+                  className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+                    language === "en"
+                      ? "bg-deep-plum text-white"
+                      : "text-gray-600 hover:text-deep-plum"
+                  }`}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => setLanguage("bn")}
+                  className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+                    language === "bn"
+                      ? "bg-deep-plum text-white"
+                      : "text-gray-600 hover:text-deep-plum"
+                  }`}
+                >
+                  BN
+                </button>
+              </div>
             </div>
           </div>
         </div>
