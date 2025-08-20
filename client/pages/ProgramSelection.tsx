@@ -179,7 +179,7 @@ export default function ProgramSelection() {
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
-    { id: "khulna", name: "Khulna Campus", namebn: "খুলন��� ক্যাম��পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
   ];
 
   const semesterOptions = [
@@ -280,7 +280,7 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ ��িষয় ছিল",
+      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
@@ -493,9 +493,10 @@ export default function ProgramSelection() {
       return;
     }
 
-    // Reset previous result first to prevent stale state
+    // Reset previous result and show loading
     setEligibilityResult(null);
     setEligibilityChecked(false);
+    setIsCheckingEligibility(true);
 
     // Perform fresh check after a small delay
     setTimeout(() => {
@@ -506,6 +507,7 @@ export default function ProgramSelection() {
       setEligibilityResult(result);
       setEligibilityChecked(true);
       setShowEligibilityCheck(true);
+      setIsCheckingEligibility(false);
 
       toast({
         title: result.isEligible ? "✅ Eligible!" : "❌ Not Eligible",
@@ -514,7 +516,7 @@ export default function ProgramSelection() {
           : `Requirements not met: ${result.missingRequirements.length} issues found.`,
         variant: result.isEligible ? "default" : "destructive",
       });
-    }, 100);
+    }, 500); // Slightly longer delay to show loading state
   };
 
   // Clear form data when starting fresh (component mount)
