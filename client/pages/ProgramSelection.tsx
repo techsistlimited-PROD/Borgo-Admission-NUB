@@ -621,19 +621,26 @@ export default function ProgramSelection() {
         } else {
           // Perform normal eligibility check with mapped program ID
           console.log("🔄 Running checkProgramEligibility...");
-          result = checkProgramEligibility(eligibilityProgramId, academicRecord);
+          result = checkProgramEligibility(
+            eligibilityProgramId,
+            academicRecord,
+          );
           console.log("✅ Eligibility check result:", result);
         }
 
         // Always ensure we have a valid result
         if (!result) {
-          console.error("❌ No result from eligibility check - creating fallback");
+          console.error(
+            "❌ No result from eligibility check - creating fallback",
+          );
           result = {
             isEligible: false,
             route: "regular" as const,
             requiresAdmissionTest: false,
             requiresViva: false,
-            missingRequirements: ["Unable to determine eligibility - please try again"],
+            missingRequirements: [
+              "Unable to determine eligibility - please try again",
+            ],
             warnings: [],
             suggestedPrograms: [],
           };
@@ -661,7 +668,6 @@ export default function ProgramSelection() {
         });
 
         console.log("🎉 Eligibility check completed successfully!");
-
       } catch (error) {
         console.error("💥 Error during eligibility check:", error);
 
@@ -674,7 +680,9 @@ export default function ProgramSelection() {
           route: "regular" as const,
           requiresAdmissionTest: false,
           requiresViva: false,
-          missingRequirements: ["An error occurred during eligibility check. Please try again."],
+          missingRequirements: [
+            "An error occurred during eligibility check. Please try again.",
+          ],
           warnings: [],
           suggestedPrograms: [],
         };
@@ -687,7 +695,8 @@ export default function ProgramSelection() {
 
         toast({
           title: "Error",
-          description: "An error occurred while checking eligibility. Please try again.",
+          description:
+            "An error occurred while checking eligibility. Please try again.",
           variant: "destructive",
         });
       }
