@@ -51,6 +51,13 @@ export default function ApplicationSuccess() {
   const requiresAdmissionTest =
     selectedDepartment === "law" || selectedDepartment === "architecture";
 
+  // Debug logging
+  console.log("🔍 ApplicationSuccess Debug:", {
+    selectedDepartment,
+    requiresAdmissionTest,
+    applicationData: applicationData,
+  });
+
   // Get admission test details from admin settings
   const admissionTestFee = adminSettings?.admission_test_fee || 1500;
   const selectedCampus = applicationData?.campus || "main";
@@ -148,7 +155,7 @@ export default function ApplicationSuccess() {
     },
     bn: {
       title: "আবেদন সফলভাবে জমা দেওয়া হয়েছে!",
-      subtitle: "আপনার আবেদন গ্রহণ করা হয়েছে এবং পর্যালোচনাধীন রয়েছে",
+      subtitle: "আপনার আবেদন গ্রহণ করা হয়েছে এবং পর্যা���োচনাধীন রয়েছে",
       congratulations: "অভিনন্দন!",
       applicationSubmitted:
         "আপনার আবেদন সফলভাবে নর্দার্ন ইউনিভার্স��টি বাংলাদেশে জমা দেওয়া হয়েছে।",
