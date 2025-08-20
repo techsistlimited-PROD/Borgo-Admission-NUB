@@ -224,11 +224,11 @@ export default function ProgramSelection() {
     bn: {
       title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
       subtitle:
-        "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
+        "৪টি ধাপের ১ম ধাপ - আপনার ���কাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
-      continue: "সে��� করে এগিয়ে যান",
+      continue: "সেভ করে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
-      semesterSelection: "সেমিস্টার নির্���াচন করুন",
+      semesterSelection: "সেমিস্টার নির্বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
@@ -239,7 +239,7 @@ export default function ProgramSelection() {
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
-      waiverCalculator: "মওকুফ ক্যালকুলেটর",
+      waiverCalculator: "মওকু��� ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "এইচএসসি জিপিএ",
@@ -261,10 +261,10 @@ export default function ProgramSelection() {
       duration: "স���য়কাল",
       faculty: "অনুষদ",
       description: "বিবরণ",
-      waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
+      waiverApplied: "���ওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
-      selectDepartmentFirst: "���্রথমে একটি বিভাগ নির্বাচন করুন",
+      selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
@@ -379,6 +379,15 @@ export default function ProgramSelection() {
       }
     }
   }, [selectedProgram, sscGPA, hscGPA, previousCGPA, admissionType, toast]);
+
+  // Auto-populate test data for development (remove in production)
+  useEffect(() => {
+    if (!sscGPA && !hscGPA) {
+      // Uncomment for testing:
+      // setSscGPA("4.5");
+      // setHscGPA("4.2");
+    }
+  }, []);
 
   // Auto-save data when form values change
   useEffect(() => {
