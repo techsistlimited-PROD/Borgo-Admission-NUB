@@ -287,7 +287,7 @@ export default function ProgramSelection() {
       additionalWaivers: "অতিরিক্ত মওকুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
-      waiverAmount: "���ওকুফ পরিমাণ",
+      waiverAmount: "����ওকুফ পরিমাণ",
       finalAmount: "চূড়ান্ত পরিম��ণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
@@ -304,7 +304,7 @@ export default function ProgramSelection() {
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরি��্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
+        "অতিরি��্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত হ��ে প����রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -468,6 +468,50 @@ export default function ProgramSelection() {
     }
 
     return record;
+  };
+
+  // Manual eligibility check function
+  const performEligibilityCheck = () => {
+    if (!selectedProgram) {
+      toast({
+        title: "Program Required",
+        description: "Please select a program first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!hasRequiredAcademicInfo()) {
+      toast({
+        title: "Academic Information Required",
+        description: "Please complete your academic information.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Reset previous result first to prevent stale state
+    setEligibilityResult(null);
+    setEligibilityChecked(false);
+
+    // Perform fresh check after a small delay
+    setTimeout(() => {
+      const academicRecord = buildAcademicRecord();
+      console.log('Manual eligibility check with:', academicRecord);
+      const result = checkProgramEligibility(selectedProgram, academicRecord);
+      console.log('Manual eligibility result:', result);
+      setEligibilityResult(result);
+      setEligibilityChecked(true);
+      setShowEligibilityCheck(true);
+
+      toast({
+        title: result.isEligible ? "✅ Eligible!" : "❌ Not Eligible",
+        description: result.isEligible
+          ? "You meet the requirements for this program."
+          : `Requirements not met: ${result.missingRequirements.length} issues found.`,
+        variant: result.isEligible ? "default" : "destructive",
+      });
+    }, 100);
   };
 
   // Clear form data when starting fresh (component mount)
