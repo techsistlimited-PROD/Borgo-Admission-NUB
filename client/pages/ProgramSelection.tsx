@@ -390,9 +390,9 @@ export default function ProgramSelection() {
       // Debounce the check to avoid rapid fire updates
       const timeoutId = setTimeout(() => {
         const academicRecord = buildAcademicRecord();
-        console.log('Auto eligibility check with:', academicRecord);
+        console.log("Auto eligibility check with:", academicRecord);
         const result = checkProgramEligibility(selectedProgram, academicRecord);
-        console.log('Auto eligibility result:', result);
+        console.log("Auto eligibility result:", result);
         setEligibilityResult(result);
         setEligibilityChecked(true);
 
@@ -501,9 +501,9 @@ export default function ProgramSelection() {
     // Perform fresh check after a small delay
     setTimeout(() => {
       const academicRecord = buildAcademicRecord();
-      console.log('Manual eligibility check with:', academicRecord);
+      console.log("Manual eligibility check with:", academicRecord);
       const result = checkProgramEligibility(selectedProgram, academicRecord);
-      console.log('Manual eligibility result:', result);
+      console.log("Manual eligibility result:", result);
       setEligibilityResult(result);
       setEligibilityChecked(true);
       setShowEligibilityCheck(true);
@@ -1794,9 +1794,15 @@ export default function ProgramSelection() {
                         variant="outline"
                         size="sm"
                         className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
-                        disabled={!selectedProgram || !hasRequiredAcademicInfo() || isCheckingEligibility}
+                        disabled={
+                          !selectedProgram ||
+                          !hasRequiredAcademicInfo() ||
+                          isCheckingEligibility
+                        }
                       >
-                        {isCheckingEligibility ? "⏳ Checking..." : "🔍 Check Eligibility Details"}
+                        {isCheckingEligibility
+                          ? "⏳ Checking..."
+                          : "🔍 Check Eligibility Details"}
                       </Button>
                     </div>
 
