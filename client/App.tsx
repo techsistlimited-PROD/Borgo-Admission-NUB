@@ -44,7 +44,6 @@ import FinancePanel from "./pages/FinancePanel";
 import Reports from "./pages/Reports";
 import EmailTemplates from "./pages/EmailTemplates";
 
-
 const queryClient = new QueryClient();
 
 function AppContent() {

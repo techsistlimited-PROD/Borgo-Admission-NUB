@@ -10,7 +10,7 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
   }
 }
 
@@ -68,63 +68,63 @@
 
 /* Custom color classes matching admission system */
 .bg-deep-plum {
-  background-color: #4A1D4A;
+  background-color: #4a1d4a;
 }
 
 .text-deep-plum {
-  color: #4A1D4A;
+  color: #4a1d4a;
 }
 
 .bg-accent-purple {
-  background-color: #8B4B9B;
+  background-color: #8b4b9b;
 }
 
 .text-accent-purple {
-  color: #8B4B9B;
+  color: #8b4b9b;
 }
 
 .bg-lavender-bg {
-  background-color: #F3F0FF;
+  background-color: #f3f0ff;
 }
 
 .text-lavender-bg {
-  color: #F3F0FF;
+  color: #f3f0ff;
 }
 
 .bg-gold-accent {
-  background-color: #D4AF37;
+  background-color: #d4af37;
 }
 
 .text-gold-accent {
-  color: #D4AF37;
+  color: #d4af37;
 }
 
 .border-deep-plum {
-  border-color: #4A1D4A;
+  border-color: #4a1d4a;
 }
 
 .border-accent-purple {
-  border-color: #8B4B9B;
+  border-color: #8b4b9b;
 }
 
 .hover\:bg-deep-plum:hover {
-  background-color: #4A1D4A;
+  background-color: #4a1d4a;
 }
 
 .hover\:bg-accent-purple:hover {
-  background-color: #8B4B9B;
+  background-color: #8b4b9b;
 }
 
 .hover\:text-deep-plum:hover {
-  color: #4A1D4A;
+  color: #4a1d4a;
 }
 
 .hover\:text-accent-purple:hover {
-  color: #8B4B9B;
+  color: #8b4b9b;
 }
 
 .font-poppins {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 /* Form styling */
@@ -134,7 +134,7 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -157,7 +157,7 @@ input {
     background: white !important;
     color: black !important;
   }
-  
+
   .no-print {
     display: none !important;
   }

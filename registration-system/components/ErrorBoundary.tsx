@@ -1,10 +1,5 @@
 import { Component, ReactNode } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { RefreshCw, AlertTriangle } from "lucide-react";
 
@@ -51,7 +46,8 @@ export default class ErrorBoundary extends Component<Props, State> {
             </CardHeader>
             <CardContent className="text-center space-y-4">
               <p className="text-gray-600">
-                We're sorry! An unexpected error occurred. Please try refreshing the page.
+                We're sorry! An unexpected error occurred. Please try refreshing
+                the page.
               </p>
               {this.state.error && (
                 <details className="text-left bg-gray-50 p-3 rounded text-sm">

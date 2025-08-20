@@ -37,9 +37,9 @@ function AppContent() {
   // Set up form cache prevention on app load
   useEffect(() => {
     // Disable browser form caching
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-      form.setAttribute('autocomplete', 'off');
+    const forms = document.querySelectorAll("form");
+    forms.forEach((form) => {
+      form.setAttribute("autocomplete", "off");
     });
   }, []);
 
@@ -58,22 +58,43 @@ function AppContent() {
 
           {/* Student Routes */}
           <Route path="/student/dashboard" element={<StudentDashboard />} />
-          <Route path="/student/registration" element={<CourseRegistration />} />
+          <Route
+            path="/student/registration"
+            element={<CourseRegistration />}
+          />
           <Route path="/student/history" element={<AcademicHistory />} />
           <Route path="/student/search" element={<StudentSearch />} />
           <Route path="/student/routine" element={<RoutineView />} />
 
           {/* Advisor Routes */}
           <Route path="/advisor/dashboard" element={<AdvisorDashboard />} />
-          <Route path="/advisor/students" element={<Navigate to="/advisor/dashboard" replace />} />
-          <Route path="/advisor/approvals" element={<Navigate to="/advisor/dashboard" replace />} />
+          <Route
+            path="/advisor/students"
+            element={<Navigate to="/advisor/dashboard" replace />}
+          />
+          <Route
+            path="/advisor/approvals"
+            element={<Navigate to="/advisor/dashboard" replace />}
+          />
 
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/students" element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="/admin/courses" element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="/admin/schedules" element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="/admin/reports" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route
+            path="/admin/students"
+            element={<Navigate to="/admin/dashboard" replace />}
+          />
+          <Route
+            path="/admin/courses"
+            element={<Navigate to="/admin/dashboard" replace />}
+          />
+          <Route
+            path="/admin/schedules"
+            element={<Navigate to="/admin/dashboard" replace />}
+          />
+          <Route
+            path="/admin/reports"
+            element={<Navigate to="/admin/dashboard" replace />}
+          />
 
           {/* Fallback */}
           <Route path="*" element={<NotFound />} />

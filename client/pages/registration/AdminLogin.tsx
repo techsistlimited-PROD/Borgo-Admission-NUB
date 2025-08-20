@@ -20,7 +20,7 @@ export default function AdminLogin() {
     username: "",
     password: "",
   });
-  
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -74,17 +74,20 @@ export default function AdminLogin() {
           title: "Success",
           description: t.loginSuccess,
         });
-        
+
         // Store login info
         localStorage.setItem("reg_user_type", "admin");
-        localStorage.setItem("reg_user_data", JSON.stringify({
-          username: formData.username,
-          name: "System Administrator",
-          role: "ACAD Manager",
-          department: "Academic Administration",
-          permissions: ["full_access"]
-        }));
-        
+        localStorage.setItem(
+          "reg_user_data",
+          JSON.stringify({
+            username: formData.username,
+            name: "System Administrator",
+            role: "ACAD Manager",
+            department: "Academic Administration",
+            permissions: ["full_access"],
+          }),
+        );
+
         navigate("/registration/admin-dashboard");
       } else {
         toast({
@@ -225,7 +228,9 @@ export default function AdminLogin() {
             {/* Demo Credentials */}
             <Card className="bg-purple-50 border-purple-200">
               <CardContent className="p-4">
-                <h4 className="font-semibold text-deep-plum mb-2">{t.demoCredentials}</h4>
+                <h4 className="font-semibold text-deep-plum mb-2">
+                  {t.demoCredentials}
+                </h4>
                 <div className="text-sm text-deep-plum space-y-1">
                   <p>{t.demoUsername}</p>
                   <p>{t.demoPassword}</p>

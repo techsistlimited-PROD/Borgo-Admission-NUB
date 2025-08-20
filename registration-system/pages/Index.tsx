@@ -26,9 +26,11 @@ export default function RegistrationIndex() {
       title: "University Registration & Advising System",
       subtitle: "Comprehensive Student Registration Management",
       studentPortal: "Student Portal",
-      studentDesc: "Course registration, academic history, and advisor communication",
-      advisorPortal: "Advisor/Teacher Portal", 
-      advisorDesc: "Student advising, registration approval, and teaching load management",
+      studentDesc:
+        "Course registration, academic history, and advisor communication",
+      advisorPortal: "Advisor/Teacher Portal",
+      advisorDesc:
+        "Student advising, registration approval, and teaching load management",
       adminPortal: "Admin/ACAD Portal",
       adminDesc: "Complete system administration and academic management",
       loginToAccess: "Login to Access",
@@ -49,9 +51,11 @@ export default function RegistrationIndex() {
       title: "বিশ্ববিদ্যালয় রেজিস্ট্রেশন ও পরামর্শ সিস্টেম",
       subtitle: "সার্বিক শিক্ষার্থী রেজিস্ট্রেশন ব্যবস্থাপনা",
       studentPortal: "শিক্ষার্থী পোর্টাল",
-      studentDesc: "কোর্স রেজিস্ট্রেশন, একাডেমিক ইতিহাস এবং পরামর্শদাতা যোগাযোগ",
+      studentDesc:
+        "কোর্স রেজিস্ট্রেশন, একাডেমিক ইতিহাস এবং পরামর্শদাতা যোগাযোগ",
       advisorPortal: "প��ামর্শদাতা/শিক্ষক পোর্টাল",
-      advisorDesc: "শিক্ষার্থী পরামর্শ, রেজিস্ট্রেশন অনুমোদন এবং শিক্ষণ দায়িত্ব ব্যবস্থাপনা",
+      advisorDesc:
+        "শিক্ষার্থী পরামর্শ, রেজিস্ট্রেশন অনুমোদন এবং শিক্ষণ দায়িত্ব ব্যবস্থাপনা",
       adminPortal: "অ্যাডমিন/ACAD পোর্টাল",
       adminDesc: "সম্পূর্ণ সিস্টেম প্রশাসন এবং একাডেমিক ব্যবস্থাপনা",
       loginToAccess: "প্রবেশের জন্য লগইন করুন",
@@ -73,10 +77,30 @@ export default function RegistrationIndex() {
   const t = texts[language];
 
   const stats = [
-    { label: t.totalStudents, value: "2,847", icon: Users, color: "bg-blue-100 text-blue-800" },
-    { label: t.totalCourses, value: "156", icon: BookOpen, color: "bg-green-100 text-green-800" },
-    { label: t.totalAdvisors, value: "89", icon: GraduationCap, color: "bg-purple-100 text-purple-800" },
-    { label: t.pendingApprovals, value: "23", icon: Bell, color: "bg-orange-100 text-orange-800" },
+    {
+      label: t.totalStudents,
+      value: "2,847",
+      icon: Users,
+      color: "bg-blue-100 text-blue-800",
+    },
+    {
+      label: t.totalCourses,
+      value: "156",
+      icon: BookOpen,
+      color: "bg-green-100 text-green-800",
+    },
+    {
+      label: t.totalAdvisors,
+      value: "89",
+      icon: GraduationCap,
+      color: "bg-purple-100 text-purple-800",
+    },
+    {
+      label: t.pendingApprovals,
+      value: "23",
+      icon: Bell,
+      color: "bg-orange-100 text-orange-800",
+    },
   ];
 
   const portals = [
@@ -86,7 +110,12 @@ export default function RegistrationIndex() {
       icon: Users,
       link: "/student-login",
       color: "from-blue-500 to-blue-600",
-      features: ["Course Registration", "Academic History", "Advisor Communication", "Grade Tracking"]
+      features: [
+        "Course Registration",
+        "Academic History",
+        "Advisor Communication",
+        "Grade Tracking",
+      ],
     },
     {
       title: t.advisorPortal,
@@ -94,7 +123,12 @@ export default function RegistrationIndex() {
       icon: GraduationCap,
       link: "/advisor-login",
       color: "from-purple-500 to-purple-600",
-      features: ["Student Management", "Registration Approval", "Teaching Load", "Performance Reports"]
+      features: [
+        "Student Management",
+        "Registration Approval",
+        "Teaching Load",
+        "Performance Reports",
+      ],
     },
     {
       title: t.adminPortal,
@@ -102,7 +136,12 @@ export default function RegistrationIndex() {
       icon: Settings,
       link: "/admin-login",
       color: "from-deep-plum to-accent-purple",
-      features: ["System Administration", "Course Management", "Schedule Control", "Reports"]
+      features: [
+        "System Administration",
+        "Course Management",
+        "Schedule Control",
+        "Reports",
+      ],
     },
   ];
 
@@ -200,9 +239,14 @@ export default function RegistrationIndex() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {portals.map((portal, index) => (
-              <Card key={index} className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <Card
+                key={index}
+                className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
                 <CardHeader>
-                  <div className={`w-16 h-16 rounded-lg bg-gradient-to-r ${portal.color} flex items-center justify-center mx-auto mb-4`}>
+                  <div
+                    className={`w-16 h-16 rounded-lg bg-gradient-to-r ${portal.color} flex items-center justify-center mx-auto mb-4`}
+                  >
                     <portal.icon className="w-8 h-8 text-white" />
                   </div>
                   <CardTitle className="text-xl font-poppins text-deep-plum text-center">
@@ -211,10 +255,13 @@ export default function RegistrationIndex() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-gray-600 mb-6">{portal.description}</p>
-                  
+
                   <div className="space-y-2 mb-6">
                     {portal.features.map((feature, featureIndex) => (
-                      <div key={featureIndex} className="flex items-center text-sm text-gray-500">
+                      <div
+                        key={featureIndex}
+                        className="flex items-center text-sm text-gray-500"
+                      >
                         <div className="w-2 h-2 bg-deep-plum rounded-full mr-2"></div>
                         {feature}
                       </div>
@@ -222,7 +269,9 @@ export default function RegistrationIndex() {
                   </div>
 
                   <Link to={portal.link}>
-                    <Button className={`w-full bg-gradient-to-r ${portal.color} hover:opacity-90 text-white`}>
+                    <Button
+                      className={`w-full bg-gradient-to-r ${portal.color} hover:opacity-90 text-white`}
+                    >
                       {t.loginToAccess}
                     </Button>
                   </Link>
@@ -242,16 +291,34 @@ export default function RegistrationIndex() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: BookOpen, title: t.courseRegistration, desc: "Easy course selection and registration" },
-                { icon: Award, title: t.advisorApproval, desc: "Streamlined approval workflow" },
-                { icon: BarChart3, title: t.academicHistory, desc: "Comprehensive grade tracking" },
-                { icon: Calendar, title: t.scheduleManagement, desc: "Automated timetable generation" },
+                {
+                  icon: BookOpen,
+                  title: t.courseRegistration,
+                  desc: "Easy course selection and registration",
+                },
+                {
+                  icon: Award,
+                  title: t.advisorApproval,
+                  desc: "Streamlined approval workflow",
+                },
+                {
+                  icon: BarChart3,
+                  title: t.academicHistory,
+                  desc: "Comprehensive grade tracking",
+                },
+                {
+                  icon: Calendar,
+                  title: t.scheduleManagement,
+                  desc: "Automated timetable generation",
+                },
               ].map((feature, index) => (
                 <div key={index} className="text-center">
                   <div className="w-12 h-12 bg-deep-plum/10 rounded-lg flex items-center justify-center mx-auto mb-3">
                     <feature.icon className="w-6 h-6 text-deep-plum" />
                   </div>
-                  <h3 className="font-semibold text-deep-plum mb-2">{feature.title}</h3>
+                  <h3 className="font-semibold text-deep-plum mb-2">
+                    {feature.title}
+                  </h3>
                   <p className="text-sm text-gray-600">{feature.desc}</p>
                 </div>
               ))}

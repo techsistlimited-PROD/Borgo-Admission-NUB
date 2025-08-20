@@ -34,9 +34,15 @@ interface LoginCredentials {
   type: "student" | "advisor" | "admin";
 }
 
-const RegistrationAuthContext = createContext<RegistrationAuthContextType | undefined>(undefined);
+const RegistrationAuthContext = createContext<
+  RegistrationAuthContextType | undefined
+>(undefined);
 
-export function RegistrationAuthProvider({ children }: { children: ReactNode }) {
+export function RegistrationAuthProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -46,12 +52,12 @@ export function RegistrationAuthProvider({ children }: { children: ReactNode }) 
       try {
         const userType = localStorage.getItem("reg_user_type");
         const userData = localStorage.getItem("reg_user_data");
-        
+
         if (userType && userData) {
           const parsedData = JSON.parse(userData);
           setUser({
             ...parsedData,
-            type: userType as "student" | "advisor" | "admin"
+            type: userType as "student" | "advisor" | "admin",
           });
         }
       } catch (error) {
@@ -74,9 +80,11 @@ export function RegistrationAuthProvider({ children }: { children: ReactNode }) 
       let loginSuccess = false;
       let userData: User | null = null;
 
-      if (credentials.type === "student" && 
-          credentials.identifier === "2021-1-60-001" && 
-          credentials.password === "student123") {
+      if (
+        credentials.type === "student" &&
+        credentials.identifier === "2021-1-60-001" &&
+        credentials.password === "student123"
+      ) {
         loginSuccess = true;
         userData = {
           id: "student_001",
@@ -87,11 +95,13 @@ export function RegistrationAuthProvider({ children }: { children: ReactNode }) 
           department: "Computer Science and Engineering",
           program: "Bachelor in Computer Science",
           semester: "Spring 2024",
-          advisor: "Dr. Jane Smith"
+          advisor: "Dr. Jane Smith",
         };
-      } else if (credentials.type === "advisor" && 
-                 credentials.identifier === "ADV001" && 
-                 credentials.password === "advisor123") {
+      } else if (
+        credentials.type === "advisor" &&
+        credentials.identifier === "ADV001" &&
+        credentials.password === "advisor123"
+      ) {
         loginSuccess = true;
         userData = {
           id: "advisor_001",
@@ -99,11 +109,13 @@ export function RegistrationAuthProvider({ children }: { children: ReactNode }) 
           email: "jane.smith@nu.edu.bd",
           type: "advisor",
           employeeId: "ADV001",
-          department: "Computer Science and Engineering"
+          department: "Computer Science and Engineering",
         };
-      } else if (credentials.type === "admin" && 
-                 credentials.identifier === "admin" && 
-                 credentials.password === "admin123") {
+      } else if (
+        credentials.type === "admin" &&
+        credentials.identifier === "admin" &&
+        credentials.password === "admin123"
+      ) {
         loginSuccess = true;
         userData = {
           id: "admin_001",
@@ -111,7 +123,7 @@ export function RegistrationAuthProvider({ children }: { children: ReactNode }) 
           email: "admin@nu.edu.bd",
           type: "admin",
           employeeId: "ADMIN001",
-          department: "Academic Administration"
+          department: "Academic Administration",
         };
       }
 

@@ -20,7 +20,7 @@ export default function StudentLogin() {
     studentId: "",
     password: "",
   });
-  
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -69,22 +69,28 @@ export default function StudentLogin() {
 
     try {
       // Demo login logic
-      if (formData.studentId === "2021-1-60-001" && formData.password === "student123") {
+      if (
+        formData.studentId === "2021-1-60-001" &&
+        formData.password === "student123"
+      ) {
         toast({
           title: "Success",
           description: t.loginSuccess,
         });
-        
+
         // Store login info
         localStorage.setItem("reg_user_type", "student");
-        localStorage.setItem("reg_user_data", JSON.stringify({
-          studentId: formData.studentId,
-          name: "John Doe",
-          program: "Computer Science and Engineering",
-          semester: "Spring 2024",
-          advisor: "Dr. Jane Smith"
-        }));
-        
+        localStorage.setItem(
+          "reg_user_data",
+          JSON.stringify({
+            studentId: formData.studentId,
+            name: "John Doe",
+            program: "Computer Science and Engineering",
+            semester: "Spring 2024",
+            advisor: "Dr. Jane Smith",
+          }),
+        );
+
         navigate("/registration/student-dashboard");
       } else {
         toast({
@@ -225,7 +231,9 @@ export default function StudentLogin() {
             {/* Demo Credentials */}
             <Card className="bg-blue-50 border-blue-200">
               <CardContent className="p-4">
-                <h4 className="font-semibold text-blue-800 mb-2">{t.demoCredentials}</h4>
+                <h4 className="font-semibold text-blue-800 mb-2">
+                  {t.demoCredentials}
+                </h4>
                 <div className="text-sm text-blue-700 space-y-1">
                   <p>{t.demoStudentId}</p>
                   <p>{t.demoPassword}</p>

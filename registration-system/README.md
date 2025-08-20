@@ -5,11 +5,13 @@ A comprehensive student registration management system for Northern University B
 ## 🎯 Features
 
 ### Three Role-Based Dashboards:
+
 - **Student Portal**: Course registration, academic history, advisor communication
-- **Advisor/Teacher Portal**: Student advising, registration approval, teaching load management  
+- **Advisor/Teacher Portal**: Student advising, registration approval, teaching load management
 - **Admin/ACAD Portal**: Complete system administration and academic management
 
 ### Key Functionality:
+
 - ✅ **Course Registration** with add/drop/edit capabilities
 - ✅ **Advisor Approval System** with feedback mechanism
 - ✅ **Academic History Tracking** with transcript view
@@ -22,17 +24,20 @@ A comprehensive student registration management system for Northern University B
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. **Navigate to registration system directory:**
+
    ```bash
    cd registration-system
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    # or
@@ -40,6 +45,7 @@ A comprehensive student registration management system for Northern University B
    ```
 
 3. **Start development server:**
+
    ```bash
    npm run dev
    # or
@@ -54,20 +60,24 @@ A comprehensive student registration management system for Northern University B
 ## 🔐 Demo Credentials
 
 ### Student Login
+
 - **Student ID**: `2021-1-60-001`
 - **Password**: `student123`
 
-### Advisor/Teacher Login  
+### Advisor/Teacher Login
+
 - **Employee ID**: `ADV001`
 - **Password**: `advisor123`
 
 ### Admin/ACAD Login
+
 - **Username**: `admin`
 - **Password**: `admin123`
 
 ## 🎨 Design System
 
 The Registration System uses the same visual theme as the admission system:
+
 - **Primary Colors**: Deep Plum (#4A1D4A), Accent Purple (#8B4B9B)
 - **Background**: Lavender (#F3F0FF)
 - **Typography**: Poppins font family
@@ -119,17 +129,21 @@ registration-system/
 ## �� Deployment
 
 ### Build for Production
+
 ```bash
 npm run build
 ```
 
 ### Deploy Options
+
 - **Vercel**: Connect GitHub repo for automatic deployments
 - **Netlify**: Drag & drop `dist` folder or connect repo
 - **Traditional Hosting**: Upload `dist` folder contents
 
 ### Environment Variables
+
 Create `.env` file for production configurations:
+
 ```env
 VITE_API_URL=your_api_endpoint
 VITE_APP_NAME=University Registration System
@@ -138,12 +152,14 @@ VITE_APP_NAME=University Registration System
 ## 🔧 Customization
 
 ### Adding New Features
+
 1. Create new page components in `pages/`
 2. Add routes in `App.tsx`
 3. Update navigation menus
 4. Add API integration as needed
 
 ### Theming
+
 - Update colors in `tailwind.config.ts`
 - Modify global styles in `global.css`
 - Customize component themes in `components/ui/`
@@ -162,6 +178,7 @@ VITE_APP_NAME=University Registration System
 ## 🆘 Support
 
 For technical issues or feature requests:
+
 1. Check existing documentation
 2. Search GitHub issues
 3. Create new issue with detailed description

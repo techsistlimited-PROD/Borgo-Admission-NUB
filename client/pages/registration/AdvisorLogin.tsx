@@ -20,7 +20,7 @@ export default function AdvisorLogin() {
     employeeId: "",
     password: "",
   });
-  
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -69,22 +69,28 @@ export default function AdvisorLogin() {
 
     try {
       // Demo login logic
-      if (formData.employeeId === "ADV001" && formData.password === "advisor123") {
+      if (
+        formData.employeeId === "ADV001" &&
+        formData.password === "advisor123"
+      ) {
         toast({
           title: "Success",
           description: t.loginSuccess,
         });
-        
+
         // Store login info
         localStorage.setItem("reg_user_type", "advisor");
-        localStorage.setItem("reg_user_data", JSON.stringify({
-          employeeId: formData.employeeId,
-          name: "Dr. Jane Smith",
-          department: "Computer Science and Engineering",
-          designation: "Associate Professor",
-          assignedStudents: 45
-        }));
-        
+        localStorage.setItem(
+          "reg_user_data",
+          JSON.stringify({
+            employeeId: formData.employeeId,
+            name: "Dr. Jane Smith",
+            department: "Computer Science and Engineering",
+            designation: "Associate Professor",
+            assignedStudents: 45,
+          }),
+        );
+
         navigate("/registration/advisor-dashboard");
       } else {
         toast({
@@ -225,7 +231,9 @@ export default function AdvisorLogin() {
             {/* Demo Credentials */}
             <Card className="bg-purple-50 border-purple-200">
               <CardContent className="p-4">
-                <h4 className="font-semibold text-purple-800 mb-2">{t.demoCredentials}</h4>
+                <h4 className="font-semibold text-purple-800 mb-2">
+                  {t.demoCredentials}
+                </h4>
                 <div className="text-sm text-purple-700 space-y-1">
                   <p>{t.demoEmployeeId}</p>
                   <p>{t.demoPassword}</p>

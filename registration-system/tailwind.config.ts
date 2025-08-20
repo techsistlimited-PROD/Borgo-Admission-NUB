@@ -2,11 +2,11 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-    './**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+    "./**/*.{ts,tsx}",
   ],
   theme: {
     container: {
@@ -52,10 +52,10 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
         // Custom colors for the university theme
-        'deep-plum': '#4A1D4A',
-        'accent-purple': '#8B4B9B',
-        'lavender-bg': '#F3F0FF',
-        'gold-accent': '#D4AF37',
+        "deep-plum": "#4A1D4A",
+        "accent-purple": "#8B4B9B",
+        "lavender-bg": "#F3F0FF",
+        "gold-accent": "#D4AF37",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -77,9 +77,9 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        'poppins': ['Poppins', 'sans-serif'],
+        poppins: ["Poppins", "sans-serif"],
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

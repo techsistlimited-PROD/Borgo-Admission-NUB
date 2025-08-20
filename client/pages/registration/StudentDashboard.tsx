@@ -41,7 +41,7 @@ export default function StudentDashboard() {
     // Check if user is logged in
     const userType = localStorage.getItem("reg_user_type");
     const storedUserData = localStorage.getItem("reg_user_data");
-    
+
     if (userType !== "student" || !storedUserData) {
       navigate("/registration/student-login");
       return;
@@ -134,19 +134,52 @@ export default function StudentDashboard() {
     completedCredits: 82,
     totalCredits: 144,
     currentCGPA: 3.67,
-    expectedGraduation: "Spring 2025"
+    expectedGraduation: "Spring 2025",
   };
 
   const pendingCourses = [
-    { code: "CSE 341", name: "Microprocessors", credits: 3, status: "pending", feedback: "Waiting for prerequisite verification" },
-    { code: "CSE 327", name: "Software Engineering", credits: 3, status: "approved", feedback: "Approved by advisor" },
-    { code: "CSE 347", name: "Database Systems", credits: 3, status: "pending", feedback: "Under review" },
+    {
+      code: "CSE 341",
+      name: "Microprocessors",
+      credits: 3,
+      status: "pending",
+      feedback: "Waiting for prerequisite verification",
+    },
+    {
+      code: "CSE 327",
+      name: "Software Engineering",
+      credits: 3,
+      status: "approved",
+      feedback: "Approved by advisor",
+    },
+    {
+      code: "CSE 347",
+      name: "Database Systems",
+      credits: 3,
+      status: "pending",
+      feedback: "Under review",
+    },
   ];
 
   const notifications = [
-    { id: 1, message: "Course registration deadline: March 15, 2024", type: "warning", time: "2 hours ago" },
-    { id: 2, message: "Dr. Jane Smith approved your CSE 327 registration", type: "success", time: "1 day ago" },
-    { id: 3, message: "Midterm exam schedule published", type: "info", time: "2 days ago" },
+    {
+      id: 1,
+      message: "Course registration deadline: March 15, 2024",
+      type: "warning",
+      time: "2 hours ago",
+    },
+    {
+      id: 2,
+      message: "Dr. Jane Smith approved your CSE 327 registration",
+      type: "success",
+      time: "1 day ago",
+    },
+    {
+      id: 3,
+      message: "Midterm exam schedule published",
+      type: "info",
+      time: "2 days ago",
+    },
   ];
 
   if (!userData) {
@@ -214,8 +247,12 @@ export default function StudentDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">{t.currentSemester}</p>
-                  <p className="text-xl font-bold text-deep-plum">{userData.semester}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    {t.currentSemester}
+                  </p>
+                  <p className="text-xl font-bold text-deep-plum">
+                    {userData.semester}
+                  </p>
                   <p className="text-sm text-gray-500">{userData.program}</p>
                 </div>
                 <Calendar className="w-8 h-8 text-blue-500" />
@@ -227,8 +264,12 @@ export default function StudentDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">{t.advisor}</p>
-                  <p className="text-xl font-bold text-deep-plum">{userData.advisor}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    {t.advisor}
+                  </p>
+                  <p className="text-xl font-bold text-deep-plum">
+                    {userData.advisor}
+                  </p>
                   <p className="text-sm text-gray-500">CSE Department</p>
                 </div>
                 <User className="w-8 h-8 text-purple-500" />
@@ -240,8 +281,12 @@ export default function StudentDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">{t.holdsAlerts}</p>
-                  <p className="text-xl font-bold text-green-600">{t.noHolds}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    {t.holdsAlerts}
+                  </p>
+                  <p className="text-xl font-bold text-green-600">
+                    {t.noHolds}
+                  </p>
                   <p className="text-sm text-gray-500">All clear</p>
                 </div>
                 <CheckCircle className="w-8 h-8 text-green-500" />
@@ -261,19 +306,27 @@ export default function StudentDashboard() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">{academicStats.completedCredits}</div>
+                <div className="text-3xl font-bold text-blue-600">
+                  {academicStats.completedCredits}
+                </div>
                 <p className="text-sm text-gray-600">{t.completedCredits}</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">{academicStats.currentCGPA}</div>
+                <div className="text-3xl font-bold text-green-600">
+                  {academicStats.currentCGPA}
+                </div>
                 <p className="text-sm text-gray-600">{t.currentCGPA}</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-600">{academicStats.totalCredits - academicStats.completedCredits}</div>
+                <div className="text-3xl font-bold text-orange-600">
+                  {academicStats.totalCredits - academicStats.completedCredits}
+                </div>
                 <p className="text-sm text-gray-600">{t.remainingCredits}</p>
               </div>
               <div className="text-center">
-                <div className="text-lg font-bold text-purple-600">{academicStats.expectedGraduation}</div>
+                <div className="text-lg font-bold text-purple-600">
+                  {academicStats.expectedGraduation}
+                </div>
                 <p className="text-sm text-gray-600">{t.expectedGraduation}</p>
               </div>
             </div>
@@ -319,11 +372,19 @@ export default function StudentDashboard() {
             <CardContent>
               <div className="space-y-4">
                 {notifications.map((notification) => (
-                  <div key={notification.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                    <div className={`p-1 rounded-full ${
-                      notification.type === "success" ? "bg-green-100" :
-                      notification.type === "warning" ? "bg-orange-100" : "bg-blue-100"
-                    }`}>
+                  <div
+                    key={notification.id}
+                    className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div
+                      className={`p-1 rounded-full ${
+                        notification.type === "success"
+                          ? "bg-green-100"
+                          : notification.type === "warning"
+                            ? "bg-orange-100"
+                            : "bg-blue-100"
+                      }`}
+                    >
                       {notification.type === "success" ? (
                         <CheckCircle className="w-4 h-4 text-green-600" />
                       ) : notification.type === "warning" ? (
@@ -333,8 +394,12 @@ export default function StudentDashboard() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-gray-800">{notification.message}</p>
-                      <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                      <p className="text-sm text-gray-800">
+                        {notification.message}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {notification.time}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -374,22 +439,22 @@ export default function StudentDashboard() {
                           course.status === "approved"
                             ? "default"
                             : course.status === "pending"
-                            ? "secondary"
-                            : "destructive"
+                              ? "secondary"
+                              : "destructive"
                         }
                         className={
                           course.status === "approved"
                             ? "bg-green-100 text-green-800"
                             : course.status === "pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
                         }
                       >
                         {course.status === "approved"
                           ? t.approved
                           : course.status === "pending"
-                          ? t.pending
-                          : t.rejected}
+                            ? t.pending
+                            : t.rejected}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
