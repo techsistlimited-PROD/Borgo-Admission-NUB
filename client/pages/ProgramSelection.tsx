@@ -183,7 +183,7 @@ export default function ProgramSelection() {
   ];
 
   const semesterOptions = [
-    { id: "fall", name: "Fall", namebn: "ফল" },
+    { id: "fall", name: "Fall", namebn: "���ল" },
     { id: "summer", name: "Summer", namebn: "গ্রীষ্ম" },
     { id: "winter", name: "Winter", namebn: "শীত" },
   ];
@@ -266,7 +266,7 @@ export default function ProgramSelection() {
       continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
-      semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
+      semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
@@ -281,7 +281,7 @@ export default function ProgramSelection() {
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
-      calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
+      calculateWaiver: "যোগ্য মওকুফ গণনা কর��ন",
       availableWaivers: "���পলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
@@ -2556,7 +2556,7 @@ export default function ProgramSelection() {
                   <p>📝 Please complete your academic information</p>
                 ) : !eligibilityChecked ? (
                   <p>
-                    🔍 Please click "Check Eligibility Details" button to verify
+                    🔍 Please click "Check Eligibility" button to verify
                     requirements
                   </p>
                 ) : eligibilityResult && !eligibilityResult.isEligible ? (
