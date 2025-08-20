@@ -134,7 +134,7 @@ export const departments: Department[] = [
     name: 'General Education',
     namebn: 'সাধারণ শিক্ষা',
     description: 'Foundational education program',
-    descriptionbn: 'ভিত্তিগত শিক্ষা প্রোগ্রাম',
+    descriptionbn: 'ভিত্তিগত শিক্ষ�� প্রোগ্রাম',
     faculty: 'Faculty of Arts',
     facultybn: 'কলা অনুষদ'
   },
@@ -168,7 +168,7 @@ export const departments: Department[] = [
   {
     id: 'ph',
     name: 'Public Health',
-    namebn: 'জনস্বাস্থ্য',
+    namebn: 'জনস্বা��্থ্য',
     description: 'Community health and healthcare management',
     descriptionbn: 'কমিউনিটি স্বাস্থ্য এবং স্বাস্থ্যসেবা ব্যবস্থাপনা',
     faculty: 'Faculty of Health Sciences',
@@ -238,6 +238,13 @@ export const programs: Program[] = [
       labFee: 5000,
       others: 10000,
       total: 105000
+    },
+    eligibilityRequirements: {
+      level: 'postgraduate',
+      minBachelorGPA: 2.5,
+      requiredDegreeTypes: ['Bachelor'],
+      additionalRequirements: ['Bachelor degree in any discipline', 'Minimum 2 years work experience preferred', 'GMAT/MAT score may be required'],
+      specificRequirements: 'Bachelor degree in any discipline with minimum 2.5 GPA. Work experience and management aptitude test may be required.'
     }
   },
   {
@@ -269,7 +276,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'GPA 5.00 in both SSC and HSC without 4th subject',
     criteriabn: 'এসএসসি ও এইচএসসি উভয়ে ৪র্থ বিষয় ছাড়া জিপিএ ৫.০০',
     description: 'Full tuition waiver for excellent academic performance',
-    descriptionbn: 'চমৎকার একাডেমিক পারফরম্যান্সের জন্য সম���পূর্ণ টিউশন ফি মওকুফ'
+    descriptionbn: 'চমৎকার একাড���মিক পারফরম্যান্সের জন্য সম���পূর্ণ টিউশন ফি মওকুফ'
   },
   {
     id: 'result_80',
@@ -348,7 +355,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'Students from tribal population',
     criteriabn: 'আদিবাসী জনগোষ্ঠীর শিক্ষার্থী',
     description: 'Additional 5% waiver for tribal population students',
-    descriptionbn: 'আদিবাসী জনগোষ্ঠীর শিক্ষার্থীদ��র জন্য অতিরিক্ত ৫% মওকুফ'
+    descriptionbn: 'আ���িবাসী জনগোষ্ঠীর শিক্ষার্থীদ��র জন্য অতিরিক্ত ৫% মওকুফ'
   },
   {
     id: 'sibling',
