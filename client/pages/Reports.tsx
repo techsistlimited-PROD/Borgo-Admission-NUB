@@ -105,13 +105,15 @@ export default function Reports() {
       revenueGenerated: "Revenue Generated",
 
       // New Report Types
-      programWiseAdmissions: "Program-wise Number of Admitted Students per Semester",
+      programWiseAdmissions:
+        "Program-wise Number of Admitted Students per Semester",
       employeeWiseCollection: "Employee-wise Admission Fee Collection",
       dailyCollectionReport: "Daily Collection Report of Admission Officers",
       semesterWiseAdmissions: "Semester-wise Number of Admitted Students",
       programWiseFlowchart: "Program-wise Admission Flowchart",
       yearWiseAdmissionReport: "Year-wise Admission Report",
-      departmentWiseTargets: "Department-wise Admission Target Input and View Report",
+      departmentWiseTargets:
+        "Department-wise Admission Target Input and View Report",
       feederDistricts: "List of Feeder Districts",
       studentList: "Student List",
       detailedStudentList: "Detailed Student List",
@@ -119,7 +121,8 @@ export default function Reports() {
       bulkIdCardDownload: "All Students ID Cards Download (Bulk)",
       studentRequiredCredits: "Student Required Credits",
       studentWaiverReport: "Student Waiver Report (Department-wise)",
-      previousSemesterFlowchart: "Department-wise Admission Flowchart for Previous Semester",
+      previousSemesterFlowchart:
+        "Department-wise Admission Flowchart for Previous Semester",
       creditTransferStudentList: "Credit Transfer Student List",
 
       // Table Headers
@@ -221,7 +224,8 @@ export default function Reports() {
       revenueGenerated: "আয় সৃষ্টি",
 
       // New Report Types
-      programWiseAdmissions: "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
+      programWiseAdmissions:
+        "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
       employeeWiseCollection: "কর্মচারী অনুযায়ী ভর্তি ফি সংগ্রহ",
       dailyCollectionReport: "ভর্তি কর্মকর্তাদের দৈনিক সংগ্রহ রিপোর্ট",
       semesterWiseAdmissions: "সেমিস্টার অনুযায়ী ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
@@ -235,7 +239,8 @@ export default function Reports() {
       bulkIdCardDownload: "সকল শিক্ষার্থীর আইডি কার্ড ডাউনলোড (বাল্ক)",
       studentRequiredCredits: "শিক্ষার্থীর প্রয়োজনীয় ক্রেডিট",
       studentWaiverReport: "শিক্ষার্থী মওকুফ রিপোর্ট (বিভাগ অনুযায়ী)",
-      previousSemesterFlowchart: "পূর্ববর্তী সেমিস্টারের জন্য বিভাগ অনুযায়ী ভর্তি ফ্লোচার্ট",
+      previousSemesterFlowchart:
+        "পূর্ববর্তী সেমিস্টারের জন্য বিভাগ অনুযায়ী ভর্তি ফ্লোচার্ট",
       creditTransferStudentList: "ক্রেডিট ট্রান্সফার শিক্ষার্থীর তালিকা",
 
       departmentColumn: "বিভাগ",
@@ -368,20 +373,32 @@ export default function Reports() {
         {/* Report Categories Navigation */}
         <Card className="bg-white shadow-lg mb-8">
           <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-deep-plum mb-4">{t.reportCategories}</h3>
+            <h3 className="text-lg font-semibold text-deep-plum mb-4">
+              {t.reportCategories}
+            </h3>
             <div className="flex flex-wrap gap-2 mb-6">
               {[
                 { id: "overview", label: t.overview, icon: BarChart3 },
                 { id: "student", label: t.studentReports, icon: Users },
-                { id: "flowcharts", label: t.admissionFlowcharts, icon: TrendingUp },
-                { id: "financial", label: t.financialReports, icon: DollarSign },
+                {
+                  id: "flowcharts",
+                  label: t.admissionFlowcharts,
+                  icon: TrendingUp,
+                },
+                {
+                  id: "financial",
+                  label: t.financialReports,
+                  icon: DollarSign,
+                },
                 { id: "waiver", label: t.waiverReports, icon: BookOpen },
                 { id: "idcards", label: t.idCardReports, icon: IdCard },
                 { id: "targets", label: t.targetReports, icon: Target },
               ].map((category) => (
                 <Button
                   key={category.id}
-                  variant={activeReportCategory === category.id ? "default" : "outline"}
+                  variant={
+                    activeReportCategory === category.id ? "default" : "outline"
+                  }
                   size="sm"
                   onClick={() => setActiveReportCategory(category.id)}
                   className={`${
@@ -411,7 +428,9 @@ export default function Reports() {
                   <SelectContent>
                     <SelectItem value="last_7_days">{t.last7Days}</SelectItem>
                     <SelectItem value="last_30_days">{t.last30Days}</SelectItem>
-                    <SelectItem value="last_3_months">{t.last3Months}</SelectItem>
+                    <SelectItem value="last_3_months">
+                      {t.last3Months}
+                    </SelectItem>
                     <SelectItem value="last_year">{t.lastYear}</SelectItem>
                     <SelectItem value="custom">{t.custom}</SelectItem>
                   </SelectContent>
@@ -420,7 +439,10 @@ export default function Reports() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t.program}</label>
-                <Select value={selectedProgram} onValueChange={setSelectedProgram}>
+                <Select
+                  value={selectedProgram}
+                  onValueChange={setSelectedProgram}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -434,7 +456,10 @@ export default function Reports() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t.department}</label>
-                <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                <Select
+                  value={selectedDepartment}
+                  onValueChange={setSelectedDepartment}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -446,14 +471,19 @@ export default function Reports() {
                     <SelectItem value="civil">{t.civil}</SelectItem>
                     <SelectItem value="bba">{t.bba}</SelectItem>
                     <SelectItem value="law">{t.law}</SelectItem>
-                    <SelectItem value="architecture">{t.architecture}</SelectItem>
+                    <SelectItem value="architecture">
+                      {t.architecture}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t.semester}</label>
-                <Select value={selectedSemester} onValueChange={setSelectedSemester}>
+                <Select
+                  value={selectedSemester}
+                  onValueChange={setSelectedSemester}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -518,7 +548,9 @@ export default function Reports() {
                     <div className="flex items-center gap-3">
                       <IdCard className="w-8 h-8 text-blue-600" />
                       <div>
-                        <p className="text-sm text-gray-600">{t.universityIds}</p>
+                        <p className="text-sm text-gray-600">
+                          {t.universityIds}
+                        </p>
                         <p className="text-2xl font-bold text-blue-800">
                           {getIDGenerationStats().totalGenerated}
                         </p>
@@ -542,7 +574,9 @@ export default function Reports() {
                     <div className="flex items-center gap-3">
                       <Users className="w-8 h-8 text-green-600" />
                       <div>
-                        <p className="text-sm text-gray-600">{t.activeStudents}</p>
+                        <p className="text-sm text-gray-600">
+                          {t.activeStudents}
+                        </p>
                         <p className="text-2xl font-bold text-green-800">
                           {getIDGenerationStats().activeStudents}
                         </p>
@@ -557,7 +591,9 @@ export default function Reports() {
                         <p className="text-sm text-gray-600">
                           {t.idGenerationRate}
                         </p>
-                        <p className="text-2xl font-bold text-orange-800">98.5%</p>
+                        <p className="text-2xl font-bold text-orange-800">
+                          98.5%
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -591,7 +627,9 @@ export default function Reports() {
                           </TableCell>
                           <TableCell>{student.studentName}</TableCell>
                           <TableCell>
-                            {new Date(student.generatedDate).toLocaleDateString()}
+                            {new Date(
+                              student.generatedDate,
+                            ).toLocaleDateString()}
                           </TableCell>
                           <TableCell>
                             <span
@@ -692,7 +730,9 @@ export default function Reports() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-accent-purple">69%</div>
+                    <div className="text-4xl font-bold text-accent-purple">
+                      69%
+                    </div>
                     <p className="text-sm text-gray-600 mt-1">
                       Overall admission rate
                     </p>
@@ -708,7 +748,9 @@ export default function Reports() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-accent-purple">7</div>
+                    <div className="text-4xl font-bold text-accent-purple">
+                      7
+                    </div>
                     <p className="text-sm text-gray-600 mt-1">{t.days}</p>
                   </div>
                 </CardContent>
@@ -748,7 +790,8 @@ export default function Reports() {
                   {[
                     {
                       title: t.programWiseAdmissions,
-                      description: "Serial – Program Name – Male – Female – Total",
+                      description:
+                        "Serial – Program Name – Male – Female – Total",
                       icon: GraduationCap,
                       action: "view",
                     },
@@ -783,7 +826,10 @@ export default function Reports() {
                       action: "view",
                     },
                   ].map((report, index) => (
-                    <Card key={index} className="border border-gray-200 hover:border-deep-plum transition-colors">
+                    <Card
+                      key={index}
+                      className="border border-gray-200 hover:border-deep-plum transition-colors"
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <div className="p-2 bg-deep-plum/10 rounded-lg">
@@ -797,11 +843,19 @@ export default function Reports() {
                               {report.description}
                             </p>
                             <div className="flex gap-2">
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
                               </Button>
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Download className="w-3 h-3 mr-1" />
                                 {t.downloadReport}
                               </Button>
@@ -838,12 +892,16 @@ export default function Reports() {
                     },
                     {
                       title: t.dailyCollectionReport,
-                      description: "View daily collection by admission officers (ID-wise)",
+                      description:
+                        "View daily collection by admission officers (ID-wise)",
                       icon: Calendar,
                       action: "view",
                     },
                   ].map((report, index) => (
-                    <Card key={index} className="border border-gray-200 hover:border-deep-plum transition-colors">
+                    <Card
+                      key={index}
+                      className="border border-gray-200 hover:border-deep-plum transition-colors"
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <div className="p-2 bg-green-100 rounded-lg">
@@ -857,11 +915,19 @@ export default function Reports() {
                               {report.description}
                             </p>
                             <div className="flex gap-2">
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
                               </Button>
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Download className="w-3 h-3 mr-1" />
                                 {t.downloadReport}
                               </Button>
@@ -898,12 +964,16 @@ export default function Reports() {
                     },
                     {
                       title: t.bulkIdCardDownload,
-                      description: "Download all student ID cards for selected semester/program in one click",
+                      description:
+                        "Download all student ID cards for selected semester/program in one click",
                       icon: Package,
                       action: "download",
                     },
                   ].map((report, index) => (
-                    <Card key={index} className="border border-gray-200 hover:border-deep-plum transition-colors">
+                    <Card
+                      key={index}
+                      className="border border-gray-200 hover:border-deep-plum transition-colors"
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <div className="p-2 bg-purple-100 rounded-lg">
@@ -917,13 +987,22 @@ export default function Reports() {
                               {report.description}
                             </p>
                             <div className="flex gap-2">
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
                               </Button>
-                              <Button size="sm" className="text-xs bg-deep-plum hover:bg-accent-purple">
+                              <Button
+                                size="sm"
+                                className="text-xs bg-deep-plum hover:bg-accent-purple"
+                              >
                                 <DownloadCloud className="w-3 h-3 mr-1" />
-                                {report.action === "download" ? "Bulk Download" : "Download"}
+                                {report.action === "download"
+                                  ? "Bulk Download"
+                                  : "Download"}
                               </Button>
                             </div>
                           </div>
@@ -963,7 +1042,10 @@ export default function Reports() {
                       action: "view",
                     },
                   ].map((report, index) => (
-                    <Card key={index} className="border border-gray-200 hover:border-deep-plum transition-colors">
+                    <Card
+                      key={index}
+                      className="border border-gray-200 hover:border-deep-plum transition-colors"
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <div className="p-2 bg-orange-100 rounded-lg">
@@ -977,11 +1059,19 @@ export default function Reports() {
                               {report.description}
                             </p>
                             <div className="flex gap-2">
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
                               </Button>
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Download className="w-3 h-3 mr-1" />
                                 {t.downloadReport}
                               </Button>
@@ -1012,13 +1102,15 @@ export default function Reports() {
                   {[
                     {
                       title: t.programWiseFlowchart,
-                      description: "Visual flowchart of admission process by program",
+                      description:
+                        "Visual flowchart of admission process by program",
                       icon: TrendingUp,
                       action: "view",
                     },
                     {
                       title: t.previousSemesterFlowchart,
-                      description: "Department-wise admission flowchart for previous semester",
+                      description:
+                        "Department-wise admission flowchart for previous semester",
                       icon: Building,
                       action: "view",
                     },
@@ -1029,7 +1121,10 @@ export default function Reports() {
                       action: "view",
                     },
                   ].map((report, index) => (
-                    <Card key={index} className="border border-gray-200 hover:border-deep-plum transition-colors">
+                    <Card
+                      key={index}
+                      className="border border-gray-200 hover:border-deep-plum transition-colors"
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <div className="p-2 bg-blue-100 rounded-lg">
@@ -1043,11 +1138,19 @@ export default function Reports() {
                               {report.description}
                             </p>
                             <div className="flex gap-2">
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Eye className="w-3 h-3 mr-1" />
                                 {t.viewReport}
                               </Button>
-                              <Button size="sm" variant="outline" className="text-xs">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 <Download className="w-3 h-3 mr-1" />
                                 {t.downloadReport}
                               </Button>
@@ -1086,14 +1189,22 @@ export default function Reports() {
                             {t.departmentWiseTargets}
                           </h4>
                           <p className="text-xs text-gray-600 mb-3">
-                            Input and view admission targets by department with performance tracking
+                            Input and view admission targets by department with
+                            performance tracking
                           </p>
                           <div className="flex gap-2">
-                            <Button size="sm" variant="outline" className="text-xs">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-xs"
+                            >
                               <Eye className="w-3 h-3 mr-1" />
                               {t.viewReport}
                             </Button>
-                            <Button size="sm" className="text-xs bg-deep-plum hover:bg-accent-purple">
+                            <Button
+                              size="sm"
+                              className="text-xs bg-deep-plum hover:bg-accent-purple"
+                            >
                               <Target className="w-3 h-3 mr-1" />
                               Set Targets
                             </Button>
