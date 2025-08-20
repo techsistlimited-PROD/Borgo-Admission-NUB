@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { AlertCircle, CheckCircle, CreditCard, Phone } from 'lucide-react';
-import { Alert, AlertDescription } from './ui/alert';
-import { useToast } from '../hooks/use-toast';
+import { useState } from "react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { AlertCircle, CheckCircle, CreditCard, Phone } from "lucide-react";
+import { Alert, AlertDescription } from "./ui/alert";
+import { useToast } from "../hooks/use-toast";
 
 interface BkashPaymentProps {
   amount: number;
@@ -18,45 +18,47 @@ export default function BkashPayment({
   amount,
   purpose,
   onPaymentSuccess,
-  onPaymentCancel
+  onPaymentCancel,
 }: BkashPaymentProps) {
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [transactionId, setTransactionId] = useState('');
-  const [step, setStep] = useState<'phone' | 'payment' | 'verification'>('phone');
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [transactionId, setTransactionId] = useState("");
+  const [step, setStep] = useState<"phone" | "payment" | "verification">(
+    "phone",
+  );
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
   const handlePhoneSubmit = () => {
     if (!phoneNumber || phoneNumber.length !== 11) {
       toast({
-        title: 'Invalid Phone Number',
-        description: 'Please enter a valid 11-digit bKash number',
-        variant: 'destructive'
+        title: "Invalid Phone Number",
+        description: "Please enter a valid 11-digit bKash number",
+        variant: "destructive",
       });
       return;
     }
-    setStep('payment');
+    setStep("payment");
   };
 
   const handlePaymentInitiate = async () => {
     setIsProcessing(true);
-    
+
     // Simulate payment processing
     try {
       // In real implementation, this would call bKash API
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Simulate successful payment initiation
-      setStep('verification');
+      setStep("verification");
       toast({
-        title: 'Payment Initiated',
-        description: 'Please complete the payment on your bKash app',
+        title: "Payment Initiated",
+        description: "Please complete the payment on your bKash app",
       });
     } catch (error) {
       toast({
-        title: 'Payment Failed',
-        description: 'Failed to initiate payment. Please try again.',
-        variant: 'destructive'
+        title: "Payment Failed",
+        description: "Failed to initiate payment. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsProcessing(false);
@@ -66,31 +68,31 @@ export default function BkashPayment({
   const handleVerifyPayment = async () => {
     if (!transactionId || transactionId.length < 8) {
       toast({
-        title: 'Invalid Transaction ID',
-        description: 'Please enter a valid transaction ID',
-        variant: 'destructive'
+        title: "Invalid Transaction ID",
+        description: "Please enter a valid transaction ID",
+        variant: "destructive",
       });
       return;
     }
 
     setIsProcessing(true);
-    
+
     try {
       // Simulate payment verification
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
       // Simulate successful verification
       toast({
-        title: 'Payment Verified',
-        description: 'Your payment has been successfully verified!',
+        title: "Payment Verified",
+        description: "Your payment has been successfully verified!",
       });
-      
+
       onPaymentSuccess(transactionId);
     } catch (error) {
       toast({
-        title: 'Verification Failed',
-        description: 'Failed to verify payment. Please check transaction ID.',
-        variant: 'destructive'
+        title: "Verification Failed",
+        description: "Failed to verify payment. Please check transaction ID.",
+        variant: "destructive",
       });
     } finally {
       setIsProcessing(false);
@@ -114,7 +116,7 @@ export default function BkashPayment({
           <p className="text-sm text-gray-600 mt-1">{purpose}</p>
         </div>
 
-        {step === 'phone' && (
+        {step === "phone" && (
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="bkash-phone">
@@ -125,7 +127,9 @@ export default function BkashPayment({
                 id="bkash-phone"
                 type="tel"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 11))}
+                onChange={(e) =>
+                  setPhoneNumber(e.target.value.replace(/\D/g, "").slice(0, 11))
+                }
                 placeholder="01XXXXXXXXX"
                 maxLength={11}
               />
@@ -133,7 +137,7 @@ export default function BkashPayment({
                 Enter your 11-digit bKash account number
               </p>
             </div>
-            
+
             <div className="flex gap-2">
               <Button
                 onClick={onPaymentCancel}
@@ -153,17 +157,20 @@ export default function BkashPayment({
           </div>
         )}
 
-        {step === 'payment' && (
+        {step === "payment" && (
           <div className="space-y-4">
             <Alert>
               <AlertCircle className="w-4 h-4" />
               <AlertDescription>
-                You will be redirected to bKash app to complete the payment of ৳{amount}
+                You will be redirected to bKash app to complete the payment of ৳
+                {amount}
               </AlertDescription>
             </Alert>
-            
+
             <div className="p-3 bg-pink-50 border border-pink-200 rounded-lg">
-              <p className="text-sm font-medium text-pink-800 mb-2">Payment Details:</p>
+              <p className="text-sm font-medium text-pink-800 mb-2">
+                Payment Details:
+              </p>
               <div className="text-sm text-pink-700 space-y-1">
                 <p>• Amount: ৳{amount}</p>
                 <p>• Phone: {phoneNumber}</p>
@@ -173,7 +180,7 @@ export default function BkashPayment({
 
             <div className="flex gap-2">
               <Button
-                onClick={() => setStep('phone')}
+                onClick={() => setStep("phone")}
                 variant="outline"
                 className="flex-1"
               >
@@ -184,18 +191,19 @@ export default function BkashPayment({
                 className="flex-1 bg-pink-500 hover:bg-pink-600"
                 disabled={isProcessing}
               >
-                {isProcessing ? 'Processing...' : 'Pay Now'}
+                {isProcessing ? "Processing..." : "Pay Now"}
               </Button>
             </div>
           </div>
         )}
 
-        {step === 'verification' && (
+        {step === "verification" && (
           <div className="space-y-4">
             <Alert className="border-green-200 bg-green-50">
               <CheckCircle className="w-4 h-4 text-green-600" />
               <AlertDescription className="text-green-800">
-                Payment initiated successfully! Please complete it on your bKash app.
+                Payment initiated successfully! Please complete it on your bKash
+                app.
               </AlertDescription>
             </Alert>
 
@@ -225,7 +233,7 @@ export default function BkashPayment({
                 className="flex-1 bg-green-600 hover:bg-green-700"
                 disabled={isProcessing || !transactionId}
               >
-                {isProcessing ? 'Verifying...' : 'Verify Payment'}
+                {isProcessing ? "Verifying..." : "Verify Payment"}
               </Button>
             </div>
           </div>

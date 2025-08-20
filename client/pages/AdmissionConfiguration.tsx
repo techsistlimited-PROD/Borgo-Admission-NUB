@@ -63,7 +63,10 @@ import {
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
-import { PROGRAM_ELIGIBILITY_RULES, type ProgramEligibilityRule } from "../lib/eligibilityRules";
+import {
+  PROGRAM_ELIGIBILITY_RULES,
+  type ProgramEligibilityRule,
+} from "../lib/eligibilityRules";
 import { GraduationCap } from "lucide-react";
 
 interface AdmissionSettings {
@@ -1270,14 +1273,17 @@ export default function AdmissionConfiguration() {
                 Comprehensive Eligibility Rules & Admission Requirements
               </CardTitle>
               <p className="text-sm text-gray-600 mt-2">
-                View program-specific eligibility requirements and admission test information
+                View program-specific eligibility requirements and admission
+                test information
               </p>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
                 {/* Global Settings Summary */}
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 mb-3">📋 Admission Test & Payment Settings</h4>
+                  <h4 className="font-semibold text-blue-800 mb-3">
+                    📋 Admission Test & Payment Settings
+                  </h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div>
                       <Label className="font-medium">Standard Test Fee:</Label>
@@ -1289,25 +1295,36 @@ export default function AdmissionConfiguration() {
                     </div>
                     <div>
                       <Label className="font-medium">Admit Card:</Label>
-                      <p className="text-gray-700">Download after payment verification</p>
+                      <p className="text-gray-700">
+                        Download after payment verification
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Program Requirements Overview */}
                 <div>
-                  <h4 className="font-semibold text-deep-plum mb-4">🎓 Program-wise Eligibility Requirements</h4>
+                  <h4 className="font-semibold text-deep-plum mb-4">
+                    🎓 Program-wise Eligibility Requirements
+                  </h4>
                   <div className="space-y-4">
                     {PROGRAM_ELIGIBILITY_RULES.map((rule) => (
-                      <Card key={rule.programId} className="border border-gray-200">
+                      <Card
+                        key={rule.programId}
+                        className="border border-gray-200"
+                      >
                         <CardHeader className="pb-3">
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
-                              <CardTitle className="text-lg text-deep-plum">{rule.programName}</CardTitle>
+                              <CardTitle className="text-lg text-deep-plum">
+                                {rule.programName}
+                              </CardTitle>
                               <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
                                 <span className="flex items-center gap-1">
                                   <GraduationCap className="w-4 h-4" />
-                                  {rule.level === 'undergraduate' ? 'Undergraduate' : 'Postgraduate'}
+                                  {rule.level === "undergraduate"
+                                    ? "Undergraduate"
+                                    : "Postgraduate"}
                                 </span>
                                 {rule.requiresAdmissionTest && (
                                   <span className="flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-1 rounded">
@@ -1323,8 +1340,8 @@ export default function AdmissionConfiguration() {
                                 )}
                                 {rule.admissionTestFee && (
                                   <span className="flex items-center gap-1 text-green-600 bg-green-50 px-2 py-1 rounded font-medium">
-                                    <DollarSign className="w-4 h-4" />
-                                    ৳{rule.admissionTestFee}
+                                    <DollarSign className="w-4 h-4" />৳
+                                    {rule.admissionTestFee}
                                   </span>
                                 )}
                               </div>
@@ -1340,11 +1357,41 @@ export default function AdmissionConfiguration() {
                                   🇧🇩 Bangla Medium
                                 </h5>
                                 <div className="space-y-1 text-green-700">
-                                  <p>• Min SSC GPA: <strong>{rule.eligibilityRules.bangla_medium.minimumSSCGPA}</strong></p>
-                                  <p>• Min HSC GPA: <strong>{rule.eligibilityRules.bangla_medium.minimumHSCGPA}</strong></p>
-                                  <p>• Total Required: <strong>{rule.eligibilityRules.bangla_medium.minimumTotalGPA}</strong></p>
-                                  {rule.eligibilityRules.bangla_medium.allowedGroups && (
-                                    <p className="text-xs">• Groups: {rule.eligibilityRules.bangla_medium.allowedGroups.join(', ')}</p>
+                                  <p>
+                                    • Min SSC GPA:{" "}
+                                    <strong>
+                                      {
+                                        rule.eligibilityRules.bangla_medium
+                                          .minimumSSCGPA
+                                      }
+                                    </strong>
+                                  </p>
+                                  <p>
+                                    • Min HSC GPA:{" "}
+                                    <strong>
+                                      {
+                                        rule.eligibilityRules.bangla_medium
+                                          .minimumHSCGPA
+                                      }
+                                    </strong>
+                                  </p>
+                                  <p>
+                                    • Total Required:{" "}
+                                    <strong>
+                                      {
+                                        rule.eligibilityRules.bangla_medium
+                                          .minimumTotalGPA
+                                      }
+                                    </strong>
+                                  </p>
+                                  {rule.eligibilityRules.bangla_medium
+                                    .allowedGroups && (
+                                    <p className="text-xs">
+                                      • Groups:{" "}
+                                      {rule.eligibilityRules.bangla_medium.allowedGroups.join(
+                                        ", ",
+                                      )}
+                                    </p>
                                   )}
                                 </div>
                               </div>
@@ -1357,11 +1404,49 @@ export default function AdmissionConfiguration() {
                                   🇬🇧 English Medium
                                 </h5>
                                 <div className="space-y-1 text-blue-700">
-                                  <p>• O Level: <strong>≥{rule.eligibilityRules.english_medium.minimumOLevelSubjects}</strong> subjects</p>
-                                  <p>• A Level: <strong>≥{rule.eligibilityRules.english_medium.minimumALevelSubjects}</strong> subjects</p>
-                                  <p>• Need: <strong>{rule.eligibilityRules.english_medium.requiredGrades.countOfBGrades} B's + {rule.eligibilityRules.english_medium.requiredGrades.countOfCGrades} C's</strong></p>
-                                  <p className="text-xs">• Best 7 subjects considered</p>
-                                  <p className="text-xs">• Scale: A=5, B=4, C=3.5, D=3, E=2</p>
+                                  <p>
+                                    • O Level:{" "}
+                                    <strong>
+                                      ≥
+                                      {
+                                        rule.eligibilityRules.english_medium
+                                          .minimumOLevelSubjects
+                                      }
+                                    </strong>{" "}
+                                    subjects
+                                  </p>
+                                  <p>
+                                    • A Level:{" "}
+                                    <strong>
+                                      ≥
+                                      {
+                                        rule.eligibilityRules.english_medium
+                                          .minimumALevelSubjects
+                                      }
+                                    </strong>{" "}
+                                    subjects
+                                  </p>
+                                  <p>
+                                    • Need:{" "}
+                                    <strong>
+                                      {
+                                        rule.eligibilityRules.english_medium
+                                          .requiredGrades.countOfBGrades
+                                      }{" "}
+                                      B's +{" "}
+                                      {
+                                        rule.eligibilityRules.english_medium
+                                          .requiredGrades.countOfCGrades
+                                      }{" "}
+                                      C's
+                                    </strong>
+                                  </p>
+                                  <p className="text-xs">
+                                    • Best 7 subjects considered
+                                  </p>
+                                  <p className="text-xs">
+                                    • Scale: A=5, B=4, C=3.5, D=3, E=2
+                                  </p>
                                 </div>
                               </div>
                             )}
@@ -1373,14 +1458,47 @@ export default function AdmissionConfiguration() {
                                   🎓 Diploma Background
                                 </h5>
                                 <div className="space-y-1 text-orange-700">
-                                  <p>• Min SSC GPA: <strong>{rule.eligibilityRules.diploma.minimumSSCGPA}</strong></p>
-                                  <p>• Min Diploma CGPA: <strong>{rule.eligibilityRules.diploma.minimumDiplomaCGPA}</strong></p>
-                                  <p>• Total Required: <strong>{rule.eligibilityRules.diploma.minimumTotalGPA}</strong></p>
-                                  {rule.eligibilityRules.diploma.requiresScienceBackground && (
-                                    <p className="text-xs">• Science background required</p>
+                                  <p>
+                                    • Min SSC GPA:{" "}
+                                    <strong>
+                                      {
+                                        rule.eligibilityRules.diploma
+                                          .minimumSSCGPA
+                                      }
+                                    </strong>
+                                  </p>
+                                  <p>
+                                    • Min Diploma CGPA:{" "}
+                                    <strong>
+                                      {
+                                        rule.eligibilityRules.diploma
+                                          .minimumDiplomaCGPA
+                                      }
+                                    </strong>
+                                  </p>
+                                  <p>
+                                    • Total Required:{" "}
+                                    <strong>
+                                      {
+                                        rule.eligibilityRules.diploma
+                                          .minimumTotalGPA
+                                      }
+                                    </strong>
+                                  </p>
+                                  {rule.eligibilityRules.diploma
+                                    .requiresScienceBackground && (
+                                    <p className="text-xs">
+                                      • Science background required
+                                    </p>
                                   )}
-                                  {rule.eligibilityRules.diploma.allowedDiplomaPrograms && (
-                                    <p className="text-xs">• Programs: {rule.eligibilityRules.diploma.allowedDiplomaPrograms.join(', ')}</p>
+                                  {rule.eligibilityRules.diploma
+                                    .allowedDiplomaPrograms && (
+                                    <p className="text-xs">
+                                      • Programs:{" "}
+                                      {rule.eligibilityRules.diploma.allowedDiplomaPrograms.join(
+                                        ", ",
+                                      )}
+                                    </p>
                                   )}
                                 </div>
                               </div>
@@ -1393,15 +1511,43 @@ export default function AdmissionConfiguration() {
                                   🎓 Postgraduate
                                 </h5>
                                 <div className="space-y-1 text-purple-700">
-                                  <p>• Min Bachelor CGPA: <strong>{rule.eligibilityRules.postgraduate.minimumBachelorCGPA}</strong></p>
-                                  {rule.eligibilityRules.postgraduate.noThirdDivision && (
-                                    <p className="text-xs">• No third division allowed</p>
+                                  <p>
+                                    • Min Bachelor CGPA:{" "}
+                                    <strong>
+                                      {
+                                        rule.eligibilityRules.postgraduate
+                                          .minimumBachelorCGPA
+                                      }
+                                    </strong>
+                                  </p>
+                                  {rule.eligibilityRules.postgraduate
+                                    .noThirdDivision && (
+                                    <p className="text-xs">
+                                      • No third division allowed
+                                    </p>
                                   )}
-                                  {rule.eligibilityRules.postgraduate.minimumWorkExperience && (
-                                    <p className="text-xs">• <strong>{rule.eligibilityRules.postgraduate.minimumWorkExperience}+</strong> years experience</p>
+                                  {rule.eligibilityRules.postgraduate
+                                    .minimumWorkExperience && (
+                                    <p className="text-xs">
+                                      •{" "}
+                                      <strong>
+                                        {
+                                          rule.eligibilityRules.postgraduate
+                                            .minimumWorkExperience
+                                        }
+                                        +
+                                      </strong>{" "}
+                                      years experience
+                                    </p>
                                   )}
-                                  {rule.eligibilityRules.postgraduate.requiredBachelorDegree && (
-                                    <p className="text-xs">• Degrees: {rule.eligibilityRules.postgraduate.requiredBachelorDegree.join(', ')}</p>
+                                  {rule.eligibilityRules.postgraduate
+                                    .requiredBachelorDegree && (
+                                    <p className="text-xs">
+                                      • Degrees:{" "}
+                                      {rule.eligibilityRules.postgraduate.requiredBachelorDegree.join(
+                                        ", ",
+                                      )}
+                                    </p>
                                   )}
                                 </div>
                               </div>
@@ -1409,20 +1555,33 @@ export default function AdmissionConfiguration() {
                           </div>
 
                           {/* Additional Requirements & Year Restrictions */}
-                          {(rule.subjectRequirements || rule.specialRequirements || rule.allowedPassingYears) && (
+                          {(rule.subjectRequirements ||
+                            rule.specialRequirements ||
+                            rule.allowedPassingYears) && (
                             <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded">
-                              <h6 className="font-medium text-gray-800 mb-2">📋 Additional Requirements</h6>
+                              <h6 className="font-medium text-gray-800 mb-2">
+                                📋 Additional Requirements
+                              </h6>
                               <div className="text-sm text-gray-700 space-y-1">
-                                {rule.subjectRequirements && rule.subjectRequirements.map((req, index) => (
-                                  <p key={index}>• {req}</p>
-                                ))}
-                                {rule.specialRequirements && rule.specialRequirements.map((req, index) => (
-                                  <p key={index}>• {req}</p>
-                                ))}
+                                {rule.subjectRequirements &&
+                                  rule.subjectRequirements.map((req, index) => (
+                                    <p key={index}>• {req}</p>
+                                  ))}
+                                {rule.specialRequirements &&
+                                  rule.specialRequirements.map((req, index) => (
+                                    <p key={index}>• {req}</p>
+                                  ))}
                                 {rule.allowedPassingYears && (
                                   <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
-                                    <p className="font-medium text-yellow-800">📅 Year Restriction:</p>
-                                    <p className="text-yellow-700">HSC passing years: <strong>{rule.allowedPassingYears.join(', ')}</strong></p>
+                                    <p className="font-medium text-yellow-800">
+                                      📅 Year Restriction:
+                                    </p>
+                                    <p className="text-yellow-700">
+                                      HSC passing years:{" "}
+                                      <strong>
+                                        {rule.allowedPassingYears.join(", ")}
+                                      </strong>
+                                    </p>
                                   </div>
                                 )}
                               </div>
@@ -1439,14 +1598,34 @@ export default function AdmissionConfiguration() {
                   <AlertCircle className="w-4 h-4" />
                   <AlertDescription>
                     <div className="space-y-2">
-                      <p><strong>📝 Important Notes:</strong></p>
+                      <p>
+                        <strong>📝 Important Notes:</strong>
+                      </p>
                       <ul className="list-disc list-inside space-y-1 text-sm">
-                        <li>These requirements are based on official Northern University Bangladesh admission criteria</li>
-                        <li>All GPA/CGPA calculations are automatically verified during the application process</li>
-                        <li>Programs marked with "Admission Test Required" need fee payment for admit card download</li>
-                        <li>Payment verification is done automatically through bKash integration</li>
-                        <li>Viva voce is conducted after passing the written test (where applicable)</li>
-                        <li>Year restrictions apply to ensure recent academic qualifications</li>
+                        <li>
+                          These requirements are based on official Northern
+                          University Bangladesh admission criteria
+                        </li>
+                        <li>
+                          All GPA/CGPA calculations are automatically verified
+                          during the application process
+                        </li>
+                        <li>
+                          Programs marked with "Admission Test Required" need
+                          fee payment for admit card download
+                        </li>
+                        <li>
+                          Payment verification is done automatically through
+                          bKash integration
+                        </li>
+                        <li>
+                          Viva voce is conducted after passing the written test
+                          (where applicable)
+                        </li>
+                        <li>
+                          Year restrictions apply to ensure recent academic
+                          qualifications
+                        </li>
                       </ul>
                     </div>
                   </AlertDescription>

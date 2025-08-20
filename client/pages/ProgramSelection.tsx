@@ -91,9 +91,11 @@ export default function ProgramSelection() {
   >([]);
 
   // Academic Background Information
-  const [academicBackgroundType, setAcademicBackgroundType] = useState<AcademicBackgroundType>(
-    (applicationData.academicBackgroundType as AcademicBackgroundType) || 'bangla_medium'
-  );
+  const [academicBackgroundType, setAcademicBackgroundType] =
+    useState<AcademicBackgroundType>(
+      (applicationData.academicBackgroundType as AcademicBackgroundType) ||
+        "bangla_medium",
+    );
 
   // Bangla Medium (SSC + HSC)
   const [sscGPA, setSscGPA] = useState<string>(
@@ -124,7 +126,8 @@ export default function ProgramSelection() {
   const [bachelorInstitution, setBachelorInstitution] = useState<string>("");
   const [workExperience, setWorkExperience] = useState<string>("");
   const [hasThirdDivision, setHasThirdDivision] = useState<boolean>(false);
-  const [hasScienceBackground, setHasScienceBackground] = useState<boolean>(false);
+  const [hasScienceBackground, setHasScienceBackground] =
+    useState<boolean>(false);
 
   // Selected Waivers
   const [selectedWaivers, setSelectedWaivers] = useState<string[]>(
@@ -397,18 +400,28 @@ export default function ProgramSelection() {
         setShowEligibilityCheck(false);
       }
     }
-  }, [selectedProgram, academicBackgroundType, sscGPA, hscGPA, diplomaCGPA, bachelorCGPA, oLevelSubjects, aLevelSubjects, toast]);
+  }, [
+    selectedProgram,
+    academicBackgroundType,
+    sscGPA,
+    hscGPA,
+    diplomaCGPA,
+    bachelorCGPA,
+    oLevelSubjects,
+    aLevelSubjects,
+    toast,
+  ]);
 
   // Helper function to check if required academic info is provided
   const hasRequiredAcademicInfo = (): boolean => {
     switch (academicBackgroundType) {
-      case 'bangla_medium':
+      case "bangla_medium":
         return !!(sscGPA && hscGPA);
-      case 'english_medium':
+      case "english_medium":
         return oLevelSubjects.length >= 5 && aLevelSubjects.length >= 2;
-      case 'diploma':
+      case "diploma":
         return !!(sscGPA && diplomaCGPA);
-      case 'postgraduate':
+      case "postgraduate":
         return !!bachelorCGPA;
       default:
         return false;
@@ -424,22 +437,22 @@ export default function ProgramSelection() {
     };
 
     switch (academicBackgroundType) {
-      case 'bangla_medium':
+      case "bangla_medium":
         if (sscGPA) record.sscGPA = parseFloat(sscGPA);
         if (hscGPA) record.hscGPA = parseFloat(hscGPA);
         if (sscYear) record.sscYear = parseInt(sscYear);
         if (hscYear) record.hscYear = parseInt(hscYear);
         break;
-      case 'english_medium':
+      case "english_medium":
         record.oLevelSubjects = oLevelSubjects;
         record.aLevelSubjects = aLevelSubjects;
         break;
-      case 'diploma':
+      case "diploma":
         if (sscGPA) record.sscGPA = parseFloat(sscGPA);
         if (diplomaCGPA) record.diplomaCGPA = parseFloat(diplomaCGPA);
         record.diplomaProgram = diplomaProgram;
         break;
-      case 'postgraduate':
+      case "postgraduate":
         if (bachelorCGPA) record.bachelorCGPA = parseFloat(bachelorCGPA);
         record.bachelorDegree = bachelorDegree;
         record.bachelorInstitution = bachelorInstitution;
@@ -676,7 +689,8 @@ export default function ProgramSelection() {
         if (eligibilityResult?.requiresAdmissionTest) {
           toast({
             title: "Next Step: Admission Test",
-            description: "Complete your application and pay admission test fee to get admit card.",
+            description:
+              "Complete your application and pay admission test fee to get admit card.",
           });
         }
 
@@ -1150,94 +1164,110 @@ export default function ProgramSelection() {
               )}
 
               {/* Eligibility Checker */}
-            {selectedProgram && hasRequiredAcademicInfo() && (
-              <Card className="bg-white shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5" />
-                    Eligibility Verification & Admission Requirements
-                  </CardTitle>
-                  <p className="text-sm text-gray-600 mt-2">
-                    We check your academic qualifications against the official university requirements for your selected program
-                  </p>
-                </CardHeader>
+              {selectedProgram && hasRequiredAcademicInfo() && (
+                <Card className="bg-white shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5" />
+                      Eligibility Verification & Admission Requirements
+                    </CardTitle>
+                    <p className="text-sm text-gray-600 mt-2">
+                      We check your academic qualifications against the official
+                      university requirements for your selected program
+                    </p>
+                  </CardHeader>
                   <CardContent className="space-y-4">
                     {eligibilityResult ? (
-                    <div className="space-y-4">
-                      {/* Eligibility Status */}
-                      <div
-                        className={`p-4 rounded-lg border ${
-                          eligibilityResult.isEligible
-                            ? "bg-green-50 border-green-200"
-                            : "bg-red-50 border-red-200"
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          {eligibilityResult.isEligible ? (
-                            <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                          ) : (
-                            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
-                          )}
-                          <div className="flex-1">
-                            <h4
-                              className={`font-semibold ${
-                                eligibilityResult.isEligible
-                                  ? "text-green-800"
-                                  : "text-red-800"
-                              }`}
-                            >
-                              {eligibilityResult.isEligible
-                                ? "✅ Eligible for Admission"
-                                : "❌ Not Eligible"}
-                            </h4>
-                            {eligibilityResult.isEligible && (
-                              <div className="mt-2 space-y-2">
-                                <p className="text-sm text-green-700">
-                                  Congratulations! You meet the minimum eligibility requirements.
-                                </p>
-                                {eligibilityResult.requiresAdmissionTest && (
-                                  <div className="p-3 bg-blue-50 border border-blue-200 rounded">
-                                    <h5 className="font-medium text-blue-800 mb-1">
-                                      📝 Admission Test Required
-                                    </h5>
-                                    <p className="text-sm text-blue-700 mb-2">
-                                      This program requires an admission test {eligibilityResult.requiresViva && 'and viva voce'}.
-                                    </p>
-                                    {eligibilityResult.admissionTestFee && (
-                                      <div className="bg-white p-2 rounded border">
-                                        <div className="flex justify-between items-center">
-                                          <span className="text-sm font-medium">Admission Test Fee:</span>
-                                          <span className="text-lg font-bold text-blue-800">
-                                            ৳{eligibilityResult.admissionTestFee}
-                                          </span>
+                      <div className="space-y-4">
+                        {/* Eligibility Status */}
+                        <div
+                          className={`p-4 rounded-lg border ${
+                            eligibilityResult.isEligible
+                              ? "bg-green-50 border-green-200"
+                              : "bg-red-50 border-red-200"
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            {eligibilityResult.isEligible ? (
+                              <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+                            ) : (
+                              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                            )}
+                            <div className="flex-1">
+                              <h4
+                                className={`font-semibold ${
+                                  eligibilityResult.isEligible
+                                    ? "text-green-800"
+                                    : "text-red-800"
+                                }`}
+                              >
+                                {eligibilityResult.isEligible
+                                  ? "✅ Eligible for Admission"
+                                  : "❌ Not Eligible"}
+                              </h4>
+                              {eligibilityResult.isEligible && (
+                                <div className="mt-2 space-y-2">
+                                  <p className="text-sm text-green-700">
+                                    Congratulations! You meet the minimum
+                                    eligibility requirements.
+                                  </p>
+                                  {eligibilityResult.requiresAdmissionTest && (
+                                    <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+                                      <h5 className="font-medium text-blue-800 mb-1">
+                                        📝 Admission Test Required
+                                      </h5>
+                                      <p className="text-sm text-blue-700 mb-2">
+                                        This program requires an admission test{" "}
+                                        {eligibilityResult.requiresViva &&
+                                          "and viva voce"}
+                                        .
+                                      </p>
+                                      {eligibilityResult.admissionTestFee && (
+                                        <div className="bg-white p-2 rounded border">
+                                          <div className="flex justify-between items-center">
+                                            <span className="text-sm font-medium">
+                                              Admission Test Fee:
+                                            </span>
+                                            <span className="text-lg font-bold text-blue-800">
+                                              ৳
+                                              {
+                                                eligibilityResult.admissionTestFee
+                                              }
+                                            </span>
+                                          </div>
+                                          <p className="text-xs text-gray-600 mt-1">
+                                            Payment required to download admit
+                                            card
+                                          </p>
                                         </div>
-                                        <p className="text-xs text-gray-600 mt-1">
-                                          Payment required to download admit card
-                                        </p>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                                {!eligibilityResult.requiresAdmissionTest && (
-                                  <div className="p-3 bg-green-50 border border-green-200 rounded">
-                                    <h5 className="font-medium text-green-800">
-                                      🎉 Direct Admission Available
-                                    </h5>
-                                    <p className="text-sm text-green-700">
-                                      You qualify for direct admission {eligibilityResult.requiresViva ? 'subject to viva voce' : ''}.
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                            {!eligibilityResult.isEligible && (
-                              <p className="text-sm mt-1 text-red-700">
-                                Please review the requirements below and consider improving your qualifications.
-                              </p>
-                            )}
+                                      )}
+                                    </div>
+                                  )}
+                                  {!eligibilityResult.requiresAdmissionTest && (
+                                    <div className="p-3 bg-green-50 border border-green-200 rounded">
+                                      <h5 className="font-medium text-green-800">
+                                        🎉 Direct Admission Available
+                                      </h5>
+                                      <p className="text-sm text-green-700">
+                                        You qualify for direct admission{" "}
+                                        {eligibilityResult.requiresViva
+                                          ? "subject to viva voce"
+                                          : ""}
+                                        .
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              {!eligibilityResult.isEligible && (
+                                <p className="text-sm mt-1 text-red-700">
+                                  Please review the requirements below and
+                                  consider improving your qualifications.
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
                         {/* Missing Requirements */}
                         {!eligibilityResult.isEligible &&
@@ -1312,128 +1342,245 @@ export default function ProgramSelection() {
                           )}
 
                         {/* Program Requirements Display */}
-                      {selectedProgram && (
-                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                          <h5 className="font-semibold text-gray-800 mb-2">
-                            📋 Official Program Requirements:
-                          </h5>
-                          {(() => {
-                            const programRule = PROGRAM_ELIGIBILITY_RULES.find(r => r.programId === selectedProgram);
-                            const eligibilityRule = programRule?.eligibilityRules[academicBackgroundType];
+                        {selectedProgram && (
+                          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h5 className="font-semibold text-gray-800 mb-2">
+                              📋 Official Program Requirements:
+                            </h5>
+                            {(() => {
+                              const programRule =
+                                PROGRAM_ELIGIBILITY_RULES.find(
+                                  (r) => r.programId === selectedProgram,
+                                );
+                              const eligibilityRule =
+                                programRule?.eligibilityRules[
+                                  academicBackgroundType
+                                ];
 
-                            if (!programRule || !eligibilityRule) {
-                              return <p className="text-sm text-gray-600">Requirements not available for this background type.</p>;
-                            }
+                              if (!programRule || !eligibilityRule) {
+                                return (
+                                  <p className="text-sm text-gray-600">
+                                    Requirements not available for this
+                                    background type.
+                                  </p>
+                                );
+                              }
 
-                            return (
-                              <div className="space-y-2 text-sm text-gray-700">
-                                {academicBackgroundType === 'bangla_medium' && 'minimumSSCGPA' in eligibilityRule && (
-                                  <div>
-                                    <strong>Bangla Medium Requirements:</strong>
-                                    <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
-                                      <li>Minimum SSC GPA: {eligibilityRule.minimumSSCGPA}</li>
-                                      <li>Minimum HSC GPA: {eligibilityRule.minimumHSCGPA}</li>
-                                      <li>Total GPA (SSC + HSC): {eligibilityRule.minimumTotalGPA}</li>
-                                      {eligibilityRule.allowedGroups && (
-                                        <li>Allowed Groups: {eligibilityRule.allowedGroups.join(', ')}</li>
-                                      )}
-                                    </ul>
-                                  </div>
-                                )}
-                                {academicBackgroundType === 'english_medium' && 'minimumOLevelSubjects' in eligibilityRule && (
-                                  <div>
-                                    <strong>English Medium Requirements:</strong>
-                                    <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
-                                      <li>Minimum {eligibilityRule.minimumOLevelSubjects} O-Level subjects</li>
-                                      <li>Minimum {eligibilityRule.minimumALevelSubjects} A-Level subjects</li>
-                                      <li>Required: {eligibilityRule.requiredGrades.countOfBGrades} B grades (4.0 GPA)</li>
-                                      <li>Required: {eligibilityRule.requiredGrades.countOfCGrades} C grades (3.5 GPA)</li>
-                                    </ul>
-                                  </div>
-                                )}
-                                {academicBackgroundType === 'diploma' && 'minimumDiplomaCGPA' in eligibilityRule && (
-                                  <div>
-                                    <strong>Diploma Requirements:</strong>
-                                    <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
-                                      <li>Minimum SSC GPA: {eligibilityRule.minimumSSCGPA}</li>
-                                      <li>Minimum Diploma CGPA: {eligibilityRule.minimumDiplomaCGPA}</li>
-                                      <li>Total GPA (SSC + Diploma): {eligibilityRule.minimumTotalGPA}</li>
-                                      {eligibilityRule.requiresScienceBackground && (
-                                        <li>Science background in SSC required</li>
-                                      )}
-                                    </ul>
-                                  </div>
-                                )}
-                                {academicBackgroundType === 'postgraduate' && 'minimumBachelorCGPA' in eligibilityRule && (
-                                  <div>
-                                    <strong>Postgraduate Requirements:</strong>
-                                    <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
-                                      <li>Minimum Bachelor's CGPA: {eligibilityRule.minimumBachelorCGPA}</li>
-                                      {eligibilityRule.noThirdDivision && (
-                                        <li>No third division/class in any examination</li>
-                                      )}
-                                      {eligibilityRule.requiredBachelorDegree && (
-                                        <li>Required degree: {eligibilityRule.requiredBachelorDegree.join(' or ')}</li>
-                                      )}
-                                      {eligibilityRule.minimumWorkExperience && (
-                                        <li>Minimum {eligibilityRule.minimumWorkExperience} years work experience</li>
-                                      )}
-                                    </ul>
-                                  </div>
-                                )}
-                                {programRule.subjectRequirements && (
-                                  <div className="mt-3">
-                                    <strong>Additional Requirements:</strong>
-                                    <ul className="list-disc list-inside ml-4 mt-1">
-                                      {programRule.subjectRequirements.map((req, index) => (
-                                        <li key={index}>{req}</li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-                                {programRule.allowedPassingYears && (
-                                  <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
-                                    <strong className="text-yellow-800">Year Restriction:</strong>
-                                    <p className="text-yellow-700">HSC passing years: {programRule.allowedPassingYears.join(', ')}</p>
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })()}
-                        </div>
-                      )}
-
-                      {/* Admit Card Generation */}
-                      {eligibilityResult.isEligible && eligibilityResult.requiresAdmissionTest && (
-                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                          <h5 className="font-semibold text-blue-800 mb-3">
-                            🎫 Admit Card Generation
-                          </h5>
-                          <p className="text-sm text-blue-700 mb-4">
-                            After completing your application, you'll need to pay the admission test fee to download your admit card.
-                          </p>
-                          <div className="bg-white p-3 rounded border">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-medium">Admission Test Fee:</span>
-                              <span className="text-xl font-bold text-blue-800">
-                                ৳{eligibilityResult.admissionTestFee}
-                              </span>
-                            </div>
-                            <div className="text-sm text-gray-600 space-y-1">
-                              <p>• Payment method: bKash</p>
-                              <p>• Admit card will be available after payment verification</p>
-                              <p>• Test date and venue will be on the admit card</p>
-                            </div>
+                              return (
+                                <div className="space-y-2 text-sm text-gray-700">
+                                  {academicBackgroundType === "bangla_medium" &&
+                                    "minimumSSCGPA" in eligibilityRule && (
+                                      <div>
+                                        <strong>
+                                          Bangla Medium Requirements:
+                                        </strong>
+                                        <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                                          <li>
+                                            Minimum SSC GPA:{" "}
+                                            {eligibilityRule.minimumSSCGPA}
+                                          </li>
+                                          <li>
+                                            Minimum HSC GPA:{" "}
+                                            {eligibilityRule.minimumHSCGPA}
+                                          </li>
+                                          <li>
+                                            Total GPA (SSC + HSC):{" "}
+                                            {eligibilityRule.minimumTotalGPA}
+                                          </li>
+                                          {eligibilityRule.allowedGroups && (
+                                            <li>
+                                              Allowed Groups:{" "}
+                                              {eligibilityRule.allowedGroups.join(
+                                                ", ",
+                                              )}
+                                            </li>
+                                          )}
+                                        </ul>
+                                      </div>
+                                    )}
+                                  {academicBackgroundType ===
+                                    "english_medium" &&
+                                    "minimumOLevelSubjects" in
+                                      eligibilityRule && (
+                                      <div>
+                                        <strong>
+                                          English Medium Requirements:
+                                        </strong>
+                                        <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                                          <li>
+                                            Minimum{" "}
+                                            {
+                                              eligibilityRule.minimumOLevelSubjects
+                                            }{" "}
+                                            O-Level subjects
+                                          </li>
+                                          <li>
+                                            Minimum{" "}
+                                            {
+                                              eligibilityRule.minimumALevelSubjects
+                                            }{" "}
+                                            A-Level subjects
+                                          </li>
+                                          <li>
+                                            Required:{" "}
+                                            {
+                                              eligibilityRule.requiredGrades
+                                                .countOfBGrades
+                                            }{" "}
+                                            B grades (4.0 GPA)
+                                          </li>
+                                          <li>
+                                            Required:{" "}
+                                            {
+                                              eligibilityRule.requiredGrades
+                                                .countOfCGrades
+                                            }{" "}
+                                            C grades (3.5 GPA)
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    )}
+                                  {academicBackgroundType === "diploma" &&
+                                    "minimumDiplomaCGPA" in eligibilityRule && (
+                                      <div>
+                                        <strong>Diploma Requirements:</strong>
+                                        <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                                          <li>
+                                            Minimum SSC GPA:{" "}
+                                            {eligibilityRule.minimumSSCGPA}
+                                          </li>
+                                          <li>
+                                            Minimum Diploma CGPA:{" "}
+                                            {eligibilityRule.minimumDiplomaCGPA}
+                                          </li>
+                                          <li>
+                                            Total GPA (SSC + Diploma):{" "}
+                                            {eligibilityRule.minimumTotalGPA}
+                                          </li>
+                                          {eligibilityRule.requiresScienceBackground && (
+                                            <li>
+                                              Science background in SSC required
+                                            </li>
+                                          )}
+                                        </ul>
+                                      </div>
+                                    )}
+                                  {academicBackgroundType === "postgraduate" &&
+                                    "minimumBachelorCGPA" in
+                                      eligibilityRule && (
+                                      <div>
+                                        <strong>
+                                          Postgraduate Requirements:
+                                        </strong>
+                                        <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                                          <li>
+                                            Minimum Bachelor's CGPA:{" "}
+                                            {
+                                              eligibilityRule.minimumBachelorCGPA
+                                            }
+                                          </li>
+                                          {eligibilityRule.noThirdDivision && (
+                                            <li>
+                                              No third division/class in any
+                                              examination
+                                            </li>
+                                          )}
+                                          {eligibilityRule.requiredBachelorDegree && (
+                                            <li>
+                                              Required degree:{" "}
+                                              {eligibilityRule.requiredBachelorDegree.join(
+                                                " or ",
+                                              )}
+                                            </li>
+                                          )}
+                                          {eligibilityRule.minimumWorkExperience && (
+                                            <li>
+                                              Minimum{" "}
+                                              {
+                                                eligibilityRule.minimumWorkExperience
+                                              }{" "}
+                                              years work experience
+                                            </li>
+                                          )}
+                                        </ul>
+                                      </div>
+                                    )}
+                                  {programRule.subjectRequirements && (
+                                    <div className="mt-3">
+                                      <strong>Additional Requirements:</strong>
+                                      <ul className="list-disc list-inside ml-4 mt-1">
+                                        {programRule.subjectRequirements.map(
+                                          (req, index) => (
+                                            <li key={index}>{req}</li>
+                                          ),
+                                        )}
+                                      </ul>
+                                    </div>
+                                  )}
+                                  {programRule.allowedPassingYears && (
+                                    <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                                      <strong className="text-yellow-800">
+                                        Year Restriction:
+                                      </strong>
+                                      <p className="text-yellow-700">
+                                        HSC passing years:{" "}
+                                        {programRule.allowedPassingYears.join(
+                                          ", ",
+                                        )}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })()}
                           </div>
-                        </div>
-                      )}
+                        )}
+
+                        {/* Admit Card Generation */}
+                        {eligibilityResult.isEligible &&
+                          eligibilityResult.requiresAdmissionTest && (
+                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                              <h5 className="font-semibold text-blue-800 mb-3">
+                                🎫 Admit Card Generation
+                              </h5>
+                              <p className="text-sm text-blue-700 mb-4">
+                                After completing your application, you'll need
+                                to pay the admission test fee to download your
+                                admit card.
+                              </p>
+                              <div className="bg-white p-3 rounded border">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="font-medium">
+                                    Admission Test Fee:
+                                  </span>
+                                  <span className="text-xl font-bold text-blue-800">
+                                    ৳{eligibilityResult.admissionTestFee}
+                                  </span>
+                                </div>
+                                <div className="text-sm text-gray-600 space-y-1">
+                                  <p>• Payment method: bKash</p>
+                                  <p>
+                                    • Admit card will be available after payment
+                                    verification
+                                  </p>
+                                  <p>
+                                    • Test date and venue will be on the admit
+                                    card
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                       </div>
                     ) : (
                       <div className="space-y-4">
-                      <div className="text-center py-4 text-gray-500">
-                        <Info className="w-8 h-8 mx-auto mb-2" />
-                        <p>Complete your academic information above to check eligibility</p>
-                      </div>
+                        <div className="text-center py-4 text-gray-500">
+                          <Info className="w-8 h-8 mx-auto mb-2" />
+                          <p>
+                            Complete your academic information above to check
+                            eligibility
+                          </p>
+                        </div>
 
                         {/* Test Buttons for Development */}
                         {process.env.NODE_ENV === "development" && (
@@ -1529,26 +1676,40 @@ export default function ProgramSelection() {
                       <Label>Select Your Academic Background</Label>
                       <Select
                         value={academicBackgroundType}
-                        onValueChange={(value) => setAcademicBackgroundType(value as AcademicBackgroundType)}
+                        onValueChange={(value) =>
+                          setAcademicBackgroundType(
+                            value as AcademicBackgroundType,
+                          )
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Choose your academic background" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="bangla_medium">Bangla Medium (SSC + HSC)</SelectItem>
-                          <SelectItem value="english_medium">English Medium (O Level + A Level)</SelectItem>
-                          <SelectItem value="diploma">Diploma Background (SSC + Diploma)</SelectItem>
-                          <SelectItem value="postgraduate">Postgraduate Application (Bachelor's Degree)</SelectItem>
+                          <SelectItem value="bangla_medium">
+                            Bangla Medium (SSC + HSC)
+                          </SelectItem>
+                          <SelectItem value="english_medium">
+                            English Medium (O Level + A Level)
+                          </SelectItem>
+                          <SelectItem value="diploma">
+                            Diploma Background (SSC + Diploma)
+                          </SelectItem>
+                          <SelectItem value="postgraduate">
+                            Postgraduate Application (Bachelor's Degree)
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     {/* Dynamic Academic Fields based on Background Type */}
-                    {academicBackgroundType === 'bangla_medium' && (
+                    {academicBackgroundType === "bangla_medium" && (
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="sscGPA">SSC GPA <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="sscGPA">
+                              SSC GPA <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                               id="sscGPA"
                               type="number"
@@ -1563,7 +1724,9 @@ export default function ProgramSelection() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="hscGPA">HSC GPA <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="hscGPA">
+                              HSC GPA <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                               id="hscGPA"
                               type="number"
@@ -1592,7 +1755,10 @@ export default function ProgramSelection() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="hscYear">HSC Passing Year <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="hscYear">
+                              HSC Passing Year{" "}
+                              <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                               id="hscYear"
                               type="number"
@@ -1610,7 +1776,9 @@ export default function ProgramSelection() {
                           <Checkbox
                             id="fourthSubject"
                             checked={hasFourthSubject}
-                            onCheckedChange={(checked) => setHasFourthSubject(checked as boolean)}
+                            onCheckedChange={(checked) =>
+                              setHasFourthSubject(checked as boolean)
+                            }
                           />
                           <Label htmlFor="fourthSubject" className="text-sm">
                             Had 4th subject in both SSC & HSC
@@ -1620,36 +1788,51 @@ export default function ProgramSelection() {
                           <Checkbox
                             id="scienceBackground"
                             checked={hasScienceBackground}
-                            onCheckedChange={(checked) => setHasScienceBackground(checked as boolean)}
+                            onCheckedChange={(checked) =>
+                              setHasScienceBackground(checked as boolean)
+                            }
                           />
-                          <Label htmlFor="scienceBackground" className="text-sm">
+                          <Label
+                            htmlFor="scienceBackground"
+                            className="text-sm"
+                          >
                             Science background in SSC
                           </Label>
                         </div>
                       </div>
                     )}
 
-                    {academicBackgroundType === 'english_medium' && (
+                    {academicBackgroundType === "english_medium" && (
                       <div className="space-y-4">
                         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                          <h4 className="font-medium text-blue-800 mb-2">O Level & A Level Requirements</h4>
+                          <h4 className="font-medium text-blue-800 mb-2">
+                            O Level & A Level Requirements
+                          </h4>
                           <p className="text-sm text-blue-700">
-                            You need at least 5 O Level subjects and 2 A Level subjects.
-                            Grading scale: A=5, B=4, C=3.5, D=3, E=2
+                            You need at least 5 O Level subjects and 2 A Level
+                            subjects. Grading scale: A=5, B=4, C=3.5, D=3, E=2
                           </p>
                         </div>
                         <div className="text-center py-8 text-gray-500">
-                          <p className="mb-4">O Level & A Level subject entry interface will be implemented here</p>
-                          <p className="text-sm">For now, please contact administration for English Medium applications</p>
+                          <p className="mb-4">
+                            O Level & A Level subject entry interface will be
+                            implemented here
+                          </p>
+                          <p className="text-sm">
+                            For now, please contact administration for English
+                            Medium applications
+                          </p>
                         </div>
                       </div>
                     )}
 
-                    {academicBackgroundType === 'diploma' && (
+                    {academicBackgroundType === "diploma" && (
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="sscGPA">SSC GPA <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="sscGPA">
+                              SSC GPA <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                               id="sscGPA"
                               type="number"
@@ -1664,7 +1847,10 @@ export default function ProgramSelection() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="diplomaCGPA">Diploma CGPA <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="diplomaCGPA">
+                              Diploma CGPA{" "}
+                              <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                               id="diplomaCGPA"
                               type="number"
@@ -1679,11 +1865,16 @@ export default function ProgramSelection() {
                             />
                           </div>
                           <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="diplomaProgram">Diploma Program <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="diplomaProgram">
+                              Diploma Program{" "}
+                              <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                               id="diplomaProgram"
                               value={diplomaProgram}
-                              onChange={(e) => setDiplomaProgram(e.target.value)}
+                              onChange={(e) =>
+                                setDiplomaProgram(e.target.value)
+                              }
                               placeholder="e.g., Computer Science, Civil Engineering"
                               autoComplete="off"
                               data-lpignore="true"
@@ -1694,20 +1885,29 @@ export default function ProgramSelection() {
                           <Checkbox
                             id="scienceBackground"
                             checked={hasScienceBackground}
-                            onCheckedChange={(checked) => setHasScienceBackground(checked as boolean)}
+                            onCheckedChange={(checked) =>
+                              setHasScienceBackground(checked as boolean)
+                            }
                           />
-                          <Label htmlFor="scienceBackground" className="text-sm">
-                            Science background in SSC <span className="text-red-500">*</span>
+                          <Label
+                            htmlFor="scienceBackground"
+                            className="text-sm"
+                          >
+                            Science background in SSC{" "}
+                            <span className="text-red-500">*</span>
                           </Label>
                         </div>
                       </div>
                     )}
 
-                    {academicBackgroundType === 'postgraduate' && (
+                    {academicBackgroundType === "postgraduate" && (
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="bachelorCGPA">Bachelor's CGPA <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="bachelorCGPA">
+                              Bachelor's CGPA{" "}
+                              <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                               id="bachelorCGPA"
                               type="number"
@@ -1722,36 +1922,49 @@ export default function ProgramSelection() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="workExperience">Work Experience (Years)</Label>
+                            <Label htmlFor="workExperience">
+                              Work Experience (Years)
+                            </Label>
                             <Input
                               id="workExperience"
                               type="number"
                               min="0"
                               max="50"
                               value={workExperience}
-                              onChange={(e) => setWorkExperience(e.target.value)}
+                              onChange={(e) =>
+                                setWorkExperience(e.target.value)
+                              }
                               placeholder="0"
                               autoComplete="off"
                               data-lpignore="true"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="bachelorDegree">Bachelor's Degree <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="bachelorDegree">
+                              Bachelor's Degree{" "}
+                              <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                               id="bachelorDegree"
                               value={bachelorDegree}
-                              onChange={(e) => setBachelorDegree(e.target.value)}
+                              onChange={(e) =>
+                                setBachelorDegree(e.target.value)
+                              }
                               placeholder="e.g., Computer Science, Civil Engineering"
                               autoComplete="off"
                               data-lpignore="true"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="bachelorInstitution">Bachelor's Institution</Label>
+                            <Label htmlFor="bachelorInstitution">
+                              Bachelor's Institution
+                            </Label>
                             <Input
                               id="bachelorInstitution"
                               value={bachelorInstitution}
-                              onChange={(e) => setBachelorInstitution(e.target.value)}
+                              onChange={(e) =>
+                                setBachelorInstitution(e.target.value)
+                              }
                               placeholder="University name"
                               autoComplete="off"
                               data-lpignore="true"
@@ -1762,7 +1975,9 @@ export default function ProgramSelection() {
                           <Checkbox
                             id="hasThirdDivision"
                             checked={hasThirdDivision}
-                            onCheckedChange={(checked) => setHasThirdDivision(checked as boolean)}
+                            onCheckedChange={(checked) =>
+                              setHasThirdDivision(checked as boolean)
+                            }
                           />
                           <Label htmlFor="hasThirdDivision" className="text-sm">
                             I have third division/class in any examination

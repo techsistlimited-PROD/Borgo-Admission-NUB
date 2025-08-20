@@ -1,6 +1,13 @@
-import { Card, CardContent } from './ui/card';
-import { Button } from './ui/button';
-import { Download, Calendar, MapPin, Clock, User, GraduationCap } from 'lucide-react';
+import { Card, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
+import {
+  Download,
+  Calendar,
+  MapPin,
+  Clock,
+  User,
+  GraduationCap,
+} from "lucide-react";
 
 interface AdmitCardProps {
   studentInfo: {
@@ -12,7 +19,7 @@ interface AdmitCardProps {
   };
   programInfo: {
     name: string;
-    level: 'undergraduate' | 'postgraduate';
+    level: "undergraduate" | "postgraduate";
   };
   testInfo: {
     date: string;
@@ -27,7 +34,7 @@ export default function AdmitCard({
   studentInfo,
   programInfo,
   testInfo,
-  onDownload
+  onDownload,
 }: AdmitCardProps) {
   return (
     <div className="max-w-2xl mx-auto">
@@ -40,7 +47,10 @@ export default function AdmitCard({
             </h1>
             <p className="text-lg">ADMISSION TEST ADMIT CARD</p>
             <p className="text-sm opacity-90 mt-1">
-              {programInfo.level === 'undergraduate' ? 'Undergraduate' : 'Postgraduate'} Programs
+              {programInfo.level === "undergraduate"
+                ? "Undergraduate"
+                : "Postgraduate"}{" "}
+              Programs
             </p>
           </div>
 
@@ -54,24 +64,32 @@ export default function AdmitCard({
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Name:</label>
+                    <label className="text-sm font-medium text-gray-600">
+                      Name:
+                    </label>
                     <p className="font-semibold">{studentInfo.name}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Application ID:</label>
+                    <label className="text-sm font-medium text-gray-600">
+                      Application ID:
+                    </label>
                     <p className="font-semibold">{studentInfo.applicationId}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Phone:</label>
+                    <label className="text-sm font-medium text-gray-600">
+                      Phone:
+                    </label>
                     <p className="font-semibold">{studentInfo.phone}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Email:</label>
+                    <label className="text-sm font-medium text-gray-600">
+                      Email:
+                    </label>
                     <p className="font-semibold text-sm">{studentInfo.email}</p>
                   </div>
                 </div>
               </div>
-              
+
               {/* Photo */}
               <div className="w-24 h-32 border-2 border-gray-300 rounded flex-shrink-0">
                 {studentInfo.photo ? (
@@ -107,21 +125,27 @@ export default function AdmitCard({
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-accent-purple" />
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Date:</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Date:
+                  </label>
                   <p className="font-semibold">{testInfo.date}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Clock className="w-5 h-5 text-accent-purple" />
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Time:</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Time:
+                  </label>
                   <p className="font-semibold">{testInfo.time}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-accent-purple" />
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Venue:</label>
+                  <label className="text-sm font-medium text-gray-600">
+                    Venue:
+                  </label>
                   <p className="font-semibold">{testInfo.venue}</p>
                 </div>
               </div>
@@ -148,10 +172,11 @@ export default function AdmitCard({
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-center sm:text-left">
                 <p className="text-sm text-gray-600">
-                  Generated on: {new Date().toLocaleDateString('en-GB')}
+                  Generated on: {new Date().toLocaleDateString("en-GB")}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  This is a computer-generated admit card. No signature required.
+                  This is a computer-generated admit card. No signature
+                  required.
                 </p>
               </div>
               <Button
