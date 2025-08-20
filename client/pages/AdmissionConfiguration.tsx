@@ -232,6 +232,9 @@ export default function AdmissionConfiguration() {
       if (documentResponse.success && documentResponse.data) {
         setDocumentRequirements(documentResponse.data);
       }
+
+      // Initialize program configurations
+      initializeProgramConfigurations();
     } catch (error) {
       console.error("Error loading data:", error);
       toast({
