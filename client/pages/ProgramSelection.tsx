@@ -262,7 +262,7 @@ export default function ProgramSelection() {
       title: "প্রোগ্রাম ও বিভ���গ নির্বাচন",
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডেমিক পথ বেছে নিন ও খরচ গণ��া করুন",
-      backToHome: "হোমে ফিরুন",
+      backToHome: "হোমে ফিরু���",
       continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
       semesterSelection: "সেমিস্টার নির্বাচন করুন",
@@ -278,7 +278,7 @@ export default function ProgramSelection() {
       costBreakdown: "খরচের বিভাজন",
       waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
-      sscGPA: "এসএসসি জিপিএ",
+      sscGPA: "এসএ��সি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
@@ -1793,9 +1793,9 @@ export default function ProgramSelection() {
                         variant="outline"
                         size="sm"
                         className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
-                        disabled={!selectedProgram || !hasRequiredAcademicInfo()}
+                        disabled={!selectedProgram || !hasRequiredAcademicInfo() || isCheckingEligibility}
                       >
-                        🔍 Check Eligibility Details
+                        {isCheckingEligibility ? "⏳ Checking..." : "🔍 Check Eligibility Details"}
                       </Button>
                     </div>
 
