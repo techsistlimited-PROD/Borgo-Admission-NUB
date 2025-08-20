@@ -38,6 +38,7 @@ export default function ApplicationSuccess() {
   const [showPayment, setShowPayment] = useState(false);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [admissionTestPaid, setAdmissionTestPaid] = useState(false);
+  const [adminSettings, setAdminSettings] = useState<any>(null);
 
   const trackingId = searchParams.get("trackingId");
 
