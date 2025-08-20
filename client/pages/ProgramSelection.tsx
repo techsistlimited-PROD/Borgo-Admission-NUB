@@ -240,7 +240,7 @@ export default function ProgramSelection() {
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
       costBreakdown: "খরচের বিভাজন",
-      waiverCalculator: "মওকুফ ক্যালকুলেটর",
+      waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "এইচএসসি জিপিএ",
@@ -382,14 +382,63 @@ export default function ProgramSelection() {
     }
   }, [selectedProgram, sscGPA, hscGPA, previousCGPA, admissionType, toast]);
 
-  // Auto-populate test data for development (remove in production)
+  // Clear form data when starting fresh (component mount)
   useEffect(() => {
-    if (!sscGPA && !hscGPA) {
-      // Uncomment for testing:
-      // setSscGPA("4.5");
-      // setHscGPA("4.2");
+    // Check if this is a fresh start (no ongoing application)
+    const urlParams = new URLSearchParams(window.location.search);
+    const isNewApplication = urlParams.get('new') === 'true';
+
+    if (isNewApplication) {
+      // Clear all form data for new application
+      clearAllFormData();
     }
   }, []);
+
+  // Function to clear all form data
+  const clearAllFormData = () => {
+    // Clear React state
+    setSelectedCampus("");
+    setSelectedSemester("");
+    setSelectedSemesterType("");
+    setSelectedProgram("");
+    setSelectedDepartment("");
+    setSscGPA("");
+    setHscGPA("");
+    setHasFourthSubject(false);
+    setSelectedWaivers([]);
+    setAutoSelectedResultWaiver("");
+    setPreviousInstitution("");
+    setPreviousProgram("");
+    setTotalCreditsInProgram("");
+    setCompletedCredits("");
+    setPreviousCGPA("");
+    setReasonForTransfer("");
+    setTranscriptFile(null);
+    setEligibilityResult(null);
+    setEligibilityChecked(false);
+    setShowEligibilityCheck(false);
+
+    // Clear localStorage cache
+    localStorage.removeItem("nu_application_draft");
+
+    // Clear form fields to prevent browser cache
+    const form = document.querySelector('form');
+    if (form) {
+      form.reset();
+    }
+
+    // Clear all input fields manually
+    document.querySelectorAll('input, select, textarea').forEach((element) => {
+      if (element instanceof HTMLInputElement) {
+        element.value = '';
+        element.checked = false;
+      } else if (element instanceof HTMLSelectElement) {
+        element.selectedIndex = 0;
+      } else if (element instanceof HTMLTextAreaElement) {
+        element.value = '';
+      }
+    });
+  };
 
   // Auto-save data when form values change
   useEffect(() => {
@@ -580,6 +629,17 @@ export default function ProgramSelection() {
 
   return (
     <div>
+      {/* Clear Form Button - Add this for easy form reset */}
+      <div className="fixed top-4 right-4 z-50">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={clearAllFormData}
+          className="bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
+        >
+          🗑️ Clear Form
+        </Button>
+      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -833,6 +893,8 @@ export default function ProgramSelection() {
                         value={previousInstitution}
                         onChange={(e) => setPreviousInstitution(e.target.value)}
                         placeholder="Enter previous institution name"
+                        autoComplete="off"
+                        data-lpignore="true"
                       />
                     </div>
                     <div className="space-y-2">
@@ -845,6 +907,8 @@ export default function ProgramSelection() {
                         value={previousProgram}
                         onChange={(e) => setPreviousProgram(e.target.value)}
                         placeholder="Enter previous program"
+                        autoComplete="off"
+                        data-lpignore="true"
                       />
                     </div>
                     <div className="space-y-2">
@@ -860,6 +924,8 @@ export default function ProgramSelection() {
                           setTotalCreditsInProgram(e.target.value)
                         }
                         placeholder="120"
+                        autoComplete="off"
+                        data-lpignore="true"
                       />
                     </div>
                     <div className="space-y-2">
@@ -874,6 +940,8 @@ export default function ProgramSelection() {
                         value={completedCredits}
                         onChange={(e) => setCompletedCredits(e.target.value)}
                         placeholder="60"
+                        autoComplete="off"
+                        data-lpignore="true"
                       />
                     </div>
                     <div className="space-y-2">
@@ -889,6 +957,8 @@ export default function ProgramSelection() {
                         value={previousCGPA}
                         onChange={(e) => setPreviousCGPA(e.target.value)}
                         placeholder="3.50"
+                        autoComplete="off"
+                        data-lpignore="true"
                       />
                     </div>
                     <div className="space-y-2">
@@ -900,6 +970,8 @@ export default function ProgramSelection() {
                         value={reasonForTransfer}
                         onChange={(e) => setReasonForTransfer(e.target.value)}
                         placeholder="Optional reason for transfer"
+                        autoComplete="off"
+                        data-lpignore="true"
                       />
                     </div>
                   </div>
@@ -1231,6 +1303,8 @@ export default function ProgramSelection() {
                         value={sscGPA}
                         onChange={(e) => setSscGPA(e.target.value)}
                         placeholder="0.00"
+                        autoComplete="off"
+                        data-lpignore="true"
                       />
                     </div>
                     <div className="space-y-2">
@@ -1244,6 +1318,8 @@ export default function ProgramSelection() {
                         value={hscGPA}
                         onChange={(e) => setHscGPA(e.target.value)}
                         placeholder="0.00"
+                        autoComplete="off"
+                        data-lpignore="true"
                       />
                     </div>
                   </div>
