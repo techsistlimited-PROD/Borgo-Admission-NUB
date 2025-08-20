@@ -129,7 +129,7 @@ export interface EligibilityCheckResult {
 }
 
 // Program eligibility rules
-export const PROGRAM_ELIGIBILITY_RULES: ProgramEligibilityRule[] = [
+const PROGRAM_ELIGIBILITY_RULES: ProgramEligibilityRule[] = [
   {
     programId: 'bsc_cse',
     programName: 'B.Sc. in Computer Science & Engineering',
