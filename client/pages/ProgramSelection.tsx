@@ -142,7 +142,7 @@ export default function ProgramSelection() {
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
-    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম���পাস" },
   ];
 
   const semesterOptions = [
@@ -228,7 +228,7 @@ export default function ProgramSelection() {
       backToHome: "হোমে ফিরুন",
       continue: "সেভ করে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করুন",
-      semesterSelection: "সেমিস্টার নির্বাচন করুন",
+      semesterSelection: "সেমিস্টার নির���বাচন করুন",
       semesterTypeSelection: "সেমিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
@@ -244,7 +244,7 @@ export default function ProgramSelection() {
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "এইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
-      calculateWaiver: "যোগ্য মও��ুফ গণনা করুন",
+      calculateWaiver: "যোগ্য মওকুফ গণনা করুন",
       availableWaivers: "উপলব্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "বিশেষ মওকুফ",
@@ -264,7 +264,7 @@ export default function ProgramSelection() {
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "���িপিএর ভিত্তিতে কোনো মওকুফ যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্বাচন করুন",
-      selectDepartmentFirst: "প্রথমে একটি বিভাগ নির্বাচন করুন",
+      selectDepartmentFirst: "প���রথমে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
@@ -1078,9 +1078,33 @@ export default function ProgramSelection() {
                       )}
                     </div>
                   ) : (
-                    <div className="text-center py-4 text-gray-500">
-                      <Info className="w-8 h-8 mx-auto mb-2" />
-                      <p>Enter your SSC and HSC GPA to check eligibility</p>
+                    <div className="space-y-4">
+                      <div className="text-center py-4 text-gray-500">
+                        <Info className="w-8 h-8 mx-auto mb-2" />
+                        <p>Enter your SSC and HSC GPA to check eligibility</p>
+                      </div>
+
+                      {/* General Eligibility Information */}
+                      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h5 className="font-semibold text-blue-800 mb-2">📋 General Eligibility Requirements:</h5>
+                        <div className="text-sm text-blue-700 space-y-2">
+                          <div>
+                            <strong>For Bachelor's Programs:</strong>
+                            <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
+                              <li>Minimum GPA 2.5 in both SSC and HSC or equivalent examinations</li>
+                              <li>OR 'O' level in five subjects and 'A' level in two subjects with minimum 'C' grade in each</li>
+                              <li>OR US High School Diploma</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <strong>For Postgraduate Programs:</strong>
+                            <ul className="list-disc list-inside ml-4 mt-1">
+                              <li>Minimum Bachelor degree relevant to the Postgraduate programs</li>
+                              <li>Please refer to specific admission requirements for your desired program</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </CardContent>
