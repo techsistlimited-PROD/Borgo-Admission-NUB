@@ -235,7 +235,7 @@ export default function ProgramSelection() {
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস��টার বেছে নিন",
-      selectSemesterType: "সেমিস্টার ধরন বেছ�� নিন",
+      selectSemesterType: "সেমিস্টার ধরন বেছ�� ন���ন",
       selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের তথ্য",
@@ -253,7 +253,7 @@ export default function ProgramSelection() {
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
       waiverAmount: "মওকুফ পরিমাণ",
-      finalAmount: "চূড়ান্ত পরিমাণ",
+      finalAmount: "চূড়ান্ত পরিম���ণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
       labFee: "ল্যাব ফি",
@@ -269,7 +269,7 @@ export default function ProgramSelection() {
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
+        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত��� চূড়ান্ত খরচ পরিবর্তিত হ��ে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -691,7 +691,8 @@ export default function ProgramSelection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <form autoComplete="off" data-lpignore="true" onSubmit={(e) => e.preventDefault()}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Selection Forms */}
           <div className="lg:col-span-2 space-y-8">
             {/* Campus, Semester, and Semester Type Selection */}
@@ -1594,23 +1595,24 @@ export default function ProgramSelection() {
               </AlertDescription>
             </Alert>
           </div>
-        </div>
+          </div>
 
-        {/* Continue Button */}
-        <div className="mt-8 flex justify-end">
-          <Button
-            onClick={handleContinue}
-            className={`${
-              canProceed
-                ? "bg-deep-plum hover:bg-accent-purple"
-                : "bg-gray-300 cursor-not-allowed"
-            } font-poppins px-8 py-3`}
-            disabled={!canProceed || isSaving}
-          >
-            {isSaving ? t.saving : t.continue}
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
+          {/* Continue Button */}
+          <div className="mt-8 flex justify-end">
+            <Button
+              onClick={handleContinue}
+              className={`${
+                canProceed
+                  ? "bg-deep-plum hover:bg-accent-purple"
+                  : "bg-gray-300 cursor-not-allowed"
+              } font-poppins px-8 py-3`}
+              disabled={!canProceed || isSaving}
+            >
+              {isSaving ? t.saving : t.continue}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
