@@ -44,9 +44,13 @@ import {
   getResultBasedWaivers,
   getSpecialWaivers,
   getAdditionalWaivers,
+  checkEligibility,
+  getEligibilityMessage,
   type Program,
   type Department,
   type WaiverPolicy,
+  type EligibilityCheckResult,
+  type StudentAcademicInfo,
 } from "../lib/programData";
 
 export default function ProgramSelection() {
@@ -224,7 +228,7 @@ export default function ProgramSelection() {
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
-      selectSemester: "সেমিস্টার বেছে নিন",
+      selectSemester: "সেমিস��টার বেছে নিন",
       selectSemesterType: "সেমিস্টার ধরন বেছ�� নিন",
       selectProgram: "আপনার প্রোগ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
@@ -259,7 +263,7 @@ export default function ProgramSelection() {
       enterGPAValues: "যোগ্য মওকুফ দেখতে আপনার এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপেক্ষে",
       costNote:
-        "অতিরিক্ত ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
+        "অতিরিক্�� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিতে চূড়ান্ত খরচ পরিবর্তিত হতে প��রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ডেটা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
