@@ -600,11 +600,14 @@ export function checkProgramEligibility(
   }
 
   // Check year restrictions (only for Bangla Medium and Diploma backgrounds)
-  if (rule.allowedPassingYears &&
-      (academicRecord.backgroundType === 'bangla_medium' || academicRecord.backgroundType === 'diploma')) {
+  if (
+    rule.allowedPassingYears &&
+    (academicRecord.backgroundType === "bangla_medium" ||
+      academicRecord.backgroundType === "diploma")
+  ) {
     if (!academicRecord.hscYear) {
       // Don't fail eligibility if year is not provided, just add warning
-      warnings.push('HSC passing year is recommended for verification');
+      warnings.push("HSC passing year is recommended for verification");
     } else if (!rule.allowedPassingYears.includes(academicRecord.hscYear)) {
       isEligible = false;
       missingRequirements.push(
@@ -635,12 +638,16 @@ function checkBanglaMediumEligibility(
 
   if (!record.sscGPA || record.sscGPA < rule.minimumSSCGPA) {
     isEligible = false;
-    missingRequirements.push(`Minimum SSC GPA ${rule.minimumSSCGPA} required (you have: ${record.sscGPA || 'not provided'})`);
+    missingRequirements.push(
+      `Minimum SSC GPA ${rule.minimumSSCGPA} required (you have: ${record.sscGPA || "not provided"})`,
+    );
   }
 
   if (!record.hscGPA || record.hscGPA < rule.minimumHSCGPA) {
     isEligible = false;
-    missingRequirements.push(`Minimum HSC GPA ${rule.minimumHSCGPA} required (you have: ${record.hscGPA || 'not provided'})`);
+    missingRequirements.push(
+      `Minimum HSC GPA ${rule.minimumHSCGPA} required (you have: ${record.hscGPA || "not provided"})`,
+    );
   }
 
   if (record.sscGPA && record.hscGPA) {

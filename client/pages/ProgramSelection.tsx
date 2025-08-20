@@ -1301,36 +1301,38 @@ export default function ProgramSelection() {
                               </h5>
                               <div className="space-y-2">
                                 {eligibilityResult.suggestedPrograms.map(
-                                (program) => (
-                                  <div
-                                    key={program.programId}
-                                    className="flex items-center justify-between p-2 bg-white rounded border"
-                                  >
-                                    <div>
-                                      <span className="font-medium text-blue-900">
-                                        {program.programName}
-                                      </span>
-                                      <span className="text-sm text-blue-600 ml-2">
-                                        ({program.level})
-                                      </span>
-                                    </div>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => {
-                                        setSelectedProgram(program.programId);
-                                        setAvailableDepartments(
-                                          getDepartmentsByProgram(program.programId),
-                                        );
-                                        setSelectedDepartment("");
-                                      }}
-                                      className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                                  (program) => (
+                                    <div
+                                      key={program.programId}
+                                      className="flex items-center justify-between p-2 bg-white rounded border"
                                     >
-                                      Select
-                                    </Button>
-                                  </div>
-                                ),
-                              )}
+                                      <div>
+                                        <span className="font-medium text-blue-900">
+                                          {program.programName}
+                                        </span>
+                                        <span className="text-sm text-blue-600 ml-2">
+                                          ({program.level})
+                                        </span>
+                                      </div>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                          setSelectedProgram(program.programId);
+                                          setAvailableDepartments(
+                                            getDepartmentsByProgram(
+                                              program.programId,
+                                            ),
+                                          );
+                                          setSelectedDepartment("");
+                                        }}
+                                        className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                                      >
+                                        Select
+                                      </Button>
+                                    </div>
+                                  ),
+                                )}
                               </div>
                             </div>
                           )}
@@ -1352,17 +1354,35 @@ export default function ProgramSelection() {
                                 ];
 
                               if (!programRule) {
-                                return <p className="text-sm text-gray-600">Program requirements not found.</p>;
+                                return (
+                                  <p className="text-sm text-gray-600">
+                                    Program requirements not found.
+                                  </p>
+                                );
                               }
 
                               if (!eligibilityRule) {
                                 return (
                                   <div className="text-sm text-gray-600">
-                                    <p className="mb-2">Your academic background type ({academicBackgroundType.replace('_', ' ')}) is not supported for this program.</p>
-                                    <p className="font-medium">Supported backgrounds:</p>
+                                    <p className="mb-2">
+                                      Your academic background type (
+                                      {academicBackgroundType.replace("_", " ")}
+                                      ) is not supported for this program.
+                                    </p>
+                                    <p className="font-medium">
+                                      Supported backgrounds:
+                                    </p>
                                     <ul className="list-disc list-inside ml-4 mt-1">
-                                      {Object.keys(programRule.eligibilityRules).map(bg => (
-                                        <li key={bg}>{bg.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</li>
+                                      {Object.keys(
+                                        programRule.eligibilityRules,
+                                      ).map((bg) => (
+                                        <li key={bg}>
+                                          {bg
+                                            .replace("_", " ")
+                                            .replace(/\b\w/g, (l) =>
+                                              l.toUpperCase(),
+                                            )}
+                                        </li>
                                       ))}
                                     </ul>
                                   </div>
@@ -1531,14 +1551,19 @@ export default function ProgramSelection() {
                                           ", ",
                                         )}
                                       </p>
-                                      {hscYear && !programRule.allowedPassingYears.includes(parseInt(hscYear)) && (
-                                        <p className="text-red-600 text-xs mt-1">
-                                          ❌ Your HSC year ({hscYear}) is not in the allowed range
-                                        </p>
-                                      )}
+                                      {hscYear &&
+                                        !programRule.allowedPassingYears.includes(
+                                          parseInt(hscYear),
+                                        ) && (
+                                          <p className="text-red-600 text-xs mt-1">
+                                            ❌ Your HSC year ({hscYear}) is not
+                                            in the allowed range
+                                          </p>
+                                        )}
                                       {!hscYear && (
                                         <p className="text-blue-600 text-xs mt-1">
-                                          ℹ️ Please enter your HSC passing year above for verification
+                                          ℹ️ Please enter your HSC passing year
+                                          above for verification
                                         </p>
                                       )}
                                     </div>
