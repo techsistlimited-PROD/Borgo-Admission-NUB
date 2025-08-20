@@ -89,7 +89,7 @@ export const departments: Department[] = [
     name: 'Mechanical Engineering',
     namebn: 'মেকানিক্যাল ইঞ্জিনিয়ারিং',
     description: 'Mechanical systems and manufacturing',
-    descriptionbn: 'যান্ত্রিক সিস্টেম এবং উৎপাদন',
+    descriptionbn: 'যান্ত্রিক সিস্টেম এবং ��ৎপাদন',
     faculty: 'Faculty of Engineering',
     facultybn: 'ইঞ্জিনিয়ারিং অনুষদ'
   },
@@ -191,6 +191,16 @@ export const programs: Program[] = [
       labFee: 8000,
       others: 5000,
       total: 73000
+    },
+    eligibilityRequirements: {
+      level: 'undergraduate',
+      minSSCGPA: 2.5,
+      minHSCGPA: 2.5,
+      oLevelSubjects: 5,
+      aLevelSubjects: 2,
+      alternativeQualifications: ['US High School Diploma', 'International Baccalaureate'],
+      additionalRequirements: ['Minimum C grade in each O Level and A Level subject'],
+      specificRequirements: 'Minimum GPA 2.5 in both SSC and HSC or equivalent examinations or O level in five subjects and A level in two subjects with minimum C grade in each or US High School Diploma.'
     }
   },
   {
@@ -307,7 +317,7 @@ export const waiverPolicies: WaiverPolicy[] = [
     criteria: 'GPA 3.50-3.99 in both SSC and HSC',
     criteriabn: 'এসএসসি ও এইচএসসি উভয়ে জিপিএ ৩.৫০-৩.৯৯',
     description: '10% tuition waiver for average academic performance',
-    descriptionbn: 'গড় একাডেমিক পারফরম্যান্সের জন্য ১০% টিউশন ফি মওকুফ'
+    descriptionbn: 'গড় একাডে���িক পারফরম্যান্সের জন্য ১০% টিউশন ফি মওকুফ'
   },
   
   // Special Waivers
