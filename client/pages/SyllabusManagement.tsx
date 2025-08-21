@@ -497,7 +497,11 @@ export default function SyllabusManagement() {
                             setFormData({
                               ...formData,
                               feeStructure: {
-                                ...formData.feeStructure!,
+                                admissionFee: 35000,
+                                perCreditFee: 2500,
+                                labFeePerCourse: 5000,
+                                otherFees: 15000,
+                                ...formData.feeStructure,
                                 perCreditFee: parseInt(e.target.value),
                               },
                             })
