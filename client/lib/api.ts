@@ -1,9 +1,15 @@
-// API Client for Northern University Backend
+// Frontend-Only API Client (Uses Mock Data - No Backend Required)
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "/api";
+import { mockApi } from "./mockApi";
+import type {
+  LoginCredentials,
+  ApiResponse,
+  User,
+  Application,
+} from "./mockApi";
 
-// Types
+export type { LoginCredentials, ApiResponse, User, Application };
+
 export interface LoginRequest {
   identifier: string;
   password: string;
@@ -13,23 +19,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   success: boolean;
   token: string;
-  user: {
-    id: number;
-    uuid: string;
-    name: string;
-    email: string;
-    type: "applicant" | "admin";
-    university_id?: string;
-    department?: string;
-    designation?: string;
-  };
-}
-
-export interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
+  user: User;
 }
 
 class ApiClient {
@@ -50,72 +40,42 @@ class ApiClient {
     localStorage.removeItem("nu_token");
   }
 
-  private async request<T = any>(
-    endpoint: string,
-    options: RequestInit = {},
-  ): Promise<ApiResponse<T>> {
-    const url = `${API_BASE_URL}${endpoint}`;
-
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-      ...options.headers,
-    };
-
-    if (this.token) {
-      headers.Authorization = `Bearer ${this.token}`;
-    }
-
-    try {
-      const response = await fetch(url, {
-        ...options,
-        headers,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || `HTTP error! status: ${response.status}`);
-      }
-
-      return data;
-    } catch (error) {
-      console.error(`API request failed: ${endpoint}`, error);
-      return {
-        success: false,
-        error:
-          error instanceof Error ? error.message : "Unknown error occurred",
-      };
-    }
-  }
-
   // Authentication
   async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
-    const response = await this.request<LoginResponse>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(credentials),
-    });
+    const response = await mockApi.login(credentials);
 
     if (response.success && response.data?.token) {
       this.setToken(response.data.token);
+      return {
+        success: true,
+        data: {
+          success: true,
+          token: response.data.token,
+          user: response.data.user,
+        },
+      };
     }
 
-    return response;
+    return {
+      success: false,
+      error: response.error || "Login failed",
+    };
   }
 
   async logout(): Promise<ApiResponse> {
-    const response = await this.request("/auth/logout", {
-      method: "POST",
-    });
-
+    const response = await mockApi.logout();
     if (response.success) {
       this.clearToken();
     }
-
     return response;
   }
 
-  async getCurrentUser(): Promise<ApiResponse> {
-    return this.request("/auth/me");
+  async getCurrentUser(): Promise<ApiResponse<{ user: User }>> {
+    if (!this.token) {
+      return { success: false, error: "No token available" };
+    }
+
+    return await mockApi.getCurrentUser(this.token);
   }
 
   // Applications
@@ -125,57 +85,39 @@ class ApiClient {
     page?: number;
     limit?: number;
   }): Promise<ApiResponse> {
-    const searchParams = new URLSearchParams();
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined) {
-          searchParams.append(key, value.toString());
-        }
-      });
-    }
-
-    const query = searchParams.toString();
-    return this.request(`/applications${query ? `?${query}` : ""}`);
+    return await mockApi.getApplications(params);
   }
 
   async getApplication(id: string): Promise<ApiResponse> {
-    return this.request(`/applications/${id}`);
+    return await mockApi.getApplication(id);
   }
 
   async createApplication(data: any): Promise<ApiResponse> {
-    return this.request("/applications", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    return await mockApi.createApplication(data);
   }
 
   async updateApplicationStatus(
     id: string,
     status: string,
   ): Promise<ApiResponse> {
-    return this.request(`/applications/${id}/status`, {
-      method: "PATCH",
-      body: JSON.stringify({ status }),
-    });
+    return await mockApi.updateApplicationStatus(id, status);
   }
 
   async generateApplicationIds(id: string): Promise<ApiResponse> {
-    return this.request(`/applications/${id}/generate-ids`, {
-      method: "POST",
-    });
+    return await mockApi.generateApplicationIds(id);
   }
 
   async getApplicationStats(): Promise<ApiResponse> {
-    return this.request("/applications/stats/dashboard");
+    return await mockApi.getApplicationStats();
   }
 
   // Programs and Departments
   async getPrograms(): Promise<ApiResponse> {
-    return this.request("/programs");
+    return await mockApi.getPrograms();
   }
 
   async getDepartments(): Promise<ApiResponse> {
-    return this.request("/programs/departments");
+    return await mockApi.getDepartments();
   }
 
   async calculateCost(data: {
@@ -183,26 +125,64 @@ class ApiClient {
     department_code: string;
     waivers?: Array<{ type: string; value: number }>;
   }): Promise<ApiResponse> {
-    return this.request("/programs/calculate-cost", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    return await mockApi.calculateCost(data);
   }
 
   // Referrers
   async getReferrers(): Promise<ApiResponse> {
-    return this.request("/referrers");
+    return await mockApi.getReferrers();
   }
 
   async validateReferrer(employee_id: string): Promise<ApiResponse> {
-    return this.request("/referrers/validate", {
-      method: "POST",
-      body: JSON.stringify({ employee_id }),
-    });
+    return await mockApi.validateReferrer(employee_id);
   }
 
   async getReferrerStats(employee_id: string): Promise<ApiResponse> {
-    return this.request(`/referrers/${employee_id}/stats`);
+    return await mockApi.getReferrerStats(employee_id);
+  }
+
+  // Configuration methods
+  async getAdmissionSettings(): Promise<ApiResponse> {
+    return await mockApi.getAdmissionSettings();
+  }
+
+  async updateAdmissionSettings(settings: any): Promise<ApiResponse> {
+    return await mockApi.updateAdmissionSettings(settings);
+  }
+
+  async getPaymentMethods(): Promise<ApiResponse> {
+    return await mockApi.getPaymentMethods();
+  }
+
+  async createPaymentMethod(method: any): Promise<ApiResponse> {
+    return await mockApi.createPaymentMethod(method);
+  }
+
+  async updatePaymentMethod(id: string, method: any): Promise<ApiResponse> {
+    return await mockApi.updatePaymentMethod(id, method);
+  }
+
+  async deletePaymentMethod(id: string): Promise<ApiResponse> {
+    return await mockApi.deletePaymentMethod(id);
+  }
+
+  async getDocumentRequirements(): Promise<ApiResponse> {
+    return await mockApi.getDocumentRequirements();
+  }
+
+  async createDocumentRequirement(requirement: any): Promise<ApiResponse> {
+    return await mockApi.createDocumentRequirement(requirement);
+  }
+
+  async updateDocumentRequirement(
+    id: string,
+    requirement: any,
+  ): Promise<ApiResponse> {
+    return await mockApi.updateDocumentRequirement(id, requirement);
+  }
+
+  async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
+    return await mockApi.deleteDocumentRequirement(id);
   }
 }
 
@@ -211,12 +191,22 @@ const apiClient = new ApiClient();
 
 export default apiClient;
 
-// Helper function for checking API connection
+// Helper function for demo purposes
 export const checkApiConnection = async (): Promise<boolean> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/ping`);
-    return response.ok;
-  } catch {
-    return false;
-  }
+  // Always return true since we're using mock data
+  return true;
 };
+
+// Demo credentials for easy testing
+export const getDemoCredentials = () => ({
+  applicant: {
+    identifier: "APP123456",
+    password: "temp123456",
+    type: "applicant" as const,
+  },
+  admin: {
+    identifier: "admin@nu.edu.bd",
+    password: "admin123",
+    type: "admin" as const,
+  },
+});

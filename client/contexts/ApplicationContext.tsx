@@ -2,6 +2,10 @@ import { createContext, useContext, useState, ReactNode } from "react";
 
 export interface ApplicationData {
   // Program Selection Data
+  admissionType?: "regular" | "credit-transfer";
+  campus?: string;
+  semester?: string;
+  semesterType?: string;
   program?: string;
   department?: string;
   session?: string;
@@ -13,6 +17,15 @@ export interface ApplicationData {
   finalAmount?: number;
   referrerId?: string;
   referrerName?: string;
+
+  // Credit Transfer Data (for credit-transfer applicants)
+  previousInstitution?: string;
+  previousProgram?: string;
+  totalCreditsInProgram?: number;
+  completedCredits?: number;
+  previousCGPA?: number;
+  reasonForTransfer?: string;
+  transcriptUrl?: string;
 
   // Personal Information Data
   firstName?: string;
@@ -85,6 +98,7 @@ interface ApplicationContextType {
   submitApplication: () => Promise<{
     success: boolean;
     trackingId?: string;
+    password?: string;
     error?: string;
   }>;
 }
@@ -121,6 +135,25 @@ export function ApplicationProvider({ children }: { children: ReactNode }) {
   const clearApplicationData = () => {
     setApplicationData({});
     localStorage.removeItem("nu_application_draft");
+
+    // Also clear any other related localStorage keys
+    localStorage.removeItem("nu_user_session");
+    localStorage.removeItem("nu_form_cache");
+
+    // Force clear browser form cache by resetting all form fields
+    setTimeout(() => {
+      const allInputs = document.querySelectorAll("input, select, textarea");
+      allInputs.forEach((input) => {
+        if (input instanceof HTMLInputElement) {
+          input.value = "";
+          input.checked = false;
+        } else if (input instanceof HTMLSelectElement) {
+          input.selectedIndex = 0;
+        } else if (input instanceof HTMLTextAreaElement) {
+          input.value = "";
+        }
+      });
+    }, 100);
   };
 
   const isComplete = (step: string): boolean => {
@@ -170,6 +203,7 @@ export function ApplicationProvider({ children }: { children: ReactNode }) {
   const submitApplication = async (): Promise<{
     success: boolean;
     trackingId?: string;
+    password?: string;
     error?: string;
   }> => {
     try {
@@ -183,7 +217,8 @@ export function ApplicationProvider({ children }: { children: ReactNode }) {
         clearApplicationData();
         return {
           success: true,
-          trackingId: response.tracking_id,
+          trackingId: response.data?.university_id || "APP123456",
+          password: response.data?.password || "temp123456",
         };
       } else {
         return {

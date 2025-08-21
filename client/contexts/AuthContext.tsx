@@ -5,18 +5,8 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import apiClient, { LoginRequest, LoginResponse } from "../lib/api";
-
-export interface User {
-  id: number;
-  uuid: string;
-  name: string;
-  email: string;
-  type: "applicant" | "admin";
-  university_id?: string;
-  department?: string;
-  designation?: string;
-}
+import apiClient, { LoginRequest, getDemoCredentials } from "../lib/api";
+import type { User } from "../lib/api";
 
 interface AuthContextType {
   user: User | null;
@@ -132,14 +122,5 @@ export function useAuth() {
   return context;
 }
 
-// Mock credentials for demo purposes (for testing during development)
-export const getDemoCredentials = () => ({
-  applicant: {
-    university_id: "NU24BCS001",
-    password: "temp123456",
-  },
-  admin: {
-    email: "admin@nu.edu.bd",
-    password: "admin123",
-  },
-});
+// Export demo credentials for easy access
+export { getDemoCredentials };

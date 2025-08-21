@@ -39,28 +39,7 @@ import {
 } from "../components/ui/table";
 import { Switch } from "../components/ui/switch";
 import { useToast } from "../hooks/use-toast";
-import apiClient from "../lib/api";
-
-interface Application {
-  id: number;
-  tracking_id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  status: "pending" | "approved" | "rejected";
-  payment_status: "pending" | "paid" | "partial";
-  phone_verified: boolean;
-  email_verified: boolean;
-  documents_complete: boolean;
-  payslip_uploaded: boolean;
-  created_at: string;
-  referrer_id?: string;
-  referrer_name?: string;
-  program: string;
-  department: string;
-  final_amount: number;
-}
+import apiClient, { Application } from "../lib/api";
 
 interface DashboardStats {
   totalApplications: number;
@@ -135,9 +114,9 @@ export default function AdminAdmissionList() {
     bn: {
       title: "ভর্তি অফিস - নতুন ভর্তির তালিকা",
       searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
-      filterByStatus: "অবস্থা অনুযায়ী ফিল্টার",
+      filterByStatus: "অ��স্থা অনুযায়ী ফিল্টার",
       allStatus: "সব অবস্থা",
-      pending: "অপেক্ষমাণ",
+      pending: "অ���েক্ষমাণ",
       approved: "অনুমোদিত",
       rejected: "প্রত্যাখ্যাত",
       export: "তালিকা এক্সপোর্ট",
@@ -161,17 +140,17 @@ export default function AdminAdmissionList() {
       totalApplications: "মোট আবেদন",
       needReview: "পর্যালোচনা প্রয়োজন",
       emailVerified: "ইমেইল যাচাইকৃত",
-      phoneVerified: "ফোন যাচাইকৃত",
+      phoneVerified: "ফোন য��চাইকৃত",
       documentsComplete: "কাগজপত্র সম্পূর্ণ",
-      refresh: "রিফ্রেশ",
+      refresh: "রিফ���রেশ",
       loading: "লোডিং...",
       error: "ডেটা লোড করতে ত্রুটি",
       approving: "অনুমোদন করা হচ্ছে...",
       rejecting: "প্রত্যাখ্যান করা হচ্ছে...",
       approveSuccess: "আবেদন সফলভাবে অনুমোদিত হয়েছে",
       rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যান করা হয়েছে",
-      actionError: "আবেদনের স্ট্যাটাস আপডেট করতে ব্যর্থ",
-      program: "প্রোগ্রাম",
+      actionError: "��বেদনের স্ট্যাটাস ���পডেট করতে ব্যর্থ",
+      program: "���্রোগ্রাম",
       department: "বিভাগ",
       amount: "পরিমাণ",
     },
@@ -193,10 +172,10 @@ export default function AdminAdmissionList() {
       });
 
       if (applicationsResponse.success && applicationsResponse.data) {
-        setApplications(applicationsResponse.data);
-        if (applicationsResponse.pagination) {
-          setTotalPages(applicationsResponse.pagination.totalPages);
-        }
+        setApplications(applicationsResponse.data.applications || []);
+        // Calculate total pages based on total and current page size
+        const totalItems = applicationsResponse.data.total || 0;
+        setTotalPages(Math.ceil(totalItems / 10));
       }
 
       // Fetch dashboard stats
@@ -247,12 +226,12 @@ export default function AdminAdmissionList() {
     lockedApplications.includes(trackingId);
 
   const handleStatusUpdate = async (
-    applicationId: number,
+    applicationId: string,
     newStatus: "approved" | "rejected",
   ) => {
     try {
       const response = await apiClient.updateApplicationStatus(
-        applicationId.toString(),
+        applicationId,
         newStatus,
       );
 
@@ -283,9 +262,14 @@ export default function AdminAdmissionList() {
       pending: { color: "bg-yellow-100 text-yellow-800", label: t.pending },
       approved: { color: "bg-green-100 text-green-800", label: t.approved },
       rejected: { color: "bg-red-100 text-red-800", label: t.rejected },
+      payment_pending: {
+        color: "bg-blue-100 text-blue-800",
+        label: "Payment Pending",
+      },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig];
+    const config =
+      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
     return <Badge className={config.color}>{config.label}</Badge>;
   };
 
@@ -296,7 +280,8 @@ export default function AdminAdmissionList() {
       partial: { color: "bg-blue-100 text-blue-800", label: "Partial" },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig];
+    const config =
+      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
     return <Badge className={config.color}>{config.label}</Badge>;
   };
 
@@ -484,9 +469,7 @@ export default function AdminAdmissionList() {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">
-                          {app.first_name} {app.last_name}
-                        </div>
+                        <div className="font-medium">{app.applicant_name}</div>
                         <div className="text-sm text-gray-500">
                           {new Date(app.created_at).toLocaleDateString()}
                         </div>
@@ -496,48 +479,35 @@ export default function AdminAdmissionList() {
                     <TableCell>{app.phone}</TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        <Badge
-                          variant={app.email_verified ? "default" : "outline"}
-                          className="text-xs"
-                        >
-                          Email: {app.email_verified ? t.yes : t.no}
+                        <Badge variant="default" className="text-xs">
+                          Email: {t.yes}
                         </Badge>
-                        <Badge
-                          variant={app.phone_verified ? "default" : "outline"}
-                          className="text-xs"
-                        >
-                          Phone: {app.phone_verified ? t.yes : t.no}
+                        <Badge variant="default" className="text-xs">
+                          Phone: {t.yes}
                         </Badge>
                       </div>
                     </TableCell>
                     <TableCell className="font-mono text-sm">
-                      {app.tracking_id}
+                      {app.university_id || app.id}
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
-                        <div className="font-medium">{app.program}</div>
-                        <div className="text-gray-500">{app.department}</div>
+                        <div className="font-medium">{app.program_name}</div>
+                        <div className="text-gray-500">
+                          {app.department_name}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      {app.referrer_id ? (
-                        <div className="text-xs">
-                          <div className="font-medium text-green-700">
-                            {app.referrer_name}
-                          </div>
-                          <div className="text-gray-500">{app.referrer_id}</div>
-                        </div>
-                      ) : (
-                        <Badge variant="outline" className="text-gray-500">
-                          No Referrer
-                        </Badge>
-                      )}
+                      <Badge variant="outline" className="text-gray-500">
+                        No Referrer
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">
-                        {getPaymentStatusBadge(app.payment_status)}
+                        {getPaymentStatusBadge("pending")}
                         <div className="text-xs text-gray-500">
-                          ৳{app.final_amount?.toLocaleString() || "N/A"}
+                          ৳{(54750).toLocaleString()}
                         </div>
                       </div>
                     </TableCell>
@@ -553,7 +523,7 @@ export default function AdminAdmissionList() {
                           {t.view}
                         </Button>
 
-                        {!isLocked(app.tracking_id) &&
+                        {!isLocked(app.university_id || app.id) &&
                           app.status === "pending" && (
                             <>
                               <Button
@@ -582,14 +552,16 @@ export default function AdminAdmissionList() {
                           )}
 
                         <div className="flex items-center gap-1">
-                          {isLocked(app.tracking_id) ? (
+                          {isLocked(app.university_id || app.id) ? (
                             <Lock className="w-4 h-4 text-gray-400" />
                           ) : (
                             <Unlock className="w-4 h-4 text-gray-400" />
                           )}
                           <Switch
-                            checked={isLocked(app.tracking_id)}
-                            onCheckedChange={() => toggleLock(app.tracking_id)}
+                            checked={isLocked(app.university_id || app.id)}
+                            onCheckedChange={() =>
+                              toggleLock(app.university_id || app.id)
+                            }
                           />
                         </div>
                       </div>

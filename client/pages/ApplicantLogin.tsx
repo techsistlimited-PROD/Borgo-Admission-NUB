@@ -50,7 +50,7 @@ export default function ApplicantLogin() {
     if (success) {
       navigate("/dashboard");
     } else {
-      setError("Invalid University ID or password. Please try again.");
+      setError("Invalid Applicant ID or password. Please try again.");
     }
 
     setIsSubmitting(false);
@@ -58,7 +58,7 @@ export default function ApplicantLogin() {
 
   const loadDemoCredentials = () => {
     // For testing purposes - in production, remove this function
-    setUniversityId("NU24BCS001");
+    setUniversityId("APP123456");
     setPassword("temp123456");
   };
 
@@ -75,7 +75,7 @@ export default function ApplicantLogin() {
                 Applicant Portal Login
               </CardTitle>
               <p className="text-gray-600 mt-2">
-                Enter your University ID and temporary password
+                Enter your Applicant ID and temporary password
               </p>
             </div>
           </CardHeader>
@@ -101,13 +101,13 @@ export default function ApplicantLogin() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="universityId">University ID</Label>
+                <Label htmlFor="universityId">Applicant ID</Label>
                 <Input
                   id="universityId"
                   type="text"
                   value={universityId}
                   onChange={(e) => setUniversityId(e.target.value)}
-                  placeholder="e.g., NU24BCS001"
+                  placeholder="e.g., APP123456"
                   className="font-mono"
                 />
               </div>
@@ -181,7 +181,7 @@ export default function ApplicantLogin() {
             <div className="border-t pt-4">
               <div className="text-center">
                 <Link
-                  to="/admin-login"
+                  to="/admin"
                   className="text-sm text-gray-600 hover:text-deep-plum"
                 >
                   Admin Login →

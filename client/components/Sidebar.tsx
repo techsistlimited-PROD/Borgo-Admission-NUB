@@ -16,6 +16,7 @@ import {
   ChevronRight,
   LogIn,
   UserCheck,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
@@ -38,21 +39,26 @@ export default function Sidebar({ userType }: SidebarProps) {
     },
     { name: "Personal Info", path: "/personal-information", icon: User },
     { name: "Academic History", path: "/academic-history", icon: FileText },
-    { name: "Review & Payment", path: "/review-payment", icon: CreditCard },
+    { name: "Review & Submit", path: "/application-review", icon: FileText },
   ];
 
   const applicantPages = [
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Payment Portal", path: "/payment-portal", icon: CreditCard },
     { name: "Notifications", path: "/notifications", icon: Bell },
   ];
 
   const adminPages = [
     { name: "Admissions", path: "/admin/admissions", icon: Users },
-    { name: "Applicant Detail", path: "/admin/applicant/1", icon: Shield },
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
     { name: "Reports", path: "/admin/reports", icon: PieChart },
     { name: "Templates", path: "/admin/templates", icon: Mail },
-    { name: "Configuration", path: "/admin/configuration", icon: LayoutDashboard },
+    { name: "Syllabus", path: "/admin/syllabus", icon: BookOpen },
+    {
+      name: "Configuration",
+      path: "/admin/configuration",
+      icon: LayoutDashboard,
+    },
   ];
 
   const loginPages = [

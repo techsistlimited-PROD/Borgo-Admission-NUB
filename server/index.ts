@@ -5,6 +5,7 @@ import path from "path";
 import { connectDB, closeDB } from "./database/config.js";
 import { initializeSchema } from "./database/schema.js";
 import { seedDatabase } from "./database/seeder.js";
+import { runMigration } from "./database/migration.js";
 import { handleDemo } from "./routes/demo.js";
 
 // Import API routes
@@ -22,7 +23,7 @@ import {
   getDocumentRequirements,
   createDocumentRequirement,
   updateDocumentRequirement,
-  deleteDocumentRequirement
+  deleteDocumentRequirement,
 } from "./routes/admission-settings.js";
 
 export function createServer() {
@@ -96,9 +97,34 @@ export function createServer() {
 export async function initializeDatabase() {
   try {
     console.log("🔄 Initializing database...");
-    await connectDB();
-    await initializeSchema();
-    await seedDatabase();
+
+    const databaseType = process.env.DATABASE_TYPE || "sqlite";
+
+    if (databaseType === "supabase") {
+      console.log("🌐 Using Supabase database");
+
+      // Dynamically import Supabase only when needed
+      const { supabase } = await import("./database/supabase.js");
+
+      // Test Supabase connection
+      const { data, error } = await supabase
+        .from("applications")
+        .select("count", { count: "exact", head: true });
+
+      if (error) {
+        console.error("❌ Supabase connection failed:", error);
+        throw error;
+      }
+
+      console.log("✅ Supabase database connected successfully");
+    } else {
+      console.log("💾 Using SQLite database (local development)");
+      await connectDB();
+      await initializeSchema();
+      await runMigration();
+      await seedDatabase();
+    }
+
     console.log("✅ Database initialization completed");
   } catch (error) {
     console.error("❌ Database initialization failed:", error);

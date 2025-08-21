@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
@@ -54,6 +54,7 @@ export default function ReviewPayment() {
     academic: false,
     waiver: false,
   });
+  const payslipFileInputRef = useRef<HTMLInputElement>(null);
 
   const texts = {
     en: {
@@ -104,7 +105,7 @@ export default function ReviewPayment() {
       paymentMethods: "পেমেন্ট পদ্ধতি",
       programSelection: "প্রোগ্রাম নির্বাচন",
       personalInfo: "ব্যক্তিগত তথ্য",
-      academicHistory: "শিক্ষাগত ইতিহাস",
+      academicHistory: "শিক্ষা���ত ইতিহাস",
       waiverInfo: "মওকুফ তথ্য",
       paymentDetails: "পেমেন্ট বিবরণ",
       bkash: "বিকাশ",
@@ -125,7 +126,7 @@ export default function ReviewPayment() {
       bkashInstructions:
         "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       rocketInstructions:
-        "এই নাম্বারে টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
+        "এই নাম্বার�� টাকা পাঠান: ০১৭০০০০০০০০০ এবং লেনদেনের রসিদ আপলোড করুন",
       offlineInstructions:
         "বিশ্ববিদ্যালয়ের ক্যাশ কাউন���টারে পেমেন্ট করুন এবং রসিদ আপলোড করুন",
       totalAmount: "মোট পরিমাণ",
@@ -484,12 +485,47 @@ export default function ReviewPayment() {
               </div>
               <div className="space-y-2">
                 <Label>{t.payslipUpload}</Label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors">
+                <div
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-accent-purple transition-colors cursor-pointer"
+                  onClick={() => payslipFileInputRef.current?.click()}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.add(
+                      "border-accent-purple",
+                      "bg-purple-50",
+                    );
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove(
+                      "border-accent-purple",
+                      "bg-purple-50",
+                    );
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove(
+                      "border-accent-purple",
+                      "bg-purple-50",
+                    );
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                      const file = files[0];
+                      const acceptedTypes = [".pdf", ".jpg", ".jpeg", ".png"];
+                      const fileExtension =
+                        "." + file.name.split(".").pop()?.toLowerCase();
+                      if (acceptedTypes.includes(fileExtension)) {
+                        // Handle file upload here
+                      }
+                    }
+                  }}
+                >
                   <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                   <p className="text-sm text-gray-600">
                     Click or drag payslip here
                   </p>
                   <input
+                    ref={payslipFileInputRef}
                     type="file"
                     className="hidden"
                     accept=".pdf,.jpg,.jpeg,.png"
@@ -601,9 +637,9 @@ export default function ReviewPayment() {
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="sm">
+                          <span className="px-3 py-1 text-xs border border-gray-300 rounded-md text-gray-600 hover:text-deep-plum hover:border-deep-plum transition-colors">
                             {t.edit}
-                          </Button>
+                          </span>
                           {expandedSections[section.id] ? (
                             <ChevronUp className="w-4 h-4" />
                           ) : (
