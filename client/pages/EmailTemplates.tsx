@@ -99,7 +99,7 @@ export default function EmailTemplates() {
       sendEmail: "ইমেইল পাঠান",
       sendSMS: "এসএমএস পাঠান",
       preview: "প্রিভিউ",
-      copy: "কপ��",
+      copy: "কপি",
       variables: "উপলব্ধ ভেরিয়েবল",
       sendTest: "টেস্ট পাঠান",
       sending: "পাঠানো হচ্ছে...",
@@ -119,8 +119,8 @@ export default function EmailTemplates() {
       program: "প্রোগ্রাম",
       university: "বিশ্ববিদ্যালয়ের নাম",
       contactEmail: "যোগাযোগ ইমেইল",
-      contactPhone: "যো���াযোগ ফোন",
-      portalLink: "পোর্টাল লিংক",
+      contactPhone: "যোগাযোগ ফোন",
+      portalLink: "পোর্টাল ��িংক",
       invoiceLink: "ইনভয়েস লিংক",
     },
   };
@@ -641,10 +641,10 @@ IT Department
                     value={
                       currentStudent
                         ? renderTemplate(
-                            getTemplate("email").content || "",
+                            getEmailTemplate().content || "",
                             currentStudent,
                           )
-                        : getTemplate("email").content || ""
+                        : getEmailTemplate().content || ""
                     }
                     readOnly
                     className={`font-mono text-sm ${currentStudent ? "bg-blue-50 border-blue-200" : "bg-gray-50"}`}
