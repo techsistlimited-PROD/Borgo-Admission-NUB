@@ -55,14 +55,20 @@ export default function Sidebar({ userType }: SidebarProps) {
 
   const adminPages = [
     { name: "Admissions", path: "/admin/admissions", icon: Users },
+    { name: "Waiver Management", path: "/admin/waivers", icon: Award },
+    { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
+    { name: "Student Management", path: "/admin/student-management", icon: UserCog },
+    { name: "Account Management", path: "/admin/account-management", icon: Lock },
+    { name: "Admission Circular", path: "/admin/admission-circular", icon: Mail },
+    { name: "Change History", path: "/admin/change-history", icon: History },
     { name: "Reports", path: "/admin/reports", icon: PieChart },
     { name: "Templates", path: "/admin/templates", icon: Mail },
     { name: "Syllabus", path: "/admin/syllabus", icon: BookOpen },
     {
       name: "Configuration",
       path: "/admin/configuration",
-      icon: LayoutDashboard,
+      icon: Settings,
     },
   ];
 
