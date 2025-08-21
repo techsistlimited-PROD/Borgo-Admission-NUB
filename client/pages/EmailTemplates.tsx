@@ -117,7 +117,7 @@ export default function EmailTemplates() {
       password: "পাসওয়ার্ড",
       amount: "পরিমাণ",
       program: "প্রোগ্রাম",
-      university: "বিশ্ববিদ্যালয়ে�� নাম",
+      university: "বিশ্ববিদ্যালয়ের নাম",
       contactEmail: "যোগাযোগ ইমেইল",
       contactPhone: "যোগাযোগ ফোন",
       portalLink: "পোর্টাল লিংক",
@@ -365,13 +365,21 @@ IT Department
     navigator.clipboard.writeText(text);
   };
 
+  const getEmailTemplate = () => {
+    return emailTemplates[selectedTemplate as keyof typeof emailTemplates] || { subject: "", content: "" };
+  };
+
+  const getSmsTemplate = () => {
+    return {
+      content: smsTemplates[selectedTemplate as keyof typeof smsTemplates] || "",
+    };
+  };
+
   const getTemplate = (type: "email" | "sms") => {
     if (type === "email") {
-      return emailTemplates[selectedTemplate as keyof typeof emailTemplates] || { subject: "", content: "" };
+      return getEmailTemplate();
     } else {
-      return {
-        content: smsTemplates[selectedTemplate as keyof typeof smsTemplates] || "",
-      };
+      return getSmsTemplate();
     }
   };
 
