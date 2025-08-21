@@ -548,6 +548,204 @@ export default function SyllabusManagement() {
                 </div>
               </DialogContent>
             </Dialog>
+
+            {/* Edit Syllabus Dialog */}
+            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Edit Syllabus</DialogTitle>
+                  <DialogDescription>
+                    Update the academic syllabus information
+                  </DialogDescription>
+                </DialogHeader>
+                <Tabs defaultValue="basic" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                    <TabsTrigger value="fees">Fee Structure</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="basic" className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="editProgram">Program</Label>
+                        <Select
+                          value={formData.programId}
+                          onValueChange={(value) => {
+                            const program = programs.find(
+                              (p) => p.id === value,
+                            );
+                            setFormData({
+                              ...formData,
+                              programId: value,
+                              programName: program?.name || "",
+                            });
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select program" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {programs.map((program) => (
+                              <SelectItem key={program.id} value={program.id}>
+                                {program.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editPackageCode">Package Code</Label>
+                        <Input
+                          id="editPackageCode"
+                          value={formData.packageCode || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              packageCode: e.target.value,
+                            })
+                          }
+                          placeholder="e.g., CSE-B-2024"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="editTotalSemesters">Total Semesters</Label>
+                        <Input
+                          id="editTotalSemesters"
+                          type="number"
+                          value={formData.totalSemesters || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              totalSemesters: parseInt(e.target.value),
+                            })
+                          }
+                          placeholder="8"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editTotalCredits">Total Credits</Label>
+                        <Input
+                          id="editTotalCredits"
+                          type="number"
+                          value={formData.totalCredits || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              totalCredits: parseInt(e.target.value),
+                            })
+                          }
+                          placeholder="144"
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="fees" className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="editAdmissionFee">
+                          Admission Fee (BDT)
+                        </Label>
+                        <Input
+                          id="editAdmissionFee"
+                          type="number"
+                          value={formData.feeStructure?.admissionFee || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              feeStructure: {
+                                ...formData.feeStructure!,
+                                admissionFee: parseInt(e.target.value),
+                              },
+                            })
+                          }
+                          placeholder="35000"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editPerCreditFee">
+                          Per Credit Fee (BDT)
+                        </Label>
+                        <Input
+                          id="editPerCreditFee"
+                          type="number"
+                          value={formData.feeStructure?.perCreditFee || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              feeStructure: {
+                                ...formData.feeStructure!,
+                                perCreditFee: parseInt(e.target.value),
+                              },
+                            })
+                          }
+                          placeholder="2500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="editLabFee">Lab Fee Per Course (BDT)</Label>
+                        <Input
+                          id="editLabFee"
+                          type="number"
+                          value={formData.feeStructure?.labFeePerCourse || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              feeStructure: {
+                                ...formData.feeStructure!,
+                                labFeePerCourse: parseInt(e.target.value),
+                              },
+                            })
+                          }
+                          placeholder="5000"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editOtherFees">Other Fees (BDT)</Label>
+                        <Input
+                          id="editOtherFees"
+                          type="number"
+                          value={formData.feeStructure?.otherFees || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              feeStructure: {
+                                ...formData.feeStructure!,
+                                otherFees: parseInt(e.target.value),
+                              },
+                            })
+                          }
+                          placeholder="15000"
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditDialogOpen(false);
+                      setFormData({});
+                      setSelectedSyllabus(null);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={handleUpdateSyllabus}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Update Syllabus
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
