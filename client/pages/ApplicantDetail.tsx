@@ -115,7 +115,7 @@ export default function ApplicantDetail() {
       ugcNote: 'UGC ID is used for certificate authorization and is visible only to admin staff.'
     },
     bn: {
-      title: 'আবেদনকারীর বিবরণ',
+      title: 'আবেদনকারীর ব��বরণ',
       backToList: 'ভর্তি তালিকায় ফিরুন',
       admissionStatus: 'ভর্তির অবস্থা',
       paymentStatus: 'পেমেন্ট অবস্থা',
@@ -186,7 +186,7 @@ export default function ApplicantDetail() {
       generateIDs: 'ছাত্র আইডি তৈরি করুন',
       sendSMSId: 'এসএমএসে আইডি পাঠান',
       sendEmailId: 'ইমেইলে আইডি পাঠান',
-      idsGenerated: 'ছাত্র আইডি ��ফলভাবে তৈরি হয়েছে',
+      idsGenerated: 'ছাত্র আইডি ����ফলভাবে তৈরি হয়েছে',
       smsSent: 'এসএমএস সফলভাবে পাঠানো হয়েছে',
       emailSent: 'ইমেইল সফলভাবে পাঠানো হয়েছে',
       batch: 'ব্যাচ',
@@ -250,15 +250,19 @@ export default function ApplicantDetail() {
         verified: { color: 'bg-green-100 text-green-800', label: t.verified, icon: CheckCircle },
         failed: { color: 'bg-red-100 text-red-800', label: t.failed, icon: XCircle }
       }
-    };
+    } as const;
 
-    const config = statusConfigs[type][status as keyof typeof statusConfigs[typeof type]];
+    const typeConfig = statusConfigs[type];
+    const config = typeConfig[status as keyof typeof typeConfig];
+
     if (!config) {
       return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
     }
+
+    const IconComponent = config.icon;
     return (
       <Badge className={config.color}>
-        <config.icon className="w-3 h-3 mr-1" />
+        <IconComponent className="w-3 h-3 mr-1" />
         {config.label}
       </Badge>
     );
