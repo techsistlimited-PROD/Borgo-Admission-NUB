@@ -425,8 +425,8 @@ export default function AdmissionCircular() {
                   <div>
                     <Label>Semester</Label>
                     <Select 
-                      value={newCircular.semester} 
-                      onValueChange={(value) => setNewCircular(prev => ({ ...prev, semester: value }))}
+                      value={newCircular.semester}
+                      onValueChange={(value) => setNewCircular(prev => ({ ...prev, semester: value as "Spring" | "Summer" | "Fall" }))}
                     >
                       <SelectTrigger>
                         <SelectValue />
