@@ -105,7 +105,7 @@ export default function EmailTemplates() {
       sending: "পাঠানো হচ্ছে...",
       sent: "সফলভাবে পাঠানো হয়েছে!",
       error: "পাঠাতে ব্যর্থ",
-      admissionApproved: "ভর্ত��� অনুমোদিত",
+      admissionApproved: "ভর্তি অনুমোদিত",
       paymentReceived: "পেমেন্ট প্রাপ্ত",
       documentsRequired: "কাগজপত্র প্রয়ো��ন",
       applicationRejected: "আবেদন প্রত্যাখ্যাত",
@@ -761,10 +761,10 @@ IT Department
                     value={
                       currentStudent
                         ? renderTemplate(
-                            getTemplate("sms").content || "",
+                            getSmsTemplate().content || "",
                             currentStudent,
                           )
-                        : getTemplate("sms").content || ""
+                        : getSmsTemplate().content || ""
                     }
                     readOnly
                     className={`font-mono text-sm ${currentStudent ? "bg-blue-50 border-blue-200" : "bg-gray-50"}`}
