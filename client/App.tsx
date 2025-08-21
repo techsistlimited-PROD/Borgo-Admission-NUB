@@ -300,6 +300,16 @@ function AppContent() {
                 )
               }
             />
+            <Route
+              path="/admin/id-card-generation"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <IdCardGeneration />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
 
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
