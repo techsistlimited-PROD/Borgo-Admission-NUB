@@ -669,7 +669,7 @@ IT Department
                           <div className="text-sm text-gray-600 mb-2">
                             Subject:{" "}
                             {renderTemplate(
-                              getTemplate("email")?.subject || "",
+                              getTemplate("email").subject || "",
                               currentStudent,
                             )}
                           </div>
