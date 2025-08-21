@@ -654,61 +654,6 @@ export default function AdmissionConfiguration() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="w-5 h-5" />
-                Fee Structure
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="admission_fee">Admission Fee (৳)</Label>
-                  <Input
-                    id="admission_fee"
-                    type="number"
-                    value={settings.admission_fee || 0}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        admission_fee: Number(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="late_fee">Late Fee (৳)</Label>
-                  <Input
-                    id="late_fee"
-                    type="number"
-                    value={settings.late_fee || 0}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        late_fee: Number(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="max_waiver">Max Waiver (%)</Label>
-                  <Input
-                    id="max_waiver"
-                    type="number"
-                    max="100"
-                    value={settings.max_waiver_percentage || 0}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        max_waiver_percentage: Number(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           <Card>
             <CardHeader>
