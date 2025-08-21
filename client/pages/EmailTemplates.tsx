@@ -46,8 +46,8 @@ export default function EmailTemplates() {
   const [sendStatus, setSendStatus] = useState<"idle" | "success" | "error">(
     "idle",
   );
-  const [selectedSemester, setSelectedSemester] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("all");
+  const [selectedDepartment, setSelectedDepartment] = useState("all");
   const [selectedStudent, setSelectedStudent] = useState("");
 
   const texts = {
@@ -179,9 +179,9 @@ export default function EmailTemplates() {
   // Filter students based on selected criteria
   const filteredStudents = dummyStudents.filter((student) => {
     const semesterMatch =
-      !selectedSemester || student.semester === selectedSemester;
+      selectedSemester === "all" || student.semester === selectedSemester;
     const departmentMatch =
-      !selectedDepartment || student.department === selectedDepartment;
+      selectedDepartment === "all" || student.department === selectedDepartment;
     return semesterMatch && departmentMatch;
   });
 
@@ -461,7 +461,7 @@ IT Department
                       <SelectValue placeholder="All Semesters" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Semesters</SelectItem>
+                      <SelectItem value="all">All Semesters</SelectItem>
                       {semesters.map((semester) => (
                         <SelectItem key={semester} value={semester}>
                           {semester}
@@ -481,7 +481,7 @@ IT Department
                       <SelectValue placeholder="All Departments" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Departments</SelectItem>
+                      <SelectItem value="all">All Departments</SelectItem>
                       {departments.map((dept) => (
                         <SelectItem key={dept} value={dept}>
                           {dept}
