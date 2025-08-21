@@ -117,7 +117,7 @@ export default function EmailTemplates() {
       password: "পাসওয়ার্ড",
       amount: "পরিমাণ",
       program: "প্রোগ্রাম",
-      university: "বিশ্ববিদ্যালয়ের নাম",
+      university: "বিশ্ববিদ্যালয��ের নাম",
       contactEmail: "যোগাযোগ ইমেইল",
       contactPhone: "যোগাযোগ ফোন",
       portalLink: "পোর্টাল লিংক",
@@ -781,10 +781,10 @@ IT Department
                       {
                         (currentStudent
                           ? renderTemplate(
-                              getTemplate("sms").content || "",
+                              getSmsTemplate().content || "",
                               currentStudent,
                             )
-                          : getTemplate("sms").content || ""
+                          : getSmsTemplate().content || ""
                         ).length
                       }
                     </span>
