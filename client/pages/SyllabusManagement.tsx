@@ -683,7 +683,8 @@ export default function SyllabusManagement() {
                             setFormData({
                               ...formData,
                               feeStructure: {
-                                ...formData.feeStructure!,
+                                ...selectedSyllabus?.feeStructure,
+                                ...formData.feeStructure,
                                 admissionFee: parseInt(e.target.value),
                               },
                             })
