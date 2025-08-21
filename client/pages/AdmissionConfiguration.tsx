@@ -1862,7 +1862,7 @@ export default function AdmissionConfiguration() {
                                 )}
                                 {rule.admissionTestFee && (
                                   <span className="flex items-center gap-1 text-green-600 bg-green-50 px-2 py-1 rounded font-medium">
-                                    <DollarSign className="w-4 h-4" />৳
+                                    <CreditCard className="w-4 h-4" />৳
                                     {rule.admissionTestFee}
                                   </span>
                                 )}
