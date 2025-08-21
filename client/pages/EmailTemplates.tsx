@@ -96,7 +96,7 @@ export default function EmailTemplates() {
       recipient: "প্রাপক",
       subject: "বিষয়",
       message: "বার্তা",
-      sendEmail: "ইমেইল পাঠান",
+      sendEmail: "ইমেইল পাঠ���ন",
       sendSMS: "এসএমএস পাঠান",
       preview: "প্রিভিউ",
       copy: "কপি",
@@ -117,7 +117,7 @@ export default function EmailTemplates() {
       password: "পাসওয়ার্ড",
       amount: "পরিমাণ",
       program: "প্রোগ্রাম",
-      university: "বিশ্ববিদ্যালয��ের নাম",
+      university: "বিশ্ববিদ���যালয়ের নাম",
       contactEmail: "যোগাযোগ ইমেইল",
       contactPhone: "যোগাযোগ ফোন",
       portalLink: "পোর্টাল লিংক",
@@ -793,10 +793,10 @@ IT Department
                       {Math.ceil(
                         (currentStudent
                           ? renderTemplate(
-                              getTemplate("sms").content || "",
+                              getSmsTemplate().content || "",
                               currentStudent,
                             )
-                          : getTemplate("sms").content || ""
+                          : getSmsTemplate().content || ""
                         ).length / 160,
                       )}
                     </span>
