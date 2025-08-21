@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, User, Phone, Mail, MapPin, GraduationCap, FileText, CreditCard, Lock, Unlock, CheckCircle, XCircle, Clock, Download, MessageSquare } from 'lucide-react';
+import { ArrowLeft, User, Phone, Mail, MapPin, GraduationCap, FileText, CreditCard, Lock, Unlock, CheckCircle, XCircle, Clock, Download, MessageSquare, Shield, AlertCircle } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -179,7 +179,7 @@ export default function ApplicantDetail() {
       confirmApproval: 'অনুমোদন নিশ্চিত করুন',
       confirmRejection: 'প্রত্যাখ্যান নিশ্চিত করুন',
       studentIDs: 'ছাত্র আইডিসমূহ',
-      universityId: 'বিশ্ববিদ্যালয় আইডি',
+      universityId: 'ব��শ্ববিদ্যালয় আইডি',
       ugcId: 'ইউজিসি আইডি',
       generateIDs: 'ছাত্র আইডি তৈরি করুন',
       sendSMSId: 'এসএমএসে আইডি পাঠান',
