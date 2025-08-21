@@ -121,7 +121,7 @@ export default function ApplicantDetail() {
       personalInfo: 'ব্যক্তিগত তথ্য',
       contactInfo: 'যোগাযোগের তথ্য',
       academicHistory: 'শিক্ষাগত ইতিহাস',
-      documentsUploaded: 'আপলোডকৃত কাগজপত্র',
+      documentsUploaded: 'আপলোডকৃত কাগজ��ত্র',
       waiverInfo: 'মওকুফ তথ্য',
       invoicePreview: 'ইনভয়েস প্রিভিউ',
       actions: 'কর্ম',
@@ -192,7 +192,7 @@ export default function ApplicantDetail() {
       idStatus: 'আইডি অবস্থা',
       active: 'সক্রিয়',
       inactive: 'নিষ্ক্রিয়',
-      ugcNote: 'ইউজিসি আইডি সনদপত্র অনুমোদনের জন্য ব্যবহৃত হয় এবং শুধুমাত্র প্রশাসনিক কর্মীদের কাছে দৃশ্যমান।'
+      ugcNote: 'ইউজিসি আইডি সনদপত্র অন���মোদনের জন্য ব্যবহৃত হয় এবং শুধুমাত্র প্রশাসনিক কর্মীদের কাছে দৃশ্যমান।'
     }
   };
 
@@ -438,11 +438,11 @@ export default function ApplicantDetail() {
                       <Badge className="bg-green-600 text-white">{t.active}</Badge>
                     </div>
                     <div className="text-2xl font-bold text-blue-900 font-mono tracking-wider">
-                      {applicantIDs.universityId}
+                      {studentIDs.universityId}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 text-sm text-gray-600">
-                      <div><strong>{t.batch}:</strong> {applicantIDs.batch}</div>
-                      <div><strong>{t.generatedOn}:</strong> {new Date(applicantIDs.generatedDate).toLocaleDateString()}</div>
+                      <div><strong>{t.batch}:</strong> {studentIDs.batch}</div>
+                      <div><strong>{t.generatedOn}:</strong> {new Date(studentIDs.generatedDate).toLocaleDateString()}</div>
                     </div>
                   </div>
 
