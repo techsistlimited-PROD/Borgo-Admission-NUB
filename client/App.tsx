@@ -223,6 +223,16 @@ function AppContent() {
                 )
               }
             />
+            <Route
+              path="/admin/syllabus"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <SyllabusManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
 
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
