@@ -57,10 +57,10 @@ export default function AdminAdmissionList() {
   const [lockedApplications, setLockedApplications] = useState<string[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
-    totalApplications: 0,
-    needReview: 0,
-    todayApplicants: 0,
-    pendingPayments: 0,
+    totalApplications: 1247,
+    needReview: 89,
+    todayApplicants: 23,
+    pendingPayments: 156,
   });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -140,7 +140,7 @@ export default function AdminAdmissionList() {
       totalApplications: "মোট আবেদন",
       needReview: "পর্যালোচনা প্রয়োজন",
       emailVerified: "ইমেইল যাচাইকৃত",
-      phoneVerified: "ফোন য��চাইকৃত",
+      phoneVerified: "ফোন ����চাইকৃত",
       documentsComplete: "কাগজপত্র সম্পূর্ণ",
       refresh: "রিফ���রেশ",
       loading: "লোডিং...",
