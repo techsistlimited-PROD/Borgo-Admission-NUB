@@ -91,7 +91,7 @@ export default function EmailTemplates() {
       title: "সিস্টেম ইমেইল ও এসএমএস টেমপ্লেট",
       subtitle: "যোগাযোগ টেমপ্লেট ব্যবস্থাপনা",
       emailTemplates: "ইমেইল টেমপ্লেট",
-      smsTemplates: "এসএমএস টেমপ্লেট",
+      smsTemplates: "এসএমএস টেমপ��লেট",
       templateType: "টেমপ্লেট ধরন",
       recipient: "প্রাপক",
       subject: "বিষয়",
@@ -114,7 +114,7 @@ export default function EmailTemplates() {
       studentName: "ছাত্রের নাম",
       trackingId: "ট্র্যাকিং আইডি",
       studentId: "ছাত্র আইডি",
-      password: "পাসওয়ার্ড",
+      password: "পাস��য়ার্ড",
       amount: "পরিমাণ",
       program: "প্রোগ্রাম",
       university: "বিশ্ববিদ্যালয়ের নাম",
@@ -825,7 +825,7 @@ IT Department
                               Preview with {currentStudent.name}'s data:
                             </div>
                             <div className="text-blue-700">
-                              All {{ VARIABLE }} placeholders have been replaced
+                              All template variables have been replaced
                               with actual student information.
                             </div>
                           </div>
