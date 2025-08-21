@@ -96,7 +96,7 @@ export default function EmailTemplates() {
       recipient: "প্রাপক",
       subject: "বিষয়",
       message: "বার্তা",
-      sendEmail: "ইমেইল পাঠান",
+      sendEmail: "ইম���ইল পাঠান",
       sendSMS: "এসএমএস পাঠান",
       preview: "প্রিভিউ",
       copy: "কপি",
@@ -118,7 +118,7 @@ export default function EmailTemplates() {
       amount: "পরিমাণ",
       program: "প্রোগ্রাম",
       university: "বিশ্ববিদ্যালয়ের নাম",
-      contactEmail: "যোগাযোগ ইমেইল",
+      contactEmail: "য���গাযোগ ইমেইল",
       contactPhone: "যোগাযোগ ফোন",
       portalLink: "পোর্টাল লিংক",
       invoiceLink: "ইনভয়েস লিংক",
@@ -179,9 +179,9 @@ export default function EmailTemplates() {
   // Filter students based on selected criteria
   const filteredStudents = dummyStudents.filter((student) => {
     const semesterMatch =
-      !selectedSemester || student.semester === selectedSemester;
+      selectedSemester === 'all' || !selectedSemester || student.semester === selectedSemester;
     const departmentMatch =
-      !selectedDepartment || student.department === selectedDepartment;
+      selectedDepartment === 'all' || !selectedDepartment || student.department === selectedDepartment;
     return semesterMatch && departmentMatch;
   });
 
@@ -461,7 +461,7 @@ IT Department
                       <SelectValue placeholder="All Semesters" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Semesters</SelectItem>
+                      <SelectItem value="all">All Semesters</SelectItem>
                       {semesters.map((semester) => (
                         <SelectItem key={semester} value={semester}>
                           {semester}
@@ -481,7 +481,7 @@ IT Department
                       <SelectValue placeholder="All Departments" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Departments</SelectItem>
+                      <SelectItem value="all">All Departments</SelectItem>
                       {departments.map((dept) => (
                         <SelectItem key={dept} value={dept}>
                           {dept}
