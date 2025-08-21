@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  BookOpen, 
-  Save, 
+import {
+  Plus,
+  Edit,
+  Trash2,
+  BookOpen,
+  Save,
   X,
   GraduationCap,
   Clock,
   CreditCard,
   Search,
-  Filter
+  Filter,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import {
@@ -46,7 +46,12 @@ import {
   DialogTrigger,
 } from "../components/ui/dialog";
 import { Badge } from "../components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
 import { useToast } from "../hooks/use-toast";
 import {
   Syllabus,
@@ -59,7 +64,7 @@ import {
   deleteSyllabus,
   addCourseToSyllabus,
   removeCourseFromSyllabus,
-  getSyllabusByProgramId
+  getSyllabusByProgramId,
 } from "../lib/syllabusData";
 import { programs } from "../lib/programData";
 
@@ -67,7 +72,9 @@ export default function SyllabusManagement() {
   const { toast } = useToast();
   const [syllabuses, setSyllabuses] = useState<Syllabus[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedSyllabus, setSelectedSyllabus] = useState<Syllabus | null>(null);
+  const [selectedSyllabus, setSelectedSyllabus] = useState<Syllabus | null>(
+    null,
+  );
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isCourseDialogOpen, setIsCourseDialogOpen] = useState(false);
@@ -77,8 +84,8 @@ export default function SyllabusManagement() {
   // Form states
   const [formData, setFormData] = useState<Partial<Syllabus>>({});
   const [courseFormData, setCourseFormData] = useState<Partial<Course>>({
-    type: 'theory',
-    credits: 3
+    type: "theory",
+    credits: 3,
   });
 
   useEffect(() => {
@@ -95,7 +102,7 @@ export default function SyllabusManagement() {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -111,18 +118,18 @@ export default function SyllabusManagement() {
         admissionFee: 35000,
         perCreditFee: 2500,
         labFeePerCourse: 5000,
-        otherFees: 15000
+        otherFees: 15000,
       },
-      isActive: true
+      isActive: true,
     });
 
     loadData();
     setFormData({});
     setIsCreateDialogOpen(false);
-    
+
     toast({
       title: "Success",
-      description: "Syllabus created successfully"
+      description: "Syllabus created successfully",
     });
   };
 
@@ -131,7 +138,7 @@ export default function SyllabusManagement() {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -140,10 +147,10 @@ export default function SyllabusManagement() {
     loadData();
     setFormData({});
     setIsEditDialogOpen(false);
-    
+
     toast({
       title: "Success",
-      description: "Syllabus updated successfully"
+      description: "Syllabus updated successfully",
     });
   };
 
@@ -151,20 +158,24 @@ export default function SyllabusManagement() {
     if (window.confirm("Are you sure you want to delete this syllabus?")) {
       deleteSyllabus(id);
       loadData();
-      
+
       toast({
         title: "Success",
-        description: "Syllabus deleted successfully"
+        description: "Syllabus deleted successfully",
       });
     }
   };
 
   const handleCreateCourse = () => {
-    if (!courseFormData.name || !courseFormData.code || !courseFormData.credits) {
+    if (
+      !courseFormData.name ||
+      !courseFormData.code ||
+      !courseFormData.credits
+    ) {
       toast({
         title: "Error",
         description: "Please fill in all required course fields",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -174,26 +185,28 @@ export default function SyllabusManagement() {
       name: courseFormData.name!,
       code: courseFormData.code!,
       credits: courseFormData.credits!,
-      type: courseFormData.type as 'theory' | 'lab',
-      description: courseFormData.description || ''
+      type: courseFormData.type as "theory" | "lab",
+      description: courseFormData.description || "",
     };
 
     // Add to global courses (in real app, this would be an API call)
     courses.push(newCourse);
     setCourses([...courses]);
-    setCourseFormData({ type: 'theory', credits: 3 });
+    setCourseFormData({ type: "theory", credits: 3 });
     setIsCourseDialogOpen(false);
-    
+
     toast({
       title: "Success",
-      description: "Course created successfully"
+      description: "Course created successfully",
     });
   };
 
-  const filteredSyllabuses = syllabuses.filter(syllabus => {
-    const matchesSearch = syllabus.programName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         syllabus.packageCode.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterProgram === "all" || syllabus.programId === filterProgram;
+  const filteredSyllabuses = syllabuses.filter((syllabus) => {
+    const matchesSearch =
+      syllabus.programName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      syllabus.packageCode.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter =
+      filterProgram === "all" || syllabus.programId === filterProgram;
     return matchesSearch && matchesFilter;
   });
 
@@ -206,11 +219,16 @@ export default function SyllabusManagement() {
               <BookOpen className="h-8 w-8 mr-3 text-purple-600" />
               Syllabus Management
             </h1>
-            <p className="text-gray-600 mt-2">Manage academic programs, courses, and fee structures</p>
+            <p className="text-gray-600 mt-2">
+              Manage academic programs, courses, and fee structures
+            </p>
           </div>
-          
+
           <div className="flex gap-3">
-            <Dialog open={isCourseDialogOpen} onOpenChange={setIsCourseDialogOpen}>
+            <Dialog
+              open={isCourseDialogOpen}
+              onOpenChange={setIsCourseDialogOpen}
+            >
               <DialogTrigger asChild>
                 <Button variant="outline">
                   <Plus className="h-4 w-4 mr-2" />
@@ -231,7 +249,12 @@ export default function SyllabusManagement() {
                       <Input
                         id="courseName"
                         value={courseFormData.name || ""}
-                        onChange={(e) => setCourseFormData({...courseFormData, name: e.target.value})}
+                        onChange={(e) =>
+                          setCourseFormData({
+                            ...courseFormData,
+                            name: e.target.value,
+                          })
+                        }
                         placeholder="e.g., Introduction to Programming"
                       />
                     </div>
@@ -240,18 +263,28 @@ export default function SyllabusManagement() {
                       <Input
                         id="courseCode"
                         value={courseFormData.code || ""}
-                        onChange={(e) => setCourseFormData({...courseFormData, code: e.target.value})}
+                        onChange={(e) =>
+                          setCourseFormData({
+                            ...courseFormData,
+                            code: e.target.value,
+                          })
+                        }
                         placeholder="e.g., CSE 101"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="courseType">Course Type</Label>
-                      <Select 
+                      <Select
                         value={courseFormData.type}
-                        onValueChange={(value) => setCourseFormData({...courseFormData, type: value as 'theory' | 'lab'})}
+                        onValueChange={(value) =>
+                          setCourseFormData({
+                            ...courseFormData,
+                            type: value as "theory" | "lab",
+                          })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -264,9 +297,14 @@ export default function SyllabusManagement() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="courseCredits">Credits</Label>
-                      <Select 
+                      <Select
                         value={courseFormData.credits?.toString()}
-                        onValueChange={(value) => setCourseFormData({...courseFormData, credits: parseInt(value)})}
+                        onValueChange={(value) =>
+                          setCourseFormData({
+                            ...courseFormData,
+                            credits: parseInt(value),
+                          })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -278,19 +316,27 @@ export default function SyllabusManagement() {
                       </Select>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="courseDescription">Description</Label>
                     <Input
                       id="courseDescription"
                       value={courseFormData.description || ""}
-                      onChange={(e) => setCourseFormData({...courseFormData, description: e.target.value})}
+                      onChange={(e) =>
+                        setCourseFormData({
+                          ...courseFormData,
+                          description: e.target.value,
+                        })
+                      }
                       placeholder="Course description..."
                     />
                   </div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsCourseDialogOpen(false)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsCourseDialogOpen(false)}
+                  >
                     Cancel
                   </Button>
                   <Button onClick={handleCreateCourse}>
@@ -301,7 +347,10 @@ export default function SyllabusManagement() {
               </DialogContent>
             </Dialog>
 
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <Dialog
+              open={isCreateDialogOpen}
+              onOpenChange={setIsCreateDialogOpen}
+            >
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
@@ -320,19 +369,21 @@ export default function SyllabusManagement() {
                     <TabsTrigger value="basic">Basic Info</TabsTrigger>
                     <TabsTrigger value="fees">Fee Structure</TabsTrigger>
                   </TabsList>
-                  
+
                   <TabsContent value="basic" className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="program">Program</Label>
-                        <Select 
+                        <Select
                           value={formData.programId}
                           onValueChange={(value) => {
-                            const program = programs.find(p => p.id === value);
+                            const program = programs.find(
+                              (p) => p.id === value,
+                            );
                             setFormData({
-                              ...formData, 
+                              ...formData,
                               programId: value,
-                              programName: program?.name || ''
+                              programName: program?.name || "",
                             });
                           }}
                         >
@@ -353,12 +404,17 @@ export default function SyllabusManagement() {
                         <Input
                           id="packageCode"
                           value={formData.packageCode || ""}
-                          onChange={(e) => setFormData({...formData, packageCode: e.target.value})}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              packageCode: e.target.value,
+                            })
+                          }
                           placeholder="e.g., CSE-B-2024"
                         />
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="totalSemesters">Total Semesters</Label>
@@ -366,7 +422,12 @@ export default function SyllabusManagement() {
                           id="totalSemesters"
                           type="number"
                           value={formData.totalSemesters || ""}
-                          onChange={(e) => setFormData({...formData, totalSemesters: parseInt(e.target.value)})}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              totalSemesters: parseInt(e.target.value),
+                            })
+                          }
                           placeholder="8"
                         />
                       </div>
@@ -376,49 +437,62 @@ export default function SyllabusManagement() {
                           id="totalCredits"
                           type="number"
                           value={formData.totalCredits || ""}
-                          onChange={(e) => setFormData({...formData, totalCredits: parseInt(e.target.value)})}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              totalCredits: parseInt(e.target.value),
+                            })
+                          }
                           placeholder="144"
                         />
                       </div>
                     </div>
                   </TabsContent>
-                  
+
                   <TabsContent value="fees" className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="admissionFee">Admission Fee (BDT)</Label>
+                        <Label htmlFor="admissionFee">
+                          Admission Fee (BDT)
+                        </Label>
                         <Input
                           id="admissionFee"
                           type="number"
                           value={formData.feeStructure?.admissionFee || ""}
-                          onChange={(e) => setFormData({
-                            ...formData, 
-                            feeStructure: {
-                              ...formData.feeStructure!,
-                              admissionFee: parseInt(e.target.value)
-                            }
-                          })}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              feeStructure: {
+                                ...formData.feeStructure!,
+                                admissionFee: parseInt(e.target.value),
+                              },
+                            })
+                          }
                           placeholder="35000"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="perCreditFee">Per Credit Fee (BDT)</Label>
+                        <Label htmlFor="perCreditFee">
+                          Per Credit Fee (BDT)
+                        </Label>
                         <Input
                           id="perCreditFee"
                           type="number"
                           value={formData.feeStructure?.perCreditFee || ""}
-                          onChange={(e) => setFormData({
-                            ...formData, 
-                            feeStructure: {
-                              ...formData.feeStructure!,
-                              perCreditFee: parseInt(e.target.value)
-                            }
-                          })}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              feeStructure: {
+                                ...formData.feeStructure!,
+                                perCreditFee: parseInt(e.target.value),
+                              },
+                            })
+                          }
                           placeholder="2500"
                         />
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="labFee">Lab Fee Per Course (BDT)</Label>
@@ -426,13 +500,15 @@ export default function SyllabusManagement() {
                           id="labFee"
                           type="number"
                           value={formData.feeStructure?.labFeePerCourse || ""}
-                          onChange={(e) => setFormData({
-                            ...formData, 
-                            feeStructure: {
-                              ...formData.feeStructure!,
-                              labFeePerCourse: parseInt(e.target.value)
-                            }
-                          })}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              feeStructure: {
+                                ...formData.feeStructure!,
+                                labFeePerCourse: parseInt(e.target.value),
+                              },
+                            })
+                          }
                           placeholder="5000"
                         />
                       </div>
@@ -442,22 +518,27 @@ export default function SyllabusManagement() {
                           id="otherFees"
                           type="number"
                           value={formData.feeStructure?.otherFees || ""}
-                          onChange={(e) => setFormData({
-                            ...formData, 
-                            feeStructure: {
-                              ...formData.feeStructure!,
-                              otherFees: parseInt(e.target.value)
-                            }
-                          })}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              feeStructure: {
+                                ...formData.feeStructure!,
+                                otherFees: parseInt(e.target.value),
+                              },
+                            })
+                          }
                           placeholder="15000"
                         />
                       </div>
                     </div>
                   </TabsContent>
                 </Tabs>
-                
+
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsCreateDialogOpen(false)}
+                  >
                     Cancel
                   </Button>
                   <Button onClick={handleCreateSyllabus}>
@@ -532,18 +613,30 @@ export default function SyllabusManagement() {
                     <TableCell className="font-medium">
                       <div>
                         <p className="font-semibold">{syllabus.programName}</p>
-                        <p className="text-sm text-gray-500">{syllabus.programId.toUpperCase()}</p>
+                        <p className="text-sm text-gray-500">
+                          {syllabus.programId.toUpperCase()}
+                        </p>
                       </div>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">{syllabus.packageCode}</Badge>
                     </TableCell>
-                    <TableCell className="text-center">{syllabus.totalSemesters}</TableCell>
-                    <TableCell className="text-center">{syllabus.totalCredits}</TableCell>
-                    <TableCell>৳{syllabus.feeStructure.admissionFee.toLocaleString()}</TableCell>
-                    <TableCell>৳{syllabus.feeStructure.perCreditFee.toLocaleString()}</TableCell>
+                    <TableCell className="text-center">
+                      {syllabus.totalSemesters}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {syllabus.totalCredits}
+                    </TableCell>
                     <TableCell>
-                      <Badge variant={syllabus.isActive ? "default" : "secondary"}>
+                      ৳{syllabus.feeStructure.admissionFee.toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      ৳{syllabus.feeStructure.perCreditFee.toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={syllabus.isActive ? "default" : "secondary"}
+                      >
                         {syllabus.isActive ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
@@ -595,7 +688,12 @@ export default function SyllabusManagement() {
                       <p className="text-xs text-gray-500">{course.code}</p>
                     </div>
                     <div className="flex gap-1">
-                      <Badge variant={course.type === 'theory' ? 'default' : 'secondary'} className="text-xs">
+                      <Badge
+                        variant={
+                          course.type === "theory" ? "default" : "secondary"
+                        }
+                        className="text-xs"
+                      >
                         {course.type}
                       </Badge>
                       <Badge variant="outline" className="text-xs">
@@ -604,7 +702,9 @@ export default function SyllabusManagement() {
                     </div>
                   </div>
                   {course.description && (
-                    <p className="text-xs text-gray-600 line-clamp-2">{course.description}</p>
+                    <p className="text-xs text-gray-600 line-clamp-2">
+                      {course.description}
+                    </p>
                   )}
                 </div>
               ))}
