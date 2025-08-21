@@ -117,7 +117,7 @@ export default function EmailTemplates() {
       password: "পাসওয়ার্ড",
       amount: "পরিমাণ",
       program: "প্রোগ্রাম",
-      university: "বিশ্ববিদ্যালয়ের নাম",
+      university: "বিশ্ববিদ্যালয়ে�� নাম",
       contactEmail: "যোগাযোগ ইমেইল",
       contactPhone: "যোগাযোগ ফোন",
       portalLink: "পোর্টাল লিংক",
@@ -367,10 +367,10 @@ IT Department
 
   const getTemplate = (type: "email" | "sms") => {
     if (type === "email") {
-      return emailTemplates[selectedTemplate as keyof typeof emailTemplates];
+      return emailTemplates[selectedTemplate as keyof typeof emailTemplates] || { subject: "", content: "" };
     } else {
       return {
-        content: smsTemplates[selectedTemplate as keyof typeof smsTemplates],
+        content: smsTemplates[selectedTemplate as keyof typeof smsTemplates] || "",
       };
     }
   };
