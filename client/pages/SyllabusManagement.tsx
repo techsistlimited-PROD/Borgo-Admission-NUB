@@ -143,9 +143,19 @@ export default function SyllabusManagement() {
       return;
     }
 
-    updateSyllabus(selectedSyllabus.id, formData);
+    // Ensure fee structure is properly merged
+    const updatedData = {
+      ...formData,
+      feeStructure: {
+        ...selectedSyllabus.feeStructure,
+        ...formData.feeStructure,
+      },
+    };
+
+    updateSyllabus(selectedSyllabus.id, updatedData);
     loadData();
     setFormData({});
+    setSelectedSyllabus(null);
     setIsEditDialogOpen(false);
 
     toast({
