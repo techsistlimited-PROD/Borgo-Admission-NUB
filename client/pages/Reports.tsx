@@ -618,7 +618,7 @@ export default function Reports() {
       financialReports: "আর্থিক রিপোর্ট",
       waiverReports: "মওকুফ রিপোর্ট",
       idCardReports: "আইডি কার্ড রিপোর্ট",
-      targetReports: "লক্ষ্য রিপোর্ট",
+      targetReports: "লক্ষ্য র��পোর্ট",
 
       totalApplications: "মোট আবেদন",
       admittedStudents: "ভর্তিকৃত শিক্ষার্থী",
@@ -2027,25 +2027,15 @@ export default function Reports() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   {[
                     {
                       key: "studentIdCards",
                       title: t.studentIdCards,
                       description:
-                        "Individual student ID card generation and status",
+                        "Historical data of student ID card generation with status tracking by department and date",
                       icon: IdCard,
                       count: filteredIdCardData.length,
-                    },
-                    {
-                      key: "bulkIdCardDownload",
-                      title: t.bulkIdCardDownload,
-                      description:
-                        "Download all student ID cards for selected semester/program in one click",
-                      icon: Package,
-                      count: filteredIdCardData.filter(
-                        (item) => item.cardGenerated === "Yes",
-                      ).length,
                     },
                   ].map((report, index) => (
                     <Card
