@@ -1791,7 +1791,7 @@ export default function AdmissionConfiguration() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="w-5 h-5" />
+                <FileText className="w-5 h-5" />
                 Comprehensive Eligibility Rules & Admission Requirements
               </CardTitle>
               <p className="text-sm text-gray-600 mt-2">
