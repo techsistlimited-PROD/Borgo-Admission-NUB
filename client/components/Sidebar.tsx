@@ -57,6 +57,7 @@ export default function Sidebar({ userType }: SidebarProps) {
     { name: "Admissions", path: "/admin/admissions", icon: Users },
     { name: "Waiver Management", path: "/admin/waivers", icon: Award },
     { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
+    { name: "ID Card Generation", path: "/admin/id-card-generation", icon: Shield },
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
     { name: "Student Management", path: "/admin/student-management", icon: UserCog },
     { name: "Account Management", path: "/admin/account-management", icon: Lock },
