@@ -16,6 +16,7 @@ import {
   ChevronRight,
   LogIn,
   UserCheck,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
@@ -52,6 +53,7 @@ export default function Sidebar({ userType }: SidebarProps) {
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
     { name: "Reports", path: "/admin/reports", icon: PieChart },
     { name: "Templates", path: "/admin/templates", icon: Mail },
+    { name: "Syllabus", path: "/admin/syllabus", icon: BookOpen },
     {
       name: "Configuration",
       path: "/admin/configuration",
