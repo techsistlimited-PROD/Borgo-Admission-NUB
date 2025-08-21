@@ -753,10 +753,10 @@ IT Department
                     value={
                       currentStudent
                         ? renderTemplate(
-                            getTemplate("sms")?.content || "",
+                            getTemplate("sms").content || "",
                             currentStudent,
                           )
-                        : getTemplate("sms")?.content || ""
+                        : getTemplate("sms").content || ""
                     }
                     readOnly
                     className={`font-mono text-sm ${currentStudent ? "bg-blue-50 border-blue-200" : "bg-gray-50"}`}
