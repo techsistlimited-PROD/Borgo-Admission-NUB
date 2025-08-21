@@ -88,7 +88,7 @@ export default function EmailTemplates() {
       invoiceLink: "Invoice Link",
     },
     bn: {
-      title: "সিস্টেম ইমেইল ও এসএমএস টেমপ্লেট",
+      title: "সিস���টেম ইমেইল ও এসএমএস টেমপ্লেট",
       subtitle: "যোগাযোগ টেমপ্লেট ব্যবস্থাপনা",
       emailTemplates: "ইমেইল টেমপ্লেট",
       smsTemplates: "এসএমএস টেমপ্লেট",
@@ -675,7 +675,7 @@ IT Department
                           </div>
                           <div className="whitespace-pre-wrap text-sm border-t pt-2">
                             {renderTemplate(
-                              getTemplate("email")?.content || "",
+                              getTemplate("email").content || "",
                               currentStudent,
                             )}
                           </div>
