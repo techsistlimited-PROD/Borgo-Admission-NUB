@@ -47,7 +47,8 @@ export default function EmailTemplates() {
     "idle",
   );
   const [selectedSemester, setSelectedSemester] = useState("all-semesters");
-  const [selectedDepartment, setSelectedDepartment] = useState("all-departments");
+  const [selectedDepartment, setSelectedDepartment] =
+    useState("all-departments");
   const [selectedStudent, setSelectedStudent] = useState("");
 
   const texts = {
@@ -179,9 +180,13 @@ export default function EmailTemplates() {
   // Filter students based on selected criteria
   const filteredStudents = dummyStudents.filter((student) => {
     const semesterMatch =
-      !selectedSemester || selectedSemester === "all-semesters" || student.semester === selectedSemester;
+      !selectedSemester ||
+      selectedSemester === "all-semesters" ||
+      student.semester === selectedSemester;
     const departmentMatch =
-      !selectedDepartment || selectedDepartment === "all-departments" || student.department === selectedDepartment;
+      !selectedDepartment ||
+      selectedDepartment === "all-departments" ||
+      student.department === selectedDepartment;
     return semesterMatch && departmentMatch;
   });
 
@@ -366,12 +371,18 @@ IT Department
   };
 
   const getEmailTemplate = () => {
-    return emailTemplates[selectedTemplate as keyof typeof emailTemplates] || { subject: "", content: "" };
+    return (
+      emailTemplates[selectedTemplate as keyof typeof emailTemplates] || {
+        subject: "",
+        content: "",
+      }
+    );
   };
 
   const getSmsTemplate = () => {
     return {
-      content: smsTemplates[selectedTemplate as keyof typeof smsTemplates] || "",
+      content:
+        smsTemplates[selectedTemplate as keyof typeof smsTemplates] || "",
     };
   };
 
@@ -469,7 +480,9 @@ IT Department
                       <SelectValue placeholder="All Semesters" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all-semesters">All Semesters</SelectItem>
+                      <SelectItem value="all-semesters">
+                        All Semesters
+                      </SelectItem>
                       {semesters.map((semester) => (
                         <SelectItem key={semester} value={semester}>
                           {semester}
@@ -489,7 +502,9 @@ IT Department
                       <SelectValue placeholder="All Departments" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all-departments">All Departments</SelectItem>
+                      <SelectItem value="all-departments">
+                        All Departments
+                      </SelectItem>
                       {departments.map((dept) => (
                         <SelectItem key={dept} value={dept}>
                           {dept}
@@ -694,8 +709,8 @@ IT Department
                               Preview with {currentStudent.name}'s data:
                             </div>
                             <div className="text-blue-700">
-                              All {"{{ VARIABLE }}"} placeholders have been replaced
-                              with actual student information.
+                              All {"{{ VARIABLE }}"} placeholders have been
+                              replaced with actual student information.
                             </div>
                           </div>
                         )}
@@ -833,8 +848,8 @@ IT Department
                               Preview with {currentStudent.name}'s data:
                             </div>
                             <div className="text-blue-700">
-                              All {"{{ VARIABLE }}"} placeholders have been replaced
-                              with actual student information.
+                              All {"{{ VARIABLE }}"} placeholders have been
+                              replaced with actual student information.
                             </div>
                           </div>
                         )}
