@@ -814,7 +814,7 @@ IT Department
                           </div>
                           <div className="text-sm border-t pt-2">
                             {renderTemplate(
-                              getTemplate("sms")?.content || "",
+                              getTemplate("sms").content || "",
                               currentStudent,
                             )}
                           </div>
