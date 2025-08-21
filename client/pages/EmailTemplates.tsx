@@ -825,7 +825,7 @@ IT Department
                               Preview with {currentStudent.name}'s data:
                             </div>
                             <div className="text-blue-700">
-                              All {{ VARIABLE }} placeholders have been replaced
+                              All {"{{ VARIABLE }}"} placeholders have been replaced
                               with actual student information.
                             </div>
                           </div>
