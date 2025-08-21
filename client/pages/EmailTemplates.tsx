@@ -46,8 +46,8 @@ export default function EmailTemplates() {
   const [sendStatus, setSendStatus] = useState<"idle" | "success" | "error">(
     "idle",
   );
-  const [selectedSemester, setSelectedSemester] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("all-semesters");
+  const [selectedDepartment, setSelectedDepartment] = useState("all-departments");
   const [selectedStudent, setSelectedStudent] = useState("");
 
   const texts = {
