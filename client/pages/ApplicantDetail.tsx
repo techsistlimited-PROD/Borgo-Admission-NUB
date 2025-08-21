@@ -121,7 +121,7 @@ export default function ApplicantDetail() {
       personalInfo: 'ব্যক্তিগত তথ্য',
       contactInfo: 'যোগাযোগের তথ্য',
       academicHistory: 'শিক্ষাগত ইতিহাস',
-      documentsUploaded: 'আপলোডকৃত কাগজ��ত্র',
+      documentsUploaded: 'আপলোডকৃত কাগজপত্র',
       waiverInfo: 'মওকুফ তথ্য',
       invoicePreview: 'ইনভয়েস প্রিভিউ',
       actions: 'কর্ম',
@@ -162,7 +162,7 @@ export default function ApplicantDetail() {
       testimonial: 'প্রশংসাপত্র',
       uploaded: 'আপলোড করা হয়েছে',
       notUploaded: 'আপলোড করা হয়নি',
-      waiverType: 'মওকুফের ধরন',
+      waiverType: 'মওকুফের ধর��',
       waiverPercentage: 'মওকুফ শতাংশ',
       originalAmount: 'মূল পরিমাণ',
       waiverAmount: 'মওকুফ পরিমাণ',
@@ -184,7 +184,7 @@ export default function ApplicantDetail() {
       generateIDs: 'ছাত্র আইডি তৈরি করুন',
       sendSMSId: 'এসএমএসে আইডি পাঠান',
       sendEmailId: 'ইমেইলে আইডি পাঠান',
-      idsGenerated: 'ছাত্র আইডি সফলভাবে তৈরি হয়েছে',
+      idsGenerated: 'ছাত্র আইডি ��ফলভাবে তৈরি হয়েছে',
       smsSent: 'এসএমএস সফলভাবে পাঠানো হয়েছে',
       emailSent: 'ইমেইল সফলভাবে পাঠানো হয়েছে',
       batch: 'ব্যাচ',
@@ -192,7 +192,7 @@ export default function ApplicantDetail() {
       idStatus: 'আইডি অবস্থা',
       active: 'সক্রিয়',
       inactive: 'নিষ্ক্রিয়',
-      ugcNote: 'ইউজিসি আইডি সনদপত্র অন���মোদনের জন্য ব্যবহৃত হয় এবং শুধুমাত্র প্রশাসনিক কর্মীদের কাছে দৃশ্যমান।'
+      ugcNote: 'ইউজিসি আইডি সনদপত্র অনুমোদনের জন্য ব্যবহৃত হয় এবং শুধুমাত্র প্রশাসনিক কর্মীদের কাছে দৃশ্যমান।'
     }
   };
 
@@ -455,7 +455,7 @@ export default function ApplicantDetail() {
                       <Badge className="bg-purple-600 text-white">Confidential</Badge>
                     </div>
                     <div className="text-xl font-bold text-purple-900 font-mono tracking-wider">
-                      {applicantIDs.ugcId}
+                      {studentIDs.ugcId}
                     </div>
                     <Alert className="mt-3 border-purple-200 bg-purple-50">
                       <AlertCircle className="w-4 h-4 text-purple-600" />
