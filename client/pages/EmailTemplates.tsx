@@ -46,8 +46,8 @@ export default function EmailTemplates() {
   const [sendStatus, setSendStatus] = useState<"idle" | "success" | "error">(
     "idle",
   );
-  const [selectedSemester, setSelectedSemester] = useState("all");
-  const [selectedDepartment, setSelectedDepartment] = useState("all");
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedStudent, setSelectedStudent] = useState("");
 
   const texts = {
@@ -96,7 +96,7 @@ export default function EmailTemplates() {
       recipient: "প্রাপক",
       subject: "বিষয়",
       message: "বার্তা",
-      sendEmail: "ইম���ইল পাঠান",
+      sendEmail: "ইমেইল পাঠান",
       sendSMS: "এসএমএস পাঠান",
       preview: "প্রিভিউ",
       copy: "কপি",
@@ -118,7 +118,7 @@ export default function EmailTemplates() {
       amount: "পরিমাণ",
       program: "প্রোগ্রাম",
       university: "বিশ্ববিদ্যালয়ের নাম",
-      contactEmail: "য���গাযোগ ইমেইল",
+      contactEmail: "যোগাযোগ ইমেইল",
       contactPhone: "যোগাযোগ ফোন",
       portalLink: "পোর্টাল লিংক",
       invoiceLink: "ইনভয়েস লিংক",
@@ -179,13 +179,9 @@ export default function EmailTemplates() {
   // Filter students based on selected criteria
   const filteredStudents = dummyStudents.filter((student) => {
     const semesterMatch =
-      selectedSemester === "all" ||
-      !selectedSemester ||
-      student.semester === selectedSemester;
+      !selectedSemester || student.semester === selectedSemester;
     const departmentMatch =
-      selectedDepartment === "all" ||
-      !selectedDepartment ||
-      student.department === selectedDepartment;
+      !selectedDepartment || student.department === selectedDepartment;
     return semesterMatch && departmentMatch;
   });
 
@@ -465,7 +461,7 @@ IT Department
                       <SelectValue placeholder="All Semesters" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Semesters</SelectItem>
+                      <SelectItem value="">All Semesters</SelectItem>
                       {semesters.map((semester) => (
                         <SelectItem key={semester} value={semester}>
                           {semester}
@@ -485,7 +481,7 @@ IT Department
                       <SelectValue placeholder="All Departments" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Departments</SelectItem>
+                      <SelectItem value="">All Departments</SelectItem>
                       {departments.map((dept) => (
                         <SelectItem key={dept} value={dept}>
                           {dept}
@@ -518,7 +514,12 @@ IT Department
                     <SelectContent>
                       {filteredStudents.map((student) => (
                         <SelectItem key={student.id} value={student.id}>
-                          {student.name} - {student.department}
+                          <div className="flex flex-col">
+                            <span className="font-medium">{student.name}</span>
+                            <span className="text-xs text-gray-500">
+                              {student.department} - {student.semester}
+                            </span>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
