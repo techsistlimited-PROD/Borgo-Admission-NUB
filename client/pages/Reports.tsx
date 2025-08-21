@@ -683,14 +683,14 @@ export default function Reports() {
 
       totalApplications: "মোট আবেদন",
       admittedStudents: "ভর্তিকৃত শিক্ষার্থী",
-      rejectedApplications: "প্রত্যাখ্যাত আবেদন",
+      rejectedApplications: "প্রত্যাখ্যাত আবেদ���",
       pendingApplications: "অপেক্ষমাণ আবেদন",
       departmentWiseAdmissions: "বিভাগ অনুযায়ী ভর্তি",
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
       admissionRate: "ভর্তির হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
       topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
-      revenueGenerated: "��য় সৃষ্টি",
+      revenueGenerated: "আয় সৃষ্টি",
 
       programWiseAdmissions:
         "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
@@ -699,7 +699,7 @@ export default function Reports() {
 
       departmentColumn: "বিভাগ",
       rate: "হার",
-      cse: "কম্পিউটার সায়েন্স ও ইঞ্জিনিয়ারিং",
+      cse: "কম্পিউটার সায়েন্স ও ইঞ্জিনিয়ারি���",
       eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জিনিয়ারিং",
       mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
@@ -2138,6 +2138,112 @@ export default function Reports() {
               </CardContent>
             </Card>
           </div>
+        )}
+
+        {/* Student ID Cards Report */}
+        {activeReport === "studentIdCards" && (
+          <Card className="bg-white shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                <IdCard className="w-5 h-5" />
+                Student ID Card Report - Historical Data
+              </CardTitle>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setActiveReport(null)}
+                  variant="outline"
+                  className="text-deep-plum border-deep-plum"
+                >
+                  {t.backToReports}
+                </Button>
+                <Button
+                  onClick={() =>
+                    exportToPDF("Student ID Card Report", filteredIdCardData)
+                  }
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* Additional Filters for ID Card Report */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">Status Filter</Label>
+                  <Select defaultValue="all">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="Generated">Generated</SelectItem>
+                      <SelectItem value="Pending">Pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">Date From</Label>
+                  <Input type="date" />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">Date To</Label>
+                  <Input type="date" />
+                </div>
+              </div>
+
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student ID</TableHead>
+                    <TableHead>Student Name</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Program</TableHead>
+                    <TableHead>Batch</TableHead>
+                    <TableHead>Admission Date</TableHead>
+                    <TableHead>Card Status</TableHead>
+                    <TableHead>Generated Date</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredIdCardData.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-mono font-medium">
+                        {item.studentId}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {item.studentName}
+                      </TableCell>
+                      <TableCell>{item.department.toUpperCase()}</TableCell>
+                      <TableCell>{item.program}</TableCell>
+                      <TableCell>{item.batch}</TableCell>
+                      <TableCell>
+                        {new Date(item.admissionDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          className={
+                            item.cardGenerated === "Generated"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }
+                        >
+                          {item.cardGenerated}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {item.generatedDate !== "-"
+                          ? new Date(item.generatedDate).toLocaleDateString()
+                          : "-"
+                        }
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         )}
 
         {/* Target Reports Category */}
