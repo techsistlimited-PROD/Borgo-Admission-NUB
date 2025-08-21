@@ -514,12 +514,7 @@ IT Department
                     <SelectContent>
                       {filteredStudents.map((student) => (
                         <SelectItem key={student.id} value={student.id}>
-                          <div className="flex flex-col">
-                            <span className="font-medium">{student.name}</span>
-                            <span className="text-xs text-gray-500">
-                              {student.department} - {student.semester}
-                            </span>
-                          </div>
+                          {student.name} - {student.department}
                         </SelectItem>
                       ))}
                     </SelectContent>
