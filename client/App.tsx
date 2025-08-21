@@ -43,6 +43,7 @@ import AdmissionConfiguration from "./pages/AdmissionConfiguration";
 import FinancePanel from "./pages/FinancePanel";
 import Reports from "./pages/Reports";
 import EmailTemplates from "./pages/EmailTemplates";
+import SyllabusManagement from "./pages/SyllabusManagement";
 
 const queryClient = new QueryClient();
 
