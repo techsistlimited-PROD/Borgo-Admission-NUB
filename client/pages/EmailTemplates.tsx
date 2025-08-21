@@ -104,7 +104,7 @@ export default function EmailTemplates() {
       sendTest: "টেস্ট পাঠান",
       sending: "পাঠানো হচ্ছে...",
       sent: "সফলভাবে পাঠানো হয়েছে!",
-      error: "প���ঠাতে ব্যর্থ",
+      error: "পাঠাতে ব্যর্থ",
       admissionApproved: "ভর্তি অনুমোদিত",
       paymentReceived: "পেমেন্ট প্রাপ্ত",
       documentsRequired: "কাগজপত্র প্রয়োজন",
@@ -633,10 +633,10 @@ IT Department
                     value={
                       currentStudent
                         ? renderTemplate(
-                            getTemplate("email")?.content || "",
+                            getTemplate("email").content || "",
                             currentStudent,
                           )
-                        : getTemplate("email")?.content || ""
+                        : getTemplate("email").content || ""
                     }
                     readOnly
                     className={`font-mono text-sm ${currentStudent ? "bg-blue-50 border-blue-200" : "bg-gray-50"}`}
@@ -763,7 +763,7 @@ IT Department
                   />
                   {currentStudent && (
                     <div className="text-xs text-blue-600">
-                      �� Preview with {currentStudent.name}'s data - variables
+                      📝 Preview with {currentStudent.name}'s data - variables
                       replaced
                     </div>
                   )}
