@@ -105,7 +105,7 @@ export default function EmailTemplates() {
       sending: "পাঠানো হচ্ছে...",
       sent: "সফলভাবে পাঠানো হয়েছে!",
       error: "পাঠাতে ব্যর্থ",
-      admissionApproved: "ভর্তি অনুমোদিত",
+      admissionApproved: "ভর্ত��� অনুমোদিত",
       paymentReceived: "পেমেন্ট প্রাপ্ত",
       documentsRequired: "কাগজপত্র প্রয়ো��ন",
       applicationRejected: "আবেদন প্রত্যাখ্যাত",
@@ -683,7 +683,7 @@ IT Department
                           </div>
                           <div className="whitespace-pre-wrap text-sm border-t pt-2">
                             {renderTemplate(
-                              getTemplate("email").content || "",
+                              getEmailTemplate().content || "",
                               currentStudent,
                             )}
                           </div>
