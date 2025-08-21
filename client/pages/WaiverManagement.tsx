@@ -216,41 +216,41 @@ export default function WaiverManagement() {
   });
 
   const filteredStudents = students.filter((student) => {
-    const matchesSearch = 
+    const matchesSearch =
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesDepartment = 
-      departmentFilter === "All Departments" || 
+
+    const matchesDepartment =
+      departmentFilter === "All Departments" ||
       student.department === departmentFilter;
-    
-    const matchesStatus = 
-      statusFilter === "all" || 
-      student.status === statusFilter;
+
+    const matchesStatus =
+      statusFilter === "all" || student.status === statusFilter;
 
     return matchesSearch && matchesDepartment && matchesStatus;
   });
 
   const stats = {
     totalWaivers: students.length,
-    activeWaivers: students.filter(s => s.status === "active").length,
+    activeWaivers: students.filter((s) => s.status === "active").length,
     totalWaiverAmount: students.reduce((sum, s) => sum + s.waiverAmount, 0),
     averageWaiverPercentage: Math.round(
-      students.reduce((sum, s) => sum + s.waiverPercentage, 0) / students.length
+      students.reduce((sum, s) => sum + s.waiverPercentage, 0) /
+        students.length,
     ),
   };
 
   const toggleWaiverLock = (studentId: string) => {
-    setStudents(prev => 
-      prev.map(student => 
-        student.id === studentId 
+    setStudents((prev) =>
+      prev.map((student) =>
+        student.id === studentId
           ? { ...student, isLocked: !student.isLocked }
-          : student
-      )
+          : student,
+      ),
     );
-    
-    const student = students.find(s => s.id === studentId);
+
+    const student = students.find((s) => s.id === studentId);
     toast({
       title: student?.isLocked ? "Waiver Unlocked" : "Waiver Locked",
       description: `${student?.name}'s waiver has been ${student?.isLocked ? "unlocked" : "locked"}.`,
@@ -258,18 +258,20 @@ export default function WaiverManagement() {
   };
 
   const updateWaiverAmount = (studentId: string, newAmount: number) => {
-    setStudents(prev => 
-      prev.map(student => 
-        student.id === studentId 
-          ? { 
-              ...student, 
+    setStudents((prev) =>
+      prev.map((student) =>
+        student.id === studentId
+          ? {
+              ...student,
               waiverAmount: newAmount,
-              waiverPercentage: Math.round((newAmount / student.totalFee) * 100)
+              waiverPercentage: Math.round(
+                (newAmount / student.totalFee) * 100,
+              ),
             }
-          : student
-      )
+          : student,
+      ),
     );
-    
+
     toast({
       title: "Waiver Updated",
       description: "Waiver amount has been successfully updated.",
@@ -282,8 +284,9 @@ export default function WaiverManagement() {
       expired: { color: "bg-red-100 text-red-800", label: "Expired" },
       pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending" },
     };
-    
-    const { color, label } = config[status as keyof typeof config] || config.pending;
+
+    const { color, label } =
+      config[status as keyof typeof config] || config.pending;
     return <Badge className={color}>{label}</Badge>;
   };
 
@@ -295,8 +298,16 @@ export default function WaiverManagement() {
       "Need-based Aid": "bg-teal-100 text-teal-800",
       "Academic Excellence": "bg-indigo-100 text-indigo-800",
     };
-    
-    return <Badge className={config[type as keyof typeof config] || "bg-gray-100 text-gray-800"}>{type}</Badge>;
+
+    return (
+      <Badge
+        className={
+          config[type as keyof typeof config] || "bg-gray-100 text-gray-800"
+        }
+      >
+        {type}
+      </Badge>
+    );
   };
 
   return (
@@ -317,8 +328,12 @@ export default function WaiverManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Waivers</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.totalWaivers}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Waivers
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.totalWaivers}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-blue-100">
                 <Users className="w-6 h-6 text-blue-600" />
@@ -331,8 +346,12 @@ export default function WaiverManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Active Waivers</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.activeWaivers}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Active Waivers
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.activeWaivers}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-green-100">
                 <TrendingUp className="w-6 h-6 text-green-600" />
@@ -345,8 +364,12 @@ export default function WaiverManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Amount</p>
-                <p className="text-3xl font-bold text-deep-plum">৳{stats.totalWaiverAmount.toLocaleString()}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Amount
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  ৳{stats.totalWaiverAmount.toLocaleString()}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-purple-100">
                 <DollarSign className="w-6 h-6 text-purple-600" />
@@ -359,8 +382,12 @@ export default function WaiverManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Avg. Waiver %</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.averageWaiverPercentage}%</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Avg. Waiver %
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.averageWaiverPercentage}%
+                </p>
               </div>
               <div className="p-3 rounded-full bg-orange-100">
                 <Award className="w-6 h-6 text-orange-600" />
@@ -383,14 +410,19 @@ export default function WaiverManagement() {
                 className="pl-10"
               />
             </div>
-            
-            <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+
+            <Select
+              value={departmentFilter}
+              onValueChange={setDepartmentFilter}
+            >
               <SelectTrigger className="md:w-48">
                 <SelectValue placeholder="Select Department" />
               </SelectTrigger>
               <SelectContent>
-                {departments.map(dept => (
-                  <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                {departments.map((dept) => (
+                  <SelectItem key={dept} value={dept}>
+                    {dept}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -409,7 +441,10 @@ export default function WaiverManagement() {
 
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white">
+                <Button
+                  variant="outline"
+                  className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white"
+                >
                   <Edit className="w-4 h-4 mr-2" />
                   Edit Criteria
                 </Button>
@@ -420,95 +455,134 @@ export default function WaiverManagement() {
                 </DialogHeader>
                 <div className="grid gap-6 py-4">
                   <div className="grid gap-4">
-                    <Label className="text-base font-semibold">Academic Performance</Label>
+                    <Label className="text-base font-semibold">
+                      Academic Performance
+                    </Label>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label>Minimum Score</Label>
-                        <Input 
-                          type="number" 
+                        <Input
+                          type="number"
                           value={criteriaValues.academicPerformance.min}
-                          onChange={(e) => setCriteriaValues(prev => ({
-                            ...prev,
-                            academicPerformance: { ...prev.academicPerformance, min: Number(e.target.value) }
-                          }))}
+                          onChange={(e) =>
+                            setCriteriaValues((prev) => ({
+                              ...prev,
+                              academicPerformance: {
+                                ...prev.academicPerformance,
+                                min: Number(e.target.value),
+                              },
+                            }))
+                          }
                         />
                       </div>
                       <div>
                         <Label>Waiver Percentage</Label>
-                        <Input 
-                          type="number" 
+                        <Input
+                          type="number"
                           value={criteriaValues.academicPerformance.percentage}
-                          onChange={(e) => setCriteriaValues(prev => ({
-                            ...prev,
-                            academicPerformance: { ...prev.academicPerformance, percentage: Number(e.target.value) }
-                          }))}
+                          onChange={(e) =>
+                            setCriteriaValues((prev) => ({
+                              ...prev,
+                              academicPerformance: {
+                                ...prev.academicPerformance,
+                                percentage: Number(e.target.value),
+                              },
+                            }))
+                          }
                         />
                       </div>
                     </div>
                   </div>
 
                   <div className="grid gap-4">
-                    <Label className="text-base font-semibold">Financial Need</Label>
+                    <Label className="text-base font-semibold">
+                      Financial Need
+                    </Label>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label>Income Threshold (৳)</Label>
-                        <Input 
-                          type="number" 
+                        <Input
+                          type="number"
                           value={criteriaValues.financialNeed.threshold}
-                          onChange={(e) => setCriteriaValues(prev => ({
-                            ...prev,
-                            financialNeed: { ...prev.financialNeed, threshold: Number(e.target.value) }
-                          }))}
+                          onChange={(e) =>
+                            setCriteriaValues((prev) => ({
+                              ...prev,
+                              financialNeed: {
+                                ...prev.financialNeed,
+                                threshold: Number(e.target.value),
+                              },
+                            }))
+                          }
                         />
                       </div>
                       <div>
                         <Label>Waiver Percentage</Label>
-                        <Input 
-                          type="number" 
+                        <Input
+                          type="number"
                           value={criteriaValues.financialNeed.percentage}
-                          onChange={(e) => setCriteriaValues(prev => ({
-                            ...prev,
-                            financialNeed: { ...prev.financialNeed, percentage: Number(e.target.value) }
-                          }))}
+                          onChange={(e) =>
+                            setCriteriaValues((prev) => ({
+                              ...prev,
+                              financialNeed: {
+                                ...prev.financialNeed,
+                                percentage: Number(e.target.value),
+                              },
+                            }))
+                          }
                         />
                       </div>
                     </div>
                   </div>
 
                   <div className="grid gap-4">
-                    <Label className="text-base font-semibold">Extracurricular Activities</Label>
+                    <Label className="text-base font-semibold">
+                      Extracurricular Activities
+                    </Label>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label>Minimum Points</Label>
-                        <Input 
-                          type="number" 
+                        <Input
+                          type="number"
                           value={criteriaValues.extracurricular.points}
-                          onChange={(e) => setCriteriaValues(prev => ({
-                            ...prev,
-                            extracurricular: { ...prev.extracurricular, points: Number(e.target.value) }
-                          }))}
+                          onChange={(e) =>
+                            setCriteriaValues((prev) => ({
+                              ...prev,
+                              extracurricular: {
+                                ...prev.extracurricular,
+                                points: Number(e.target.value),
+                              },
+                            }))
+                          }
                         />
                       </div>
                       <div>
                         <Label>Waiver Percentage</Label>
-                        <Input 
-                          type="number" 
+                        <Input
+                          type="number"
                           value={criteriaValues.extracurricular.percentage}
-                          onChange={(e) => setCriteriaValues(prev => ({
-                            ...prev,
-                            extracurricular: { ...prev.extracurricular, percentage: Number(e.target.value) }
-                          }))}
+                          onChange={(e) =>
+                            setCriteriaValues((prev) => ({
+                              ...prev,
+                              extracurricular: {
+                                ...prev.extracurricular,
+                                percentage: Number(e.target.value),
+                              },
+                            }))
+                          }
                         />
                       </div>
                     </div>
                   </div>
 
-                  <Button onClick={() => {
-                    toast({
-                      title: "Criteria Updated",
-                      description: "Waiver criteria have been successfully updated.",
-                    });
-                  }}>
+                  <Button
+                    onClick={() => {
+                      toast({
+                        title: "Criteria Updated",
+                        description:
+                          "Waiver criteria have been successfully updated.",
+                      });
+                    }}
+                  >
                     Save Changes
                   </Button>
                 </div>
@@ -545,14 +619,20 @@ export default function WaiverManagement() {
                   <TableCell>
                     <div>
                       <div className="font-medium">{student.name}</div>
-                      <div className="text-sm text-gray-500">{student.studentId}</div>
-                      <div className="text-sm text-gray-500">{student.email}</div>
+                      <div className="text-sm text-gray-500">
+                        {student.studentId}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {student.email}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
                       <div className="font-medium">{student.department}</div>
-                      <div className="text-sm text-gray-500">{student.program}</div>
+                      <div className="text-sm text-gray-500">
+                        {student.program}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -560,8 +640,12 @@ export default function WaiverManagement() {
                   </TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-bold text-green-600">৳{student.waiverAmount.toLocaleString()}</div>
-                      <div className="text-sm text-gray-500">of ৳{student.totalFee.toLocaleString()}</div>
+                      <div className="font-bold text-green-600">
+                        ৳{student.waiverAmount.toLocaleString()}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        of ৳{student.totalFee.toLocaleString()}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -569,9 +653,7 @@ export default function WaiverManagement() {
                       {student.waiverPercentage}%
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    {getStatusBadge(student.status)}
-                  </TableCell>
+                  <TableCell>{getStatusBadge(student.status)}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {student.isLocked ? (
@@ -621,13 +703,18 @@ export default function WaiverManagement() {
                               <div>
                                 <Label>Family Income</Label>
                                 <div className="text-2xl font-bold text-green-600">
-                                  ৳{student.criteria.familyIncome.toLocaleString()}
+                                  ৳
+                                  {student.criteria.familyIncome.toLocaleString()}
                                 </div>
                               </div>
                             </div>
                             <div>
                               <Label>Applied Date</Label>
-                              <div className="text-lg">{new Date(student.appliedDate).toLocaleDateString()}</div>
+                              <div className="text-lg">
+                                {new Date(
+                                  student.appliedDate,
+                                ).toLocaleDateString()}
+                              </div>
                             </div>
                           </div>
                         </DialogContent>
@@ -636,7 +723,11 @@ export default function WaiverManagement() {
                       {!student.isLocked && (
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="text-blue-600 border-blue-200 hover:bg-blue-50">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                            >
                               <Edit className="w-3 h-3 mr-1" />
                               Edit
                             </Button>
@@ -648,12 +739,15 @@ export default function WaiverManagement() {
                             <div className="grid gap-4 py-4">
                               <div>
                                 <Label>Current Waiver Amount</Label>
-                                <Input 
-                                  type="number" 
+                                <Input
+                                  type="number"
                                   defaultValue={student.waiverAmount}
                                   onChange={(e) => {
                                     const newAmount = Number(e.target.value);
-                                    if (newAmount >= 0 && newAmount <= student.totalFee) {
+                                    if (
+                                      newAmount >= 0 &&
+                                      newAmount <= student.totalFee
+                                    ) {
                                       updateWaiverAmount(student.id, newAmount);
                                     }
                                   }}

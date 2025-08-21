@@ -52,7 +52,14 @@ interface ChangeRecord {
   id: string;
   studentId: string;
   studentName: string;
-  changeType: "name" | "email" | "phone" | "password" | "department" | "login" | "mobile";
+  changeType:
+    | "name"
+    | "email"
+    | "phone"
+    | "password"
+    | "department"
+    | "login"
+    | "mobile";
   oldValue: string;
   newValue: string;
   changedBy: string;
@@ -114,7 +121,8 @@ const mockChangeRecords: ChangeRecord[] = [
     reason: "Student transfer request approved",
     approvalStatus: "approved",
     ipAddress: "192.168.1.105",
-    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+    userAgent:
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
     department: "Computer Science",
     sessionId: "sess_ghi789",
   },
@@ -199,7 +207,8 @@ const mockChangeRecords: ChangeRecord[] = [
     reason: "Updated to university provided email",
     approvalStatus: "rejected",
     ipAddress: "192.168.1.120",
-    userAgent: "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15",
+    userAgent:
+      "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15",
     department: "Computer Science",
     sessionId: "sess_vwx234",
   },
@@ -207,7 +216,8 @@ const mockChangeRecords: ChangeRecord[] = [
 
 export default function ChangeHistory() {
   const { toast } = useToast();
-  const [changeRecords, setChangeRecords] = useState<ChangeRecord[]>(mockChangeRecords);
+  const [changeRecords, setChangeRecords] =
+    useState<ChangeRecord[]>(mockChangeRecords);
   const [searchTerm, setSearchTerm] = useState("");
   const [changeTypeFilter, setChangeTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -216,56 +226,80 @@ export default function ChangeHistory() {
   const [dateTo, setDateTo] = useState("");
 
   const filteredRecords = changeRecords.filter((record) => {
-    const matchesSearch = 
+    const matchesSearch =
       record.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.changedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.oldValue.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.newValue.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesChangeType = 
-      changeTypeFilter === "all" || 
-      record.changeType === changeTypeFilter;
-    
-    const matchesStatus = 
-      statusFilter === "all" || 
-      record.approvalStatus === statusFilter;
-    
-    const matchesDepartment = 
-      departmentFilter === "all" || 
-      record.department === departmentFilter;
 
-    const matchesDateRange = 
+    const matchesChangeType =
+      changeTypeFilter === "all" || record.changeType === changeTypeFilter;
+
+    const matchesStatus =
+      statusFilter === "all" || record.approvalStatus === statusFilter;
+
+    const matchesDepartment =
+      departmentFilter === "all" || record.department === departmentFilter;
+
+    const matchesDateRange =
       (!dateFrom || record.changeDate >= dateFrom) &&
       (!dateTo || record.changeDate <= dateTo);
 
-    return matchesSearch && matchesChangeType && matchesStatus && matchesDepartment && matchesDateRange;
+    return (
+      matchesSearch &&
+      matchesChangeType &&
+      matchesStatus &&
+      matchesDepartment &&
+      matchesDateRange
+    );
   });
 
   const stats = {
     totalChanges: changeRecords.length,
-    pendingApprovals: changeRecords.filter(r => r.approvalStatus === "pending").length,
-    approvedChanges: changeRecords.filter(r => r.approvalStatus === "approved").length,
-    rejectedChanges: changeRecords.filter(r => r.approvalStatus === "rejected").length,
+    pendingApprovals: changeRecords.filter(
+      (r) => r.approvalStatus === "pending",
+    ).length,
+    approvedChanges: changeRecords.filter(
+      (r) => r.approvalStatus === "approved",
+    ).length,
+    rejectedChanges: changeRecords.filter(
+      (r) => r.approvalStatus === "rejected",
+    ).length,
   };
 
   const exportReport = () => {
     const csvContent = [
-      ["Date", "Time", "Student ID", "Student Name", "Department", "Change Type", "Old Value", "New Value", "Changed By", "Reason", "Status", "IP Address"].join(","),
-      ...filteredRecords.map(record => [
-        record.changeDate,
-        record.changeTime,
-        record.studentId,
-        record.studentName,
-        record.department,
-        record.changeType,
-        record.changeType === "password" ? "[HIDDEN]" : record.oldValue,
-        record.changeType === "password" ? "[HIDDEN]" : record.newValue,
-        record.changedBy,
-        `"${record.reason}"`,
-        record.approvalStatus,
-        record.ipAddress,
-      ].join(","))
+      [
+        "Date",
+        "Time",
+        "Student ID",
+        "Student Name",
+        "Department",
+        "Change Type",
+        "Old Value",
+        "New Value",
+        "Changed By",
+        "Reason",
+        "Status",
+        "IP Address",
+      ].join(","),
+      ...filteredRecords.map((record) =>
+        [
+          record.changeDate,
+          record.changeTime,
+          record.studentId,
+          record.studentName,
+          record.department,
+          record.changeType,
+          record.changeType === "password" ? "[HIDDEN]" : record.oldValue,
+          record.changeType === "password" ? "[HIDDEN]" : record.newValue,
+          record.changedBy,
+          `"${record.reason}"`,
+          record.approvalStatus,
+          record.ipAddress,
+        ].join(","),
+      ),
     ].join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
@@ -273,7 +307,10 @@ export default function ChangeHistory() {
     const a = document.createElement("a");
     a.setAttribute("hidden", "");
     a.setAttribute("href", url);
-    a.setAttribute("download", `change_history_${new Date().toISOString().split('T')[0]}.csv`);
+    a.setAttribute(
+      "download",
+      `change_history_${new Date().toISOString().split("T")[0]}.csv`,
+    );
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -284,13 +321,16 @@ export default function ChangeHistory() {
     });
   };
 
-  const updateApprovalStatus = (recordId: string, newStatus: "approved" | "rejected") => {
-    setChangeRecords(prev => 
-      prev.map(record => 
-        record.id === recordId 
+  const updateApprovalStatus = (
+    recordId: string,
+    newStatus: "approved" | "rejected",
+  ) => {
+    setChangeRecords((prev) =>
+      prev.map((record) =>
+        record.id === recordId
           ? { ...record, approvalStatus: newStatus }
-          : record
-      )
+          : record,
+      ),
     );
 
     toast({
@@ -302,14 +342,34 @@ export default function ChangeHistory() {
   const getChangeTypeBadge = (type: string) => {
     const config = {
       name: { color: "bg-blue-100 text-blue-800", label: "Name", icon: User },
-      email: { color: "bg-green-100 text-green-800", label: "Email", icon: Mail },
-      phone: { color: "bg-purple-100 text-purple-800", label: "Phone", icon: Phone },
-      mobile: { color: "bg-purple-100 text-purple-800", label: "Mobile", icon: Phone },
-      password: { color: "bg-red-100 text-red-800", label: "Password", icon: Key },
-      department: { color: "bg-orange-100 text-orange-800", label: "Department", icon: Building },
+      email: {
+        color: "bg-green-100 text-green-800",
+        label: "Email",
+        icon: Mail,
+      },
+      phone: {
+        color: "bg-purple-100 text-purple-800",
+        label: "Phone",
+        icon: Phone,
+      },
+      mobile: {
+        color: "bg-purple-100 text-purple-800",
+        label: "Mobile",
+        icon: Phone,
+      },
+      password: {
+        color: "bg-red-100 text-red-800",
+        label: "Password",
+        icon: Key,
+      },
+      department: {
+        color: "bg-orange-100 text-orange-800",
+        label: "Department",
+        icon: Building,
+      },
       login: { color: "bg-teal-100 text-teal-800", label: "Login", icon: User },
     };
-    
+
     const item = config[type as keyof typeof config] || config.name;
     return (
       <Badge className={item.color}>
@@ -324,14 +384,24 @@ export default function ChangeHistory() {
       pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending" },
       approved: { color: "bg-green-100 text-green-800", label: "Approved" },
       rejected: { color: "bg-red-100 text-red-800", label: "Rejected" },
-      "auto-approved": { color: "bg-blue-100 text-blue-800", label: "Auto-Approved" },
+      "auto-approved": {
+        color: "bg-blue-100 text-blue-800",
+        label: "Auto-Approved",
+      },
     };
-    
-    const { color, label } = config[status as keyof typeof config] || config.pending;
+
+    const { color, label } =
+      config[status as keyof typeof config] || config.pending;
     return <Badge className={color}>{label}</Badge>;
   };
 
-  const departments = ["All Departments", "Computer Science", "Business Administration", "Electrical Engineering", "Civil Engineering"];
+  const departments = [
+    "All Departments",
+    "Computer Science",
+    "Business Administration",
+    "Electrical Engineering",
+    "Civil Engineering",
+  ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -343,11 +413,15 @@ export default function ChangeHistory() {
               Change History Report
             </h1>
             <p className="text-gray-600 mt-1">
-              Track all changes made to student information including name, login, password, mobile, and email
+              Track all changes made to student information including name,
+              login, password, mobile, and email
             </p>
           </div>
-          
-          <Button onClick={exportReport} className="bg-deep-plum hover:bg-accent-purple">
+
+          <Button
+            onClick={exportReport}
+            className="bg-deep-plum hover:bg-accent-purple"
+          >
             <Download className="w-4 h-4 mr-2" />
             Export Report
           </Button>
@@ -360,8 +434,12 @@ export default function ChangeHistory() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Changes</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.totalChanges}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Changes
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.totalChanges}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-blue-100">
                 <Activity className="w-6 h-6 text-blue-600" />
@@ -374,8 +452,12 @@ export default function ChangeHistory() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending Approvals</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.pendingApprovals}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Pending Approvals
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.pendingApprovals}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-yellow-100">
                 <Clock className="w-6 h-6 text-yellow-600" />
@@ -388,8 +470,12 @@ export default function ChangeHistory() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Approved Changes</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.approvedChanges}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Approved Changes
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.approvedChanges}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-green-100">
                 <User className="w-6 h-6 text-green-600" />
@@ -402,8 +488,12 @@ export default function ChangeHistory() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Rejected Changes</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.rejectedChanges}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Rejected Changes
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.rejectedChanges}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-red-100">
                 <FileText className="w-6 h-6 text-red-600" />
@@ -427,8 +517,11 @@ export default function ChangeHistory() {
                   className="pl-10"
                 />
               </div>
-              
-              <Select value={changeTypeFilter} onValueChange={setChangeTypeFilter}>
+
+              <Select
+                value={changeTypeFilter}
+                onValueChange={setChangeTypeFilter}
+              >
                 <SelectTrigger className="md:w-40">
                   <SelectValue placeholder="Change Type" />
                 </SelectTrigger>
@@ -457,13 +550,19 @@ export default function ChangeHistory() {
                 </SelectContent>
               </Select>
 
-              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+              <Select
+                value={departmentFilter}
+                onValueChange={setDepartmentFilter}
+              >
                 <SelectTrigger className="md:w-48">
                   <SelectValue placeholder="Department" />
                 </SelectTrigger>
                 <SelectContent>
-                  {departments.map(dept => (
-                    <SelectItem key={dept} value={dept === "All Departments" ? "all" : dept}>
+                  {departments.map((dept) => (
+                    <SelectItem
+                      key={dept}
+                      value={dept === "All Departments" ? "all" : dept}
+                    >
                       {dept}
                     </SelectItem>
                   ))}
@@ -474,7 +573,7 @@ export default function ChangeHistory() {
             <div className="flex gap-4">
               <div>
                 <Label>Date From</Label>
-                <Input 
+                <Input
                   type="date"
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
@@ -482,7 +581,7 @@ export default function ChangeHistory() {
               </div>
               <div>
                 <Label>Date To</Label>
-                <Input 
+                <Input
                   type="date"
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
@@ -518,39 +617,51 @@ export default function ChangeHistory() {
                 <TableRow key={record.id}>
                   <TableCell>
                     <div>
-                      <div className="font-medium">{new Date(record.changeDate).toLocaleDateString()}</div>
-                      <div className="text-sm text-gray-500">{record.changeTime}</div>
+                      <div className="font-medium">
+                        {new Date(record.changeDate).toLocaleDateString()}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {record.changeTime}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
                       <div className="font-medium">{record.studentName}</div>
-                      <div className="text-sm text-gray-500">{record.studentId}</div>
-                      <div className="text-sm text-gray-500">{record.department}</div>
+                      <div className="text-sm text-gray-500">
+                        {record.studentId}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {record.department}
+                      </div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    {getChangeTypeBadge(record.changeType)}
-                  </TableCell>
+                  <TableCell>{getChangeTypeBadge(record.changeType)}</TableCell>
                   <TableCell>
                     <div>
                       <div className="text-sm">
-                        <span className="text-red-600">From:</span> {record.changeType === "password" ? "[HIDDEN]" : record.oldValue}
+                        <span className="text-red-600">From:</span>{" "}
+                        {record.changeType === "password"
+                          ? "[HIDDEN]"
+                          : record.oldValue}
                       </div>
                       <div className="text-sm">
-                        <span className="text-green-600">To:</span> {record.changeType === "password" ? "[HIDDEN]" : record.newValue}
+                        <span className="text-green-600">To:</span>{" "}
+                        {record.changeType === "password"
+                          ? "[HIDDEN]"
+                          : record.newValue}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
                       <div className="font-medium">{record.changedBy}</div>
-                      <div className="text-sm text-gray-500">IP: {record.ipAddress}</div>
+                      <div className="text-sm text-gray-500">
+                        IP: {record.ipAddress}
+                      </div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    {getStatusBadge(record.approvalStatus)}
-                  </TableCell>
+                  <TableCell>{getStatusBadge(record.approvalStatus)}</TableCell>
                   <TableCell>
                     <div className="flex gap-1">
                       {/* View Details */}
@@ -568,23 +679,33 @@ export default function ChangeHistory() {
                             <div className="grid grid-cols-2 gap-4">
                               <div>
                                 <Label>Student</Label>
-                                <div className="text-lg">{record.studentName}</div>
-                                <div className="text-sm text-gray-500">{record.studentId}</div>
+                                <div className="text-lg">
+                                  {record.studentName}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  {record.studentId}
+                                </div>
                               </div>
                               <div>
                                 <Label>Department</Label>
-                                <div className="text-lg">{record.department}</div>
+                                <div className="text-lg">
+                                  {record.department}
+                                </div>
                               </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                               <div>
                                 <Label>Change Type</Label>
-                                <div>{getChangeTypeBadge(record.changeType)}</div>
+                                <div>
+                                  {getChangeTypeBadge(record.changeType)}
+                                </div>
                               </div>
                               <div>
                                 <Label>Status</Label>
-                                <div>{getStatusBadge(record.approvalStatus)}</div>
+                                <div>
+                                  {getStatusBadge(record.approvalStatus)}
+                                </div>
                               </div>
                             </div>
 
@@ -592,28 +713,45 @@ export default function ChangeHistory() {
                               <Label>Changes Made</Label>
                               <div className="bg-gray-50 p-3 rounded-lg mt-2">
                                 <div className="text-sm">
-                                  <span className="text-red-600 font-medium">Previous:</span> {record.changeType === "password" ? "[HIDDEN]" : record.oldValue}
+                                  <span className="text-red-600 font-medium">
+                                    Previous:
+                                  </span>{" "}
+                                  {record.changeType === "password"
+                                    ? "[HIDDEN]"
+                                    : record.oldValue}
                                 </div>
                                 <div className="text-sm mt-1">
-                                  <span className="text-green-600 font-medium">Current:</span> {record.changeType === "password" ? "[HIDDEN]" : record.newValue}
+                                  <span className="text-green-600 font-medium">
+                                    Current:
+                                  </span>{" "}
+                                  {record.changeType === "password"
+                                    ? "[HIDDEN]"
+                                    : record.newValue}
                                 </div>
                               </div>
                             </div>
 
                             <div>
                               <Label>Reason</Label>
-                              <div className="text-gray-700 mt-1">{record.reason}</div>
+                              <div className="text-gray-700 mt-1">
+                                {record.reason}
+                              </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                               <div>
                                 <Label>Changed By</Label>
-                                <div className="text-lg">{record.changedBy}</div>
+                                <div className="text-lg">
+                                  {record.changedBy}
+                                </div>
                               </div>
                               <div>
                                 <Label>Date & Time</Label>
                                 <div className="text-lg">
-                                  {new Date(record.changeDate).toLocaleDateString()} {record.changeTime}
+                                  {new Date(
+                                    record.changeDate,
+                                  ).toLocaleDateString()}{" "}
+                                  {record.changeTime}
                                 </div>
                               </div>
                             </div>
@@ -631,7 +769,9 @@ export default function ChangeHistory() {
 
                             <div>
                               <Label>User Agent</Label>
-                              <div className="text-sm text-gray-600 break-all">{record.userAgent}</div>
+                              <div className="text-sm text-gray-600 break-all">
+                                {record.userAgent}
+                              </div>
                             </div>
                           </div>
                         </DialogContent>
@@ -640,19 +780,23 @@ export default function ChangeHistory() {
                       {/* Approve/Reject for pending changes */}
                       {record.approvalStatus === "pending" && (
                         <>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             className="text-green-600 border-green-200 hover:bg-green-50"
-                            onClick={() => updateApprovalStatus(record.id, "approved")}
+                            onClick={() =>
+                              updateApprovalStatus(record.id, "approved")
+                            }
                           >
                             ✓
                           </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             className="text-red-600 border-red-200 hover:bg-red-50"
-                            onClick={() => updateApprovalStatus(record.id, "rejected")}
+                            onClick={() =>
+                              updateApprovalStatus(record.id, "rejected")
+                            }
                           >
                             ✗
                           </Button>

@@ -89,10 +89,15 @@ const mockCirculars: AdmissionCircular[] = [
   {
     id: "1",
     title: "Spring 2024 Admission - Undergraduate Programs",
-    description: "Admission circular for undergraduate programs for Spring 2024 semester",
+    description:
+      "Admission circular for undergraduate programs for Spring 2024 semester",
     academicYear: "2024",
     semester: "Spring",
-    departments: ["Computer Science", "Business Administration", "Electrical Engineering"],
+    departments: [
+      "Computer Science",
+      "Business Administration",
+      "Electrical Engineering",
+    ],
     programs: ["BSc in CSE", "BBA", "BSc in EEE"],
     applicationDeadline: "2024-03-15",
     admissionTestDate: "2024-03-25",
@@ -104,15 +109,15 @@ const mockCirculars: AdmissionCircular[] = [
     applicationsCount: 567,
     documentsRequired: [
       "SSC Certificate & Transcript",
-      "HSC Certificate & Transcript", 
+      "HSC Certificate & Transcript",
       "Birth Certificate",
       "Passport Size Photos (3 copies)",
-      "National ID Card (Photocopy)"
+      "National ID Card (Photocopy)",
     ],
     eligibilityCriteria: [
       "Minimum GPA 3.5 in SSC and HSC",
       "Must have Mathematics and English in HSC",
-      "Age limit: 25 years"
+      "Age limit: 25 years",
     ],
     fees: {
       application: 1000,
@@ -123,7 +128,8 @@ const mockCirculars: AdmissionCircular[] = [
   {
     id: "2",
     title: "Summer 2024 Admission - Graduate Programs",
-    description: "Admission circular for graduate programs for Summer 2024 semester",
+    description:
+      "Admission circular for graduate programs for Summer 2024 semester",
     academicYear: "2024",
     semester: "Summer",
     departments: ["Computer Science", "Business Administration"],
@@ -141,18 +147,19 @@ const mockCirculars: AdmissionCircular[] = [
       "Bachelor's Degree equivalent certificate",
       "Experience Certificate (if applicable)",
       "Research Proposal (for MSc)",
-      "Passport Size Photos (3 copies)"
+      "Passport Size Photos (3 copies)",
     ],
     eligibilityCriteria: [
       "Bachelor's degree with minimum CGPA 3.0",
       "2 years work experience (for MBA)",
-      "IELTS/TOEFL score (for international students)"
+      "IELTS/TOEFL score (for international students)",
     ],
     fees: {
       application: 1500,
       admission: 75000,
     },
-    content: "Detailed admission circular content for Summer 2024 graduate programs...",
+    content:
+      "Detailed admission circular content for Summer 2024 graduate programs...",
   },
   {
     id: "3",
@@ -160,7 +167,12 @@ const mockCirculars: AdmissionCircular[] = [
     description: "Completed admission circular for Fall 2023 semester",
     academicYear: "2023",
     semester: "Fall",
-    departments: ["Computer Science", "Business Administration", "Electrical Engineering", "Civil Engineering"],
+    departments: [
+      "Computer Science",
+      "Business Administration",
+      "Electrical Engineering",
+      "Civil Engineering",
+    ],
     programs: ["BSc in CSE", "BBA", "BSc in EEE", "BSc in Civil"],
     applicationDeadline: "2023-08-15",
     admissionTestDate: "2023-08-25",
@@ -175,12 +187,12 @@ const mockCirculars: AdmissionCircular[] = [
       "HSC Certificate & Transcript",
       "Birth Certificate",
       "Passport Size Photos (3 copies)",
-      "National ID Card (Photocopy)"
+      "National ID Card (Photocopy)",
     ],
     eligibilityCriteria: [
       "Minimum GPA 3.0 in SSC and HSC",
       "Must have relevant subjects in HSC",
-      "Age limit: 25 years"
+      "Age limit: 25 years",
     ],
     fees: {
       application: 800,
@@ -190,23 +202,36 @@ const mockCirculars: AdmissionCircular[] = [
   },
 ];
 
-const departments = ["Computer Science", "Business Administration", "Electrical Engineering", "Civil Engineering", "Mechanical Engineering", "Architecture"];
+const departments = [
+  "Computer Science",
+  "Business Administration",
+  "Electrical Engineering",
+  "Civil Engineering",
+  "Mechanical Engineering",
+  "Architecture",
+];
 const programs = {
-  "Computer Science": ["BSc in CSE", "MSc in CSE", "BSc in Software Engineering"],
+  "Computer Science": [
+    "BSc in CSE",
+    "MSc in CSE",
+    "BSc in Software Engineering",
+  ],
   "Business Administration": ["BBA", "MBA"],
   "Electrical Engineering": ["BSc in EEE"],
   "Civil Engineering": ["BSc in Civil"],
   "Mechanical Engineering": ["BSc in Mechanical"],
-  "Architecture": ["Bachelor of Architecture"],
+  Architecture: ["Bachelor of Architecture"],
 };
 
 export default function AdmissionCircular() {
   const { toast } = useToast();
-  const [circulars, setCirculars] = useState<AdmissionCircular[]>(mockCirculars);
+  const [circulars, setCirculars] =
+    useState<AdmissionCircular[]>(mockCirculars);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [semesterFilter, setSemesterFilter] = useState("all");
-  const [editingCircular, setEditingCircular] = useState<AdmissionCircular | null>(null);
+  const [editingCircular, setEditingCircular] =
+    useState<AdmissionCircular | null>(null);
   const [newCircular, setNewCircular] = useState<Partial<AdmissionCircular>>({
     title: "",
     description: "",
@@ -222,26 +247,28 @@ export default function AdmissionCircular() {
   });
 
   const filteredCirculars = circulars.filter((circular) => {
-    const matchesSearch = 
+    const matchesSearch =
       circular.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       circular.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = 
-      statusFilter === "all" || 
-      circular.status === statusFilter;
-    
-    const matchesSemester = 
-      semesterFilter === "all" || 
-      circular.semester === semesterFilter;
+
+    const matchesStatus =
+      statusFilter === "all" || circular.status === statusFilter;
+
+    const matchesSemester =
+      semesterFilter === "all" || circular.semester === semesterFilter;
 
     return matchesSearch && matchesStatus && matchesSemester;
   });
 
   const stats = {
     totalCirculars: circulars.length,
-    publishedCirculars: circulars.filter(c => c.status === "published").length,
-    draftCirculars: circulars.filter(c => c.status === "draft").length,
-    totalApplications: circulars.reduce((sum, c) => sum + c.applicationsCount, 0),
+    publishedCirculars: circulars.filter((c) => c.status === "published")
+      .length,
+    draftCirculars: circulars.filter((c) => c.status === "draft").length,
+    totalApplications: circulars.reduce(
+      (sum, c) => sum + c.applicationsCount,
+      0,
+    ),
   };
 
   const createCircular = () => {
@@ -267,8 +294,8 @@ export default function AdmissionCircular() {
       resultPublishDate: newCircular.resultPublishDate || "",
       status: "draft",
       createdBy: "Admin",
-      createdDate: new Date().toISOString().split('T')[0],
-      lastModified: new Date().toISOString().split('T')[0],
+      createdDate: new Date().toISOString().split("T")[0],
+      lastModified: new Date().toISOString().split("T")[0],
       applicationsCount: 0,
       documentsRequired: newCircular.documentsRequired!,
       eligibilityCriteria: newCircular.eligibilityCriteria!,
@@ -276,7 +303,7 @@ export default function AdmissionCircular() {
       content: newCircular.content!,
     };
 
-    setCirculars(prev => [circular, ...prev]);
+    setCirculars((prev) => [circular, ...prev]);
     setNewCircular({
       title: "",
       description: "",
@@ -297,13 +324,20 @@ export default function AdmissionCircular() {
     });
   };
 
-  const updateCircularStatus = (circularId: string, newStatus: "draft" | "published" | "closed" | "archived") => {
-    setCirculars(prev => 
-      prev.map(circular => 
-        circular.id === circularId 
-          ? { ...circular, status: newStatus, lastModified: new Date().toISOString().split('T')[0] }
-          : circular
-      )
+  const updateCircularStatus = (
+    circularId: string,
+    newStatus: "draft" | "published" | "closed" | "archived",
+  ) => {
+    setCirculars((prev) =>
+      prev.map((circular) =>
+        circular.id === circularId
+          ? {
+              ...circular,
+              status: newStatus,
+              lastModified: new Date().toISOString().split("T")[0],
+            }
+          : circular,
+      ),
     );
 
     toast({
@@ -313,7 +347,9 @@ export default function AdmissionCircular() {
   };
 
   const deleteCircular = (circularId: string) => {
-    setCirculars(prev => prev.filter(circular => circular.id !== circularId));
+    setCirculars((prev) =>
+      prev.filter((circular) => circular.id !== circularId),
+    );
     toast({
       title: "Circular Deleted",
       description: "Admission circular has been deleted successfully.",
@@ -326,12 +362,12 @@ export default function AdmissionCircular() {
       id: `c${Date.now()}`,
       title: `${circular.title} (Copy)`,
       status: "draft",
-      createdDate: new Date().toISOString().split('T')[0],
-      lastModified: new Date().toISOString().split('T')[0],
+      createdDate: new Date().toISOString().split("T")[0],
+      lastModified: new Date().toISOString().split("T")[0],
       applicationsCount: 0,
     };
 
-    setCirculars(prev => [duplicatedCircular, ...prev]);
+    setCirculars((prev) => [duplicatedCircular, ...prev]);
     toast({
       title: "Circular Duplicated",
       description: "Admission circular has been duplicated successfully.",
@@ -345,18 +381,27 @@ export default function AdmissionCircular() {
       closed: { color: "bg-red-100 text-red-800", label: "Closed" },
       archived: { color: "bg-blue-100 text-blue-800", label: "Archived" },
     };
-    
-    const { color, label } = config[status as keyof typeof config] || config.draft;
+
+    const { color, label } =
+      config[status as keyof typeof config] || config.draft;
     return <Badge className={color}>{label}</Badge>;
   };
 
-  const addArrayItem = (array: string[], setArray: (arr: string[]) => void, item: string) => {
+  const addArrayItem = (
+    array: string[],
+    setArray: (arr: string[]) => void,
+    item: string,
+  ) => {
     if (item.trim() && !array.includes(item.trim())) {
       setArray([...array, item.trim()]);
     }
   };
 
-  const removeArrayItem = (array: string[], setArray: (arr: string[]) => void, index: number) => {
+  const removeArrayItem = (
+    array: string[],
+    setArray: (arr: string[]) => void,
+    index: number,
+  ) => {
     setArray(array.filter((_, i) => i !== index));
   };
 
@@ -370,10 +415,11 @@ export default function AdmissionCircular() {
               Admission Circular Management
             </h1>
             <p className="text-gray-600 mt-1">
-              Create and manage admission circulars for different semesters and programs
+              Create and manage admission circulars for different semesters and
+              programs
             </p>
           </div>
-          
+
           <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-deep-plum hover:bg-accent-purple">
@@ -389,17 +435,27 @@ export default function AdmissionCircular() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Title *</Label>
-                    <Input 
+                    <Input
                       placeholder="Circular title"
                       value={newCircular.title}
-                      onChange={(e) => setNewCircular(prev => ({ ...prev, title: e.target.value }))}
+                      onChange={(e) =>
+                        setNewCircular((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                   <div>
                     <Label>Academic Year</Label>
-                    <Select 
-                      value={newCircular.academicYear} 
-                      onValueChange={(value) => setNewCircular(prev => ({ ...prev, academicYear: value }))}
+                    <Select
+                      value={newCircular.academicYear}
+                      onValueChange={(value) =>
+                        setNewCircular((prev) => ({
+                          ...prev,
+                          academicYear: value,
+                        }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -414,19 +470,29 @@ export default function AdmissionCircular() {
 
                 <div>
                   <Label>Description *</Label>
-                  <Textarea 
+                  <Textarea
                     placeholder="Brief description of the admission circular"
                     value={newCircular.description}
-                    onChange={(e) => setNewCircular(prev => ({ ...prev, description: e.target.value }))}
+                    onChange={(e) =>
+                      setNewCircular((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
                   />
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <Label>Semester</Label>
-                    <Select 
+                    <Select
                       value={newCircular.semester}
-                      onValueChange={(value) => setNewCircular(prev => ({ ...prev, semester: value as "Spring" | "Summer" | "Fall" }))}
+                      onValueChange={(value) =>
+                        setNewCircular((prev) => ({
+                          ...prev,
+                          semester: value as "Spring" | "Summer" | "Fall",
+                        }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -440,18 +506,28 @@ export default function AdmissionCircular() {
                   </div>
                   <div>
                     <Label>Application Deadline</Label>
-                    <Input 
+                    <Input
                       type="date"
                       value={newCircular.applicationDeadline}
-                      onChange={(e) => setNewCircular(prev => ({ ...prev, applicationDeadline: e.target.value }))}
+                      onChange={(e) =>
+                        setNewCircular((prev) => ({
+                          ...prev,
+                          applicationDeadline: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                   <div>
                     <Label>Admission Test Date</Label>
-                    <Input 
+                    <Input
                       type="date"
                       value={newCircular.admissionTestDate}
-                      onChange={(e) => setNewCircular(prev => ({ ...prev, admissionTestDate: e.target.value }))}
+                      onChange={(e) =>
+                        setNewCircular((prev) => ({
+                          ...prev,
+                          admissionTestDate: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
@@ -459,41 +535,54 @@ export default function AdmissionCircular() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Application Fee (৳)</Label>
-                    <Input 
+                    <Input
                       type="number"
                       value={newCircular.fees?.application}
-                      onChange={(e) => setNewCircular(prev => ({ 
-                        ...prev, 
-                        fees: { ...prev.fees, application: Number(e.target.value) } 
-                      }))}
+                      onChange={(e) =>
+                        setNewCircular((prev) => ({
+                          ...prev,
+                          fees: {
+                            ...prev.fees,
+                            application: Number(e.target.value),
+                          },
+                        }))
+                      }
                     />
                   </div>
                   <div>
                     <Label>Admission Fee (৳)</Label>
-                    <Input 
+                    <Input
                       type="number"
                       value={newCircular.fees?.admission}
-                      onChange={(e) => setNewCircular(prev => ({ 
-                        ...prev, 
-                        fees: { ...prev.fees, admission: Number(e.target.value) } 
-                      }))}
+                      onChange={(e) =>
+                        setNewCircular((prev) => ({
+                          ...prev,
+                          fees: {
+                            ...prev.fees,
+                            admission: Number(e.target.value),
+                          },
+                        }))
+                      }
                     />
                   </div>
                 </div>
 
                 <div>
                   <Label>Content</Label>
-                  <Textarea 
+                  <Textarea
                     placeholder="Detailed content of the admission circular"
                     value={newCircular.content}
-                    onChange={(e) => setNewCircular(prev => ({ ...prev, content: e.target.value }))}
+                    onChange={(e) =>
+                      setNewCircular((prev) => ({
+                        ...prev,
+                        content: e.target.value,
+                      }))
+                    }
                     rows={4}
                   />
                 </div>
 
-                <Button onClick={createCircular}>
-                  Create Circular
-                </Button>
+                <Button onClick={createCircular}>Create Circular</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -506,8 +595,12 @@ export default function AdmissionCircular() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Circulars</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.totalCirculars}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Circulars
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.totalCirculars}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-blue-100">
                 <FileText className="w-6 h-6 text-blue-600" />
@@ -521,7 +614,9 @@ export default function AdmissionCircular() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Published</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.publishedCirculars}</p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.publishedCirculars}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-green-100">
                 <Send className="w-6 h-6 text-green-600" />
@@ -535,7 +630,9 @@ export default function AdmissionCircular() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Draft</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.draftCirculars}</p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.draftCirculars}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-gray-100">
                 <Edit className="w-6 h-6 text-gray-600" />
@@ -548,8 +645,12 @@ export default function AdmissionCircular() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Applications</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.totalApplications}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Applications
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.totalApplications}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-purple-100">
                 <Users className="w-6 h-6 text-purple-600" />
@@ -572,7 +673,7 @@ export default function AdmissionCircular() {
                 className="pl-10"
               />
             </div>
-            
+
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="md:w-40">
                 <SelectValue placeholder="Status" />
@@ -627,32 +728,65 @@ export default function AdmissionCircular() {
                   <TableCell>
                     <div>
                       <div className="font-medium">{circular.title}</div>
-                      <div className="text-sm text-gray-500">{circular.description}</div>
+                      <div className="text-sm text-gray-500">
+                        {circular.description}
+                      </div>
                       <div className="text-sm text-gray-400">
-                        Created: {new Date(circular.createdDate).toLocaleDateString()}
+                        Created:{" "}
+                        {new Date(circular.createdDate).toLocaleDateString()}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-medium">{circular.semester} {circular.academicYear}</div>
+                      <div className="font-medium">
+                        {circular.semester} {circular.academicYear}
+                      </div>
                       <div className="text-sm text-gray-500">
-                        Departments: {circular.departments.slice(0, 2).join(", ")}
-                        {circular.departments.length > 2 && ` +${circular.departments.length - 2} more`}
+                        Departments:{" "}
+                        {circular.departments.slice(0, 2).join(", ")}
+                        {circular.departments.length > 2 &&
+                          ` +${circular.departments.length - 2} more`}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
-                      <div>Apply: {circular.applicationDeadline ? new Date(circular.applicationDeadline).toLocaleDateString() : "TBD"}</div>
-                      <div>Test: {circular.admissionTestDate ? new Date(circular.admissionTestDate).toLocaleDateString() : "TBD"}</div>
-                      <div>Result: {circular.resultPublishDate ? new Date(circular.resultPublishDate).toLocaleDateString() : "TBD"}</div>
+                      <div>
+                        Apply:{" "}
+                        {circular.applicationDeadline
+                          ? new Date(
+                              circular.applicationDeadline,
+                            ).toLocaleDateString()
+                          : "TBD"}
+                      </div>
+                      <div>
+                        Test:{" "}
+                        {circular.admissionTestDate
+                          ? new Date(
+                              circular.admissionTestDate,
+                            ).toLocaleDateString()
+                          : "TBD"}
+                      </div>
+                      <div>
+                        Result:{" "}
+                        {circular.resultPublishDate
+                          ? new Date(
+                              circular.resultPublishDate,
+                            ).toLocaleDateString()
+                          : "TBD"}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
-                      <div>Application: ৳{circular.fees.application.toLocaleString()}</div>
-                      <div>Admission: ৳{circular.fees.admission.toLocaleString()}</div>
+                      <div>
+                        Application: ৳
+                        {circular.fees.application.toLocaleString()}
+                      </div>
+                      <div>
+                        Admission: ৳{circular.fees.admission.toLocaleString()}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -660,9 +794,7 @@ export default function AdmissionCircular() {
                       {circular.applicationsCount}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    {getStatusBadge(circular.status)}
-                  </TableCell>
+                  <TableCell>{getStatusBadge(circular.status)}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 flex-wrap">
                       {/* View */}
@@ -674,30 +806,38 @@ export default function AdmissionCircular() {
                         </DialogTrigger>
                         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
-                            <DialogTitle>View Circular: {circular.title}</DialogTitle>
+                            <DialogTitle>
+                              View Circular: {circular.title}
+                            </DialogTitle>
                           </DialogHeader>
                           <div className="py-4 space-y-6">
                             <div className="grid grid-cols-2 gap-4">
                               <div>
                                 <Label>Academic Period</Label>
-                                <div className="text-lg">{circular.semester} {circular.academicYear}</div>
+                                <div className="text-lg">
+                                  {circular.semester} {circular.academicYear}
+                                </div>
                               </div>
                               <div>
                                 <Label>Status</Label>
                                 <div>{getStatusBadge(circular.status)}</div>
                               </div>
                             </div>
-                            
+
                             <div>
                               <Label>Description</Label>
-                              <div className="text-gray-700 mt-1">{circular.description}</div>
+                              <div className="text-gray-700 mt-1">
+                                {circular.description}
+                              </div>
                             </div>
 
                             <div>
                               <Label>Departments & Programs</Label>
                               <div className="mt-2 space-y-1">
-                                {circular.departments.map(dept => (
-                                  <Badge key={dept} variant="outline">{dept}</Badge>
+                                {circular.departments.map((dept) => (
+                                  <Badge key={dept} variant="outline">
+                                    {dept}
+                                  </Badge>
                                 ))}
                               </div>
                             </div>
@@ -705,24 +845,40 @@ export default function AdmissionCircular() {
                             <div>
                               <Label>Documents Required</Label>
                               <ul className="mt-2 space-y-1">
-                                {circular.documentsRequired.map((doc, index) => (
-                                  <li key={index} className="text-sm text-gray-700">• {doc}</li>
-                                ))}
+                                {circular.documentsRequired.map(
+                                  (doc, index) => (
+                                    <li
+                                      key={index}
+                                      className="text-sm text-gray-700"
+                                    >
+                                      • {doc}
+                                    </li>
+                                  ),
+                                )}
                               </ul>
                             </div>
 
                             <div>
                               <Label>Eligibility Criteria</Label>
                               <ul className="mt-2 space-y-1">
-                                {circular.eligibilityCriteria.map((criteria, index) => (
-                                  <li key={index} className="text-sm text-gray-700">• {criteria}</li>
-                                ))}
+                                {circular.eligibilityCriteria.map(
+                                  (criteria, index) => (
+                                    <li
+                                      key={index}
+                                      className="text-sm text-gray-700"
+                                    >
+                                      • {criteria}
+                                    </li>
+                                  ),
+                                )}
                               </ul>
                             </div>
 
                             <div>
                               <Label>Content</Label>
-                              <div className="mt-2 text-gray-700 whitespace-pre-wrap">{circular.content}</div>
+                              <div className="mt-2 text-gray-700 whitespace-pre-wrap">
+                                {circular.content}
+                              </div>
                             </div>
                           </div>
                         </DialogContent>
@@ -730,31 +886,35 @@ export default function AdmissionCircular() {
 
                       {/* Status Change */}
                       {circular.status === "draft" && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="text-green-600 border-green-200 hover:bg-green-50"
-                          onClick={() => updateCircularStatus(circular.id, "published")}
+                          onClick={() =>
+                            updateCircularStatus(circular.id, "published")
+                          }
                         >
                           <Send className="w-3 h-3" />
                         </Button>
                       )}
 
                       {circular.status === "published" && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="text-red-600 border-red-200 hover:bg-red-50"
-                          onClick={() => updateCircularStatus(circular.id, "closed")}
+                          onClick={() =>
+                            updateCircularStatus(circular.id, "closed")
+                          }
                         >
                           Close
                         </Button>
                       )}
 
                       {/* Duplicate */}
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         className="text-blue-600 border-blue-200 hover:bg-blue-50"
                         onClick={() => duplicateCircular(circular)}
                       >
@@ -764,9 +924,9 @@ export default function AdmissionCircular() {
                       {/* Delete */}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             className="text-red-600 border-red-200 hover:bg-red-50"
                           >
                             <Trash2 className="w-3 h-3" />
@@ -776,12 +936,13 @@ export default function AdmissionCircular() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Circular</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to delete "{circular.title}"? This action cannot be undone.
+                              Are you sure you want to delete "{circular.title}
+                              "? This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
+                            <AlertDialogAction
                               onClick={() => deleteCircular(circular.id)}
                               className="bg-red-600 hover:bg-red-700"
                             >

@@ -2170,7 +2170,9 @@ export default function Reports() {
               {/* Additional Filters for ID Card Report */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700">Status Filter</Label>
+                  <Label className="text-sm font-medium text-gray-700">
+                    Status Filter
+                  </Label>
                   <Select defaultValue="all">
                     <SelectTrigger>
                       <SelectValue />
@@ -2183,11 +2185,15 @@ export default function Reports() {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700">Date From</Label>
+                  <Label className="text-sm font-medium text-gray-700">
+                    Date From
+                  </Label>
                   <Input type="date" />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700">Date To</Label>
+                  <Label className="text-sm font-medium text-gray-700">
+                    Date To
+                  </Label>
                   <Input type="date" />
                 </div>
               </div>
@@ -2234,8 +2240,7 @@ export default function Reports() {
                       <TableCell className="font-medium">
                         {item.generatedDate !== "-"
                           ? new Date(item.generatedDate).toLocaleDateString()
-                          : "-"
-                        }
+                          : "-"}
                       </TableCell>
                     </TableRow>
                   ))}

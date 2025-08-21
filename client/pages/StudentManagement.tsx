@@ -190,7 +190,7 @@ const programs = {
   "Electrical Engineering": ["BSc in EEE"],
   "Civil Engineering": ["BSc in Civil"],
   "Mechanical Engineering": ["BSc in Mechanical"],
-  "Architecture": ["Bachelor of Architecture"],
+  Architecture: ["Bachelor of Architecture"],
 };
 
 export default function StudentManagement() {
@@ -200,59 +200,99 @@ export default function StudentManagement() {
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
-  const [newCorrectionRequest, setNewCorrectionRequest] = useState<Partial<CorrectionRequest>>({});
+  const [newCorrectionRequest, setNewCorrectionRequest] = useState<
+    Partial<CorrectionRequest>
+  >({});
 
   const filteredStudents = students.filter((student) => {
-    const matchesSearch = 
+    const matchesSearch =
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesDepartment = 
-      departmentFilter === "all" || 
+
+    const matchesDepartment =
+      departmentFilter === "all" ||
       student.currentDepartment === departmentFilter;
-    
-    const matchesStatus = 
-      statusFilter === "all" || 
-      student.status === statusFilter;
+
+    const matchesStatus =
+      statusFilter === "all" || student.status === statusFilter;
 
     return matchesSearch && matchesDepartment && matchesStatus;
   });
 
   const stats = {
     totalStudents: students.length,
-    activeStudents: students.filter(s => s.status === "active").length,
-    pendingCorrections: students.reduce((sum, s) => sum + s.corrections.filter(c => c.status === "pending").length, 0),
-    departmentTransfers: students.filter(s => s.corrections.some(c => c.type === "department" && c.status === "pending")).length,
+    activeStudents: students.filter((s) => s.status === "active").length,
+    pendingCorrections: students.reduce(
+      (sum, s) =>
+        sum + s.corrections.filter((c) => c.status === "pending").length,
+      0,
+    ),
+    departmentTransfers: students.filter((s) =>
+      s.corrections.some(
+        (c) => c.type === "department" && c.status === "pending",
+      ),
+    ).length,
   };
 
-  const handleCorrectionApproval = (studentId: string, correctionId: string, approved: boolean) => {
-    setStudents(prev => 
-      prev.map(student => 
+  const handleCorrectionApproval = (
+    studentId: string,
+    correctionId: string,
+    approved: boolean,
+  ) => {
+    setStudents((prev) =>
+      prev.map((student) =>
         student.id === studentId
           ? {
               ...student,
-              corrections: student.corrections.map(correction =>
+              corrections: student.corrections.map((correction) =>
                 correction.id === correctionId
-                  ? { ...correction, status: approved ? "approved" : "rejected" }
-                  : correction
+                  ? {
+                      ...correction,
+                      status: approved ? "approved" : "rejected",
+                    }
+                  : correction,
               ),
               // Apply the correction if approved
-              ...(approved && student.corrections.find(c => c.id === correctionId)?.type === "name" ? {
-                name: student.corrections.find(c => c.id === correctionId)?.requestedValue || student.name
-              } : {}),
-              ...(approved && student.corrections.find(c => c.id === correctionId)?.type === "department" ? {
-                currentDepartment: student.corrections.find(c => c.id === correctionId)?.requestedValue || student.currentDepartment
-              } : {}),
-              ...(approved && student.corrections.find(c => c.id === correctionId)?.type === "email" ? {
-                email: student.corrections.find(c => c.id === correctionId)?.requestedValue || student.email
-              } : {}),
-              ...(approved && student.corrections.find(c => c.id === correctionId)?.type === "phone" ? {
-                phone: student.corrections.find(c => c.id === correctionId)?.requestedValue || student.phone
-              } : {}),
+              ...(approved &&
+              student.corrections.find((c) => c.id === correctionId)?.type ===
+                "name"
+                ? {
+                    name:
+                      student.corrections.find((c) => c.id === correctionId)
+                        ?.requestedValue || student.name,
+                  }
+                : {}),
+              ...(approved &&
+              student.corrections.find((c) => c.id === correctionId)?.type ===
+                "department"
+                ? {
+                    currentDepartment:
+                      student.corrections.find((c) => c.id === correctionId)
+                        ?.requestedValue || student.currentDepartment,
+                  }
+                : {}),
+              ...(approved &&
+              student.corrections.find((c) => c.id === correctionId)?.type ===
+                "email"
+                ? {
+                    email:
+                      student.corrections.find((c) => c.id === correctionId)
+                        ?.requestedValue || student.email,
+                  }
+                : {}),
+              ...(approved &&
+              student.corrections.find((c) => c.id === correctionId)?.type ===
+                "phone"
+                ? {
+                    phone:
+                      student.corrections.find((c) => c.id === correctionId)
+                        ?.requestedValue || student.phone,
+                  }
+                : {}),
             }
-          : student
-      )
+          : student,
+      ),
     );
 
     toast({
@@ -262,7 +302,11 @@ export default function StudentManagement() {
   };
 
   const submitCorrectionRequest = (studentId: string) => {
-    if (!newCorrectionRequest.type || !newCorrectionRequest.requestedValue || !newCorrectionRequest.reason) {
+    if (
+      !newCorrectionRequest.type ||
+      !newCorrectionRequest.requestedValue ||
+      !newCorrectionRequest.reason
+    ) {
       toast({
         title: "Invalid Request",
         description: "Please fill in all required fields.",
@@ -271,32 +315,39 @@ export default function StudentManagement() {
       return;
     }
 
-    const student = students.find(s => s.id === studentId);
+    const student = students.find((s) => s.id === studentId);
     if (!student) return;
 
-    const currentValue = 
-      newCorrectionRequest.type === "name" ? student.name :
-      newCorrectionRequest.type === "department" ? student.currentDepartment :
-      newCorrectionRequest.type === "email" ? student.email :
-      student.phone;
+    const currentValue =
+      newCorrectionRequest.type === "name"
+        ? student.name
+        : newCorrectionRequest.type === "department"
+          ? student.currentDepartment
+          : newCorrectionRequest.type === "email"
+            ? student.email
+            : student.phone;
 
     const newCorrection: CorrectionRequest = {
       id: `c${Date.now()}`,
-      type: newCorrectionRequest.type as "name" | "department" | "email" | "phone",
+      type: newCorrectionRequest.type as
+        | "name"
+        | "department"
+        | "email"
+        | "phone",
       currentValue,
       requestedValue: newCorrectionRequest.requestedValue,
       reason: newCorrectionRequest.reason,
       status: "pending",
-      requestDate: new Date().toISOString().split('T')[0],
+      requestDate: new Date().toISOString().split("T")[0],
       requestedBy: "Admin",
     };
 
-    setStudents(prev => 
-      prev.map(s => 
-        s.id === studentId 
+    setStudents((prev) =>
+      prev.map((s) =>
+        s.id === studentId
           ? { ...s, corrections: [...s.corrections, newCorrection] }
-          : s
-      )
+          : s,
+      ),
     );
 
     setNewCorrectionRequest({});
@@ -313,8 +364,9 @@ export default function StudentManagement() {
       graduated: { color: "bg-blue-100 text-blue-800", label: "Graduated" },
       dropped: { color: "bg-red-100 text-red-800", label: "Dropped" },
     };
-    
-    const { color, label } = config[status as keyof typeof config] || config.active;
+
+    const { color, label } =
+      config[status as keyof typeof config] || config.active;
     return <Badge className={color}>{label}</Badge>;
   };
 
@@ -324,19 +376,32 @@ export default function StudentManagement() {
       approved: { color: "bg-green-100 text-green-800", label: "Approved" },
       rejected: { color: "bg-red-100 text-red-800", label: "Rejected" },
     };
-    
-    const { color, label } = config[status as keyof typeof config] || config.pending;
+
+    const { color, label } =
+      config[status as keyof typeof config] || config.pending;
     return <Badge className={color}>{label}</Badge>;
   };
 
   const getCorrectionTypeBadge = (type: string) => {
     const config = {
       name: { color: "bg-blue-100 text-blue-800", label: "Name", icon: User },
-      department: { color: "bg-purple-100 text-purple-800", label: "Department", icon: Building },
-      email: { color: "bg-orange-100 text-orange-800", label: "Email", icon: Mail },
-      phone: { color: "bg-teal-100 text-teal-800", label: "Phone", icon: Phone },
+      department: {
+        color: "bg-purple-100 text-purple-800",
+        label: "Department",
+        icon: Building,
+      },
+      email: {
+        color: "bg-orange-100 text-orange-800",
+        label: "Email",
+        icon: Mail,
+      },
+      phone: {
+        color: "bg-teal-100 text-teal-800",
+        label: "Phone",
+        icon: Phone,
+      },
     };
-    
+
     const item = config[type as keyof typeof config] || config.name;
     return (
       <Badge className={item.color}>
@@ -364,8 +429,12 @@ export default function StudentManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Students</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.totalStudents}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Students
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.totalStudents}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-blue-100">
                 <User className="w-6 h-6 text-blue-600" />
@@ -378,8 +447,12 @@ export default function StudentManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Active Students</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.activeStudents}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Active Students
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.activeStudents}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-green-100">
                 <CheckCircle className="w-6 h-6 text-green-600" />
@@ -392,8 +465,12 @@ export default function StudentManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending Corrections</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.pendingCorrections}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Pending Corrections
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.pendingCorrections}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-yellow-100">
                 <AlertTriangle className="w-6 h-6 text-yellow-600" />
@@ -406,8 +483,12 @@ export default function StudentManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Transfer Requests</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.departmentTransfers}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Transfer Requests
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.departmentTransfers}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-purple-100">
                 <Building className="w-6 h-6 text-purple-600" />
@@ -430,15 +511,20 @@ export default function StudentManagement() {
                 className="pl-10"
               />
             </div>
-            
-            <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+
+            <Select
+              value={departmentFilter}
+              onValueChange={setDepartmentFilter}
+            >
               <SelectTrigger className="md:w-48">
                 <SelectValue placeholder="Filter by Department" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Departments</SelectItem>
-                {departments.map(dept => (
-                  <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                {departments.map((dept) => (
+                  <SelectItem key={dept} value={dept}>
+                    {dept}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -485,22 +571,31 @@ export default function StudentManagement() {
                   <TableCell>
                     <div>
                       <div className="font-medium">{student.name}</div>
-                      <div className="text-sm text-gray-500">{student.studentId}</div>
                       <div className="text-sm text-gray-500">
-                        Admitted: {new Date(student.admissionDate).toLocaleDateString()}
+                        {student.studentId}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Admitted:{" "}
+                        {new Date(student.admissionDate).toLocaleDateString()}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
                       <div className="text-sm">{student.email}</div>
-                      <div className="text-sm text-gray-500">{student.phone}</div>
+                      <div className="text-sm text-gray-500">
+                        {student.phone}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-medium">{student.currentDepartment}</div>
-                      <div className="text-sm text-gray-500">{student.currentProgram}</div>
+                      <div className="font-medium">
+                        {student.currentDepartment}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {student.currentProgram}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -508,17 +603,21 @@ export default function StudentManagement() {
                       {student.cgpa.toFixed(2)}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    {getStatusBadge(student.status)}
-                  </TableCell>
+                  <TableCell>{getStatusBadge(student.status)}</TableCell>
                   <TableCell>
                     <div className="space-y-1">
-                      {student.corrections.filter(c => c.status === "pending").map(correction => (
-                        <div key={correction.id} className="flex items-center gap-2">
-                          {getCorrectionTypeBadge(correction.type)}
-                        </div>
-                      ))}
-                      {student.corrections.filter(c => c.status === "pending").length === 0 && (
+                      {student.corrections
+                        .filter((c) => c.status === "pending")
+                        .map((correction) => (
+                          <div
+                            key={correction.id}
+                            className="flex items-center gap-2"
+                          >
+                            {getCorrectionTypeBadge(correction.type)}
+                          </div>
+                        ))}
+                      {student.corrections.filter((c) => c.status === "pending")
+                        .length === 0 && (
                         <span className="text-sm text-gray-500">None</span>
                       )}
                     </div>
@@ -534,77 +633,126 @@ export default function StudentManagement() {
                         </DialogTrigger>
                         <DialogContent className="max-w-4xl">
                           <DialogHeader>
-                            <DialogTitle>Manage Student: {student.name}</DialogTitle>
+                            <DialogTitle>
+                              Manage Student: {student.name}
+                            </DialogTitle>
                           </DialogHeader>
                           <div className="grid gap-6 py-4">
                             {/* Student Info */}
                             <div className="grid grid-cols-2 gap-4">
                               <div>
                                 <Label>Student ID</Label>
-                                <div className="text-lg font-mono">{student.studentId}</div>
+                                <div className="text-lg font-mono">
+                                  {student.studentId}
+                                </div>
                               </div>
                               <div>
                                 <Label>Current CGPA</Label>
-                                <div className="text-lg font-bold text-blue-600">{student.cgpa.toFixed(2)}</div>
+                                <div className="text-lg font-bold text-blue-600">
+                                  {student.cgpa.toFixed(2)}
+                                </div>
                               </div>
                             </div>
 
                             {/* New Correction Request */}
                             <div className="border rounded-lg p-4 bg-gray-50">
-                              <h3 className="font-semibold mb-3">Submit New Correction Request</h3>
+                              <h3 className="font-semibold mb-3">
+                                Submit New Correction Request
+                              </h3>
                               <div className="grid gap-4">
                                 <div className="grid grid-cols-2 gap-4">
                                   <div>
                                     <Label>Correction Type</Label>
-                                    <Select 
-                                      value={newCorrectionRequest.type || ""} 
-                                      onValueChange={(value) => setNewCorrectionRequest(prev => ({ ...prev, type: value }))}
+                                    <Select
+                                      value={newCorrectionRequest.type || ""}
+                                      onValueChange={(value) =>
+                                        setNewCorrectionRequest((prev) => ({
+                                          ...prev,
+                                          type: value,
+                                        }))
+                                      }
                                     >
                                       <SelectTrigger>
                                         <SelectValue placeholder="Select type" />
                                       </SelectTrigger>
                                       <SelectContent>
-                                        <SelectItem value="name">Name Correction</SelectItem>
-                                        <SelectItem value="department">Department Transfer</SelectItem>
-                                        <SelectItem value="email">Email Update</SelectItem>
-                                        <SelectItem value="phone">Phone Update</SelectItem>
+                                        <SelectItem value="name">
+                                          Name Correction
+                                        </SelectItem>
+                                        <SelectItem value="department">
+                                          Department Transfer
+                                        </SelectItem>
+                                        <SelectItem value="email">
+                                          Email Update
+                                        </SelectItem>
+                                        <SelectItem value="phone">
+                                          Phone Update
+                                        </SelectItem>
                                       </SelectContent>
                                     </Select>
                                   </div>
                                   <div>
                                     <Label>New Value</Label>
-                                    {newCorrectionRequest.type === "department" ? (
-                                      <Select 
-                                        value={newCorrectionRequest.requestedValue || ""} 
-                                        onValueChange={(value) => setNewCorrectionRequest(prev => ({ ...prev, requestedValue: value }))}
+                                    {newCorrectionRequest.type ===
+                                    "department" ? (
+                                      <Select
+                                        value={
+                                          newCorrectionRequest.requestedValue ||
+                                          ""
+                                        }
+                                        onValueChange={(value) =>
+                                          setNewCorrectionRequest((prev) => ({
+                                            ...prev,
+                                            requestedValue: value,
+                                          }))
+                                        }
                                       >
                                         <SelectTrigger>
                                           <SelectValue placeholder="Select department" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                          {departments.map(dept => (
-                                            <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                                          {departments.map((dept) => (
+                                            <SelectItem key={dept} value={dept}>
+                                              {dept}
+                                            </SelectItem>
                                           ))}
                                         </SelectContent>
                                       </Select>
                                     ) : (
-                                      <Input 
+                                      <Input
                                         placeholder="Enter new value"
-                                        value={newCorrectionRequest.requestedValue || ""}
-                                        onChange={(e) => setNewCorrectionRequest(prev => ({ ...prev, requestedValue: e.target.value }))}
+                                        value={
+                                          newCorrectionRequest.requestedValue ||
+                                          ""
+                                        }
+                                        onChange={(e) =>
+                                          setNewCorrectionRequest((prev) => ({
+                                            ...prev,
+                                            requestedValue: e.target.value,
+                                          }))
+                                        }
                                       />
                                     )}
                                   </div>
                                 </div>
                                 <div>
                                   <Label>Reason for Correction</Label>
-                                  <Textarea 
+                                  <Textarea
                                     placeholder="Provide a detailed reason for this correction..."
                                     value={newCorrectionRequest.reason || ""}
-                                    onChange={(e) => setNewCorrectionRequest(prev => ({ ...prev, reason: e.target.value }))}
+                                    onChange={(e) =>
+                                      setNewCorrectionRequest((prev) => ({
+                                        ...prev,
+                                        reason: e.target.value,
+                                      }))
+                                    }
                                   />
                                 </div>
-                                <Button onClick={() => submitCorrectionRequest(student.id)}>
+                                <Button
+                                  onClick={() =>
+                                    submitCorrectionRequest(student.id)
+                                  }
+                                >
                                   <Save className="w-4 h-4 mr-2" />
                                   Submit Request
                                 </Button>
@@ -613,46 +761,78 @@ export default function StudentManagement() {
 
                             {/* Existing Corrections */}
                             <div>
-                              <h3 className="font-semibold mb-3">Correction History</h3>
+                              <h3 className="font-semibold mb-3">
+                                Correction History
+                              </h3>
                               <div className="space-y-3">
-                                {student.corrections.map(correction => (
-                                  <div key={correction.id} className="border rounded-lg p-4">
+                                {student.corrections.map((correction) => (
+                                  <div
+                                    key={correction.id}
+                                    className="border rounded-lg p-4"
+                                  >
                                     <div className="flex justify-between items-start mb-2">
                                       <div className="flex items-center gap-2">
-                                        {getCorrectionTypeBadge(correction.type)}
-                                        {getCorrectionStatusBadge(correction.status)}
+                                        {getCorrectionTypeBadge(
+                                          correction.type,
+                                        )}
+                                        {getCorrectionStatusBadge(
+                                          correction.status,
+                                        )}
                                       </div>
                                       <div className="text-sm text-gray-500">
-                                        {new Date(correction.requestDate).toLocaleDateString()}
+                                        {new Date(
+                                          correction.requestDate,
+                                        ).toLocaleDateString()}
                                       </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4 text-sm">
                                       <div>
-                                        <span className="font-medium">Current:</span> {correction.currentValue}
+                                        <span className="font-medium">
+                                          Current:
+                                        </span>{" "}
+                                        {correction.currentValue}
                                       </div>
                                       <div>
-                                        <span className="font-medium">Requested:</span> {correction.requestedValue}
+                                        <span className="font-medium">
+                                          Requested:
+                                        </span>{" "}
+                                        {correction.requestedValue}
                                       </div>
                                     </div>
                                     <div className="text-sm text-gray-600 mt-2">
-                                      <span className="font-medium">Reason:</span> {correction.reason}
+                                      <span className="font-medium">
+                                        Reason:
+                                      </span>{" "}
+                                      {correction.reason}
                                     </div>
-                                    
+
                                     {correction.status === "pending" && (
                                       <div className="flex gap-2 mt-3">
-                                        <Button 
-                                          size="sm" 
+                                        <Button
+                                          size="sm"
                                           className="bg-green-600 hover:bg-green-700"
-                                          onClick={() => handleCorrectionApproval(student.id, correction.id, true)}
+                                          onClick={() =>
+                                            handleCorrectionApproval(
+                                              student.id,
+                                              correction.id,
+                                              true,
+                                            )
+                                          }
                                         >
                                           <CheckCircle className="w-3 h-3 mr-1" />
                                           Approve
                                         </Button>
-                                        <Button 
-                                          size="sm" 
-                                          variant="outline" 
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
                                           className="text-red-600 border-red-200 hover:bg-red-50"
-                                          onClick={() => handleCorrectionApproval(student.id, correction.id, false)}
+                                          onClick={() =>
+                                            handleCorrectionApproval(
+                                              student.id,
+                                              correction.id,
+                                              false,
+                                            )
+                                          }
                                         >
                                           <X className="w-3 h-3 mr-1" />
                                           Reject
@@ -661,7 +841,7 @@ export default function StudentManagement() {
                                     )}
                                   </div>
                                 ))}
-                                
+
                                 {student.corrections.length === 0 && (
                                   <div className="text-center py-8 text-gray-500">
                                     <FileText className="w-12 h-12 mx-auto mb-2 text-gray-400" />
@@ -676,40 +856,60 @@ export default function StudentManagement() {
 
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="text-blue-600 border-blue-200 hover:bg-blue-50">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                          >
                             <History className="w-3 h-3 mr-1" />
                             History
                           </Button>
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>Change History: {student.name}</DialogTitle>
+                            <DialogTitle>
+                              Change History: {student.name}
+                            </DialogTitle>
                           </DialogHeader>
                           <div className="py-4">
                             <div className="space-y-4">
                               <div className="border-l-4 border-blue-500 pl-4">
-                                <div className="font-medium">Student Admitted</div>
+                                <div className="font-medium">
+                                  Student Admitted
+                                </div>
                                 <div className="text-sm text-gray-600">
-                                  {new Date(student.admissionDate).toLocaleDateString()}
+                                  {new Date(
+                                    student.admissionDate,
+                                  ).toLocaleDateString()}
                                 </div>
                                 <div className="text-sm text-gray-500">
                                   Department: {student.currentDepartment}
                                 </div>
                               </div>
-                              
-                              {student.corrections.filter(c => c.status === "approved").map(correction => (
-                                <div key={correction.id} className="border-l-4 border-green-500 pl-4">
-                                  <div className="font-medium">
-                                    {correction.type.charAt(0).toUpperCase() + correction.type.slice(1)} Updated
+
+                              {student.corrections
+                                .filter((c) => c.status === "approved")
+                                .map((correction) => (
+                                  <div
+                                    key={correction.id}
+                                    className="border-l-4 border-green-500 pl-4"
+                                  >
+                                    <div className="font-medium">
+                                      {correction.type.charAt(0).toUpperCase() +
+                                        correction.type.slice(1)}{" "}
+                                      Updated
+                                    </div>
+                                    <div className="text-sm text-gray-600">
+                                      {new Date(
+                                        correction.requestDate,
+                                      ).toLocaleDateString()}
+                                    </div>
+                                    <div className="text-sm text-gray-500">
+                                      Changed from "{correction.currentValue}"
+                                      to "{correction.requestedValue}"
+                                    </div>
                                   </div>
-                                  <div className="text-sm text-gray-600">
-                                    {new Date(correction.requestDate).toLocaleDateString()}
-                                  </div>
-                                  <div className="text-sm text-gray-500">
-                                    Changed from "{correction.currentValue}" to "{correction.requestedValue}"
-                                  </div>
-                                </div>
-                              ))}
+                                ))}
                             </div>
                           </div>
                         </DialogContent>

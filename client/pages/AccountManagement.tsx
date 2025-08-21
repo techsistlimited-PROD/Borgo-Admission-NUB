@@ -81,7 +81,13 @@ interface Account {
 
 interface AccountAction {
   id: string;
-  type: "lock" | "unlock" | "deactivate" | "reactivate" | "cancel_admission" | "password_reset";
+  type:
+    | "lock"
+    | "unlock"
+    | "deactivate"
+    | "reactivate"
+    | "cancel_admission"
+    | "password_reset";
   performedBy: string;
   performedAt: string;
   reason: string;
@@ -216,68 +222,84 @@ export default function AccountManagement() {
   const [showPassword, setShowPassword] = useState(false);
 
   const filteredAccounts = accounts.filter((account) => {
-    const matchesSearch = 
+    const matchesSearch =
       account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       account.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       account.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = 
-      statusFilter === "all" || 
-      account.accountStatus === statusFilter;
-    
-    const matchesDepartment = 
-      departmentFilter === "all" || 
-      account.department === departmentFilter;
+
+    const matchesStatus =
+      statusFilter === "all" || account.accountStatus === statusFilter;
+
+    const matchesDepartment =
+      departmentFilter === "all" || account.department === departmentFilter;
 
     return matchesSearch && matchesStatus && matchesDepartment;
   });
 
   const stats = {
     totalAccounts: accounts.length,
-    activeAccounts: accounts.filter(a => a.accountStatus === "active").length,
-    lockedAccounts: accounts.filter(a => a.accountStatus === "locked").length,
-    cancelledAdmissions: accounts.filter(a => a.admissionStatus === "cancelled").length,
+    activeAccounts: accounts.filter((a) => a.accountStatus === "active").length,
+    lockedAccounts: accounts.filter((a) => a.accountStatus === "locked").length,
+    cancelledAdmissions: accounts.filter(
+      (a) => a.admissionStatus === "cancelled",
+    ).length,
   };
 
   const performAccountAction = (
-    accountId: string, 
-    actionType: "lock" | "unlock" | "deactivate" | "reactivate" | "cancel_admission" | "password_reset",
+    accountId: string,
+    actionType:
+      | "lock"
+      | "unlock"
+      | "deactivate"
+      | "reactivate"
+      | "cancel_admission"
+      | "password_reset",
     reason: string,
-    details?: string
+    details?: string,
   ) => {
     const newAction: AccountAction = {
       id: `a${Date.now()}`,
       type: actionType,
       performedBy: "Admin",
-      performedAt: new Date().toISOString().split('T')[0],
+      performedAt: new Date().toISOString().split("T")[0],
       reason,
       details,
     };
 
-    setAccounts(prev => 
-      prev.map(account => 
-        account.id === accountId 
+    setAccounts((prev) =>
+      prev.map((account) =>
+        account.id === accountId
           ? {
               ...account,
-              accountStatus: 
-                actionType === "lock" ? "locked" :
-                actionType === "unlock" ? "active" :
-                actionType === "deactivate" ? "deactivated" :
-                actionType === "reactivate" ? "active" :
-                account.accountStatus,
-              admissionStatus: 
-                actionType === "cancel_admission" ? "cancelled" : account.admissionStatus,
-              passwordResetRequired: actionType === "password_reset" ? true : account.passwordResetRequired,
-              loginAttempts: actionType === "unlock" ? 0 : account.loginAttempts,
+              accountStatus:
+                actionType === "lock"
+                  ? "locked"
+                  : actionType === "unlock"
+                    ? "active"
+                    : actionType === "deactivate"
+                      ? "deactivated"
+                      : actionType === "reactivate"
+                        ? "active"
+                        : account.accountStatus,
+              admissionStatus:
+                actionType === "cancel_admission"
+                  ? "cancelled"
+                  : account.admissionStatus,
+              passwordResetRequired:
+                actionType === "password_reset"
+                  ? true
+                  : account.passwordResetRequired,
+              loginAttempts:
+                actionType === "unlock" ? 0 : account.loginAttempts,
               actions: [...account.actions, newAction],
             }
-          : account
-      )
+          : account,
+      ),
     );
 
     toast({
       title: "Action Completed",
-      description: `Account ${actionType.replace('_', ' ')} action has been performed successfully.`,
+      description: `Account ${actionType.replace("_", " ")} action has been performed successfully.`,
     });
 
     setActionReason("");
@@ -285,7 +307,8 @@ export default function AccountManagement() {
   };
 
   const generatePassword = () => {
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    const chars =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
     let password = "";
     for (let i = 0; i < 12; i++) {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -300,8 +323,9 @@ export default function AccountManagement() {
       deactivated: { color: "bg-gray-100 text-gray-800", label: "Deactivated" },
       cancelled: { color: "bg-orange-100 text-orange-800", label: "Cancelled" },
     };
-    
-    const { color, label } = config[status as keyof typeof config] || config.active;
+
+    const { color, label } =
+      config[status as keyof typeof config] || config.active;
     return <Badge className={color}>{label}</Badge>;
   };
 
@@ -311,21 +335,42 @@ export default function AccountManagement() {
       cancelled: { color: "bg-red-100 text-red-800", label: "Cancelled" },
       pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending" },
     };
-    
-    const { color, label } = config[status as keyof typeof config] || config.pending;
+
+    const { color, label } =
+      config[status as keyof typeof config] || config.pending;
     return <Badge className={color}>{label}</Badge>;
   };
 
   const getActionTypeBadge = (type: string) => {
     const config = {
       lock: { color: "bg-red-100 text-red-800", label: "Locked", icon: Lock },
-      unlock: { color: "bg-green-100 text-green-800", label: "Unlocked", icon: Unlock },
-      deactivate: { color: "bg-gray-100 text-gray-800", label: "Deactivated", icon: UserX },
-      reactivate: { color: "bg-blue-100 text-blue-800", label: "Reactivated", icon: User },
-      cancel_admission: { color: "bg-orange-100 text-orange-800", label: "Admission Cancelled", icon: X },
-      password_reset: { color: "bg-purple-100 text-purple-800", label: "Password Reset", icon: Key },
+      unlock: {
+        color: "bg-green-100 text-green-800",
+        label: "Unlocked",
+        icon: Unlock,
+      },
+      deactivate: {
+        color: "bg-gray-100 text-gray-800",
+        label: "Deactivated",
+        icon: UserX,
+      },
+      reactivate: {
+        color: "bg-blue-100 text-blue-800",
+        label: "Reactivated",
+        icon: User,
+      },
+      cancel_admission: {
+        color: "bg-orange-100 text-orange-800",
+        label: "Admission Cancelled",
+        icon: X,
+      },
+      password_reset: {
+        color: "bg-purple-100 text-purple-800",
+        label: "Password Reset",
+        icon: Key,
+      },
     };
-    
+
     const item = config[type as keyof typeof config] || config.lock;
     return (
       <Badge className={item.color}>
@@ -335,7 +380,13 @@ export default function AccountManagement() {
     );
   };
 
-  const departments = ["All Departments", "Computer Science", "Business Administration", "Electrical Engineering", "Civil Engineering"];
+  const departments = [
+    "All Departments",
+    "Computer Science",
+    "Business Administration",
+    "Electrical Engineering",
+    "Civil Engineering",
+  ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -355,8 +406,12 @@ export default function AccountManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Accounts</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.totalAccounts}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Accounts
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.totalAccounts}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-blue-100">
                 <User className="w-6 h-6 text-blue-600" />
@@ -369,8 +424,12 @@ export default function AccountManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Active Accounts</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.activeAccounts}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Active Accounts
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.activeAccounts}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-green-100">
                 <CheckCircle className="w-6 h-6 text-green-600" />
@@ -383,8 +442,12 @@ export default function AccountManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Locked Accounts</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.lockedAccounts}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Locked Accounts
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.lockedAccounts}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-red-100">
                 <Lock className="w-6 h-6 text-red-600" />
@@ -397,8 +460,12 @@ export default function AccountManagement() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Cancelled Admissions</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.cancelledAdmissions}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Cancelled Admissions
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.cancelledAdmissions}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-orange-100">
                 <AlertTriangle className="w-6 h-6 text-orange-600" />
@@ -421,7 +488,7 @@ export default function AccountManagement() {
                 className="pl-10"
               />
             </div>
-            
+
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="md:w-40">
                 <SelectValue placeholder="Account Status" />
@@ -434,13 +501,19 @@ export default function AccountManagement() {
               </SelectContent>
             </Select>
 
-            <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+            <Select
+              value={departmentFilter}
+              onValueChange={setDepartmentFilter}
+            >
               <SelectTrigger className="md:w-48">
                 <SelectValue placeholder="Department" />
               </SelectTrigger>
               <SelectContent>
-                {departments.map(dept => (
-                  <SelectItem key={dept} value={dept === "All Departments" ? "all" : dept}>
+                {departments.map((dept) => (
+                  <SelectItem
+                    key={dept}
+                    value={dept === "All Departments" ? "all" : dept}
+                  >
                     {dept}
                   </SelectItem>
                 ))}
@@ -476,14 +549,20 @@ export default function AccountManagement() {
                   <TableCell>
                     <div>
                       <div className="font-medium">{account.name}</div>
-                      <div className="text-sm text-gray-500">{account.studentId}</div>
-                      <div className="text-sm text-gray-500">{account.department}</div>
+                      <div className="text-sm text-gray-500">
+                        {account.studentId}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {account.department}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
                       <div className="text-sm">{account.email}</div>
-                      <div className="text-sm text-gray-500">{account.phone}</div>
+                      <div className="text-sm text-gray-500">
+                        {account.phone}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -494,9 +573,12 @@ export default function AccountManagement() {
                   </TableCell>
                   <TableCell>
                     <div>
-                      <div className="text-sm">{new Date(account.lastLogin).toLocaleDateString()}</div>
+                      <div className="text-sm">
+                        {new Date(account.lastLogin).toLocaleDateString()}
+                      </div>
                       <div className="text-sm text-gray-500">
-                        Created: {new Date(account.createdDate).toLocaleDateString()}
+                        Created:{" "}
+                        {new Date(account.createdDate).toLocaleDateString()}
                       </div>
                     </div>
                   </TableCell>
@@ -504,10 +586,14 @@ export default function AccountManagement() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-1">
                         <Shield className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs">Attempts: {account.loginAttempts}</span>
+                        <span className="text-xs">
+                          Attempts: {account.loginAttempts}
+                        </span>
                       </div>
                       {account.passwordResetRequired && (
-                        <Badge variant="outline" className="text-xs">Reset Required</Badge>
+                        <Badge variant="outline" className="text-xs">
+                          Reset Required
+                        </Badge>
                       )}
                     </div>
                   </TableCell>
@@ -517,7 +603,11 @@ export default function AccountManagement() {
                       {account.accountStatus === "active" ? (
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-red-600 border-red-200 hover:bg-red-50"
+                            >
                               <Lock className="w-3 h-3" />
                             </Button>
                           </DialogTrigger>
@@ -528,22 +618,33 @@ export default function AccountManagement() {
                             <div className="grid gap-4 py-4">
                               <div>
                                 <Label>Reason for locking</Label>
-                                <Textarea 
+                                <Textarea
                                   placeholder="Provide reason for account lock..."
                                   value={actionReason}
-                                  onChange={(e) => setActionReason(e.target.value)}
+                                  onChange={(e) =>
+                                    setActionReason(e.target.value)
+                                  }
                                 />
                               </div>
                               <div>
                                 <Label>Additional Details (Optional)</Label>
-                                <Input 
+                                <Input
                                   placeholder="Additional information..."
                                   value={actionDetails}
-                                  onChange={(e) => setActionDetails(e.target.value)}
+                                  onChange={(e) =>
+                                    setActionDetails(e.target.value)
+                                  }
                                 />
                               </div>
-                              <Button 
-                                onClick={() => performAccountAction(account.id, "lock", actionReason, actionDetails)}
+                              <Button
+                                onClick={() =>
+                                  performAccountAction(
+                                    account.id,
+                                    "lock",
+                                    actionReason,
+                                    actionDetails,
+                                  )
+                                }
                                 disabled={!actionReason}
                                 className="bg-red-600 hover:bg-red-700"
                               >
@@ -555,7 +656,11 @@ export default function AccountManagement() {
                       ) : account.accountStatus === "locked" ? (
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="text-green-600 border-green-200 hover:bg-green-50">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-green-600 border-green-200 hover:bg-green-50"
+                            >
                               <Unlock className="w-3 h-3" />
                             </Button>
                           </DialogTrigger>
@@ -566,14 +671,22 @@ export default function AccountManagement() {
                             <div className="grid gap-4 py-4">
                               <div>
                                 <Label>Reason for unlocking</Label>
-                                <Textarea 
+                                <Textarea
                                   placeholder="Provide reason for account unlock..."
                                   value={actionReason}
-                                  onChange={(e) => setActionReason(e.target.value)}
+                                  onChange={(e) =>
+                                    setActionReason(e.target.value)
+                                  }
                                 />
                               </div>
-                              <Button 
-                                onClick={() => performAccountAction(account.id, "unlock", actionReason)}
+                              <Button
+                                onClick={() =>
+                                  performAccountAction(
+                                    account.id,
+                                    "unlock",
+                                    actionReason,
+                                  )
+                                }
                                 disabled={!actionReason}
                                 className="bg-green-600 hover:bg-green-700"
                               >
@@ -587,7 +700,11 @@ export default function AccountManagement() {
                       {/* Password Reset */}
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="text-blue-600 border-blue-200 hover:bg-blue-50">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                          >
                             <Key className="w-3 h-3" />
                           </Button>
                         </DialogTrigger>
@@ -600,36 +717,54 @@ export default function AccountManagement() {
                               <Label>New Password</Label>
                               <div className="flex gap-2">
                                 <div className="relative flex-1">
-                                  <Input 
+                                  <Input
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Enter new password or generate one"
                                     value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    onChange={(e) =>
+                                      setNewPassword(e.target.value)
+                                    }
                                   />
                                   <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
                                     className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                                   >
-                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    {showPassword ? (
+                                      <EyeOff className="w-4 h-4" />
+                                    ) : (
+                                      <Eye className="w-4 h-4" />
+                                    )}
                                   </button>
                                 </div>
-                                <Button type="button" variant="outline" onClick={generatePassword}>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={generatePassword}
+                                >
                                   Generate
                                 </Button>
                               </div>
                             </div>
                             <div>
                               <Label>Reason for reset</Label>
-                              <Textarea 
+                              <Textarea
                                 placeholder="Provide reason for password reset..."
                                 value={actionReason}
-                                onChange={(e) => setActionReason(e.target.value)}
+                                onChange={(e) =>
+                                  setActionReason(e.target.value)
+                                }
                               />
                             </div>
-                            <Button 
+                            <Button
                               onClick={() => {
-                                performAccountAction(account.id, "password_reset", actionReason);
+                                performAccountAction(
+                                  account.id,
+                                  "password_reset",
+                                  actionReason,
+                                );
                                 setNewPassword("");
                               }}
                               disabled={!actionReason || !newPassword}
@@ -645,33 +780,55 @@ export default function AccountManagement() {
                       {account.admissionStatus === "admitted" && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="text-orange-600 border-orange-200 hover:bg-orange-50">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-orange-600 border-orange-200 hover:bg-orange-50"
+                            >
                               <X className="w-3 h-3" />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>Cancel Admission</AlertDialogTitle>
+                              <AlertDialogTitle>
+                                Cancel Admission
+                              </AlertDialogTitle>
                               <AlertDialogDescription>
-                                Are you sure you want to cancel the admission for {account.name}? This action cannot be undone and will also deactivate the student's account.
+                                Are you sure you want to cancel the admission
+                                for {account.name}? This action cannot be undone
+                                and will also deactivate the student's account.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <div className="grid gap-4 py-4">
                               <div>
                                 <Label>Reason for cancellation</Label>
-                                <Textarea 
+                                <Textarea
                                   placeholder="Provide detailed reason for admission cancellation..."
                                   value={actionReason}
-                                  onChange={(e) => setActionReason(e.target.value)}
+                                  onChange={(e) =>
+                                    setActionReason(e.target.value)
+                                  }
                                 />
                               </div>
                             </div>
                             <AlertDialogFooter>
-                              <AlertDialogCancel onClick={() => setActionReason("")}>Cancel</AlertDialogCancel>
-                              <AlertDialogAction 
+                              <AlertDialogCancel
+                                onClick={() => setActionReason("")}
+                              >
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction
                                 onClick={() => {
-                                  performAccountAction(account.id, "cancel_admission", actionReason);
-                                  performAccountAction(account.id, "deactivate", "Following admission cancellation");
+                                  performAccountAction(
+                                    account.id,
+                                    "cancel_admission",
+                                    actionReason,
+                                  );
+                                  performAccountAction(
+                                    account.id,
+                                    "deactivate",
+                                    "Following admission cancellation",
+                                  );
                                 }}
                                 disabled={!actionReason}
                                 className="bg-orange-600 hover:bg-orange-700"
@@ -686,28 +843,41 @@ export default function AccountManagement() {
                       {/* View History */}
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="text-gray-600 border-gray-200 hover:bg-gray-50">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-gray-600 border-gray-200 hover:bg-gray-50"
+                          >
                             <Calendar className="w-3 h-3" />
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-2xl">
                           <DialogHeader>
-                            <DialogTitle>Account History: {account.name}</DialogTitle>
+                            <DialogTitle>
+                              Account History: {account.name}
+                            </DialogTitle>
                           </DialogHeader>
                           <div className="py-4 max-h-96 overflow-y-auto">
                             <div className="space-y-4">
                               <div className="border-l-4 border-blue-500 pl-4">
-                                <div className="font-medium">Account Created</div>
+                                <div className="font-medium">
+                                  Account Created
+                                </div>
                                 <div className="text-sm text-gray-600">
-                                  {new Date(account.createdDate).toLocaleDateString()}
+                                  {new Date(
+                                    account.createdDate,
+                                  ).toLocaleDateString()}
                                 </div>
                                 <div className="text-sm text-gray-500">
                                   Initial account setup completed
                                 </div>
                               </div>
-                              
-                              {account.actions.map(action => (
-                                <div key={action.id} className="border-l-4 border-gray-300 pl-4">
+
+                              {account.actions.map((action) => (
+                                <div
+                                  key={action.id}
+                                  className="border-l-4 border-gray-300 pl-4"
+                                >
                                   <div className="flex items-center gap-2 mb-1">
                                     {getActionTypeBadge(action.type)}
                                     <span className="text-sm text-gray-500">
@@ -715,7 +885,9 @@ export default function AccountManagement() {
                                     </span>
                                   </div>
                                   <div className="text-sm text-gray-600">
-                                    {new Date(action.performedAt).toLocaleDateString()}
+                                    {new Date(
+                                      action.performedAt,
+                                    ).toLocaleDateString()}
                                   </div>
                                   <div className="text-sm text-gray-700 mt-1">
                                     <strong>Reason:</strong> {action.reason}
@@ -727,7 +899,7 @@ export default function AccountManagement() {
                                   )}
                                 </div>
                               ))}
-                              
+
                               {account.actions.length === 0 && (
                                 <div className="text-center py-8 text-gray-500">
                                   No account actions recorded

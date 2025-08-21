@@ -182,7 +182,7 @@ const mockStudents: Student[] = [
 const departments = [
   "All Departments",
   "Computer Science",
-  "Business Administration", 
+  "Business Administration",
   "Electrical Engineering",
   "Civil Engineering",
   "Mechanical Engineering",
@@ -199,62 +199,70 @@ export default function IdCardGeneration() {
   const [previewStudent, setPreviewStudent] = useState<Student | null>(null);
 
   const filteredStudents = students.filter((student) => {
-    const matchesSearch = 
+    const matchesSearch =
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = 
-      statusFilter === "all" || 
-      student.idCardStatus === statusFilter;
-    
-    const matchesDepartment = 
-      departmentFilter === "All Departments" || 
+
+    const matchesStatus =
+      statusFilter === "all" || student.idCardStatus === statusFilter;
+
+    const matchesDepartment =
+      departmentFilter === "All Departments" ||
       student.department === departmentFilter;
 
-    const matchesDateRange = 
+    const matchesDateRange =
       (!dateFrom || student.admissionDate >= dateFrom) &&
       (!dateTo || student.admissionDate <= dateTo);
 
-    return matchesSearch && matchesStatus && matchesDepartment && matchesDateRange;
+    return (
+      matchesSearch && matchesStatus && matchesDepartment && matchesDateRange
+    );
   });
 
   const stats = {
     totalStudents: students.length,
-    generatedCards: students.filter(s => s.idCardStatus === "generated").length,
-    pendingCards: students.filter(s => s.idCardStatus === "pending").length,
-    selectedStudents: students.filter(s => s.isSelected).length,
+    generatedCards: students.filter((s) => s.idCardStatus === "generated")
+      .length,
+    pendingCards: students.filter((s) => s.idCardStatus === "pending").length,
+    selectedStudents: students.filter((s) => s.isSelected).length,
   };
 
   const toggleStudentSelection = (studentId: string) => {
-    setStudents(prev => 
-      prev.map(student => 
-        student.id === studentId 
+    setStudents((prev) =>
+      prev.map((student) =>
+        student.id === studentId
           ? { ...student, isSelected: !student.isSelected }
-          : student
-      )
+          : student,
+      ),
     );
   };
 
   const selectAllFiltered = () => {
-    const allSelected = filteredStudents.every(s => s.isSelected);
-    setStudents(prev => 
-      prev.map(student => ({
+    const allSelected = filteredStudents.every((s) => s.isSelected);
+    setStudents((prev) =>
+      prev.map((student) => ({
         ...student,
-        isSelected: filteredStudents.includes(student) ? !allSelected : student.isSelected
-      }))
+        isSelected: filteredStudents.includes(student)
+          ? !allSelected
+          : student.isSelected,
+      })),
     );
   };
 
   const selectAllByDepartment = (department: string) => {
-    const departmentStudents = students.filter(s => s.department === department && s.idCardStatus === "pending");
-    setStudents(prev => 
-      prev.map(student => ({
-        ...student,
-        isSelected: departmentStudents.includes(student) ? true : student.isSelected
-      }))
+    const departmentStudents = students.filter(
+      (s) => s.department === department && s.idCardStatus === "pending",
     );
-    
+    setStudents((prev) =>
+      prev.map((student) => ({
+        ...student,
+        isSelected: departmentStudents.includes(student)
+          ? true
+          : student.isSelected,
+      })),
+    );
+
     toast({
       title: "Department Selected",
       description: `Selected all pending students from ${department} department.`,
@@ -262,20 +270,20 @@ export default function IdCardGeneration() {
   };
 
   const generateIdCard = (studentId: string) => {
-    setStudents(prev => 
-      prev.map(student => 
-        student.id === studentId 
-          ? { 
-              ...student, 
+    setStudents((prev) =>
+      prev.map((student) =>
+        student.id === studentId
+          ? {
+              ...student,
               idCardStatus: "generated" as const,
-              generatedDate: new Date().toISOString().split('T')[0],
-              isSelected: false
+              generatedDate: new Date().toISOString().split("T")[0],
+              isSelected: false,
             }
-          : student
-      )
+          : student,
+      ),
     );
 
-    const student = students.find(s => s.id === studentId);
+    const student = students.find((s) => s.id === studentId);
     toast({
       title: "ID Card Generated",
       description: `ID card generated successfully for ${student?.name}.`,
@@ -283,8 +291,10 @@ export default function IdCardGeneration() {
   };
 
   const generateBulkIdCards = () => {
-    const selectedCount = students.filter(s => s.isSelected && s.idCardStatus === "pending").length;
-    
+    const selectedCount = students.filter(
+      (s) => s.isSelected && s.idCardStatus === "pending",
+    ).length;
+
     if (selectedCount === 0) {
       toast({
         title: "No Students Selected",
@@ -294,17 +304,17 @@ export default function IdCardGeneration() {
       return;
     }
 
-    setStudents(prev => 
-      prev.map(student => 
+    setStudents((prev) =>
+      prev.map((student) =>
         student.isSelected && student.idCardStatus === "pending"
-          ? { 
-              ...student, 
+          ? {
+              ...student,
               idCardStatus: "generated" as const,
-              generatedDate: new Date().toISOString().split('T')[0],
-              isSelected: false
+              generatedDate: new Date().toISOString().split("T")[0],
+              isSelected: false,
             }
-          : student
-      )
+          : student,
+      ),
     );
 
     toast({
@@ -318,8 +328,9 @@ export default function IdCardGeneration() {
       generated: { color: "bg-green-100 text-green-800", label: "Generated" },
       pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending" },
     };
-    
-    const { color, label } = config[status as keyof typeof config] || config.pending;
+
+    const { color, label } =
+      config[status as keyof typeof config] || config.pending;
     return <Badge className={color}>{label}</Badge>;
   };
 
@@ -341,8 +352,12 @@ export default function IdCardGeneration() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Students</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.totalStudents}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Students
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.totalStudents}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-blue-100">
                 <Users className="w-6 h-6 text-blue-600" />
@@ -355,8 +370,12 @@ export default function IdCardGeneration() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Generated Cards</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.generatedCards}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Generated Cards
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.generatedCards}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-green-100">
                 <CheckCircle className="w-6 h-6 text-green-600" />
@@ -369,8 +388,12 @@ export default function IdCardGeneration() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending Cards</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.pendingCards}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Pending Cards
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.pendingCards}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-yellow-100">
                 <Clock className="w-6 h-6 text-yellow-600" />
@@ -383,8 +406,12 @@ export default function IdCardGeneration() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Selected Students</p>
-                <p className="text-3xl font-bold text-deep-plum">{stats.selectedStudents}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Selected Students
+                </p>
+                <p className="text-3xl font-bold text-deep-plum">
+                  {stats.selectedStudents}
+                </p>
               </div>
               <div className="p-3 rounded-full bg-purple-100">
                 <Shield className="w-6 h-6 text-purple-600" />
@@ -408,7 +435,7 @@ export default function IdCardGeneration() {
                   className="pl-10"
                 />
               </div>
-              
+
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="md:w-40">
                   <SelectValue placeholder="Status" />
@@ -420,13 +447,18 @@ export default function IdCardGeneration() {
                 </SelectContent>
               </Select>
 
-              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+              <Select
+                value={departmentFilter}
+                onValueChange={setDepartmentFilter}
+              >
                 <SelectTrigger className="md:w-48">
                   <SelectValue placeholder="Department" />
                 </SelectTrigger>
                 <SelectContent>
-                  {departments.map(dept => (
-                    <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                  {departments.map((dept) => (
+                    <SelectItem key={dept} value={dept}>
+                      {dept}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -435,7 +467,7 @@ export default function IdCardGeneration() {
             <div className="flex gap-4">
               <div>
                 <Label>Date From</Label>
-                <Input 
+                <Input
                   type="date"
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
@@ -443,7 +475,7 @@ export default function IdCardGeneration() {
               </div>
               <div>
                 <Label>Date To</Label>
-                <Input 
+                <Input
                   type="date"
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
@@ -463,7 +495,7 @@ export default function IdCardGeneration() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4">
-            <Button 
+            <Button
               onClick={selectAllFiltered}
               variant="outline"
               className="border-blue-500 text-blue-600 hover:bg-blue-50"
@@ -471,8 +503,8 @@ export default function IdCardGeneration() {
               <CheckCircle className="w-4 h-4 mr-2" />
               Select All Filtered
             </Button>
-            
-            {departments.slice(1).map(dept => (
+
+            {departments.slice(1).map((dept) => (
               <Button
                 key={dept}
                 onClick={() => selectAllByDepartment(dept)}
@@ -484,7 +516,7 @@ export default function IdCardGeneration() {
               </Button>
             ))}
 
-            <Button 
+            <Button
               onClick={generateBulkIdCards}
               className="bg-deep-plum hover:bg-accent-purple"
               disabled={stats.selectedStudents === 0}
@@ -509,7 +541,10 @@ export default function IdCardGeneration() {
               <TableRow>
                 <TableHead className="w-12">
                   <Checkbox
-                    checked={filteredStudents.length > 0 && filteredStudents.every(s => s.isSelected)}
+                    checked={
+                      filteredStudents.length > 0 &&
+                      filteredStudents.every((s) => s.isSelected)
+                    }
                     onCheckedChange={selectAllFiltered}
                   />
                 </TableHead>
@@ -524,7 +559,10 @@ export default function IdCardGeneration() {
             </TableHeader>
             <TableBody>
               {filteredStudents.map((student) => (
-                <TableRow key={student.id} className={student.isSelected ? "bg-blue-50" : ""}>
+                <TableRow
+                  key={student.id}
+                  className={student.isSelected ? "bg-blue-50" : ""}
+                >
                   <TableCell>
                     <Checkbox
                       checked={student.isSelected}
@@ -534,37 +572,45 @@ export default function IdCardGeneration() {
                   <TableCell>
                     <div>
                       <div className="font-medium">{student.name}</div>
-                      <div className="text-sm text-gray-500">{student.studentId}</div>
-                      <div className="text-sm text-gray-500">{student.batch}</div>
+                      <div className="text-sm text-gray-500">
+                        {student.studentId}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {student.batch}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
                       <div className="text-sm">{student.email}</div>
-                      <div className="text-sm text-gray-500">{student.phone}</div>
+                      <div className="text-sm text-gray-500">
+                        {student.phone}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
                       <div className="font-medium">{student.department}</div>
-                      <div className="text-sm text-gray-500">{student.program}</div>
+                      <div className="text-sm text-gray-500">
+                        {student.program}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     {new Date(student.admissionDate).toLocaleDateString()}
                   </TableCell>
+                  <TableCell>{getStatusBadge(student.idCardStatus)}</TableCell>
                   <TableCell>
-                    {getStatusBadge(student.idCardStatus)}
-                  </TableCell>
-                  <TableCell>
-                    {student.generatedDate ? new Date(student.generatedDate).toLocaleDateString() : "-"}
+                    {student.generatedDate
+                      ? new Date(student.generatedDate).toLocaleDateString()
+                      : "-"}
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
                             onClick={() => setPreviewStudent(student)}
                           >
@@ -577,14 +623,16 @@ export default function IdCardGeneration() {
                             <DialogTitle>ID Card Preview</DialogTitle>
                           </DialogHeader>
                           <div className="py-4">
-                            {previewStudent && <IdCardPreview student={previewStudent} />}
+                            {previewStudent && (
+                              <IdCardPreview student={previewStudent} />
+                            )}
                           </div>
                         </DialogContent>
                       </Dialog>
 
                       {student.idCardStatus === "pending" && (
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           className="bg-green-600 hover:bg-green-700"
                           onClick={() => generateIdCard(student.id)}
                         >
@@ -594,8 +642,8 @@ export default function IdCardGeneration() {
                       )}
 
                       {student.idCardStatus === "generated" && (
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           className="text-blue-600 border-blue-200 hover:bg-blue-50"
                         >
@@ -688,7 +736,9 @@ function IdCardPreview({ student }: { student: Student }) {
         </div>
 
         <div className="mt-4 pt-3 border-t border-gray-200 text-center">
-          <p className="text-xs text-gray-500">If found, please return to NUB</p>
+          <p className="text-xs text-gray-500">
+            If found, please return to NUB
+          </p>
           <p className="text-xs text-gray-500">+880-XXXX-XXXXXX</p>
         </div>
       </div>

@@ -535,7 +535,10 @@ export default function OfferCourses() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [students, setStudents] = useState<Student[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedStudentRange, setSelectedStudentRange] = useState({ start: "", end: "" });
+  const [selectedStudentRange, setSelectedStudentRange] = useState({
+    start: "",
+    end: "",
+  });
   const [offerMessage, setOfferMessage] = useState("");
 
   // Load department data when department changes
@@ -549,14 +552,13 @@ export default function OfferCourses() {
 
   // Filter students based on search term and status
   const filteredStudents = students.filter((student) => {
-    const matchesSearch = 
+    const matchesSearch =
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = 
-      statusFilter === "all" || 
-      student.status === statusFilter;
+
+    const matchesStatus =
+      statusFilter === "all" || student.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
@@ -565,28 +567,31 @@ export default function OfferCourses() {
   const stats = {
     totalCourses: courses.length,
     totalStudents: students.length,
-    registeredStudents: students.filter(s => s.status === "registered").length,
-    pendingStudents: students.filter(s => s.status === "pending").length,
+    registeredStudents: students.filter((s) => s.status === "registered")
+      .length,
+    pendingStudents: students.filter((s) => s.status === "pending").length,
   };
 
   // Handle student selection
   const toggleStudentSelection = (studentId: string) => {
-    setStudents(prev => 
-      prev.map(student => 
-        student.id === studentId 
+    setStudents((prev) =>
+      prev.map((student) =>
+        student.id === studentId
           ? { ...student, isSelected: !student.isSelected }
-          : student
-      )
+          : student,
+      ),
     );
   };
 
   const selectAllStudents = () => {
-    const allSelected = filteredStudents.every(s => s.isSelected);
-    setStudents(prev => 
-      prev.map(student => ({
+    const allSelected = filteredStudents.every((s) => s.isSelected);
+    setStudents((prev) =>
+      prev.map((student) => ({
         ...student,
-        isSelected: filteredStudents.includes(student) ? !allSelected : student.isSelected
-      }))
+        isSelected: filteredStudents.includes(student)
+          ? !allSelected
+          : student.isSelected,
+      })),
     );
   };
 
@@ -600,8 +605,12 @@ export default function OfferCourses() {
       return;
     }
 
-    const startIndex = students.findIndex(s => s.studentId.includes(selectedStudentRange.start));
-    const endIndex = students.findIndex(s => s.studentId.includes(selectedStudentRange.end));
+    const startIndex = students.findIndex((s) =>
+      s.studentId.includes(selectedStudentRange.start),
+    );
+    const endIndex = students.findIndex((s) =>
+      s.studentId.includes(selectedStudentRange.end),
+    );
 
     if (startIndex === -1 || endIndex === -1) {
       toast({
@@ -615,11 +624,11 @@ export default function OfferCourses() {
     const start = Math.min(startIndex, endIndex);
     const end = Math.max(startIndex, endIndex);
 
-    setStudents(prev => 
+    setStudents((prev) =>
       prev.map((student, index) => ({
         ...student,
-        isSelected: index >= start && index <= end
-      }))
+        isSelected: index >= start && index <= end,
+      })),
     );
 
     toast({
@@ -630,7 +639,7 @@ export default function OfferCourses() {
 
   // Offer courses to selected students
   const offerCoursesToSelected = () => {
-    const selectedCount = students.filter(s => s.isSelected).length;
+    const selectedCount = students.filter((s) => s.isSelected).length;
     if (selectedCount === 0) {
       toast({
         title: "No Students Selected",
@@ -646,7 +655,7 @@ export default function OfferCourses() {
     });
 
     // Reset selections
-    setStudents(prev => prev.map(s => ({ ...s, isSelected: false })));
+    setStudents((prev) => prev.map((s) => ({ ...s, isSelected: false })));
     setOfferMessage("");
   };
 
@@ -656,8 +665,9 @@ export default function OfferCourses() {
       registered: { color: "bg-green-100 text-green-800", label: "Registered" },
       pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending" },
     };
-    
-    const { color, label } = config[status as keyof typeof config] || config.pending;
+
+    const { color, label } =
+      config[status as keyof typeof config] || config.pending;
     return <Badge className={color}>{label}</Badge>;
   };
 
@@ -667,8 +677,16 @@ export default function OfferCourses() {
       Elective: "bg-purple-100 text-purple-800",
       Lab: "bg-orange-100 text-orange-800",
     };
-    
-    return <Badge className={config[type as keyof typeof config] || "bg-gray-100 text-gray-800"}>{type}</Badge>;
+
+    return (
+      <Badge
+        className={
+          config[type as keyof typeof config] || "bg-gray-100 text-gray-800"
+        }
+      >
+        {type}
+      </Badge>
+    );
   };
 
   return (
@@ -688,13 +706,18 @@ export default function OfferCourses() {
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="flex-1">
-              <Label className="text-base font-semibold mb-2 block">Select Department</Label>
-              <Select value={selectedDepartment} onValueChange={handleDepartmentChange}>
+              <Label className="text-base font-semibold mb-2 block">
+                Select Department
+              </Label>
+              <Select
+                value={selectedDepartment}
+                onValueChange={handleDepartmentChange}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Choose a department to view courses and students" />
                 </SelectTrigger>
                 <SelectContent>
-                  {departments.map(dept => (
+                  {departments.map((dept) => (
                     <SelectItem key={dept} value={dept}>
                       <div className="flex items-center gap-2">
                         <Building className="w-4 h-4" />
@@ -705,7 +728,7 @@ export default function OfferCourses() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             {selectedDepartment && (
               <div className="flex gap-2">
                 <Badge variant="outline" className="flex items-center gap-1">
@@ -730,8 +753,12 @@ export default function OfferCourses() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Courses</p>
-                    <p className="text-3xl font-bold text-deep-plum">{stats.totalCourses}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      Total Courses
+                    </p>
+                    <p className="text-3xl font-bold text-deep-plum">
+                      {stats.totalCourses}
+                    </p>
                   </div>
                   <div className="p-3 rounded-full bg-blue-100">
                     <BookOpen className="w-6 h-6 text-blue-600" />
@@ -744,8 +771,12 @@ export default function OfferCourses() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Students</p>
-                    <p className="text-3xl font-bold text-deep-plum">{stats.totalStudents}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      Total Students
+                    </p>
+                    <p className="text-3xl font-bold text-deep-plum">
+                      {stats.totalStudents}
+                    </p>
                   </div>
                   <div className="p-3 rounded-full bg-green-100">
                     <Users className="w-6 h-6 text-green-600" />
@@ -758,8 +789,12 @@ export default function OfferCourses() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Registered</p>
-                    <p className="text-3xl font-bold text-deep-plum">{stats.registeredStudents}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      Registered
+                    </p>
+                    <p className="text-3xl font-bold text-deep-plum">
+                      {stats.registeredStudents}
+                    </p>
                   </div>
                   <div className="p-3 rounded-full bg-purple-100">
                     <UserCheck className="w-6 h-6 text-purple-600" />
@@ -773,7 +808,9 @@ export default function OfferCourses() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Pending</p>
-                    <p className="text-3xl font-bold text-deep-plum">{stats.pendingStudents}</p>
+                    <p className="text-3xl font-bold text-deep-plum">
+                      {stats.pendingStudents}
+                    </p>
                   </div>
                   <div className="p-3 rounded-full bg-yellow-100">
                     <Clock className="w-6 h-6 text-yellow-600" />
@@ -794,11 +831,16 @@ export default function OfferCourses() {
             <CardContent>
               <div className="grid gap-4">
                 {courses.map((course) => (
-                  <div key={course.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                  <div
+                    key={course.id}
+                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold text-lg">{course.code} - {course.title}</h3>
+                          <h3 className="font-semibold text-lg">
+                            {course.code} - {course.title}
+                          </h3>
                           {getCourseTypeBadge(course.type)}
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
@@ -820,9 +862,14 @@ export default function OfferCourses() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm text-gray-500 mb-1">Capacity</div>
+                        <div className="text-sm text-gray-500 mb-1">
+                          Capacity
+                        </div>
                         <div className="text-2xl font-bold text-deep-plum">
-                          {Math.round((course.enrolled / course.capacity) * 100)}%
+                          {Math.round(
+                            (course.enrolled / course.capacity) * 100,
+                          )}
+                          %
                         </div>
                       </div>
                     </div>
@@ -838,13 +885,17 @@ export default function OfferCourses() {
               <div className="flex justify-between items-center">
                 <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
                   <Users className="w-5 h-5" />
-                  Admitted Students - {selectedDepartment} ({filteredStudents.length})
+                  Admitted Students - {selectedDepartment} (
+                  {filteredStudents.length})
                 </CardTitle>
-                
+
                 <div className="flex gap-2">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50">
+                      <Button
+                        variant="outline"
+                        className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                      >
                         <Filter className="w-4 h-4 mr-2" />
                         Select Range
                       </Button>
@@ -857,22 +908,34 @@ export default function OfferCourses() {
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <Label>Start Student ID</Label>
-                            <Input 
+                            <Input
                               placeholder="e.g., 001"
                               value={selectedStudentRange.start}
-                              onChange={(e) => setSelectedStudentRange(prev => ({ ...prev, start: e.target.value }))}
+                              onChange={(e) =>
+                                setSelectedStudentRange((prev) => ({
+                                  ...prev,
+                                  start: e.target.value,
+                                }))
+                              }
                             />
                           </div>
                           <div>
                             <Label>End Student ID</Label>
-                            <Input 
+                            <Input
                               placeholder="e.g., 010"
                               value={selectedStudentRange.end}
-                              onChange={(e) => setSelectedStudentRange(prev => ({ ...prev, end: e.target.value }))}
+                              onChange={(e) =>
+                                setSelectedStudentRange((prev) => ({
+                                  ...prev,
+                                  end: e.target.value,
+                                }))
+                              }
                             />
                           </div>
                         </div>
-                        <Button onClick={selectStudentRange}>Select Range</Button>
+                        <Button onClick={selectStudentRange}>
+                          Select Range
+                        </Button>
                       </div>
                     </DialogContent>
                   </Dialog>
@@ -886,30 +949,44 @@ export default function OfferCourses() {
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Offer Courses to Selected Students</DialogTitle>
+                        <DialogTitle>
+                          Offer Courses to Selected Students
+                        </DialogTitle>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">
                         <div>
-                          <Label>Selected Students: {students.filter(s => s.isSelected).length}</Label>
+                          <Label>
+                            Selected Students:{" "}
+                            {students.filter((s) => s.isSelected).length}
+                          </Label>
                           <div className="text-sm text-gray-500 mt-1">
-                            {students.filter(s => s.isSelected).map(s => s.name).join(", ")}
+                            {students
+                              .filter((s) => s.isSelected)
+                              .map((s) => s.name)
+                              .join(", ")}
                           </div>
                         </div>
                         <div>
                           <Label>Courses to Offer</Label>
                           <div className="text-sm text-gray-600 mt-1">
-                            All {courses.length} first semester courses will be offered to selected students.
+                            All {courses.length} first semester courses will be
+                            offered to selected students.
                           </div>
                         </div>
                         <div>
                           <Label>Additional Message (Optional)</Label>
-                          <Textarea 
+                          <Textarea
                             placeholder="Add any additional instructions or information..."
                             value={offerMessage}
                             onChange={(e) => setOfferMessage(e.target.value)}
                           />
                         </div>
-                        <Button onClick={offerCoursesToSelected} disabled={students.filter(s => s.isSelected).length === 0}>
+                        <Button
+                          onClick={offerCoursesToSelected}
+                          disabled={
+                            students.filter((s) => s.isSelected).length === 0
+                          }
+                        >
                           <CheckCircle className="w-4 h-4 mr-2" />
                           Confirm Offer
                         </Button>
@@ -931,7 +1008,7 @@ export default function OfferCourses() {
                     className="pl-10"
                   />
                 </div>
-                
+
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="md:w-40">
                     <SelectValue placeholder="Status" />
@@ -944,12 +1021,14 @@ export default function OfferCourses() {
                   </SelectContent>
                 </Select>
 
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={selectAllStudents}
                   className="border-green-500 text-green-600 hover:bg-green-50"
                 >
-                  {filteredStudents.every(s => s.isSelected) ? "Deselect All" : "Select All"}
+                  {filteredStudents.every((s) => s.isSelected)
+                    ? "Deselect All"
+                    : "Select All"}
                 </Button>
               </div>
 
@@ -959,7 +1038,10 @@ export default function OfferCourses() {
                   <TableRow>
                     <TableHead className="w-12">
                       <Checkbox
-                        checked={filteredStudents.length > 0 && filteredStudents.every(s => s.isSelected)}
+                        checked={
+                          filteredStudents.length > 0 &&
+                          filteredStudents.every((s) => s.isSelected)
+                        }
                         onCheckedChange={selectAllStudents}
                       />
                     </TableHead>
@@ -971,30 +1053,39 @@ export default function OfferCourses() {
                 </TableHeader>
                 <TableBody>
                   {filteredStudents.map((student) => (
-                    <TableRow key={student.id} className={student.isSelected ? "bg-blue-50" : ""}>
+                    <TableRow
+                      key={student.id}
+                      className={student.isSelected ? "bg-blue-50" : ""}
+                    >
                       <TableCell>
                         <Checkbox
                           checked={student.isSelected}
-                          onCheckedChange={() => toggleStudentSelection(student.id)}
+                          onCheckedChange={() =>
+                            toggleStudentSelection(student.id)
+                          }
                         />
                       </TableCell>
                       <TableCell>
                         <div>
                           <div className="font-medium">{student.name}</div>
-                          <div className="text-sm text-gray-500">{student.studentId}</div>
+                          <div className="text-sm text-gray-500">
+                            {student.studentId}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div>
                           <div className="text-sm">{student.email}</div>
-                          <div className="text-sm text-gray-500">{student.phone}</div>
+                          <div className="text-sm text-gray-500">
+                            {student.phone}
+                          </div>
                         </div>
                       </TableCell>
+                      <TableCell>{getStatusBadge(student.status)}</TableCell>
                       <TableCell>
-                        {getStatusBadge(student.status)}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(student.registrationDate).toLocaleDateString()}
+                        {new Date(
+                          student.registrationDate,
+                        ).toLocaleDateString()}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -1009,8 +1100,13 @@ export default function OfferCourses() {
         <Card>
           <CardContent className="p-12 text-center">
             <Building className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">Select a Department</h3>
-            <p className="text-gray-500">Choose a department from the dropdown above to view courses and manage student enrollment.</p>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              Select a Department
+            </h3>
+            <p className="text-gray-500">
+              Choose a department from the dropdown above to view courses and
+              manage student enrollment.
+            </p>
           </CardContent>
         </Card>
       )}
