@@ -653,7 +653,6 @@ export default function AdmissionConfiguration() {
             </CardContent>
           </Card>
 
-
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

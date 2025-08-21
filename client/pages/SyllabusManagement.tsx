@@ -48,7 +48,11 @@ import {
   DialogTrigger,
 } from "../components/ui/dialog";
 import { Badge } from "../components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "../components/ui/collapsible";
 import { useToast } from "../hooks/use-toast";
 import {
   Syllabus,
@@ -70,8 +74,12 @@ export default function SyllabusManagement() {
   const [isEditCourseDialogOpen, setIsEditCourseDialogOpen] = useState(false);
   const [isAddCourseDialogOpen, setIsAddCourseDialogOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [selectedSyllabus, setSelectedSyllabus] = useState<Syllabus | null>(null);
-  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null);
+  const [selectedSyllabus, setSelectedSyllabus] = useState<Syllabus | null>(
+    null,
+  );
+  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(
+    null,
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [filterProgram, setFilterProgram] = useState("all");
 
@@ -95,14 +103,18 @@ export default function SyllabusManagement() {
   };
 
   const toggleProgramExpansion = (programId: string) => {
-    setExpandedPrograms(prev => 
-      prev.includes(programId) 
-        ? prev.filter(id => id !== programId)
-        : [...prev, programId]
+    setExpandedPrograms((prev) =>
+      prev.includes(programId)
+        ? prev.filter((id) => id !== programId)
+        : [...prev, programId],
     );
   };
 
-  const handleEditCourse = (course: Course, syllabus: Syllabus, semester: Semester) => {
+  const handleEditCourse = (
+    course: Course,
+    syllabus: Syllabus,
+    semester: Semester,
+  ) => {
     setSelectedCourse(course);
     setSelectedSyllabus(syllabus);
     setSelectedSemester(semester);
@@ -111,7 +123,13 @@ export default function SyllabusManagement() {
   };
 
   const handleUpdateCourse = () => {
-    if (!selectedCourse || !selectedSyllabus || !selectedSemester || !courseFormData.name || !courseFormData.code) {
+    if (
+      !selectedCourse ||
+      !selectedSyllabus ||
+      !selectedSemester ||
+      !courseFormData.name ||
+      !courseFormData.code
+    ) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -129,20 +147,30 @@ export default function SyllabusManagement() {
     };
 
     // Find and update the course in the syllabus
-    const syllabusIndex = syllabuses.findIndex(s => s.id === selectedSyllabus.id);
-    const semesterIndex = syllabuses[syllabusIndex].semesters.findIndex(sem => sem.id === selectedSemester.id);
-    const courseIndex = syllabuses[syllabusIndex].semesters[semesterIndex].courses.findIndex(c => c.id === selectedCourse.id);
+    const syllabusIndex = syllabuses.findIndex(
+      (s) => s.id === selectedSyllabus.id,
+    );
+    const semesterIndex = syllabuses[syllabusIndex].semesters.findIndex(
+      (sem) => sem.id === selectedSemester.id,
+    );
+    const courseIndex = syllabuses[syllabusIndex].semesters[
+      semesterIndex
+    ].courses.findIndex((c) => c.id === selectedCourse.id);
 
     if (syllabusIndex !== -1 && semesterIndex !== -1 && courseIndex !== -1) {
       const updatedSyllabuses = [...syllabuses];
-      updatedSyllabuses[syllabusIndex].semesters[semesterIndex].courses[courseIndex] = updatedCourse;
-      
+      updatedSyllabuses[syllabusIndex].semesters[semesterIndex].courses[
+        courseIndex
+      ] = updatedCourse;
+
       // Recalculate semester total credits
-      updatedSyllabuses[syllabusIndex].semesters[semesterIndex].totalCredits = 
-        updatedSyllabuses[syllabusIndex].semesters[semesterIndex].courses.reduce((sum, c) => sum + c.credits, 0);
+      updatedSyllabuses[syllabusIndex].semesters[semesterIndex].totalCredits =
+        updatedSyllabuses[syllabusIndex].semesters[
+          semesterIndex
+        ].courses.reduce((sum, c) => sum + c.credits, 0);
 
       setSyllabuses(updatedSyllabuses);
-      
+
       // Update in the data store
       updateSyllabus(selectedSyllabus.id, updatedSyllabuses[syllabusIndex]);
 
@@ -156,8 +184,16 @@ export default function SyllabusManagement() {
     }
   };
 
-  const handleDeleteCourse = (course: Course, syllabus: Syllabus, semester: Semester) => {
-    if (window.confirm(`Are you sure you want to delete "${course.name}" from this semester?`)) {
+  const handleDeleteCourse = (
+    course: Course,
+    syllabus: Syllabus,
+    semester: Semester,
+  ) => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete "${course.name}" from this semester?`,
+      )
+    ) {
       if (removeCourseFromSyllabus(syllabus.id, semester.id, course.id)) {
         loadData();
         toast({
@@ -182,7 +218,12 @@ export default function SyllabusManagement() {
   };
 
   const handleCreateCourse = () => {
-    if (!selectedSyllabus || !selectedSemester || !courseFormData.name || !courseFormData.code) {
+    if (
+      !selectedSyllabus ||
+      !selectedSemester ||
+      !courseFormData.name ||
+      !courseFormData.code
+    ) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -200,7 +241,9 @@ export default function SyllabusManagement() {
       description: courseFormData.description || "",
     };
 
-    if (addCourseToSyllabus(selectedSyllabus.id, selectedSemester.id, newCourse)) {
+    if (
+      addCourseToSyllabus(selectedSyllabus.id, selectedSemester.id, newCourse)
+    ) {
       loadData();
       toast({
         title: "Success",
@@ -228,11 +271,12 @@ export default function SyllabusManagement() {
     const matchesSearch =
       syllabus.programName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       syllabus.packageCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      syllabus.semesters.some(semester => 
-        semester.courses.some(course => 
-          course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.code.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+      syllabus.semesters.some((semester) =>
+        semester.courses.some(
+          (course) =>
+            course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            course.code.toLowerCase().includes(searchTerm.toLowerCase()),
+        ),
       );
     const matchesFilter =
       filterProgram === "all" || syllabus.programId === filterProgram;
@@ -309,18 +353,27 @@ export default function SyllabusManagement() {
                           <GraduationCap className="h-6 w-6 ml-2 text-purple-600" />
                         </div>
                         <div>
-                          <CardTitle className="text-lg">{syllabus.programName}</CardTitle>
+                          <CardTitle className="text-lg">
+                            {syllabus.programName}
+                          </CardTitle>
                           <CardDescription>
-                            {syllabus.packageCode} • {syllabus.totalSemesters} Semesters • {syllabus.totalCredits} Credits
+                            {syllabus.packageCode} • {syllabus.totalSemesters}{" "}
+                            Semesters • {syllabus.totalCredits} Credits
                           </CardDescription>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Badge variant={syllabus.isActive ? "default" : "secondary"}>
+                        <Badge
+                          variant={syllabus.isActive ? "default" : "secondary"}
+                        >
                           {syllabus.isActive ? "Active" : "Inactive"}
                         </Badge>
                         <Badge variant="outline">
-                          {syllabus.semesters.reduce((total, sem) => total + sem.courses.length, 0)} Courses
+                          {syllabus.semesters.reduce(
+                            (total, sem) => total + sem.courses.length,
+                            0,
+                          )}{" "}
+                          Courses
                         </Badge>
                       </div>
                     </div>
@@ -333,7 +386,9 @@ export default function SyllabusManagement() {
                       <div key={semester.id} className="mb-6">
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center space-x-2">
-                            <h3 className="text-lg font-semibold text-gray-800">{semester.name}</h3>
+                            <h3 className="text-lg font-semibold text-gray-800">
+                              {semester.name}
+                            </h3>
                             <Badge variant="outline" className="text-xs">
                               {semester.totalCredits} Credits
                             </Badge>
@@ -354,22 +409,36 @@ export default function SyllabusManagement() {
                               <TableRow className="bg-gray-50">
                                 <TableHead>Course Code</TableHead>
                                 <TableHead>Course Name</TableHead>
-                                <TableHead className="text-center">Type</TableHead>
-                                <TableHead className="text-center">Credits</TableHead>
+                                <TableHead className="text-center">
+                                  Type
+                                </TableHead>
+                                <TableHead className="text-center">
+                                  Credits
+                                </TableHead>
                                 <TableHead>Description</TableHead>
-                                <TableHead className="text-center">Actions</TableHead>
+                                <TableHead className="text-center">
+                                  Actions
+                                </TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
                               {semester.courses.map((course) => (
                                 <TableRow key={course.id}>
                                   <TableCell className="font-mono text-sm">
-                                    <Badge variant="outline">{course.code}</Badge>
+                                    <Badge variant="outline">
+                                      {course.code}
+                                    </Badge>
                                   </TableCell>
-                                  <TableCell className="font-medium">{course.name}</TableCell>
+                                  <TableCell className="font-medium">
+                                    {course.name}
+                                  </TableCell>
                                   <TableCell className="text-center">
-                                    <Badge 
-                                      variant={course.type === "theory" ? "default" : "secondary"}
+                                    <Badge
+                                      variant={
+                                        course.type === "theory"
+                                          ? "default"
+                                          : "secondary"
+                                      }
                                       className="text-xs"
                                     >
                                       {course.type}
@@ -386,14 +455,26 @@ export default function SyllabusManagement() {
                                       <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => handleEditCourse(course, syllabus, semester)}
+                                        onClick={() =>
+                                          handleEditCourse(
+                                            course,
+                                            syllabus,
+                                            semester,
+                                          )
+                                        }
                                       >
                                         <Edit className="h-3 w-3" />
                                       </Button>
                                       <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => handleDeleteCourse(course, syllabus, semester)}
+                                        onClick={() =>
+                                          handleDeleteCourse(
+                                            course,
+                                            syllabus,
+                                            semester,
+                                          )
+                                        }
                                         className="text-red-600 hover:text-red-700"
                                       >
                                         <Trash2 className="h-3 w-3" />
@@ -404,8 +485,12 @@ export default function SyllabusManagement() {
                               ))}
                               {semester.courses.length === 0 && (
                                 <TableRow>
-                                  <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                                    No courses in this semester. Click "Add Course" to get started.
+                                  <TableCell
+                                    colSpan={6}
+                                    className="text-center py-8 text-gray-500"
+                                  >
+                                    No courses in this semester. Click "Add
+                                    Course" to get started.
                                   </TableCell>
                                 </TableRow>
                               )}
@@ -422,7 +507,10 @@ export default function SyllabusManagement() {
         </div>
 
         {/* Edit Course Dialog */}
-        <Dialog open={isEditCourseDialogOpen} onOpenChange={setIsEditCourseDialogOpen}>
+        <Dialog
+          open={isEditCourseDialogOpen}
+          onOpenChange={setIsEditCourseDialogOpen}
+        >
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit Course</DialogTitle>
@@ -541,12 +629,16 @@ export default function SyllabusManagement() {
         </Dialog>
 
         {/* Add Course Dialog */}
-        <Dialog open={isAddCourseDialogOpen} onOpenChange={setIsAddCourseDialogOpen}>
+        <Dialog
+          open={isAddCourseDialogOpen}
+          onOpenChange={setIsAddCourseDialogOpen}
+        >
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New Course</DialogTitle>
               <DialogDescription>
-                Add a course to {selectedSemester?.name} of {selectedSyllabus?.programName}
+                Add a course to {selectedSemester?.name} of{" "}
+                {selectedSyllabus?.programName}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
