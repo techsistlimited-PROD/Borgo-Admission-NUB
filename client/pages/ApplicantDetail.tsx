@@ -150,7 +150,7 @@ export default function ApplicantDetail() {
       nationality: 'জাতীয়তা',
       trackingId: 'ট্র্যাকিং আইডি',
       applicationDate: 'আবেদনের তারিখ',
-      program: 'প্রোগ্রাম',
+      program: 'প্��োগ্রাম',
       department: 'বিভাগ',
       semester: 'সেমিস্টার',
       sscResults: 'এসএসসি ফলাফল',
@@ -175,7 +175,7 @@ export default function ApplicantDetail() {
       approvalNote: 'অনুমোদনের নোট',
       rejectionReason: 'প্রত্যাখ্যানের কারণ',
       studentId: 'ছাত্র আইডি',
-      password: 'পাসওয়ার্ড',
+      password: 'প���সওয়ার্ড',
       confirmApproval: 'অনুমোদন নিশ্চিত করুন',
       confirmRejection: 'প্রত্যাখ্যান নিশ্চিত করুন',
       studentIDs: 'ছাত্র আইডিসমূহ',
@@ -251,6 +251,9 @@ export default function ApplicantDetail() {
     };
 
     const config = statusConfigs[type][status as keyof typeof statusConfigs[typeof type]];
+    if (!config) {
+      return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
+    }
     return (
       <Badge className={config.color}>
         <config.icon className="w-3 h-3 mr-1" />
