@@ -120,7 +120,7 @@ export default function EmailTemplates() {
       university: "বিশ্ববিদ্যালয়ের নাম",
       contactEmail: "যোগাযোগ ইমেইল",
       contactPhone: "যোগাযোগ ফোন",
-      portalLink: "পোর্টাল ��িংক",
+      portalLink: "পোর্টাল লিংক",
       invoiceLink: "ইনভয়েস লিংক",
     },
   };
@@ -677,7 +677,7 @@ IT Department
                           <div className="text-sm text-gray-600 mb-2">
                             Subject:{" "}
                             {renderTemplate(
-                              getTemplate("email").subject || "",
+                              getEmailTemplate().subject || "",
                               currentStudent,
                             )}
                           </div>
