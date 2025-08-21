@@ -92,7 +92,7 @@ export default function EmailTemplates() {
       subtitle: "যোগাযোগ টেমপ্লেট ব্যবস্থাপনা",
       emailTemplates: "ইমেইল টেমপ্লেট",
       smsTemplates: "এসএমএস টেমপ্লেট",
-      templateType: "টেমপ্লেট ধরন",
+      templateType: "টেমপ্ল���ট ধরন",
       recipient: "প্রাপক",
       subject: "বিষয়",
       message: "বার্তা",
@@ -773,10 +773,10 @@ IT Department
                       {
                         (currentStudent
                           ? renderTemplate(
-                              getTemplate("sms")?.content || "",
+                              getTemplate("sms").content || "",
                               currentStudent,
                             )
-                          : getTemplate("sms")?.content || ""
+                          : getTemplate("sms").content || ""
                         ).length
                       }
                     </span>
