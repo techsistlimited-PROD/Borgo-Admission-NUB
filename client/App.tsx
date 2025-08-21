@@ -44,6 +44,12 @@ import FinancePanel from "./pages/FinancePanel";
 import Reports from "./pages/Reports";
 import EmailTemplates from "./pages/EmailTemplates";
 import SyllabusManagement from "./pages/SyllabusManagement";
+import WaiverManagement from "./pages/WaiverManagement";
+import OfferCourses from "./pages/OfferCourses";
+import StudentManagement from "./pages/StudentManagement";
+import AccountManagement from "./pages/AccountManagement";
+import AdmissionCircular from "./pages/AdmissionCircular";
+import ChangeHistory from "./pages/ChangeHistory";
 
 const queryClient = new QueryClient();
 
