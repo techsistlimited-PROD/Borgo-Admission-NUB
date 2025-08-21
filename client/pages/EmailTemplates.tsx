@@ -179,9 +179,13 @@ export default function EmailTemplates() {
   // Filter students based on selected criteria
   const filteredStudents = dummyStudents.filter((student) => {
     const semesterMatch =
-      selectedSemester === 'all' || !selectedSemester || student.semester === selectedSemester;
+      selectedSemester === "all" ||
+      !selectedSemester ||
+      student.semester === selectedSemester;
     const departmentMatch =
-      selectedDepartment === 'all' || !selectedDepartment || student.department === selectedDepartment;
+      selectedDepartment === "all" ||
+      !selectedDepartment ||
+      student.department === selectedDepartment;
     return semesterMatch && departmentMatch;
   });
 
