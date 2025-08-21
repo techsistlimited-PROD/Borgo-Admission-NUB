@@ -686,8 +686,8 @@ IT Department
                               Preview with {currentStudent.name}'s data:
                             </div>
                             <div className="text-blue-700">
-                              All template variables have been replaced
-                              with actual student information.
+                              All template variables have been replaced with
+                              actual student information.
                             </div>
                           </div>
                         )}
@@ -825,8 +825,8 @@ IT Department
                               Preview with {currentStudent.name}'s data:
                             </div>
                             <div className="text-blue-700">
-                              All template variables have been replaced
-                              with actual student information.
+                              All template variables have been replaced with
+                              actual student information.
                             </div>
                           </div>
                         )}
