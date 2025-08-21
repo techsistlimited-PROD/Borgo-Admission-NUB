@@ -8,7 +8,6 @@ import {
   Edit,
   Trash2,
   Calendar,
-  DollarSign,
   FileText,
   Users,
   Bell,
