@@ -107,7 +107,7 @@ export default function EmailTemplates() {
       error: "পাঠাতে ব্যর্থ",
       admissionApproved: "ভর্তি অনুমোদিত",
       paymentReceived: "পেমেন্ট প্রাপ্ত",
-      documentsRequired: "কাগজপত্র প্রয়োজন",
+      documentsRequired: "কাগজপত্র প্রয়ো��ন",
       applicationRejected: "আবেদন প্রত্যাখ্যাত",
       idCreated: "ছাত্র আইডি তৈরি",
       enrollmentComplete: "ভর্তি সম্পন্ন",
@@ -686,7 +686,7 @@ IT Department
                               Preview with {currentStudent.name}'s data:
                             </div>
                             <div className="text-blue-700">
-                              All {{ VARIABLE }} placeholders have been replaced
+                              All {"{{ VARIABLE }}"} placeholders have been replaced
                               with actual student information.
                             </div>
                           </div>
