@@ -94,6 +94,7 @@ export default function ApplicantDetail() {
       approvalNote: 'Approval Note',
       rejectionReason: 'Rejection Reason',
       studentId: 'Student ID',
+      applicantId: 'Applicant ID',
       password: 'Password',
       confirmApproval: 'Confirm Approval',
       confirmRejection: 'Confirm Rejection',
