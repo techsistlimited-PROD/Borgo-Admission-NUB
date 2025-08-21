@@ -239,6 +239,66 @@ function AppContent() {
                 )
               }
             />
+            <Route
+              path="/admin/waivers"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <WaiverManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/offer-courses"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <OfferCourses />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/student-management"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <StudentManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/account-management"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AccountManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/admission-circular"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdmissionCircular />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/change-history"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <ChangeHistory />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
 
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
