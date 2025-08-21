@@ -1,6 +1,6 @@
 import "./global.css";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -44,6 +44,13 @@ import FinancePanel from "./pages/FinancePanel";
 import Reports from "./pages/Reports";
 import EmailTemplates from "./pages/EmailTemplates";
 import SyllabusManagement from "./pages/SyllabusManagement";
+import WaiverManagement from "./pages/WaiverManagement";
+import OfferCourses from "./pages/OfferCourses";
+import StudentManagement from "./pages/StudentManagement";
+import AccountManagement from "./pages/AccountManagement";
+import AdmissionCircular from "./pages/AdmissionCircular";
+import ChangeHistory from "./pages/ChangeHistory";
+import IdCardGeneration from "./pages/IdCardGeneration";
 
 const queryClient = new QueryClient();
 
@@ -228,6 +235,76 @@ function AppContent() {
               element={
                 isAuthenticated && userType === "admin" ? (
                   <SyllabusManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/waivers"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <WaiverManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/offer-courses"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <OfferCourses />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/student-management"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <StudentManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/account-management"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AccountManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/admission-circular"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdmissionCircular />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/change-history"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <ChangeHistory />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/id-card-generation"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <IdCardGeneration />
                 ) : (
                   <Navigate to="/admin" replace />
                 )

@@ -385,31 +385,92 @@ const studentCreditsData = [
 
 const idCardData = [
   {
-    studentId: "ID001",
-    studentName: "Kamal Ahmed",
+    studentId: "NUB-CSE-2024-001",
+    studentName: "Mohammad Rahman",
     department: "cse",
-    program: "bachelor",
+    program: "BSc in CSE",
     semester: "spring_2024",
-    cardGenerated: "Yes",
-    generatedDate: "2024-01-20",
+    cardGenerated: "Generated",
+    generatedDate: "2024-02-15",
+    batch: "Spring 2024",
+    admissionDate: "2024-01-15",
   },
   {
-    studentId: "ID002",
-    studentName: "Rashida Khatun",
-    department: "eee",
-    program: "bachelor",
+    studentId: "NUB-BBA-2024-002",
+    studentName: "Fatima Sultana",
+    department: "bba",
+    program: "BBA",
     semester: "spring_2024",
-    cardGenerated: "Yes",
-    generatedDate: "2024-01-21",
-  },
-  {
-    studentId: "ID003",
-    studentName: "Abdul Rahman",
-    department: "civil",
-    program: "bachelor",
-    semester: "spring_2024",
-    cardGenerated: "No",
+    cardGenerated: "Pending",
     generatedDate: "-",
+    batch: "Spring 2024",
+    admissionDate: "2024-01-20",
+  },
+  {
+    studentId: "NUB-EEE-2024-003",
+    studentName: "Ahmed Hassan",
+    department: "eee",
+    program: "BSc in EEE",
+    semester: "spring_2024",
+    cardGenerated: "Pending",
+    generatedDate: "-",
+    batch: "Spring 2024",
+    admissionDate: "2024-01-25",
+  },
+  {
+    studentId: "NUB-CE-2024-004",
+    studentName: "Rashida Begum",
+    department: "civil",
+    program: "BSc in Civil",
+    semester: "spring_2024",
+    cardGenerated: "Generated",
+    generatedDate: "2024-02-20",
+    batch: "Spring 2024",
+    admissionDate: "2024-02-01",
+  },
+  {
+    studentId: "NUB-CSE-2024-005",
+    studentName: "Karim Uddin",
+    department: "cse",
+    program: "BSc in CSE",
+    semester: "spring_2024",
+    cardGenerated: "Pending",
+    generatedDate: "-",
+    batch: "Spring 2024",
+    admissionDate: "2024-02-10",
+  },
+  {
+    studentId: "NUB-BBA-2024-006",
+    studentName: "Sakina Akter",
+    department: "bba",
+    program: "BBA",
+    semester: "spring_2024",
+    cardGenerated: "Generated",
+    generatedDate: "2024-02-18",
+    batch: "Spring 2024",
+    admissionDate: "2024-02-15",
+  },
+  {
+    studentId: "NUB-EEE-2023-067",
+    studentName: "Abdul Karim",
+    department: "eee",
+    program: "BSc in EEE",
+    semester: "fall_2023",
+    cardGenerated: "Generated",
+    generatedDate: "2023-09-15",
+    batch: "Fall 2023",
+    admissionDate: "2023-08-01",
+  },
+  {
+    studentId: "NUB-CSE-2023-089",
+    studentName: "Nusrat Jahan",
+    department: "cse",
+    program: "BSc in CSE",
+    semester: "fall_2023",
+    cardGenerated: "Generated",
+    generatedDate: "2023-09-20",
+    batch: "Fall 2023",
+    admissionDate: "2023-08-05",
   },
 ];
 
@@ -517,7 +578,6 @@ export default function Reports() {
       studentList: "Student List",
       detailedStudentList: "Detailed Student List",
       studentIdCards: "Student ID Cards",
-      bulkIdCardDownload: "All Students ID Cards Download (Bulk)",
       studentRequiredCredits: "Student Required Credits",
       studentWaiverReport: "Student Waiver Report (Department-wise)",
       creditTransferStudentList: "Credit Transfer Student List",
@@ -596,7 +656,7 @@ export default function Reports() {
       year: "বছর",
       generateReport: "রিপোর্ট তৈরি করুন",
       exportPDF: "পিডিএফ এক্সপোর্ট",
-      downloadReport: "পিডিএফ ডাউনলোড",
+      downloadReport: "প��ডিএফ ডাউনলোড",
       viewReport: "রিপোর্ট দেখুন",
       last7Days: "গত ৭ দিন",
       last30Days: "গত ৩০ দিন",
@@ -618,11 +678,11 @@ export default function Reports() {
       financialReports: "আর্থিক রিপোর্ট",
       waiverReports: "মওকুফ রিপোর্ট",
       idCardReports: "আইডি কার্ড রিপোর্ট",
-      targetReports: "লক্ষ্য রিপোর্ট",
+      targetReports: "লক্ষ্য র��পোর্ট",
 
       totalApplications: "মোট আবেদন",
       admittedStudents: "ভর্তিকৃত শিক্ষার্থী",
-      rejectedApplications: "প্রত্যাখ্যাত আবেদন",
+      rejectedApplications: "প্রত্যাখ্যাত আবেদ���",
       pendingApplications: "অপেক্ষমাণ আবেদন",
       departmentWiseAdmissions: "বিভাগ অনুযায়ী ভর্তি",
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
@@ -638,7 +698,7 @@ export default function Reports() {
 
       departmentColumn: "বিভাগ",
       rate: "হার",
-      cse: "কম্পিউটার সায়েন্স ও ইঞ্জিনিয়ারিং",
+      cse: "কম্পিউটা�� সায়েন্স ও ইঞ্জিনিয়ারি���",
       eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জিনিয়ারিং",
       mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
@@ -2027,25 +2087,15 @@ export default function Reports() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   {[
                     {
                       key: "studentIdCards",
                       title: t.studentIdCards,
                       description:
-                        "Individual student ID card generation and status",
+                        "Historical data of student ID card generation with status tracking by department and date",
                       icon: IdCard,
                       count: filteredIdCardData.length,
-                    },
-                    {
-                      key: "bulkIdCardDownload",
-                      title: t.bulkIdCardDownload,
-                      description:
-                        "Download all student ID cards for selected semester/program in one click",
-                      icon: Package,
-                      count: filteredIdCardData.filter(
-                        (item) => item.cardGenerated === "Yes",
-                      ).length,
                     },
                   ].map((report, index) => (
                     <Card
@@ -2087,6 +2137,117 @@ export default function Reports() {
               </CardContent>
             </Card>
           </div>
+        )}
+
+        {/* Student ID Cards Report */}
+        {activeReport === "studentIdCards" && (
+          <Card className="bg-white shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                <IdCard className="w-5 h-5" />
+                Student ID Card Report - Historical Data
+              </CardTitle>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setActiveReport(null)}
+                  variant="outline"
+                  className="text-deep-plum border-deep-plum"
+                >
+                  {t.backToReports}
+                </Button>
+                <Button
+                  onClick={() =>
+                    exportToPDF("Student ID Card Report", filteredIdCardData)
+                  }
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* Additional Filters for ID Card Report */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">
+                    Status Filter
+                  </Label>
+                  <Select defaultValue="all">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="Generated">Generated</SelectItem>
+                      <SelectItem value="Pending">Pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">
+                    Date From
+                  </Label>
+                  <Input type="date" />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">
+                    Date To
+                  </Label>
+                  <Input type="date" />
+                </div>
+              </div>
+
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student ID</TableHead>
+                    <TableHead>Student Name</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Program</TableHead>
+                    <TableHead>Batch</TableHead>
+                    <TableHead>Admission Date</TableHead>
+                    <TableHead>Card Status</TableHead>
+                    <TableHead>Generated Date</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredIdCardData.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-mono font-medium">
+                        {item.studentId}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {item.studentName}
+                      </TableCell>
+                      <TableCell>{item.department.toUpperCase()}</TableCell>
+                      <TableCell>{item.program}</TableCell>
+                      <TableCell>{item.batch}</TableCell>
+                      <TableCell>
+                        {new Date(item.admissionDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          className={
+                            item.cardGenerated === "Generated"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }
+                        >
+                          {item.cardGenerated}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {item.generatedDate !== "-"
+                          ? new Date(item.generatedDate).toLocaleDateString()
+                          : "-"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         )}
 
         {/* Target Reports Category */}

@@ -76,7 +76,7 @@ export default function ApplicationReview() {
     },
     bn: {
       title: "আবেদন পর্যালোচনা",
-      subtitle: "৪টি ধাপের ৪র্থ ধাপ - আপনার আবেদন পর্যালোচনা করুন",
+      subtitle: "৪টি ধাপের ৪র্থ ধাপ - আপনার আবে���ন পর্যালোচনা করুন",
       backToAcademic: "একাডেমিক ইতিহাসে ফিরুন",
       submitApplication: "আবেদন জমা দিন",
       admissionPreferences: "ভর্তির পছন্দ",
@@ -98,7 +98,7 @@ export default function ApplicationReview() {
       address: "ঠিকানা",
       guardianName: "অভিভাবকের নাম",
       guardianPhone: "অভিভাবকের ফোন",
-      guardianRelation: "অভিভাবকের সম্পর্ক",
+      guardianRelation: "��ভিভাবকের সম্পর্ক",
       sscInfo: "এসএসসি তথ্য",
       hscInfo: "এইচএসসি তথ্য",
       institution: "প্রতিষ্ঠান",
@@ -112,6 +112,7 @@ export default function ApplicationReview() {
       reviewNote:
         "জমা দেওয়ার আগে সমস্ত তথ্য সাবধানে পর্যালোচনা করুন। একবার জমা দিলে, আপনি পরিবর্তন করতে পারবেন না।",
       dataIncomplete: "জমা দে��য়ার আগে সমস্ত পূর্ববর্তী ধাপ সম্পূর্ণ করুন।",
+      edit: "সম্পাদনা",
     },
   };
 
