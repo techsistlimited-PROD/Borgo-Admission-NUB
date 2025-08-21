@@ -17,6 +17,11 @@ import {
   LogIn,
   UserCheck,
   BookOpen,
+  Award,
+  Settings,
+  History,
+  Lock,
+  UserCog,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
