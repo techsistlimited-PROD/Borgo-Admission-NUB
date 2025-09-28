@@ -43,6 +43,7 @@ import AdmissionConfiguration from "./pages/AdmissionConfiguration";
 import FinancePanel from "./pages/FinancePanel";
 import Reports from "./pages/Reports";
 import EmailTemplates from "./pages/EmailTemplates";
+import MessagingTemplates from "./pages/Messaging/Templates";
 import SyllabusManagement from "./pages/SyllabusManagement";
 import WaiverManagement from "./pages/WaiverManagement";
 import OfferCourses from "./pages/OfferCourses";
