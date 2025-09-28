@@ -324,7 +324,7 @@ export default function ProgramSelection() {
       availableWaivers: "���পল��্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
-      additionalWaivers: "অতি���িক্ত ম���কুফ",
+      additionalWaivers: "অতি���িক্ত ম�����ুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
       waiverAmount: "���ওকুফ পর��মাণ",
@@ -2833,18 +2833,24 @@ export default function ProgramSelection() {
             )}
 
             <div className="flex justify-end">
-              <Button
-                onClick={handleContinue}
-                className={`${
-                  canProceed
-                    ? "bg-deep-plum hover:bg-accent-purple"
-                    : "bg-gray-300 cursor-not-allowed"
-                } font-poppins px-8 py-3`}
-                disabled={!canProceed || isSaving}
-              >
-                {isSaving ? t.saving : t.continue}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              {!hasExistingApplication ? (
+                <Button
+                  onClick={handleContinue}
+                  className={`${
+                    canProceed
+                      ? "bg-deep-plum hover:bg-accent-purple"
+                      : "bg-gray-300 cursor-not-allowed"
+                  } font-poppins px-8 py-3`}
+                  disabled={!canProceed || isSaving}
+                >
+                  {isSaving ? t.saving : t.continue}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              ) : (
+                <Button variant="outline" onClick={() => navigate('/dashboard')}>
+                  View Existing Application
+                </Button>
+              )}
             </div>
           </div>
         </form>
