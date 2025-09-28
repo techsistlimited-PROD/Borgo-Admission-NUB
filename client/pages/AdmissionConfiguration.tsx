@@ -1805,6 +1805,76 @@ export default function AdmissionConfiguration() {
         </TabsContent>
 
         {/* Waiver Configuration Tab */}
+        <TabsContent value="referral" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5" />
+                Referral & Commission Rules
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-4 bg-white border rounded-lg">
+                  <Label className="font-medium">Enable Referral Program</Label>
+                  <div className="mt-2 flex items-center gap-4">
+                    <Switch
+                      checked={!!settings?.referral_enabled}
+                      onCheckedChange={(v) =>
+                        setSettings((prev) =>
+                          prev ? { ...prev, referral_enabled: v as boolean } : prev,
+                        )
+                      }
+                    />
+                    <p className="text-sm text-gray-600">Allow admission officers to register referrals and applicants to enter referral IDs.</p>
+                  </div>
+
+                  <div className="mt-4">
+                    <Label className="font-medium">Default Commission (%)</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={settings?.default_referral_commission ?? 5}
+                      onChange={(e) =>
+                        setSettings((prev) =>
+                          prev ? { ...prev, default_referral_commission: Number(e.target.value) } : prev,
+                        )
+                      }
+                      className="w-32"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">This is the default commission rate applied to referrals when not overridden per employee.</p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-white border rounded-lg">
+                  <CardTitle className="text-sm font-medium mb-2">Top Referrers Preview</CardTitle>
+                  <p className="text-xs text-gray-500 mb-3">A preview of active referrers and their commission rates (managed in Referrals page).</p>
+                  <div className="space-y-2 max-h-48 overflow-auto">
+                    {referrersList.length === 0 ? (
+                      <div className="text-sm text-gray-500">No referrers found.</div>
+                    ) : (
+                      referrersList.map((r) => (
+                        <div key={r.employee_id} className="flex items-center justify-between p-2 border rounded">
+                          <div>
+                            <div className="font-medium">{r.name} ({r.employee_id})</div>
+                            <div className="text-xs text-gray-500">{r.department} • {r.designation}</div>
+                          </div>
+                          <div className="text-sm text-gray-700">{(r.commission_rate * 100).toFixed(1)}%</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <Button onClick={saveSettings} disabled={saving} className="bg-deep-plum"><Save className="w-4 h-4 mr-2"/>Save Referral Settings</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="waiver" className="space-y-6">
           <Card>
             <CardHeader>
