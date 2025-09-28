@@ -5,13 +5,31 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 
 export default function AdminPortal() {
-  const { user, role } = useAuth();
+  const { user, role, setRole, setPermissions } = useAuth();
+
+  const onRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const r = e.target.value || null;
+    setRole(r);
+    // map default permissions for demo
+    if (r === "admin") setPermissions(["all"]);
+    else if (r === "admission_officer") setPermissions(["applications:view","applications:approve","waivers:manage"]);
+    else if (r === "finance_officer") setPermissions(["finance:view","finance:billing"]);
+    else setPermissions([]);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Admin Portal</h1>
-        <div className="text-sm text-gray-600">Signed in as: {user?.name} ({role || user?.type})</div>
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-gray-600">Signed in as: {user?.name} ({role || user?.type})</div>
+          <select className="border rounded p-2" value={role || ""} onChange={onRoleChange} aria-label="Select demo role">
+            <option value="">None</option>
+            <option value="admin">Admin</option>
+            <option value="admission_officer">Admission Officer</option>
+            <option value="finance_officer">Finance Officer</option>
+          </select>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
