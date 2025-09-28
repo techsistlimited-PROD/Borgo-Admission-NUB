@@ -109,8 +109,8 @@ export default function Header({ showLogin = false }: HeaderProps) {
               <a href="/applicant-portal" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Applicant Portal</a>
               <a href="/admin" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admin Portal</a>
               {/* Demo quick-access for role-specific portals */}
-              <button onClick={() => { try { const a = useAuth(); a.signInAs('admission_officer'); } catch {} }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admission Officer</button>
-              <button onClick={() => { try { const a = useAuth(); a.signInAs('finance_officer'); } catch {} }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Finance Officer</button>
+              <button onClick={() => { signInAsLocal('admission_officer'); navigate('/admin/portal'); }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admission Officer</button>
+              <button onClick={() => { signInAsLocal('finance_officer'); navigate('/admin/portal'); }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Finance Officer</button>
             </div>
 
             {/* New Application Button */}
