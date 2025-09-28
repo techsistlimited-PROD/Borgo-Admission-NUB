@@ -113,7 +113,7 @@ export default function Dashboard() {
       yes: "হ্যাঁ",
       no: "না",
       applicationTimeline: "আবেদনের সময়রেখা",
-      submitted: "আ��েদন জমা দেওয়া হয়েছে",
+      submitted: "আ��েদন জমা দেওয়��� হয়েছে",
       paymentReceived: "পেমেন্ট প্রা��্ত",
       documentVerified: "কাগজপত্র যাচাইকৃত",
       applicationApproved: "আবেদন অনুমোদিত",
@@ -194,36 +194,6 @@ export default function Dashboard() {
     { label: t.underReview, count: counts.under_review, color: "bg-yellow-100 text-yellow-800", icon: Clock },
     { label: t.approved, count: counts.approved, color: "bg-green-100 text-green-800", icon: CheckCircle },
     { label: t.rejected, count: counts.rejected, color: "bg-red-100 text-red-800", icon: XCircle },
-  ];
-
-  const defaultApplications = [
-    {
-      id: 1,
-      trackingId: "NU2024001234",
-      program: "BSc Computer Science",
-      status: "approved",
-      payslip: true,
-      submittedDate: "2024-01-15",
-      statusText: t.approved,
-    },
-    {
-      id: 2,
-      trackingId: "NU2024001235",
-      program: "BSc Electrical Engineering",
-      status: "under_review",
-      payslip: true,
-      submittedDate: "2024-01-20",
-      statusText: t.underReview,
-    },
-    {
-      id: 3,
-      trackingId: "NU2024001236",
-      program: "MSc Data Science",
-      status: "rejected",
-      payslip: false,
-      submittedDate: "2024-01-10",
-      statusText: t.rejected,
-    },
   ];
 
   const progressSteps = [
