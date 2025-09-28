@@ -151,6 +151,29 @@ class MockApiService {
     { code: "LAW", name: "Law" },
   ];
 
+  private documentRequirements: any[] = [
+    {
+      id: 1,
+      name: "SSC Certificate",
+      type: "academic",
+      is_required: true,
+      allowed_formats: ["PDF", "JPG", "PNG"],
+      max_file_size: "5MB",
+      description: "Original SSC certificate or equivalent",
+      order_priority: 1,
+    },
+    {
+      id: 2,
+      name: "HSC Certificate",
+      type: "academic",
+      is_required: true,
+      allowed_formats: ["PDF", "JPG", "PNG"],
+      max_file_size: "5MB",
+      description: "Original HSC certificate or equivalent",
+      order_priority: 2,
+    },
+  ];
+
   private referrers = [
     {
       employee_id: "EMP001",
