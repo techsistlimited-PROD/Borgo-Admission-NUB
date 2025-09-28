@@ -687,7 +687,7 @@ export default function Reports() {
       totalApplications: "মোট আবেদন",
       admittedStudents: "ভর্তিকৃত শিক্ষার্থী",
       rejectedApplications: "প্রত্যাখ্যাত আবেদ���",
-      pendingApplications: "অপেক্ষমাণ আবেদন",
+      pendingApplications: "��পেক্ষমাণ আবেদন",
       departmentWiseAdmissions: "বিভাগ অনুযায়ী ভর্তি",
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
       admissionRate: "ভর্তির হার",
@@ -698,12 +698,12 @@ export default function Reports() {
       programWiseAdmissions:
         "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
       employeeWiseCollection: "কর্মচারী অনুযায়ী ভর্তি ফি সংগ্রহ",
-      dailyCollectionReport: "ভর্তি কর্ম���র্তাদের দ���নিক সংগ্রহ রিপোর্ট",
+      dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্রহ রিপোর্ট",
 
       departmentColumn: "বিভাগ",
       rate: "হার",
       cse: "কম্পিউটা�� সায়েন্স ও ইঞ্জিনিয়ারি���",
-      eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জিনিয়ারিং",
+      eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জ��নিয়ারিং",
       mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
       textile: "টেক্সটাইল ইঞ্জিনিয়ারিং",
@@ -717,6 +717,33 @@ export default function Reports() {
   };
 
   const t = texts[language];
+
+  // Fetch referral and visitors stats
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const refRes = await apiClient.getReferrers();
+        if (refRes.success && refRes.data) {
+          const total = refRes.data.referrers.length;
+          // Mock commission sum from mock data if available
+          const totalCommission = refRes.data.referrers.reduce((sum:any, r:any) => sum + ((r.commission_rate||0) * 10000), 0);
+          setReferralStats({ total_referrers: total, total_commission: totalCommission });
+        }
+
+        const visRes = await apiClient.getVisitors({ page: 1, limit: 1000 });
+        if (visRes.success && visRes.data) {
+          const totalVisits = visRes.data.total || visRes.data.visitors.length;
+          const today = new Date().toISOString().slice(0,10);
+          const visitsToday = (visRes.data.visitors || []).filter((v:any)=>v.visit_date === today).length;
+          setVisitorsStats({ total_visits: totalVisits, visits_today: visitsToday });
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    };
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Filter functions for each report type
   const filteredProgramWiseData = useMemo(() => {
