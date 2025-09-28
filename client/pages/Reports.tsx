@@ -728,7 +728,7 @@ export default function Reports() {
       department: "বিভাগ",
       semester: "সেমিস্টার",
       year: "বছর",
-      generateReport: "রিপোর্ট তৈরি করুন",
+      generateReport: "রিপোর্��� তৈরি করুন",
       exportPDF: "পিডিএফ এক্সপোর্ট",
       downloadReport: "প��ডিএফ ডাউনলোড",
       viewReport: "রিপোর্ট দেখুন",
@@ -762,7 +762,7 @@ export default function Reports() {
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
       admissionRate: "ভর্তির হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
-      topPerformingDepartments: "সেরা ���ারফরম্যান্স বিভাগ",
+      topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
       revenueGenerated: "আয় সৃষ্টি",
 
       programWiseAdmissions:
@@ -786,7 +786,7 @@ export default function Reports() {
     },
   };
 
-  const t = texts[language];
+  const t: any = texts[language];
 
   // Fetch referral and visitors stats
   useEffect(() => {
