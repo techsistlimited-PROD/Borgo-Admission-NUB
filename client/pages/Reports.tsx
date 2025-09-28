@@ -48,6 +48,7 @@ import {
   TableRow,
 } from "../components/ui/table";
 import { getIDGenerationStats, sampleStudentIDs } from "../lib/idGeneration";
+import { useLocation } from "react-router-dom";
 
 // Dummy data for reports
 const programWiseData = [
@@ -743,7 +744,7 @@ export default function Reports() {
       spring2024: "বসন্ত ২০২৪",
       fall2024: "শরৎ ২০২৪",
       summer2024: "গ্রীষ্ম ২০২৪",
-      backToReports: "রিপোর্টে ফিরুন",
+      backToReports: "রিপোর্টে ���িরুন",
 
       // Report Categories
       reportCategories: "রিপোর্ট বিভাগসমূহ",
@@ -763,7 +764,7 @@ export default function Reports() {
       admissionRate: "ভর্তির হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
       topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
-      revenueGenerated: "আয় সৃষ্টি",
+      revenueGenerated: "আয় ���ৃষ্টি",
 
       programWiseAdmissions:
         "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্��ীর সংখ্যা",
