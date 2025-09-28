@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { Shield, Eye, EyeOff, LogIn, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  Shield,
+  Eye,
+  EyeOff,
+  LogIn,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -65,8 +72,12 @@ export default function FinanceOfficerLogin() {
               <Shield className="w-8 h-8 text-white" />
             </div>
             <div>
-              <CardTitle className="text-2xl font-bold text-deep-plum font-poppins">Finance Officer Login</CardTitle>
-              <p className="text-gray-600 mt-2">Secure access for finance officers</p>
+              <CardTitle className="text-2xl font-bold text-deep-plum font-poppins">
+                Finance Officer Login
+              </CardTitle>
+              <p className="text-gray-600 mt-2">
+                Secure access for finance officers
+              </p>
             </div>
           </CardHeader>
 
@@ -76,7 +87,14 @@ export default function FinanceOfficerLogin() {
               <AlertDescription className="text-purple-800">
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Demo credentials available</span>
-                  <Button variant="outline" size="sm" onClick={loadDemoCredentials} className="text-xs border-purple-300 text-purple-700 hover:bg-purple-100">Load Demo</Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={loadDemoCredentials}
+                    className="text-xs border-purple-300 text-purple-700 hover:bg-purple-100"
+                  >
+                    Load Demo
+                  </Button>
                 </div>
               </AlertDescription>
             </Alert>
@@ -84,35 +102,87 @@ export default function FinanceOfficerLogin() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="finance@nu.edu.bd" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="finance@nu.edu.bd"
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Input id="password" type={showPassword?"text":"password"} value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Enter your password" />
-                  <Button type="button" variant="ghost" size="sm" onClick={()=>setShowPassword(!showPassword)} className="absolute right-0 top-0 h-full px-3 hover:bg-transparent">
-                    {showPassword? <EyeOff className="w-4 h-4 text-gray-500" /> : <Eye className="w-4 h-4 text-gray-500" />}
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4 text-gray-500" />
+                    ) : (
+                      <Eye className="w-4 h-4 text-gray-500" />
+                    )}
                   </Button>
                 </div>
               </div>
 
               {error && (
-                <Alert className="border-red-200 bg-red-50"><AlertCircle className="w-4 h-4 text-red-600" /><AlertDescription className="text-red-800">{error}</AlertDescription></Alert>
+                <Alert className="border-red-200 bg-red-50">
+                  <AlertCircle className="w-4 h-4 text-red-600" />
+                  <AlertDescription className="text-red-800">
+                    {error}
+                  </AlertDescription>
+                </Alert>
               )}
 
-              <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-purple-800" disabled={isSubmitting}>
-                {isSubmitting ? (<><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Logging in...</>) : (<><LogIn className="w-4 h-4 mr-2" />Login to Finance Panel</>)}
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-purple-600 to-purple-800"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Logging in...
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Login to Finance Panel
+                  </>
+                )}
               </Button>
             </form>
 
             <div className="border-t pt-4">
-              <div className="text-center"><RouterLink to="/admin" className="text-sm text-gray-600 hover:text-deep-plum">← Admin Login</RouterLink></div>
+              <div className="text-center">
+                <RouterLink
+                  to="/admin"
+                  className="text-sm text-gray-600 hover:text-deep-plum"
+                >
+                  ← Admin Login
+                </RouterLink>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <div className="mt-6 text-center"><p className="text-sm text-white/80">Contact IT support if you're having trouble accessing your account.</p></div>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-white/80">
+            Contact IT support if you're having trouble accessing your account.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -106,13 +106,33 @@ export default function Header({ showLogin = false }: HeaderProps) {
           <div className="flex items-center space-x-4">
             {/* Top-level portal switcher (always visible) */}
             <div className="hidden sm:flex items-center bg-gray-100 rounded-md p-1">
-              <a href="/applicant-portal" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Applicant Portal</a>
-              <a href="/admin" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admin Portal</a>
+              <a
+                href="/applicant-portal"
+                className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
+              >
+                Applicant Portal
+              </a>
+              <a
+                href="/admin"
+                className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
+              >
+                Admin Portal
+              </a>
               {/* Demo quick-access for role-specific portals (homepage only) */}
               {location.pathname === "/" && (
                 <>
-                  <a href="/admin/admission-login" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admission Officer</a>
-                  <a href="/admin/finance-login" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Finance Officer</a>
+                  <a
+                    href="/admin/admission-login"
+                    className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
+                  >
+                    Admission Officer
+                  </a>
+                  <a
+                    href="/admin/finance-login"
+                    className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
+                  >
+                    Finance Officer
+                  </a>
                 </>
               )}
             </div>
@@ -165,11 +185,20 @@ export default function Header({ showLogin = false }: HeaderProps) {
                       const r = e.target.value || null;
                       setRole(r);
                       if (r === "admin") setPermissions(["all"]);
-                      else if (r === "admission_officer") setPermissions(["applications:view","applications:approve","waivers:manage"]);
-                      else if (r === "finance_officer") setPermissions(["finance:view","finance:billing"]);
+                      else if (r === "admission_officer")
+                        setPermissions([
+                          "applications:view",
+                          "applications:approve",
+                          "waivers:manage",
+                        ]);
+                      else if (r === "finance_officer")
+                        setPermissions(["finance:view", "finance:billing"]);
                       else setPermissions([]);
                       // reload sidebar by forcing a small timeout (UI-only)
-                      setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+                      setTimeout(
+                        () => window.dispatchEvent(new Event("resize")),
+                        100,
+                      );
                     }}
                   >
                     <option value="">Role</option>
@@ -193,7 +222,9 @@ export default function Header({ showLogin = false }: HeaderProps) {
                     <div className="px-2 py-1.5">
                       <p className="text-sm font-medium">{user.name}</p>
                       <p className="text-xs text-gray-500">
-                        {user.type === "applicant" ? user.university_id : user.email}
+                        {user.type === "applicant"
+                          ? user.university_id
+                          : user.email}
                       </p>
                       <p className="text-xs text-gray-500">{user.department}</p>
                     </div>

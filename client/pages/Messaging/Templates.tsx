@@ -3,14 +3,25 @@ import apiClient from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function MessagingTemplates() {
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any | null>(null);
-  const [form, setForm] = useState({ name: "", channel: "email", subject: "", body: "" });
+  const [form, setForm] = useState({
+    name: "",
+    channel: "email",
+    subject: "",
+    body: "",
+  });
 
   const load = async () => {
     setLoading(true);
@@ -50,7 +61,9 @@ export default function MessagingTemplates() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Messaging Templates</h1>
         <div className="flex items-center gap-2">
-          <Button onClick={openCreate} className="bg-deep-plum text-white">New Template</Button>
+          <Button onClick={openCreate} className="bg-deep-plum text-white">
+            New Template
+          </Button>
         </div>
       </div>
 
@@ -59,16 +72,44 @@ export default function MessagingTemplates() {
           <Card key={t.id}>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <span>{t.name} <small className="text-xs text-gray-500 ml-2">{t.channel}</small></span>
+                <span>
+                  {t.name}{" "}
+                  <small className="text-xs text-gray-500 ml-2">
+                    {t.channel}
+                  </small>
+                </span>
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => { setEditing(t); setForm({ name: t.name, channel: t.channel, subject: t.subject || "", body: t.body || "" }); setOpen(true); }}>Edit</Button>
-                  <Button variant="ghost" size="sm" onClick={() => remove(t.id)}>Delete</Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setEditing(t);
+                      setForm({
+                        name: t.name,
+                        channel: t.channel,
+                        subject: t.subject || "",
+                        body: t.body || "",
+                      });
+                      setOpen(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => remove(t.id)}
+                  >
+                    Delete
+                  </Button>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-sm text-gray-700 mb-2">{t.subject}</div>
-              <pre className="text-xs text-gray-600 whitespace-pre-wrap">{t.body}</pre>
+              <pre className="text-xs text-gray-600 whitespace-pre-wrap">
+                {t.body}
+              </pre>
             </CardContent>
           </Card>
         ))}
@@ -81,17 +122,30 @@ export default function MessagingTemplates() {
         </DialogTrigger>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{editing ? "Edit Template" : "New Template"}</DialogTitle>
+            <DialogTitle>
+              {editing ? "Edit Template" : "New Template"}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 mt-4">
             <div>
               <label className="text-sm font-medium">Name</label>
-              <Input value={form.name} onChange={(e:any)=>setForm(prev=>({...prev, name:e.target.value}))} />
+              <Input
+                value={form.name}
+                onChange={(e: any) =>
+                  setForm((prev) => ({ ...prev, name: e.target.value }))
+                }
+              />
             </div>
             <div>
               <label className="text-sm font-medium">Channel</label>
-              <select className="w-full border rounded-md p-2" value={form.channel} onChange={(e:any)=>setForm(prev=>({...prev, channel:e.target.value}))}>
+              <select
+                className="w-full border rounded-md p-2"
+                value={form.channel}
+                onChange={(e: any) =>
+                  setForm((prev) => ({ ...prev, channel: e.target.value }))
+                }
+              >
                 <option value="email">Email</option>
                 <option value="sms">SMS</option>
               </select>
@@ -99,17 +153,32 @@ export default function MessagingTemplates() {
             {form.channel === "email" && (
               <div>
                 <label className="text-sm font-medium">Subject</label>
-                <Input value={form.subject} onChange={(e:any)=>setForm(prev=>({...prev, subject:e.target.value}))} />
+                <Input
+                  value={form.subject}
+                  onChange={(e: any) =>
+                    setForm((prev) => ({ ...prev, subject: e.target.value }))
+                  }
+                />
               </div>
             )}
             <div>
               <label className="text-sm font-medium">Body</label>
-              <textarea className="w-full border rounded-md p-2 h-40" value={form.body} onChange={(e:any)=>setForm(prev=>({...prev, body:e.target.value}))} />
+              <textarea
+                className="w-full border rounded-md p-2 h-40"
+                value={form.body}
+                onChange={(e: any) =>
+                  setForm((prev) => ({ ...prev, body: e.target.value }))
+                }
+              />
             </div>
 
             <div className="flex justify-end gap-2">
-              <Button variant="ghost" onClick={()=>setOpen(false)}>Cancel</Button>
-              <Button onClick={save} className="bg-deep-plum text-white">Save</Button>
+              <Button variant="ghost" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={save} className="bg-deep-plum text-white">
+                Save
+              </Button>
             </div>
           </div>
         </DialogContent>

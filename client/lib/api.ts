@@ -155,7 +155,14 @@ class ApiClient {
   }
 
   // Visitors Log
-  async getVisitors(params?: { page?: number; limit?: number; campus?: string; dateFrom?: string; dateTo?: string; search?: string; }): Promise<ApiResponse> {
+  async getVisitors(params?: {
+    page?: number;
+    limit?: number;
+    campus?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    search?: string;
+  }): Promise<ApiResponse> {
     return await mockApi.getVisitors(params);
   }
 
@@ -221,7 +228,9 @@ class ApiClient {
 
   // Messaging (server-backed via Supabase)
   private async request(path: string, options: RequestInit = {}) {
-    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
     if (this.token) headers["Authorization"] = `Bearer ${this.token}`;
 
     const res = await fetch(`/api/messaging${path}`, { headers, ...options });
@@ -234,11 +243,17 @@ class ApiClient {
   }
 
   async createTemplate(template: any): Promise<ApiResponse> {
-    return await this.request(`/templates`, { method: "POST", body: JSON.stringify(template) });
+    return await this.request(`/templates`, {
+      method: "POST",
+      body: JSON.stringify(template),
+    });
   }
 
   async updateTemplate(id: string, template: any): Promise<ApiResponse> {
-    return await this.request(`/templates/${id}`, { method: "PUT", body: JSON.stringify(template) });
+    return await this.request(`/templates/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(template),
+    });
   }
 
   async deleteTemplate(id: string): Promise<ApiResponse> {
@@ -250,10 +265,20 @@ class ApiClient {
   }
 
   async createCampaign(campaign: any): Promise<ApiResponse> {
-    return await this.request(`/campaigns`, { method: "POST", body: JSON.stringify(campaign) });
+    return await this.request(`/campaigns`, {
+      method: "POST",
+      body: JSON.stringify(campaign),
+    });
   }
 
-  async getMessagingLogs(params: { campaignId?: string; status?: string; limit?: number; offset?: number } = {}): Promise<ApiResponse> {
+  async getMessagingLogs(
+    params: {
+      campaignId?: string;
+      status?: string;
+      limit?: number;
+      offset?: number;
+    } = {},
+  ): Promise<ApiResponse> {
     const qs = new URLSearchParams();
     if (params.campaignId) qs.set("campaignId", params.campaignId);
     if (params.status) qs.set("status", params.status);
@@ -262,16 +287,30 @@ class ApiClient {
     return await this.request(`/logs?${qs.toString()}`);
   }
 
-  async testSend(payload: { templateId: string; channel: string; to: string; vars?: any }): Promise<ApiResponse> {
-    return await this.request(`/test-send`, { method: "POST", body: JSON.stringify(payload) });
+  async testSend(payload: {
+    templateId: string;
+    channel: string;
+    to: string;
+    vars?: any;
+  }): Promise<ApiResponse> {
+    return await this.request(`/test-send`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
   }
 
   // Students & Finance (mock)
-  async createStudentRecord(applicationId: string, ids: { university_id: string; ugc_id?: string; batch?: string }): Promise<ApiResponse> {
+  async createStudentRecord(
+    applicationId: string,
+    ids: { university_id: string; ugc_id?: string; batch?: string },
+  ): Promise<ApiResponse> {
     return await mockApi.createStudentRecord(applicationId, ids);
   }
 
-  async generateMoneyReceipt(applicationId: string, amount: number): Promise<ApiResponse> {
+  async generateMoneyReceipt(
+    applicationId: string,
+    amount: number,
+  ): Promise<ApiResponse> {
     return await mockApi.generateMoneyReceipt(applicationId, amount);
   }
 }

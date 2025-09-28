@@ -106,20 +106,30 @@ export default function Sidebar({ userType }: SidebarProps) {
 
   const getPages = () => {
     // Role overrides userType when present
-    if (role === "admission_officer") return [
-      { name: "Admissions", path: "/admin/admissions", icon: Users },
-      { name: "Waiver Management", path: "/admin/waivers", icon: Award },
-      { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
-      { name: "Student Management", path: "/admin/student-management", icon: UserCog },
-      { name: "Visitors Log", path: "/admin/visitors-log", icon: Users },
-      { name: "Referrals", path: "/admin/referrals", icon: Users },
-    ];
+    if (role === "admission_officer")
+      return [
+        { name: "Admissions", path: "/admin/admissions", icon: Users },
+        { name: "Waiver Management", path: "/admin/waivers", icon: Award },
+        { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
+        {
+          name: "Student Management",
+          path: "/admin/student-management",
+          icon: UserCog,
+        },
+        { name: "Visitors Log", path: "/admin/visitors-log", icon: Users },
+        { name: "Referrals", path: "/admin/referrals", icon: Users },
+      ];
 
-    if (role === "finance_officer") return [
-      { name: "Finance", path: "/admin/finance", icon: CreditCard },
-      { name: "ID Card Generation", path: "/admin/id-card-generation", icon: Shield },
-      { name: "Reports", path: "/admin/reports", icon: PieChart },
-    ];
+    if (role === "finance_officer")
+      return [
+        { name: "Finance", path: "/admin/finance", icon: CreditCard },
+        {
+          name: "ID Card Generation",
+          path: "/admin/id-card-generation",
+          icon: Shield,
+        },
+        { name: "Reports", path: "/admin/reports", icon: PieChart },
+      ];
 
     switch (userType) {
       case "applicant":

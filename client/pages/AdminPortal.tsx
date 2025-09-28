@@ -12,8 +12,14 @@ export default function AdminPortal() {
     setRole(r);
     // map default permissions for demo
     if (r === "admin") setPermissions(["all"]);
-    else if (r === "admission_officer") setPermissions(["applications:view","applications:approve","waivers:manage"]);
-    else if (r === "finance_officer") setPermissions(["finance:view","finance:billing"]);
+    else if (r === "admission_officer")
+      setPermissions([
+        "applications:view",
+        "applications:approve",
+        "waivers:manage",
+      ]);
+    else if (r === "finance_officer")
+      setPermissions(["finance:view", "finance:billing"]);
     else setPermissions([]);
   };
 
@@ -22,8 +28,15 @@ export default function AdminPortal() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Admin Portal</h1>
         <div className="flex items-center gap-4">
-          <div className="text-sm text-gray-600">Signed in as: {user?.name} ({role || user?.type})</div>
-          <select className="border rounded p-2" value={role || ""} onChange={onRoleChange} aria-label="Select demo role">
+          <div className="text-sm text-gray-600">
+            Signed in as: {user?.name} ({role || user?.type})
+          </div>
+          <select
+            className="border rounded p-2"
+            value={role || ""}
+            onChange={onRoleChange}
+            aria-label="Select demo role"
+          >
             <option value="">None</option>
             <option value="admin">Admin</option>
             <option value="admission_officer">Admission Officer</option>
@@ -38,10 +51,17 @@ export default function AdminPortal() {
             <CardTitle>Admission Officer</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600">Access to application review, waivers, offer courses, student management.</p>
+            <p className="text-sm text-gray-600">
+              Access to application review, waivers, offer courses, student
+              management.
+            </p>
             <div className="mt-4 flex gap-2">
-              <Link to="/admin/admissions"><Button>Applications</Button></Link>
-              <Link to="/admin/waivers"><Button variant="outline">Waivers</Button></Link>
+              <Link to="/admin/admissions">
+                <Button>Applications</Button>
+              </Link>
+              <Link to="/admin/waivers">
+                <Button variant="outline">Waivers</Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -51,10 +71,16 @@ export default function AdminPortal() {
             <CardTitle>Finance Officer</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600">Access billing, money receipts, fee structure, payments.</p>
+            <p className="text-sm text-gray-600">
+              Access billing, money receipts, fee structure, payments.
+            </p>
             <div className="mt-4 flex gap-2">
-              <Link to="/admin/finance"><Button>Finance Panel</Button></Link>
-              <Link to="/admin/id-card-generation"><Button variant="outline">ID Cards</Button></Link>
+              <Link to="/admin/finance">
+                <Button>Finance Panel</Button>
+              </Link>
+              <Link to="/admin/id-card-generation">
+                <Button variant="outline">ID Cards</Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -64,10 +90,16 @@ export default function AdminPortal() {
             <CardTitle>Settings & Permissions</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600">Centralized admission settings and user permission configuration.</p>
+            <p className="text-sm text-gray-600">
+              Centralized admission settings and user permission configuration.
+            </p>
             <div className="mt-4 flex gap-2">
-              <Link to="/admin/configuration"><Button>Admission Settings</Button></Link>
-              <Link to="/admin/users"><Button variant="outline">Users & Permissions</Button></Link>
+              <Link to="/admin/configuration">
+                <Button>Admission Settings</Button>
+              </Link>
+              <Link to="/admin/users">
+                <Button variant="outline">Users & Permissions</Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
