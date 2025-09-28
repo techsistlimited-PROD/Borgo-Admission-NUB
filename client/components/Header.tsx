@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LogOut, User, Plus } from "lucide-react";
 import { Button } from "./ui/button";
@@ -21,6 +22,7 @@ interface HeaderProps {
 export default function Header({ showLogin = false }: HeaderProps) {
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Try to get auth context, but don't fail if it's not available
   let user: any = null;
@@ -136,37 +138,38 @@ export default function Header({ showLogin = false }: HeaderProps) {
           {/* Right side */}
           <div className="flex items-center space-x-4">
             {/* Top-level portal switcher (always visible) */}
-            <div className="hidden sm:flex items-center bg-gray-100 rounded-md p-1">
-              <a
-                href="/applicant-portal"
-                className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
-              >
-                Applicant Portal
-              </a>
-              <a
-                href="/admin"
-                className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
-              >
-                Admin Portal
-              </a>
-              {/* Demo quick-access for role-specific portals (homepage only) */}
-              {location.pathname === "/" && (
-                <>
-                  <a
-                    href="/admin/admission-login"
-                    className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
-                  >
-                    Admission Officer
-                  </a>
-                  <a
-                    href="/admin/finance-login"
-                    className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
-                  >
-                    Finance Officer
-                  </a>
-                </>
-              )}
-            </div>
+          <div className="hidden sm:flex items-center bg-gray-100 rounded-md p-1">
+            {location.pathname === "/" ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white">
+                    {t.login}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuItem onClick={() => navigate("/applicant-portal")}>Applicant Portal</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Portal</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin/admission-login")}>Admission Officer</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin/finance-login")}>Finance Officer</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <a
+                  href="/applicant-portal"
+                  className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
+                >
+                  Applicant Portal
+                </a>
+                <a
+                  href="/admin"
+                  className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
+                >
+                  Admin Portal
+                </a>
+              </>
+            )}
+          </div>
 
             {/* New Application Button */}
             <Button
@@ -275,22 +278,19 @@ export default function Header({ showLogin = false }: HeaderProps) {
               </div>
             ) : showLogin ? (
               <div className="flex gap-2 sm:hidden">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white"
-                >
-                  <a href="/applicant-portal">Applicant Portal</a>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white"
-                >
-                  <a href="/admin">Admin Portal</a>
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white">
+                      {t.login}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem onClick={() => navigate("/applicant-portal")}>Applicant Portal</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Portal</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/admin/admission-login")}>Admission Officer</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/admin/finance-login")}>Finance Officer</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ) : null}
           </div>
