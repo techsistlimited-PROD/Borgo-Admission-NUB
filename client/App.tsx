@@ -51,6 +51,7 @@ import AccountManagement from "./pages/AccountManagement";
 import AdmissionCircular from "./pages/AdmissionCircular";
 import ChangeHistory from "./pages/ChangeHistory";
 import IdCardGeneration from "./pages/IdCardGeneration";
+import VisitorsLog from "./pages/VisitorsLog";
 
 const queryClient = new QueryClient();
 
