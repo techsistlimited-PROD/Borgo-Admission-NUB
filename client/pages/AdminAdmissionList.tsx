@@ -144,7 +144,7 @@ export default function AdminAdmissionList() {
       title: "ভর্তি অফিস - আবেদনসমূহ",
       searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
       filterByStatus: "অবস্থা অনুসারে ফিল্টার",
-      allStatus: "সব অবস্থা",
+      allStatus: "সব ��বস্থা",
       pending: "অপেক্ষমাণ",
       approved: "অনুমোদিত",
       rejected: "প্রত্যাখ্যাত",
@@ -170,7 +170,7 @@ export default function AdminAdmissionList() {
       needReview: "পর্যালোচনা প্রয়োজন",
       emailVerified: "ইমেইল যাচাইকৃত",
       phoneVerified: "ফোন যাচাইকৃত",
-      documentsComplete: "কাগজপত্র সম্পূর্ণ",
+      documentsComplete: "কাগজপত্র সম্পূর��ণ",
       refresh: "রিফ্রেশ",
       loading: "���োডিং...",
       error: "ডেটা লোড করতে ত্রুটি",
@@ -527,12 +527,12 @@ export default function AdminAdmissionList() {
 
               {/* Semester Filter */}
               <div className="md:w-48">
-                <Select value={semesterFilter || ""} onValueChange={(v) => setSemesterFilter(v || undefined)}>
+                <Select value={semesterFilter ?? "all"} onValueChange={(v) => setSemesterFilter(v === "all" ? undefined : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Semester" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Semesters</SelectItem>
+                    <SelectItem value="all">All Semesters</SelectItem>
                     {Array.from(new Set(applications.map((a) => a.semester))).map((s) => (
                       <SelectItem key={s} value={s}>{s}</SelectItem>
                     ))}
