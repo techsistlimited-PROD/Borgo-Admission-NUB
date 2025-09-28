@@ -124,7 +124,6 @@ export default function Referrals() {
                 <TableHead>Total Amount</TableHead>
                 <TableHead>Contact</TableHead>
                 <TableHead>Last Activity</TableHead>
-                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
