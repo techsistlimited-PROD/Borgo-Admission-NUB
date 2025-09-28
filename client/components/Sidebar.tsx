@@ -80,6 +80,7 @@ export default function Sidebar({ userType }: SidebarProps) {
     },
     { name: "Change History", path: "/admin/change-history", icon: History },
     { name: "Reports", path: "/admin/reports", icon: PieChart },
+    { name: "Messaging", path: "/admin/messaging", icon: Mail },
     { name: "Templates", path: "/admin/templates", icon: Mail },
     { name: "Syllabus", path: "/admin/syllabus", icon: BookOpen },
     { name: "Visitors Log", path: "/admin/visitors-log", icon: Users },
