@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import {
   ArrowLeft,
   User,
@@ -17,8 +18,8 @@ import {
   MessageSquare,
   Shield,
   AlertCircle,
+  Paperclip,
 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -39,26 +40,25 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { Separator } from "../components/ui/separator";
-import {
-  generateStudentIDPair,
-  sendUniversityIdViaSMS,
-  sendUniversityIdViaEmail,
-  type StudentIDPair,
-} from "../lib/idGeneration";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs";
+import { useToast } from "../hooks/use-toast";
+import apiClient from "../lib/api";
 
 export default function ApplicantDetail() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const [isLocked, setIsLocked] = useState(false);
-  const [applicationStatus, setApplicationStatus] = useState("under_review");
-  const [paymentStatus, setPaymentStatus] = useState("verified");
-  const [notes, setNotes] = useState("");
-
-  // ID Generation state
-  const [studentIDs, setStudentIDs] = useState<StudentIDPair | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [application, setApplication] = useState<any | null>(null);
+  const [studentIDs, setStudentIDs] = useState<any | null>(null);
   const [isGeneratingIDs, setIsGeneratingIDs] = useState(false);
   const [sendingSMS, setSendingSMS] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
+  const [approvalNote, setApprovalNote] = useState("");
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [mrNumber, setMrNumber] = useState<string | null>(null);
 
   const texts = {
     en: {
@@ -70,7 +70,7 @@ export default function ApplicantDetail() {
       contactInfo: "Contact Information",
       academicHistory: "Academic History",
       documentsUploaded: "Documents Uploaded",
-      waiverInfo: "Waiver Information",
+      waiverInfo: "Fees & Waiver",
       invoicePreview: "Invoice Preview",
       actions: "Actions",
       approve: "Approve Application",
@@ -107,7 +107,7 @@ export default function ApplicantDetail() {
       hscCertificate: "HSC Certificate",
       nidCopy: "NID Copy",
       photograph: "Photograph",
-      testimonial: "Testimonial",
+      otherDocs: "Other Documents",
       uploaded: "Uploaded",
       notUploaded: "Not Uploaded",
       waiverType: "Waiver Type",
@@ -143,467 +143,292 @@ export default function ApplicantDetail() {
       inactive: "Inactive",
       ugcNote:
         "UGC ID is used for certificate authorization and is visible only to admin staff.",
+      changeLog: "Change Log",
     },
     bn: {
-      title: "আবেদনকারীর ব��বরণ",
+      title: "আবেদনকারীর বিবরণ",
       backToList: "ভর্তি তালিকায় ফিরুন",
-      admissionStatus: "ভর্তির অবস্থা",
-      paymentStatus: "পেমেন্ট অবস্থা",
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
       documentsUploaded: "আপলোডকৃত কাগজপত্র",
       waiverInfo: "মওকুফ তথ্য",
-      invoicePreview: "ইনভয়েস প্রিভিউ",
       actions: "কর্ম",
       approve: "আবেদন অনুমোদন",
-      hold: "স্থগিত রাখুন",
       reject: "আবেদন প্রত্যাখ্যান",
-      lock: "আবেদন লক করুন",
-      unlock: "আবেদন আনলক করুন",
-      createId: "ছাত্র আইডি তৈরি করুন",
-      sendEmail: "ইমেইল পাঠান",
-      sendSMS: "এসএমএস পাঠান",
-      downloadInvoice: "ইনভয়েস ডাউনলোড",
-      underReview: "পর্যালোচনাধীন",
-      approved: "অনুমোদিত",
-      rejected: "প্রত্যাখ্যাত",
-      onHold: "স্থগিত",
-      pending: "অপেক্ষমাণ",
-      verified: "যাচাইকৃত",
-      failed: "ব্যর্থ",
-      name: "নাম",
-      email: "ইমেইল",
-      phone: "ফোন",
-      dateOfBirth: "জন��ম তারিখ",
-      gender: "লিঙ্গ",
-      address: "ঠিকানা",
-      nationality: "জাতীয়তা",
-      trackingId: "ট্র্যাকিং আইডি",
-      applicationDate: "আবেদনের তারিখ",
-      program: "প্��োগ্রাম",
-      department: "বিভাগ",
-      semester: "সেমিস্টার",
-      sscResults: "এসএসসি ফলাফল",
-      hscResults: "এইচএসসি ফলাফল",
-      sscCertificate: "এসএসসি সনদপত্র",
-      hscCertificate: "এইচএসসি সনদপত্র",
-      nidCopy: "এনআইডি কপি",
-      photograph: "ছবি",
-      testimonial: "প্রশংসাপত্র",
-      uploaded: "আপলোড করা হয়েছে",
-      notUploaded: "আপলোড করা হয়নি",
-      waiverType: "মওকুফের ধর��",
-      waiverPercentage: "মওকুফ শতাংশ",
-      originalAmount: "মূল পরিমাণ",
-      waiverAmount: "মওকুফ পরিমাণ",
-      finalAmount: "চূড়ান্ত পরিমাণ",
-      admissionFee: "ভর্তি ফি",
-      courseFee: "কোর্স ফি",
-      labFee: "ল্যাব ফি",
-      others: "অন্যান্য",
-      total: "মোট",
-      approvalNote: "অনুমোদনের নোট",
-      rejectionReason: "প্রত্যাখ্যানের কারণ",
-      studentId: "ছাত্র আইডি",
-      applicantId: "আবেদনকারী আইডি",
-      password: "পাসওয়ার্ড",
-      confirmApproval: "অনুমোদন নিশ্চিত করুন",
-      confirmRejection: "প্রত্যাখ্যান নিশ্চিত করুন",
-      studentIDs: "ছাত্র আইডিসমূহ",
-      universityId: "ব��শ্ববিদ্যালয় আইডি",
-      ugcId: "ইউজিসি আইডি",
       generateIDs: "ছাত্র আইডি তৈরি করুন",
-      sendSMSId: "এসএমএসে আইডি পাঠান",
-      sendEmailId: "ইমেইলে আইডি পাঠান",
-      idsGenerated: "ছাত্র আইডি ����ফলভাবে তৈরি হয়েছে",
-      smsSent: "এসএমএস সফলভাবে পাঠানো হয়েছে",
-      emailSent: "ইমেইল সফলভাবে পাঠানো হয়েছে",
-      batch: "ব্যাচ",
-      generatedOn: "তৈরির তারিখ",
-      idStatus: "আইডি অবস্থা",
-      active: "সক্রিয়",
-      inactive: "নিষ্ক্রিয়",
-      ugcNote:
-        "ইউজিসি আইডি সনদপত্র অনুমোদনের জন্য ব্যবহৃত হয় এবং শুধুমাত্র প্রশাসনিক কর্মীদের কাছে দৃশ্যমান।",
+      changeLog: "পরিবর্তন লগ",
     },
   };
 
   const t = texts[language];
 
-  const applicantData = {
-    trackingId: `NU2024001${id || "234"}`,
-    applicationDate: "2024-01-15",
-    personalInfo: {
-      name: "Mohammad Rahman",
-      email: "rahman@email.com",
-      phone: "+880 1234567890",
-      dateOfBirth: "1995-06-15",
-      gender: "Male",
-      address: "Dhaka, Bangladesh",
-      nationality: "Bangladeshi",
-    },
-    program: {
-      program: "BSc in Computer Science",
-      department: "Computer Science & Engineering",
-      semester: "Spring 2024",
-    },
-    academic: {
-      ssc: { board: "Dhaka Board", gpa: "5.00", year: "2018" },
-      hsc: { board: "Dhaka Board", gpa: "5.00", year: "2020" },
-    },
-    documents: {
-      sscCertificate: true,
-      hscCertificate: true,
-      nidCopy: true,
-      photograph: true,
-      testimonial: false,
-    },
-    waiver: {
-      type: "Merit-based",
-      percentage: 25,
-      originalAmount: 73000,
-      waiverAmount: 18250,
-      finalAmount: 54750,
-    },
+  const loadApplication = async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const res = await apiClient.getApplication(id);
+      if (res.success && res.data) {
+        setApplication(res.data.application || res.data);
+        if (res.data.application?.id_generation) {
+          setStudentIDs(res.data.application.id_generation);
+        } else if (res.data.id_generation) {
+          setStudentIDs(res.data.id_generation);
+        }
+      } else {
+        // fallback: try to set application from res.data
+        if (res.success && res.data) setApplication(res.data);
+      }
+    } catch (error) {
+      console.error("Failed to load application", error);
+      toast({ title: "Error", description: "Failed to load application" });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    loadApplication();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const getStatusBadge = (status: string, type: "admission" | "payment") => {
     const statusConfigs = {
       admission: {
-        under_review: {
-          color: "bg-yellow-100 text-yellow-800",
-          label: t.underReview,
-          icon: Clock,
-        },
-        approved: {
-          color: "bg-green-100 text-green-800",
-          label: t.approved,
-          icon: CheckCircle,
-        },
-        rejected: {
-          color: "bg-red-100 text-red-800",
-          label: t.rejected,
-          icon: XCircle,
-        },
-        on_hold: {
-          color: "bg-gray-100 text-gray-800",
-          label: t.onHold,
-          icon: Clock,
-        },
+        pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending", icon: Clock },
+        approved: { color: "bg-green-100 text-green-800", label: "Approved", icon: CheckCircle },
+        rejected: { color: "bg-red-100 text-red-800", label: "Rejected", icon: XCircle },
+        on_hold: { color: "bg-gray-100 text-gray-800", label: "On Hold", icon: Clock },
       },
       payment: {
-        pending: {
-          color: "bg-yellow-100 text-yellow-800",
-          label: t.pending,
-          icon: Clock,
-        },
-        verified: {
-          color: "bg-green-100 text-green-800",
-          label: t.verified,
-          icon: CheckCircle,
-        },
-        failed: {
-          color: "bg-red-100 text-red-800",
-          label: t.failed,
-          icon: XCircle,
-        },
+        pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending", icon: Clock },
+        verified: { color: "bg-green-100 text-green-800", label: "Verified", icon: CheckCircle },
+        failed: { color: "bg-red-100 text-red-800", label: "Failed", icon: XCircle },
       },
     } as const;
 
-    const typeConfig = statusConfigs[type];
-    const config = typeConfig[status as keyof typeof typeConfig];
-
-    if (!config) {
-      return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
-    }
-
-    const IconComponent = config.icon;
+    const cfg = (statusConfigs as any)[type][status] as any;
+    if (!cfg) return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
+    const Icon = cfg.icon;
     return (
-      <Badge className={config.color}>
-        <IconComponent className="w-3 h-3 mr-1" />
-        {config.label}
+      <Badge className={cfg.color}>
+        <Icon className="w-3 h-3 mr-1" /> {cfg.label}
       </Badge>
     );
   };
 
-  const handleApprove = () => {
-    setApplicationStatus("approved");
-
-    // Automatically generate IDs upon approval
-    if (!studentIDs) {
-      setTimeout(() => {
-        handleGenerateIDs();
-      }, 1000);
+  const handleApprove = async () => {
+    if (!application) return;
+    try {
+      // Update status on server
+      const res = await apiClient.updateApplicationStatus(application.id, "approved");
+      if (res.success) {
+        toast({ title: "Approved", description: "Application approved" });
+        // Generate IDs
+        setIsGeneratingIDs(true);
+        const gid = await apiClient.generateApplicationIds(application.id);
+        if (gid.success && gid.data) {
+          setStudentIDs({
+            universityId: gid.data.university_id,
+            ugcId: gid.data.ugc_id || gid.data.ugc_id || gid.data.ugc_id,
+            batch: gid.data.batch || `${application.semester} ${new Date().getFullYear()}`,
+            generatedDate: gid.data.generated_date || new Date().toISOString(),
+          });
+        }
+        // Simulate MR generation
+        setMrNumber(`MR-${Date.now()}`);
+        // refresh application
+        await loadApplication();
+      } else {
+        toast({ title: "Error", description: res.error || "Failed to approve", variant: "destructive" });
+      }
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: "Failed to approve", variant: "destructive" });
+    } finally {
+      setIsGeneratingIDs(false);
     }
   };
 
-  const handleReject = () => {
-    setApplicationStatus("rejected");
+  const handleReject = async () => {
+    if (!application) return;
+    try {
+      const res = await apiClient.updateApplicationStatus(application.id, "rejected");
+      if (res.success) {
+        toast({ title: "Rejected", description: "Application rejected" });
+        await loadApplication();
+      } else {
+        toast({ title: "Error", description: res.error || "Failed to reject", variant: "destructive" });
+      }
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: "Failed to reject", variant: "destructive" });
+    }
   };
 
-  const handleHold = () => {
-    setApplicationStatus("on_hold");
-  };
-
-  const handleGenerateIDs = () => {
+  const handleGenerateIDs = async () => {
+    if (!application) return;
     setIsGeneratingIDs(true);
-
-    // Simulate ID generation with delay
-    setTimeout(() => {
-      const ids = generateStudentIDPair(
-        applicantData.personalInfo.name,
-        "bachelor", // Would come from application data
-        "cse", // Would come from application data
-        2024,
-        Math.floor(Math.random() * 100) + 1,
-      );
-
-      setStudentIDs(ids);
+    try {
+      const gid = await apiClient.generateApplicationIds(application.id);
+      if (gid.success && gid.data) {
+        setStudentIDs({
+          universityId: gid.data.university_id,
+          ugcId: gid.data.ugc_id || gid.data.ugc_id,
+          batch: gid.data.batch || `${application.semester} ${new Date().getFullYear()}`,
+          generatedDate: gid.data.generated_date || new Date().toISOString(),
+        });
+        toast({ title: t.idsGenerated });
+      } else {
+        toast({ title: "Error", description: gid.error || "Failed to generate IDs", variant: "destructive" });
+      }
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: "Failed to generate IDs", variant: "destructive" });
+    } finally {
       setIsGeneratingIDs(false);
-    }, 2000);
+    }
   };
 
   const handleSendSMS = async () => {
-    if (!studentIDs) return;
-
+    if (!application || !studentIDs) return;
     setSendingSMS(true);
     try {
-      await sendUniversityIdViaSMS(
-        applicantData.personalInfo.phone,
-        studentIDs.universityId,
-        applicantData.personalInfo.name,
-      );
-      // Show success message
-    } catch (error) {
-      console.error("SMS sending failed:", error);
+      // Mock sending SMS
+      await new Promise((r) => setTimeout(r, 800));
+      toast({ title: t.smsSent });
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: "Failed to send SMS", variant: "destructive" });
+    } finally {
+      setSendingSMS(false);
     }
-    setSendingSMS(false);
   };
 
   const handleSendEmail = async () => {
-    if (!studentIDs) return;
-
+    if (!application || !studentIDs) return;
     setSendingEmail(true);
     try {
-      await sendUniversityIdViaEmail(
-        applicantData.personalInfo.email,
-        studentIDs.universityId,
-        applicantData.personalInfo.name,
-      );
-      // Show success message
-    } catch (error) {
-      console.error("Email sending failed:", error);
+      // Mock sending Email
+      await new Promise((r) => setTimeout(r, 800));
+      toast({ title: t.emailSent });
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Error", description: "Failed to send Email", variant: "destructive" });
+    } finally {
+      setSendingEmail(false);
     }
-    setSendingEmail(false);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Clock className="w-8 h-8 animate-spin mx-auto mb-4 text-deep-plum" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const personal = application?.personal_info || application?.personalInfo || {};
+  const academic = application?.academic_history || application?.academic || {};
+  const documents = application?.documents || application?.documents || {};
+  const waiver = application?.waiver || application?.waiver || null;
 
   return (
     <div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            to="/admin/admissions"
-            className="inline-flex items-center text-accent-purple hover:text-deep-plum mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {t.backToList}
+        <div className="mb-6">
+          <Link to="/admin/admissions" className="inline-flex items-center text-accent-purple hover:text-deep-plum mb-4">
+            <ArrowLeft className="w-4 h-4 mr-2" /> {t.backToList}
           </Link>
 
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-deep-plum font-poppins">
-                {t.title} - {applicantData.trackingId}
-              </h1>
-              <p className="text-gray-600 mt-1">
-                {applicantData.personalInfo.name}
-              </p>
+              <h1 className="text-3xl font-bold text-deep-plum font-poppins">{t.title} - {application?.tracking_id || application?.id}</h1>
+              <p className="text-gray-600 mt-1">{personal.name || application?.applicant_name}</p>
             </div>
 
-            {/* Language Toggle */}
-            <div className="flex items-center bg-white rounded-lg p-1 shadow-sm">
-              <button
-                onClick={() => setLanguage("en")}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  language === "en"
-                    ? "bg-deep-plum text-white"
-                    : "text-gray-600 hover:text-deep-plum"
-                }`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => setLanguage("bn")}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  language === "bn"
-                    ? "bg-deep-plum text-white"
-                    : "text-gray-600 hover:text-deep-plum"
-                }`}
-              >
-                BN
-              </button>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center bg-white rounded-lg p-1 shadow-sm">
+                <button onClick={() => setLanguage("en")} className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${language === "en" ? "bg-deep-plum text-white" : "text-gray-600 hover:text-deep-plum"}`}>EN</button>
+                <button onClick={() => setLanguage("bn")} className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${language === "bn" ? "bg-deep-plum text-white" : "text-gray-600 hover:text-deep-plum"}`}>BN</button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Status Cards */}
+        {/* Top Status cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card
-            className={`shadow-lg ${
-              applicationStatus === "approved"
-                ? "bg-green-50 border-green-200"
-                : applicationStatus === "rejected"
-                  ? "bg-red-50 border-red-200"
-                  : "bg-yellow-50 border-yellow-200"
-            }`}
-          >
+          <Card className={`shadow-lg ${application?.status === "approved" ? "bg-green-50 border-green-200" : application?.status === "rejected" ? "bg-red-50 border-red-200" : "bg-yellow-50 border-yellow-200"}`}>
             <CardHeader>
-              <CardTitle className="text-lg font-poppins text-deep-plum">
-                {t.admissionStatus}
-              </CardTitle>
+              <CardTitle className="text-lg font-poppins text-deep-plum">{t.admissionStatus}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                {getStatusBadge(applicationStatus, "admission")}
+                {getStatusBadge(application?.status || "pending", "admission")}
                 <div className="flex items-center gap-2">
-                  {isLocked ? (
-                    <Lock className="w-4 h-4 text-gray-400" />
-                  ) : (
-                    <Unlock className="w-4 h-4 text-gray-400" />
-                  )}
-                  <span className="text-sm text-gray-600">
-                    {isLocked ? "Locked" : "Unlocked"}
-                  </span>
+                  {isLocked ? <Lock className="w-4 h-4 text-gray-400" /> : <Unlock className="w-4 h-4 text-gray-400" />}
+                  <span className="text-sm text-gray-600">{isLocked ? "Locked" : "Unlocked"}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card
-            className={`shadow-lg ${
-              paymentStatus === "verified"
-                ? "bg-green-50 border-green-200"
-                : paymentStatus === "failed"
-                  ? "bg-red-50 border-red-200"
-                  : "bg-yellow-50 border-yellow-200"
-            }`}
-          >
+          <Card className={`shadow-lg ${application?.payment_status === "verified" ? "bg-green-50 border-green-200" : application?.payment_status === "failed" ? "bg-red-50 border-red-200" : "bg-yellow-50 border-yellow-200"}`}>
             <CardHeader>
-              <CardTitle className="text-lg font-poppins text-deep-plum">
-                {t.paymentStatus}
-              </CardTitle>
+              <CardTitle className="text-lg font-poppins text-deep-plum">{t.paymentStatus}</CardTitle>
             </CardHeader>
             <CardContent>
-              {getStatusBadge(paymentStatus, "payment")}
+              {getStatusBadge(application?.payment_status || "pending", "payment")}
             </CardContent>
           </Card>
         </div>
 
-        {/* Student IDs Section */}
-        {(applicationStatus === "approved" || studentIDs) && (
+        {/* IDs and Actions */}
+        {(application?.status === "approved" || studentIDs) && (
           <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200 mb-8">
             <CardHeader>
-              <CardTitle className="text-xl font-poppins text-blue-800 flex items-center gap-2">
-                <Shield className="w-5 h-5" />
-                {t.studentIDs}
-              </CardTitle>
+              <CardTitle className="text-xl font-poppins text-blue-800 flex items-center gap-2"><Shield className="w-5 h-5" /> {t.studentIDs}</CardTitle>
             </CardHeader>
             <CardContent>
               {studentIDs ? (
                 <div className="space-y-4">
-                  {/* University ID - Visible to all */}
                   <div className="bg-white p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
-                      <Label className="font-semibold text-blue-800">
-                        {t.universityId}
-                      </Label>
-                      <Badge className="bg-green-600 text-white">
-                        {t.active}
-                      </Badge>
+                      <Label className="font-semibold text-blue-800">{t.universityId}</Label>
+                      <Badge className="bg-green-600 text-white">{t.active}</Badge>
                     </div>
-                    <div className="text-2xl font-bold text-blue-900 font-mono tracking-wider">
-                      {studentIDs.universityId}
-                    </div>
+                    <div className="text-2xl font-bold text-blue-900 font-mono tracking-wider">{studentIDs.universityId}</div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 text-sm text-gray-600">
-                      <div>
-                        <strong>{t.batch}:</strong> {studentIDs.batch}
-                      </div>
-                      <div>
-                        <strong>{t.generatedOn}:</strong>{" "}
-                        {new Date(
-                          studentIDs.generatedDate,
-                        ).toLocaleDateString()}
-                      </div>
+                      <div><strong>{t.batch}:</strong> {studentIDs.batch}</div>
+                      <div><strong>{t.generatedOn}:</strong> {new Date(studentIDs.generatedDate).toLocaleDateString()}</div>
                     </div>
                   </div>
 
                   <Separator />
 
-                  {/* UGC ID - Admin Only */}
                   <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
                     <div className="flex justify-between items-center mb-2">
-                      <Label className="font-semibold text-purple-800">
-                        {t.ugcId} (Admin Only)
-                      </Label>
-                      <Badge className="bg-purple-600 text-white">
-                        Confidential
-                      </Badge>
+                      <Label className="font-semibold text-purple-800">{t.ugcId} (Admin Only)</Label>
+                      <Badge className="bg-purple-600 text-white">Confidential</Badge>
                     </div>
-                    <div className="text-xl font-bold text-purple-900 font-mono tracking-wider">
-                      {studentIDs.ugcId}
-                    </div>
-                    <Alert className="mt-3 border-purple-200 bg-purple-50">
-                      <AlertCircle className="w-4 h-4 text-purple-600" />
-                      <AlertDescription className="text-purple-800 text-xs">
-                        {t.ugcNote}
-                      </AlertDescription>
-                    </Alert>
+                    <div className="text-xl font-bold text-purple-900 font-mono tracking-wider">{studentIDs.ugcId}</div>
+                    <Alert className="mt-3 border-purple-200 bg-purple-50"><AlertCircle className="w-4 h-4 text-purple-600" /><AlertDescription className="text-purple-800 text-xs">{t.ugcNote}</AlertDescription></Alert>
                   </div>
 
-                  {/* Communication Actions */}
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <Button
-                      onClick={handleSendSMS}
-                      disabled={sendingSMS}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      <Phone className="w-4 h-4 mr-2" />
-                      {sendingSMS ? "Sending..." : t.sendSMSId}
-                    </Button>
-                    <Button
-                      onClick={handleSendEmail}
-                      disabled={sendingEmail}
-                      variant="outline"
-                      className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                    >
-                      <Mail className="w-4 h-4 mr-2" />
-                      {sendingEmail ? "Sending..." : t.sendEmailId}
-                    </Button>
+                    <Button onClick={handleSendSMS} disabled={sendingSMS} className="bg-green-600 hover:bg-green-700"><Phone className="w-4 h-4 mr-2" />{sendingSMS ? "Sending..." : t.sendSMSId}</Button>
+                    <Button onClick={handleSendEmail} disabled={sendingEmail} variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"><Mail className="w-4 h-4 mr-2" />{sendingEmail ? "Sending..." : t.sendEmailId}</Button>
+                    {mrNumber && <Button variant="outline" className="ml-auto" onClick={() => { /* download MR */ }}><Download className="w-4 h-4 mr-2" />Download MR</Button>}
                   </div>
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <div className="text-gray-600 mb-4">
-                    Applicant IDs not generated yet. Generate IDs after
-                    approval.
-                  </div>
-                  <Button
-                    onClick={handleGenerateIDs}
-                    disabled={isGeneratingIDs}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    {isGeneratingIDs ? (
-                      <>
-                        <Clock className="w-4 h-4 mr-2 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Shield className="w-4 h-4 mr-2" />
-                        {t.generateIDs}
-                      </>
-                    )}
+                  <div className="text-gray-600 mb-4">Applicant IDs not generated yet. Generate IDs after approval.</div>
+                  <Button onClick={handleGenerateIDs} disabled={isGeneratingIDs} className="bg-blue-600 hover:bg-blue-700">
+                    {isGeneratingIDs ? (<><Clock className="w-4 h-4 mr-2 animate-spin" />Generating...</>) : (<><Shield className="w-4 h-4 mr-2" />{t.generateIDs}</>)}
                   </Button>
                 </div>
               )}
@@ -611,388 +436,266 @@ export default function ApplicantDetail() {
           </Card>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Personal Information */}
+        {/* Tabs */}
+        <Tabs defaultValue="personal" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="personal" className="flex items-center gap-2"><User className="w-4 h-4" />{t.personalInfo}</TabsTrigger>
+            <TabsTrigger value="academic" className="flex items-center gap-2"><GraduationCap className="w-4 h-4" />{t.academicHistory}</TabsTrigger>
+            <TabsTrigger value="documents" className="flex items-center gap-2"><FileText className="w-4 h-4" />{t.documentsUploaded}</TabsTrigger>
+            <TabsTrigger value="fees" className="flex items-center gap-2"><CreditCard className="w-4 h-4" />{t.waiverInfo}</TabsTrigger>
+            <TabsTrigger value="test" className="flex items-center gap-2"><Clock className="w-4 h-4" />Admission Test</TabsTrigger>
+            <TabsTrigger value="log" className="flex items-center gap-2"><HistoryIcon /></TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="personal">
             <Card className="bg-white shadow-lg">
               <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  {t.personalInfo}
-                </CardTitle>
+                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2"><User className="w-5 h-5" />{t.personalInfo}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.name}
-                    </Label>
-                    <p className="text-gray-900">
-                      {applicantData.personalInfo.name}
-                    </p>
+                    <Label className="text-sm font-medium text-gray-600">{t.name}</Label>
+                    <p className="text-gray-900">{personal.name || application?.applicant_name}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.dateOfBirth}
-                    </Label>
-                    <p className="text-gray-900">
-                      {applicantData.personalInfo.dateOfBirth}
-                    </p>
+                    <Label className="text-sm font-medium text-gray-600">{t.dateOfBirth}</Label>
+                    <p className="text-gray-900">{personal.date_of_birth || personal.dateOfBirth || "-"}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.gender}
-                    </Label>
-                    <p className="text-gray-900">
-                      {applicantData.personalInfo.gender}
-                    </p>
+                    <Label className="text-sm font-medium text-gray-600">{t.gender}</Label>
+                    <p className="text-gray-900">{personal.gender || "-"}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.nationality}
-                    </Label>
-                    <p className="text-gray-900">
-                      {applicantData.personalInfo.nationality}
-                    </p>
+                    <Label className="text-sm font-medium text-gray-600">{t.nationality}</Label>
+                    <p className="text-gray-900">{personal.nationality || "-"}</p>
                   </div>
                   <div className="md:col-span-2">
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.address}
-                    </Label>
-                    <p className="text-gray-900">
-                      {applicantData.personalInfo.address}
-                    </p>
+                    <Label className="text-sm font-medium text-gray-600">{t.address}</Label>
+                    <p className="text-gray-900">{(personal.address && JSON.stringify(personal.address)) || personal.address || "-"}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Contact Information */}
-            <Card className="bg-white shadow-lg">
+            <Card className="bg-white shadow-lg mt-6">
               <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <Phone className="w-5 h-5" />
-                  {t.contactInfo}
-                </CardTitle>
+                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2"><Phone className="w-5 h-5" />{t.contactInfo}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t.email}
-                      </Label>
-                      <p className="text-gray-900">
-                        {applicantData.personalInfo.email}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t.phone}
-                      </Label>
-                      <p className="text-gray-900">
-                        {applicantData.personalInfo.phone}
-                      </p>
-                    </div>
-                  </div>
+                  <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-gray-400" /><div><Label className="text-sm font-medium text-gray-600">{t.email}</Label><p className="text-gray-900">{personal.email || application?.email || "-"}</p></div></div>
+                  <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-gray-400" /><div><Label className="text-sm font-medium text-gray-600">{t.phone}</Label><p className="text-gray-900">{personal.phone || application?.phone || "-"}</p></div></div>
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
 
-            {/* Academic History */}
+          <TabsContent value="academic">
             <Card className="bg-white shadow-lg">
               <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <GraduationCap className="w-5 h-5" />
-                  {t.academicHistory}
-                </CardTitle>
+                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2"><GraduationCap className="w-5 h-5" />{t.academicHistory}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.sscResults}
-                    </Label>
-                    <p className="text-gray-900">
-                      {applicantData.academic.ssc.board} - GPA{" "}
-                      {applicantData.academic.ssc.gpa} (
-                      {applicantData.academic.ssc.year})
-                    </p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.hscResults}
-                    </Label>
-                    <p className="text-gray-900">
-                      {applicantData.academic.hsc.board} - GPA{" "}
-                      {applicantData.academic.hsc.gpa} (
-                      {applicantData.academic.hsc.year})
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Documents */}
-            <Card className="bg-white shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
-                  {t.documentsUploaded}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.entries(applicantData.documents).map(
-                    ([key, uploaded]) => (
-                      <div
-                        key={key}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                      >
-                        <span className="text-sm font-medium">
-                          {t[key as keyof typeof t] || key}
-                        </span>
-                        <Badge
-                          className={
-                            uploaded
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }
-                        >
-                          {uploaded ? t.uploaded : t.notUploaded}
-                        </Badge>
+                  {Array.isArray(academic) && academic.length > 0 ? (
+                    academic.map((rec: any, idx: number) => (
+                      <div key={idx} className="p-3 bg-gray-50 rounded-lg">
+                        <div className="flex justify-between">
+                          <div>
+                            <div className="font-medium">{rec.exam_name || rec.level}</div>
+                            <div className="text-sm text-gray-600">{rec.institute} • {rec.passing_year}</div>
+                          </div>
+                          <div className="text-sm text-gray-700">GPA: {rec.grade_point}</div>
+                        </div>
                       </div>
-                    ),
+                    ))
+                  ) : (
+                    <div className="text-sm text-gray-600">No academic records</div>
                   )}
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
 
-            {/* Waiver Information */}
+          <TabsContent value="documents">
             <Card className="bg-white shadow-lg">
               <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <CreditCard className="w-5 h-5" />
-                  {t.waiverInfo}
-                </CardTitle>
+                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2"><FileText className="w-5 h-5" />{t.documentsUploaded}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.waiverType}
-                    </Label>
-                    <p className="text-gray-900">{applicantData.waiver.type}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.waiverPercentage}
-                    </Label>
-                    <p className="text-gray-900">
-                      {applicantData.waiver.percentage}%
-                    </p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.originalAmount}
-                    </Label>
-                    <p className="text-gray-900">
-                      BDT {applicantData.waiver.originalAmount.toLocaleString()}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.waiverAmount}
-                    </Label>
-                    <p className="text-green-600 font-semibold">
-                      -BDT {applicantData.waiver.waiverAmount.toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.finalAmount}
-                    </Label>
-                    <p className="text-xl font-bold text-accent-purple">
-                      BDT {applicantData.waiver.finalAmount.toLocaleString()}
-                    </p>
+                  {Object.entries(documents).length ? (
+                    Object.entries(documents).map(([k, v]: any) => (
+                      <div key={k} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <Paperclip className="w-4 h-4 text-gray-500" />
+                          <div>
+                            <div className="font-medium">{k}</div>
+                            <div className="text-xs text-gray-500">{v?.file_name || (v === true ? "Uploaded" : "-")}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge className={v ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>{v ? t.uploaded : t.notUploaded}</Badge>
+                          {v && typeof v === "object" && v.file_url && (<a href={v.file_url} target="_blank" rel="noreferrer" className="text-sm text-deep-plum">Preview</a>)}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-sm text-gray-600">No documents uploaded</div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="fees">
+            <Card className="bg-white shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2"><CreditCard className="w-5 h-5" />{t.waiverInfo}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">{t.originalAmount}</Label>
+                      <p className="text-gray-900">BDT {(waiver?.originalAmount || 0).toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">{t.waiverAmount}</Label>
+                      <p className="text-green-600 font-semibold">-BDT {(waiver?.waiverAmount || 0).toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">{t.finalAmount}</Label>
+                      <p className="text-xl font-bold text-accent-purple">BDT {(waiver?.finalAmount || 0).toLocaleString()}</p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </TabsContent>
 
-          {/* Right Column */}
-          <div className="space-y-8">
-            {/* Actions */}
+          <TabsContent value="test">
             <Card className="bg-white shadow-lg">
               <CardHeader>
-                <CardTitle className="text-lg font-poppins text-deep-plum">
-                  {t.actions}
-                </CardTitle>
+                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2"><Clock className="w-5 h-5" />Admission Test</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm text-gray-600">Fee Payment Status</div>
+                      <div className="font-medium">{application?.payment_status || "pending"}</div>
+                    </div>
+                    <div>
+                      <Button variant="outline">Admit Card (PDF)</Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">Result</Label>
+                    <div className="mt-2">{application?.admission_test_status || "Not Available"}</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="log">
+            <Card className="bg-white shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">{t.changeLog}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Mock change log for now — server audit will be integrated later */}
+                <div className="space-y-3 text-sm">
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="font-medium">Admission Officer</div>
+                        <div className="text-xs text-gray-500">Status changed to pending review</div>
+                      </div>
+                      <div className="text-xs text-gray-500">2024-01-15 10:00</div>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="font-medium">System</div>
+                        <div className="text-xs text-gray-500">Application created</div>
+                      </div>
+                      <div className="text-xs text-gray-500">2024-01-15 09:58</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Right column actions */}
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-1">
+            <Card className="bg-white shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-poppins text-deep-plum">{t.actions}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {!isLocked && applicationStatus === "under_review" && (
-                  <>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button className="w-full bg-green-600 hover:bg-green-700">
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          {t.approve}
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>{t.confirmApproval}</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label>{t.approvalNote}</Label>
-                            <Textarea placeholder="Add approval notes..." />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>{t.applicantId}</Label>
-                            <Input value="NU24CS001234" readOnly />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>{t.password}</Label>
-                            <Input value="temp123456" readOnly />
-                          </div>
-                          <Button
-                            onClick={handleApprove}
-                            className="w-full bg-green-600 hover:bg-green-700"
-                          >
-                            {t.confirmApproval}
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                {application?.status !== "approved" && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button className="w-full bg-green-600 hover:bg-green-700"><CheckCircle className="w-4 h-4 mr-2" />{t.approve}</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader><DialogTitle>{t.confirmApproval}</DialogTitle></DialogHeader>
+                      <div className="space-y-4">
+                        <div className="space-y-2"><Label>{t.approvalNote}</Label><Textarea value={approvalNote} onChange={(e) => setApprovalNote(e.target.value)} placeholder="Add approval notes..." /></div>
+                        <div className="space-y-2"><Label>{t.applicantId}</Label><Input value={application?.university_id || ""} readOnly /></div>
+                        <Button onClick={handleApprove} className="w-full bg-green-600 hover:bg-green-700">{t.confirmApproval}</Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
 
-                    <Button
-                      onClick={handleHold}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      <Clock className="w-4 h-4 mr-2" />
-                      {t.hold}
-                    </Button>
-
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="destructive" className="w-full">
-                          <XCircle className="w-4 h-4 mr-2" />
-                          {t.reject}
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>{t.confirmRejection}</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label>{t.rejectionReason}</Label>
-                            <Textarea
-                              placeholder="Enter reason for rejection..."
-                              required
-                            />
-                          </div>
-                          <Button
-                            onClick={handleReject}
-                            variant="destructive"
-                            className="w-full"
-                          >
-                            {t.confirmRejection}
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </>
+                {application?.status !== "rejected" && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="destructive" className="w-full"><XCircle className="w-4 h-4 mr-2" />{t.reject}</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader><DialogTitle>{t.confirmRejection}</DialogTitle></DialogHeader>
+                      <div className="space-y-4">
+                        <div className="space-y-2"><Label>{t.rejectionReason}</Label><Textarea value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)} placeholder="Enter reason for rejection..." required /></div>
+                        <Button onClick={handleReject} variant="destructive" className="w-full">{t.confirmRejection}</Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 )}
 
                 <div className="border-t pt-3">
-                  <Button
-                    onClick={() => setIsLocked(!isLocked)}
-                    variant="outline"
-                    className="w-full"
-                  >
-                    {isLocked ? (
-                      <>
-                        <Unlock className="w-4 h-4 mr-2" />
-                        {t.unlock}
-                      </>
-                    ) : (
-                      <>
-                        <Lock className="w-4 h-4 mr-2" />
-                        {t.lock}
-                      </>
-                    )}
-                  </Button>
+                  <Button onClick={() => setIsLocked(!isLocked)} variant="outline" className="w-full">{isLocked ? (<><Unlock className="w-4 h-4 mr-2" />{t.unlock}</>) : (<><Lock className="w-4 h-4 mr-2" />{t.lock}</>)}</Button>
                 </div>
 
                 <div className="border-t pt-3 space-y-2">
-                  <Button variant="outline" className="w-full">
-                    <Mail className="w-4 h-4 mr-2" />
-                    {t.sendEmail}
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    {t.sendSMS}
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    <Download className="w-4 h-4 mr-2" />
-                    {t.downloadInvoice}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Invoice Preview */}
-            <Card className="bg-white shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-poppins text-deep-plum">
-                  {t.invoicePreview}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span>{t.admissionFee}</span>
-                    <span>BDT 15,000</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>{t.courseFee}</span>
-                    <span>BDT 45,000</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>{t.labFee}</span>
-                    <span>BDT 8,000</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>{t.others}</span>
-                    <span>BDT 5,000</span>
-                  </div>
-                  <div className="border-t pt-2 flex justify-between">
-                    <span>Subtotal</span>
-                    <span>BDT 73,000</span>
-                  </div>
-                  <div className="flex justify-between text-green-600">
-                    <span>Waiver (25%)</span>
-                    <span>-BDT 18,250</span>
-                  </div>
-                  <div className="border-t-2 pt-2 flex justify-between font-bold text-lg">
-                    <span>{t.total}</span>
-                    <span className="text-accent-purple">BDT 54,750</span>
-                  </div>
+                  <Button variant="outline" className="w-full"><Mail className="w-4 h-4 mr-2" />{t.sendEmail}</Button>
+                  <Button variant="outline" className="w-full"><MessageSquare className="w-4 h-4 mr-2" />{t.sendSMS}</Button>
+                  <Button variant="outline" className="w-full" onClick={() => { /* download invoice/preview */ }}><Download className="w-4 h-4 mr-2" />{t.downloadInvoice}</Button>
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
+
       </div>
     </div>
+  );
+}
+
+// Small inline icon component for history (to avoid extra imports)
+function HistoryIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3M3 11a9 9 0 1118 0 9 9 0 01-18 0z" />
+    </svg>
   );
 }
