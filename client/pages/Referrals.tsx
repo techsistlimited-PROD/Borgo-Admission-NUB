@@ -137,12 +137,6 @@ export default function Referrals() {
                   <TableCell>{r.total_amount}</TableCell>
                   <TableCell>{r.contact}</TableCell>
                   <TableCell>{r.last_activity ? new Date(r.last_activity).toLocaleDateString() : '-'}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" onClick={() => handleViewReport(r)}>View Report</Button>
-                      <Button variant="ghost" onClick={() => navigate(`/admin/referrals/${encodeURIComponent(r.employee_id)}`)}>Details</Button>
-                    </div>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
