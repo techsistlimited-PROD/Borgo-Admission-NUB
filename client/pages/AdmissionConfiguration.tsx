@@ -306,6 +306,16 @@ export default function AdmissionConfiguration() {
       if (documentResponse.success && documentResponse.data) {
         setDocumentRequirements(documentResponse.data);
       }
+
+      // Load referrers list for referral previews
+      try {
+        const refRes = await apiClient.getReferrers();
+        if (refRes.success && refRes.data) {
+          setReferrersList(refRes.data.referrers || []);
+        }
+      } catch (err) {
+        console.warn("Failed to load referrers", err);
+      }
     } catch (error) {
       console.error("Error loading data:", error);
       toast({
