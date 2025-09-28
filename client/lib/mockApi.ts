@@ -984,4 +984,3 @@ class MockApiService {
 
 // Export singleton
 export const mockApi = new MockApiService();
-export type { Application, ApiResponse, User };
