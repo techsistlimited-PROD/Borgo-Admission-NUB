@@ -2041,6 +2041,9 @@ export default function AdmissionConfiguration() {
                       }
                       className="w-32"
                     />
+                    {errors.default_referral_commission && (
+                      <p className="text-sm text-red-600 mt-1">{errors.default_referral_commission}</p>
+                    )}
                     <p className="text-xs text-gray-500 mt-2">This is the default commission rate applied to referrals when not overridden per employee.</p>
                   </div>
                 </div>
