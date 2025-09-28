@@ -324,6 +324,17 @@ function AppContent() {
               }
             />
 
+            <Route
+              path="/admin/referrals"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <Referrals />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
           </Routes>
