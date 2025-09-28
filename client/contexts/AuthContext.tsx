@@ -11,6 +11,11 @@ import type { User } from "../lib/api";
 interface AuthContextType {
   user: User | null;
   userType: "public" | "applicant" | "admin";
+  role: string | null; // e.g., admin, admission_officer, finance_officer
+  permissions: string[]; // list of granted permissions
+  setRole: (role: string | null) => void;
+  setPermissions: (perms: string[]) => void;
+  isAllowed: (perm: string) => boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
