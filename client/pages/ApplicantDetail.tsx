@@ -256,7 +256,7 @@ export default function ApplicantDetail() {
         const mrRes = await apiClient.generateMoneyReceipt(application.id, amount);
         if (mrRes.success && mrRes.data) {
           setMrNumber(mrRes.data.mr_number);
-          // optionally provide download link via mrRes.data.receipt_url
+          if (mrRes.data.receipt_url) setMrUrl(mrRes.data.receipt_url);
           toast({ title: "MR generated", description: `MR No: ${mrRes.data.mr_number}` });
         }
 
