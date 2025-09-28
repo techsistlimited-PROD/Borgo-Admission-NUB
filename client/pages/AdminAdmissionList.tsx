@@ -512,12 +512,12 @@ export default function AdminAdmissionList() {
 
               {/* Campus Filter */}
               <div className="md:w-48">
-                <Select value={campusFilter || ""} onValueChange={(v) => setCampusFilter(v || undefined)}>
+                <Select value={campusFilter ?? "all"} onValueChange={(v) => setCampusFilter(v === "all" ? undefined : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Campus" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Campuses</SelectItem>
+                    <SelectItem value="all">All Campuses</SelectItem>
                     {Array.from(new Set(programs.flatMap((p) => p.campus || []))).map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
