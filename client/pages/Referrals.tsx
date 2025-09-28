@@ -9,6 +9,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
 
+const sampleReferrers = [
+  { employee_id: 'EMP001', name: 'Dr. Smith', department: 'CSE', designation: 'Professor', total_referrals: 11, total_amount: 112292, contact: '01710000001', last_activity: '2024-03-01' },
+  { employee_id: 'EMP002', name: 'Ms. Fatima', department: 'EEE', designation: 'Assistant Professor', total_referrals: 8, total_amount: 82000, contact: '01710000002', last_activity: '2024-02-25' },
+  { employee_id: 'EMP003', name: 'Mr. Rahim', department: 'Civil', designation: 'Lecturer', total_referrals: 5, total_amount: 50000, contact: '01710000003', last_activity: '2024-02-20' },
+  { employee_id: 'EMP004', name: 'Dr. Karim', department: 'BBA', designation: 'Professor', total_referrals: 14, total_amount: 142000, contact: '01710000004', last_activity: '2024-03-02' },
+  { employee_id: 'EMP005', name: 'Ms. Nasreen', department: 'Architecture', designation: 'Lecturer', total_referrals: 3, total_amount: 27000, contact: '01710000005', last_activity: '2024-01-15' },
+  { employee_id: 'EMP006', name: 'Mr. Anis', department: 'Law', designation: 'Lecturer', total_referrals: 7, total_amount: 77000, contact: '01710000006', last_activity: '2024-02-10' },
+  { employee_id: 'EMP007', name: 'Ms. Rashida', department: 'CSE', designation: 'Assistant Professor', total_referrals: 9, total_amount: 91000, contact: '01710000007', last_activity: '2024-03-05' },
+  { employee_id: 'EMP008', name: 'Mr. Hasan', department: 'EEE', designation: 'Professor', total_referrals: 12, total_amount: 125000, contact: '01710000008', last_activity: '2024-03-06' },
+];
+
 export default function Referrals() {
   const { toast } = useToast();
   const navigate = useNavigate();
