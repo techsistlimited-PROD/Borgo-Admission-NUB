@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Bell,
@@ -120,7 +119,7 @@ export default function Dashboard() {
       applicationApproved: "আবেদন অনুমোদিত",
       idCreated: "ছাত্র ���ইডি তৈ��ি",
       enrollmentCompleted: "ভর্তি সম্পন্ন",
-      notifications: "সাম্প্রতিক বিজ্ঞপ্তি",
+      notifications: "সাম্প্রতিক বিজ���ঞপ্তি",
       viewAllNotifications: "���ব বিজ্ঞপ্তি দেখুন",
       newApplication: "নতুন আবেদন শুরু করুন",
       studentId: "আপনার ছাত্র আইডি",
