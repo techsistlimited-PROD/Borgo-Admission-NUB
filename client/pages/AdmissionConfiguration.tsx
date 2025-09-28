@@ -580,6 +580,10 @@ export default function AdmissionConfiguration() {
             <FileText className="w-4 h-4" />
             Document Requirements
           </TabsTrigger>
+          <TabsTrigger value="referral" className="flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            Referral & Commission Rules
+          </TabsTrigger>
         </TabsList>
 
         {/* General Settings Tab */}
