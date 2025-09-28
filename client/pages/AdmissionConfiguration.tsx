@@ -731,16 +731,19 @@ export default function AdmissionConfiguration() {
                 <div>
                   <Label htmlFor="deadline">Application Deadline</Label>
                   <Input
-                    id="deadline"
-                    type="datetime-local"
-                    value={settings.application_deadline?.slice(0, 16) || ""}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        application_deadline: e.target.value,
-                      })
-                    }
-                  />
+                  id="deadline"
+                  type="datetime-local"
+                  value={settings.application_deadline?.slice(0, 16) || ""}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      application_deadline: e.target.value,
+                    })
+                  }
+                />
+                {errors.application_deadline && (
+                  <p className="text-sm text-red-600 mt-1">{errors.application_deadline}</p>
+                )}
                 </div>
                 <div>
                   <Label htmlFor="late_deadline">Late Fee Deadline</Label>
