@@ -20,6 +20,8 @@ interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
+  // Demo helper to simulate signing in as a specific role (frontend-only)
+  signInAs: (role: string) => void;
 }
 
 interface LoginCredentials {
