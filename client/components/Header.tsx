@@ -111,8 +111,8 @@ export default function Header({ showLogin = false }: HeaderProps) {
               {/* Demo quick-access for role-specific portals (homepage only) */}
               {location.pathname === "/" && (
                 <>
-                  <button onClick={() => { signInAsLocal('admission_officer'); navigate('/admin/portal'); }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admission Officer</button>
-                  <button onClick={() => { signInAsLocal('finance_officer'); navigate('/admin/portal'); }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Finance Officer</button>
+                  <a href="/admin/admission-login" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admission Officer</a>
+                  <a href="/admin/finance-login" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Finance Officer</a>
                 </>
               )}
             </div>
