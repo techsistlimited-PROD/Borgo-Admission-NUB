@@ -862,6 +862,52 @@ class MockApiService {
 
     return { success: true, data: requirements };
   }
+  // Students (created after approval)
+  private students: any[] = [];
+
+  async createStudentRecord(applicationId: string, ids: { university_id: string; ugc_id?: string; batch?: string }): Promise<ApiResponse<{ student: any }>> {
+    await this.delay();
+    const app = this.applications.find((a) => a.id === applicationId || a.uuid === applicationId);
+    if (!app) return { success: false, error: "Application not found" };
+
+    const student = {
+      id: `stu-${this.students.length + 1}`,
+      student_id: ids.university_id || `NU${String(Date.now()).slice(-6)}`,
+      ugc_id: ids.ugc_id || null,
+      name: app.applicant_name,
+      email: app.email,
+      phone: app.phone,
+      program_code: app.program_code,
+      program_name: app.program_name,
+      department_code: app.department_code,
+      batch: ids.batch || app.semester,
+      created_at: new Date().toISOString(),
+    };
+
+    this.students.push(student);
+
+    // Link student_id back to application
+    const appIndex = this.applications.findIndex((a) => a.id === applicationId || a.uuid === applicationId);
+    if (appIndex !== -1) {
+      this.applications[appIndex].student_id = student.student_id;
+    }
+
+    return { success: true, data: { student } };
+  }
+
+  async generateMoneyReceipt(applicationId: string, amount: number): Promise<ApiResponse<{ mr_number: string; receipt_url: string }>> {
+    await this.delay(300);
+
+    const app = this.applications.find((a) => a.id === applicationId || a.uuid === applicationId);
+    if (!app) return { success: false, error: "Application not found" };
+
+    const mr_number = `MR-${Date.now()}`;
+    const receipt = `Receipt for ${app.applicant_name}\nApplication: ${app.id}\nAmount: BDT ${amount}\nMR No: ${mr_number}`;
+    const blob = new Blob([receipt], { type: "text/plain" });
+    const receipt_url = URL.createObjectURL(blob);
+
+    return { success: true, data: { mr_number, receipt_url } };
+  }
 }
 
 // Export singleton
