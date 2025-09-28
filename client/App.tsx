@@ -168,6 +168,8 @@ function AppContent() {
             {/* Admin Portal */}
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/admission-login" element={<AdmissionOfficerLogin />} />
+            <Route path="/admin/finance-login" element={<FinanceOfficerLogin />} />
             <Route
               path="/admin/admissions"
               element={
