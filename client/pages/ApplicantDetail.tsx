@@ -227,16 +227,38 @@ export default function ApplicantDetail() {
         // Generate IDs
         setIsGeneratingIDs(true);
         const gid = await apiClient.generateApplicationIds(application.id);
+        let generatedIds: any = null;
         if (gid.success && gid.data) {
-          setStudentIDs({
-            universityId: gid.data.university_id,
-            ugcId: gid.data.ugc_id || gid.data.ugc_id || gid.data.ugc_id,
+          generatedIds = {
+            university_id: gid.data.university_id,
+            ugc_id: gid.data.ugc_id || undefined,
             batch: gid.data.batch || `${application.semester} ${new Date().getFullYear()}`,
+          };
+          setStudentIDs({
+            universityId: generatedIds.university_id,
+            ugcId: generatedIds.ugc_id,
+            batch: generatedIds.batch,
             generatedDate: gid.data.generated_date || new Date().toISOString(),
           });
         }
-        // Simulate MR generation
-        setMrNumber(`MR-${Date.now()}`);
+
+        // Create student record (mock)
+        if (generatedIds) {
+          const studentRes = await apiClient.createStudentRecord(application.id, generatedIds);
+          if (studentRes.success && studentRes.data?.student) {
+            toast({ title: "Student created", description: `Student record created: ${studentRes.data.student.student_id}` });
+          }
+        }
+
+        // Generate money receipt (MR)
+        const amount = application.final_amount || application.total_cost || 0;
+        const mrRes = await apiClient.generateMoneyReceipt(application.id, amount);
+        if (mrRes.success && mrRes.data) {
+          setMrNumber(mrRes.data.mr_number);
+          // optionally provide download link via mrRes.data.receipt_url
+          toast({ title: "MR generated", description: `MR No: ${mrRes.data.mr_number}` });
+        }
+
         // refresh application
         await loadApplication();
       } else {
