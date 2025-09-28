@@ -97,7 +97,7 @@ export default function Dashboard() {
       title: "আবেদনকারীর ড্যাশবোর্ড",
       welcome: "স্বাগতম",
       applicationSummary: "আবেদনের সারসংক্ষেপ",
-      recentApplications: "সাম্প্রতিক আবেদনসমূহ",
+      recentApplications: "সাম্প্রতিক আবেদনসম���হ",
       applicationProgress: "আবেদনের অগ্রগতি",
       applied: "আবেদনকৃত",
       underReview: "পর্য��লোচনাধীন",
@@ -130,31 +130,22 @@ export default function Dashboard() {
 
   const t = texts[language];
 
+  // Compute counts from fetchedApplications (fallback to sample `applications` if none)
+  const apps = fetchedApplications ?? applications;
+  const counts = { applied: 0, under_review: 0, approved: 0, rejected: 0 };
+  apps.forEach((a: any) => {
+    const s = (a.status || "").toString().toLowerCase();
+    if (s.includes("approved")) counts.approved++;
+    else if (s.includes("under_review") || s.includes("under review") || s.includes("review")) counts.under_review++;
+    else if (s.includes("rejected") || s.includes("reject")) counts.rejected++;
+    else counts.applied++;
+  });
+
   const summaryData = [
-    {
-      label: t.applied,
-      count: 3,
-      color: "bg-blue-100 text-blue-800",
-      icon: FileText,
-    },
-    {
-      label: t.underReview,
-      count: 1,
-      color: "bg-yellow-100 text-yellow-800",
-      icon: Clock,
-    },
-    {
-      label: t.approved,
-      count: 1,
-      color: "bg-green-100 text-green-800",
-      icon: CheckCircle,
-    },
-    {
-      label: t.rejected,
-      count: 1,
-      color: "bg-red-100 text-red-800",
-      icon: XCircle,
-    },
+    { label: t.applied, count: counts.applied, color: "bg-blue-100 text-blue-800", icon: FileText },
+    { label: t.underReview, count: counts.under_review, color: "bg-yellow-100 text-yellow-800", icon: Clock },
+    { label: t.approved, count: counts.approved, color: "bg-green-100 text-green-800", icon: CheckCircle },
+    { label: t.rejected, count: counts.rejected, color: "bg-red-100 text-red-800", icon: XCircle },
   ];
 
   const applications = [
