@@ -112,6 +112,9 @@ interface AdmissionSettings {
   law_test_venue_khulna: string;
   architecture_test_venue_main: string;
   architecture_test_venue_khulna: string;
+  // Referral Configuration
+  referral_enabled?: boolean;
+  default_referral_commission?: number; // percentage (e.g., 5 means 5%)
 }
 
 interface ProgramLimits {
