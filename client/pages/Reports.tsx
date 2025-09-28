@@ -48,6 +48,7 @@ import {
   TableRow,
 } from "../components/ui/table";
 import { getIDGenerationStats, sampleStudentIDs } from "../lib/idGeneration";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 // Dummy data for reports
@@ -737,7 +738,7 @@ export default function Reports() {
       last30Days: "গত ৩০ দিন",
       last3Months: "গত ৩ মাস",
       lastYear: "গত বছর",
-      custom: "ক���স্টম রেঞ্জ",
+      custom: "কাস্টম রেঞ্জ",
       allPrograms: "সব প্রোগ্রাম",
       allDepartments: "সব বিভাগ",
       allSemesters: "সব সেমিস্টার",
@@ -759,7 +760,7 @@ export default function Reports() {
       admittedStudents: "ভর্তিকৃত শিক্ষার্থী",
       rejectedApplications: "প্রত্যাখ্যাত আবেদ���",
       pendingApplications: "��পেক্ষমাণ আবেদন",
-      departmentWiseAdmissions: "বিভাগ অন��যায়ী ভর্তি",
+      departmentWiseAdmissions: "বিভাগ অনুযায়ী ভর্তি",
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
       admissionRate: "ভর্তি�� হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
@@ -775,7 +776,7 @@ export default function Reports() {
       rate: "হার",
       cse: "কম্পিউটা�� সায়েন্স ও ইঞ্জিনিয়ারি���",
       eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জ��নিয়ারিং",
-      mech: "মেকানিক্যাল ইঞ্��িনিয়ারিং",
+      mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
       textile: "টেক্সটাইল ইঞ্জ��নিয়ারিং",
       bba: "ব্যবসায় প্রশাসন",
@@ -802,6 +803,15 @@ export default function Reports() {
     if (!referrerFilter) return employeeCollectionData;
     return employeeCollectionData.filter(e => (e.employeeId || '').toLowerCase() === referrerFilter.toLowerCase());
   };
+
+  // Ensure active report category aligns with scope on mount/update
+  useEffect(() => {
+    if (scope === 'finance') {
+      setActiveReportCategory('financial');
+    } else if (scope === 'admission') {
+      setActiveReportCategory('overview');
+    }
+  }, [scope]);
 
   // Fetch referral and visitors stats
   useEffect(() => {
