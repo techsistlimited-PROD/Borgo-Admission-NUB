@@ -196,3 +196,6 @@ export function useAuth() {
 
 // Export demo credentials for easy access
 export { getDemoCredentials };
+
+// Export demo credentials for easy access
+export { getDemoCredentials };
