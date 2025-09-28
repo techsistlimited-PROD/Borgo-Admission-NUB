@@ -105,7 +105,7 @@ export default function Dashboard() {
       rejected: "প্রত্যাখ্যাত",
       trackingId: "ট্র্যাকিং আইডি",
       program: "প্রোগ্রাম",
-      status: "অবস্থা",
+      status: "অব���্থা",
       payslipUploaded: "পে-স্লিপ আপলোড",
       actions: "কর্ম",
       viewDetails: "বিস্তারিত দেখুন",
@@ -227,21 +227,29 @@ export default function Dashboard() {
   ];
 
   const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      approved: { color: "bg-green-100 text-green-800", icon: CheckCircle },
-      under_review: { color: "bg-yellow-100 text-yellow-800", icon: Clock },
-      rejected: { color: "bg-red-100 text-red-800", icon: XCircle },
+    const statusConfig: Record<string, { color: string; icon: any; label?: string }> = {
+      approved: { color: "bg-green-100 text-green-800", icon: CheckCircle, label: t.approved },
+      under_review: { color: "bg-yellow-100 text-yellow-800", icon: Clock, label: t.underReview },
+      rejected: { color: "bg-red-100 text-red-800", icon: XCircle, label: t.rejected },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig];
+    const key = (status || "").toString().toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_");
+    const config = statusConfig[key] || null;
+
+    if (!config) {
+      // Unknown status: return a neutral badge
+      return (
+        <Badge className="bg-gray-100 text-gray-800">
+          {status || "-"}
+        </Badge>
+      );
+    }
+
+    const Icon = config.icon;
     return (
       <Badge className={config.color}>
-        <config.icon className="w-3 h-3 mr-1" />
-        {status === "approved"
-          ? t.approved
-          : status === "under_review"
-            ? t.underReview
-            : t.rejected}
+        {Icon && <Icon className="w-3 h-3 mr-1" />}
+        {config.label ?? status}
       </Badge>
     );
   };
