@@ -394,33 +394,21 @@ export default function AdmissionConfiguration() {
       // Clear previous errors
       setErrors({});
 
-      // Basic validation
-      // Ensure dates are logical
-      const start = settings.application_start_date ? new Date(settings.application_start_date) : null;
-      const deadline = settings.application_deadline ? new Date(settings.application_deadline) : null;
-      const lateDeadline = settings.late_fee_deadline ? new Date(settings.late_fee_deadline) : null;
-      if (start && deadline && start > deadline) {
-        setErrors((prev) => ({ ...prev, application_start_date: "Application start date must be before the application deadline." }));
-        toast({ title: "Validation Error", description: "Please fix the highlighted fields.", variant: "destructive" });
-        setSaving(false);
-        return;
-      }
-      if (deadline && lateDeadline && deadline > lateDeadline) {
-        setErrors((prev) => ({ ...prev, application_deadline: "Application deadline must be before the late fee deadline." }));
-        toast({ title: "Validation Error", description: "Please fix the highlighted fields.", variant: "destructive" });
-        setSaving(false);
-        return;
-      }
-
-      // Validate referral commission
-      if (settings.default_referral_commission != null) {
-        const v = Number(settings.default_referral_commission);
-        if (isNaN(v) || v < 0 || v > 100) {
-          setErrors((prev) => ({ ...prev, default_referral_commission: "Default referral commission must be between 0 and 100." }));
-          toast({ title: "Validation Error", description: "Please fix the highlighted fields.", variant: "destructive" });
+      // Validate using helper
+      try {
+        // import helper dynamically to avoid circular issues in some test environments
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const { validateAdmissionSettings } = require('./admissionConfigUtils');
+        const { errors: validationErrors } = validateAdmissionSettings(settings);
+        if (validationErrors && Object.keys(validationErrors).length > 0) {
+          setErrors(validationErrors);
+          toast({ title: 'Validation Error', description: 'Please fix the highlighted fields.', variant: 'destructive' });
           setSaving(false);
           return;
         }
+      } catch (e) {
+        // if helper fails for some reason, continue with existing flow
+        console.warn('Validation helper failed', e);
       }
 
       // Combine all settings including program limits and eligibility
