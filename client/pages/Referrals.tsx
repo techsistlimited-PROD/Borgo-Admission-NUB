@@ -105,7 +105,6 @@ export default function Referrals() {
             </SelectContent>
           </Select>
           <Button variant="outline" onClick={handleExport}><Download className="w-4 h-4 mr-2"/>Export</Button>
-          <Button className="bg-deep-plum" onClick={() => navigate('/admin/reports?scope=finance')}><BarChart2 className="w-4 h-4 mr-2"/>Reports</Button>
         </div>
       </div>
 
