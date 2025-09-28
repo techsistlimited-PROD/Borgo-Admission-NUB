@@ -192,6 +192,10 @@ function AppContent() {
               element={<FinanceOfficerLogin />}
             />
             <Route
+              path="/admin/offline-admission"
+              element={<OfflineAdmission />}
+            />
+            <Route
               path="/admin/admissions"
               element={
                 isAuthenticated && userType === "admin" ? (
