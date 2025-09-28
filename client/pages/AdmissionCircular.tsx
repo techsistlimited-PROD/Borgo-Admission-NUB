@@ -434,8 +434,13 @@ export default function AdmissionCircular() {
               <div className="grid gap-6 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>Title *</Label>
+                    <Label htmlFor="circular_title">Title *</Label>
                     <Input
+                      id="circular_title"
+                      autoFocus
+                      required
+                      aria-required
+                      aria-label="Circular title"
                       placeholder="Circular title"
                       value={newCircular.title}
                       onChange={(e) =>
