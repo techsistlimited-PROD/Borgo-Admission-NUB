@@ -96,7 +96,7 @@ export default function Dashboard() {
       recentApplications: "সাম্প্রতিক আবেদনসমূহ",
       applicationProgress: "আবেদনের অগ্রগতি",
       applied: "আবেদনকৃত",
-      underReview: "পর্য��লোচনাধীন",
+      underReview: "পর্য��লো���নাধীন",
       approved: "অনুমোদিত",
       rejected: "প্রত্যাখ্যাত",
       trackingId: "ট্র্যাকিং আইডি",
@@ -117,7 +117,7 @@ export default function Dashboard() {
       enrollmentCompleted: "ভর্তি সম্পন্ন",
       notifications: "সাম্প্রতিক বিজ্ঞপ্তি",
       viewAllNotifications: "সব বিজ্ঞপ্তি দেখুন",
-      newApplication: "নতুন আবেদন শুরু করুন",
+      newApplication: "নতুন আবেদন ��ুরু করুন",
       studentId: "আপনার ছাত্র আইডি",
       universityId: "বিশ্ববিদ্যালয় আইডি",
       keepIdSafe: "সব বিশ্ববিদ্যালয় কার্যক্রমের জন্য এই আইডি নিরাপদ রাখুন",
@@ -312,11 +312,19 @@ export default function Dashboard() {
                 <CardTitle className="text-xl font-poppins text-deep-plum">
                   {t.recentApplications}
                 </CardTitle>
-                <Button asChild>
-                  <Link to="/" className="bg-deep-plum hover:bg-accent-purple">
-                    {t.newApplication}
-                  </Link>
-                </Button>
+                {!(fetchedApplications && fetchedApplications.length > 0) ? (
+                  <Button asChild>
+                    <Link to="/program-selection?new=true" className="bg-deep-plum hover:bg-accent-purple">
+                      {t.newApplication}
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button asChild>
+                    <Link to="/application-review" className="bg-deep-plum hover:bg-accent-purple">
+                      View Application
+                    </Link>
+                  </Button>
+                )}
               </CardHeader>
               <CardContent>
                 <Table>
