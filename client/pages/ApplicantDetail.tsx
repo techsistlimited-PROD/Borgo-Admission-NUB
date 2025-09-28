@@ -162,7 +162,7 @@ export default function ApplicantDetail() {
     },
   };
 
-  const t = texts[language];
+  const t: any = texts[language];
 
   const loadApplication = async () => {
     if (!id) return;
