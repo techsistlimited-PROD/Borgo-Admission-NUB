@@ -108,7 +108,7 @@ export default function FinanceOfficerLogin() {
             </form>
 
             <div className="border-t pt-4">
-              <div className="text-center"><Link to="/admin" className="text-sm text-gray-600 hover:text-deep-plum">← Admin Login</Link></div>
+              <div className="text-center"><RouterLink to="/admin" className="text-sm text-gray-600 hover:text-deep-plum">← Admin Login</RouterLink></div>
             </div>
           </CardContent>
         </Card>
