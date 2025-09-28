@@ -63,9 +63,20 @@ export default function Header({ showLogin = false }: HeaderProps) {
     // If logged in as applicant, check if they already have an application
     try {
       if (userType === "applicant" && user?.university_id) {
-        const res = await apiClient.getApplications({ search: user.university_id });
-        if (res.success && res.data && (res.data.applications || []).length > 0) {
-          toast({ title: "Application exists", description: "You already have an application. You cannot start a new one.", duration: 6000 });
+        const res = await apiClient.getApplications({
+          search: user.university_id,
+        });
+        if (
+          res.success &&
+          res.data &&
+          (res.data.applications || []).length > 0
+        ) {
+          toast({
+            title: "Application exists",
+            description:
+              "You already have an application. You cannot start a new one.",
+            duration: 6000,
+          });
           navigate("/dashboard");
           return;
         }
@@ -242,7 +253,15 @@ export default function Header({ showLogin = false }: HeaderProps) {
                     <div className="px-2 py-1.5">
                       <p className="text-sm font-medium">{user.name}</p>
                       <p className="text-xs text-gray-500">
-                        {roleLocal ? (roleLocal === 'admission_officer' ? 'Admission Officer' : roleLocal === 'finance_officer' ? 'Finance Officer' : roleLocal) : (user.type === "applicant" ? user.university_id : user.email)}
+                        {roleLocal
+                          ? roleLocal === "admission_officer"
+                            ? "Admission Officer"
+                            : roleLocal === "finance_officer"
+                              ? "Finance Officer"
+                              : roleLocal
+                          : user.type === "applicant"
+                            ? user.university_id
+                            : user.email}
                       </p>
                       <p className="text-xs text-gray-500">{user.department}</p>
                     </div>

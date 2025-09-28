@@ -5,7 +5,11 @@ import { useAuth } from "@/contexts/AuthContext";
 export default function OfflineAdmission() {
   const navigate = useNavigate();
   const auth = (() => {
-    try { return useAuth(); } catch { return null; }
+    try {
+      return useAuth();
+    } catch {
+      return null;
+    }
   })();
 
   useEffect(() => {
@@ -16,13 +20,15 @@ export default function OfflineAdmission() {
     }
 
     // Start the offline admission workflow by opening the program selection with offline flag
-    navigate('/program-selection?new=true&offline=true');
+    navigate("/program-selection?new=true&offline=true");
   }, [auth, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
-        <div className="text-xl text-deep-plum font-semibold">Redirecting to Offline Admission...</div>
+        <div className="text-xl text-deep-plum font-semibold">
+          Redirecting to Offline Admission...
+        </div>
       </div>
     </div>
   );

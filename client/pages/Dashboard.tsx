@@ -37,13 +37,17 @@ export default function Dashboard() {
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const { toast } = useToast();
   const { user, userType } = useAuth();
-  const [fetchedApplications, setFetchedApplications] = useState<any[] | null>(null);
+  const [fetchedApplications, setFetchedApplications] = useState<any[] | null>(
+    null,
+  );
 
   useEffect(() => {
     const load = async () => {
       if (userType === "applicant" && user?.university_id) {
         try {
-          const res = await apiClient.getApplications({ search: user.university_id });
+          const res = await apiClient.getApplications({
+            search: user.university_id,
+          });
           if (res.success && res.data) {
             setFetchedApplications(res.data.applications || []);
           }
@@ -314,13 +318,19 @@ export default function Dashboard() {
                 </CardTitle>
                 {!(fetchedApplications && fetchedApplications.length > 0) ? (
                   <Button asChild>
-                    <Link to="/program-selection?new=true" className="bg-deep-plum hover:bg-accent-purple">
+                    <Link
+                      to="/program-selection?new=true"
+                      className="bg-deep-plum hover:bg-accent-purple"
+                    >
                       {t.newApplication}
                     </Link>
                   </Button>
                 ) : (
                   <Button asChild>
-                    <Link to="/application-review" className="bg-deep-plum hover:bg-accent-purple">
+                    <Link
+                      to="/application-review"
+                      className="bg-deep-plum hover:bg-accent-purple"
+                    >
                       View Application
                     </Link>
                   </Button>
