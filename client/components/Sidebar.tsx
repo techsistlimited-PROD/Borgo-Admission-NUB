@@ -82,6 +82,7 @@ export default function Sidebar({ userType }: SidebarProps) {
     { name: "Reports", path: "/admin/reports", icon: PieChart },
     { name: "Templates", path: "/admin/templates", icon: Mail },
     { name: "Syllabus", path: "/admin/syllabus", icon: BookOpen },
+    { name: "Visitors Log", path: "/admin/visitors-log", icon: Users },
     {
       name: "Configuration",
       path: "/admin/configuration",
