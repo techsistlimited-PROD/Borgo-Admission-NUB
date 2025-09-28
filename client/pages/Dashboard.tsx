@@ -98,7 +98,7 @@ export default function Dashboard() {
       welcome: "স্বাগতম",
       applicationSummary: "আবে��নের সারসংক্ষেপ",
       recentApplications: "সাম্প্রতিক আবেদনসমূহ",
-      applicationProgress: "��বেদনের অগ্রগতি",
+      applicationProgress: "আবেদনের অগ্রগতি",
       applied: "আবেদনকৃত",
       underReview: "পর্য��লোচনাধীন",
       approved: "অনুমোদিত",
@@ -357,7 +357,7 @@ export default function Dashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {applications.map((app) => (
+                    {apps.map((app) => (
                       <TableRow key={app.id}>
                         <TableCell className="font-medium">
                           {app.trackingId}
