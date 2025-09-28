@@ -68,17 +68,20 @@ function AppContent() {
   let userType: "public" | "applicant" | "admin" = "public";
   let isAuthenticated = false;
   let isLoading = false;
+  let roleLocal: string | null = null;
   try {
     const auth = useAuth();
     userType = auth.userType;
     isAuthenticated = auth.isAuthenticated;
     isLoading = auth.isLoading;
+    roleLocal = auth.role ?? null;
   } catch (e) {
     // If auth provider is not available, fall back to defaults and continue rendering
     // This avoids the app crashing while dev server mounts providers
     userType = "public";
     isAuthenticated = false;
     isLoading = false;
+    roleLocal = null;
   }
 
   const location = useLocation();
