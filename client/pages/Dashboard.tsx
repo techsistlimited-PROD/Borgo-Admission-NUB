@@ -98,7 +98,7 @@ export default function Dashboard() {
       welcome: "স্বাগতম",
       applicationSummary: "আবে��নের সারসংক্ষেপ",
       recentApplications: "সাম্প্রতিক আবেদনসমূহ",
-      applicationProgress: "আবেদনের অগ্রগতি",
+      applicationProgress: "��বেদনের অগ্রগতি",
       applied: "আবেদনকৃত",
       underReview: "পর্য��লোচনাধীন",
       approved: "অনুমোদিত",
@@ -166,7 +166,7 @@ export default function Dashboard() {
     { label: t.rejected, count: counts.rejected, color: "bg-red-100 text-red-800", icon: XCircle },
   ];
 
-  const applications = [
+  const defaultApplications = [
     {
       id: 1,
       trackingId: "NU2024001234",
