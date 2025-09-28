@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Search,
@@ -12,6 +12,7 @@ import {
   Users,
   Clock,
   RefreshCw,
+  FilePlus,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import {
@@ -44,8 +45,11 @@ import apiClient, { Application } from "../lib/api";
 interface DashboardStats {
   totalApplications: number;
   needReview: number;
+  approvedApplicants: number;
   todayApplicants: number;
   pendingPayments: number;
+  creditTransferApplicants: number;
+  admissionTestApplicants: number;
 }
 
 export default function AdminAdmissionList() {
@@ -54,13 +58,35 @@ export default function AdminAdmissionList() {
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [programFilter, setProgramFilter] = useState<string | undefined>(
+    undefined,
+  );
+  const [campusFilter, setCampusFilter] = useState<string | undefined>(
+    undefined,
+  );
+  const [semesterFilter, setSemesterFilter] = useState<string | undefined>(
+    undefined,
+  );
+  const [admissionTypeFilter, setAdmissionTypeFilter] = useState<
+    string | undefined
+  >(undefined);
+  const [admissionTestFilter, setAdmissionTestFilter] = useState<
+    string | undefined
+  >(undefined);
+  const [dateFrom, setDateFrom] = useState<string | undefined>(undefined);
+  const [dateTo, setDateTo] = useState<string | undefined>(undefined);
+
   const [lockedApplications, setLockedApplications] = useState<string[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
+  const [programs, setPrograms] = useState<any[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
-    totalApplications: 1247,
-    needReview: 89,
-    todayApplicants: 23,
-    pendingPayments: 156,
+    totalApplications: 0,
+    needReview: 0,
+    approvedApplicants: 0,
+    todayApplicants: 0,
+    pendingPayments: 0,
+    creditTransferApplicants: 0,
+    admissionTestApplicants: 0,
   });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -69,7 +95,7 @@ export default function AdminAdmissionList() {
 
   const texts = {
     en: {
-      title: "Admission Office - New Admission List",
+      title: "Admission Office - Applications",
       searchPlaceholder: "Search by name, email, or tracking ID...",
       filterByStatus: "Filter by Status",
       allStatus: "All Status",
@@ -110,13 +136,16 @@ export default function AdminAdmissionList() {
       program: "Program",
       department: "Department",
       amount: "Amount",
+      exportSummary: "Export Summary",
+      exportCSV: "Export CSV",
+      exportPDF: "Export PDF",
     },
     bn: {
-      title: "ভর্তি অফিস - নতুন ভর্তির তালিকা",
+      title: "ভর্তি অফিস - আবেদনসমূহ",
       searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
-      filterByStatus: "অ��স্থা অনুযায়ী ফিল্টার",
+      filterByStatus: "অবস্থা অনুসারে ফিল্টার",
       allStatus: "সব অবস্থা",
-      pending: "অ���েক্ষমাণ",
+      pending: "অপেক্ষমাণ",
       approved: "অনুমোদিত",
       rejected: "প্রত্যাখ্যাত",
       export: "তালিকা এক্সপোর্ট",
@@ -129,7 +158,7 @@ export default function AdminAdmissionList() {
       payslipStatus: "পে-স্লিপ অবস্থা",
       actions: "কর্ম",
       view: "দেখুন",
-      approve: "অনু��োদন",
+      approve: "অনুমোদন",
       reject: "প্রত্যাখ্যান",
       lock: "লক",
       unlock: "আনলক",
@@ -140,51 +169,89 @@ export default function AdminAdmissionList() {
       totalApplications: "মোট আবেদন",
       needReview: "পর্যালোচনা প্রয়োজন",
       emailVerified: "ইমেইল যাচাইকৃত",
-      phoneVerified: "ফোন য��চাইকৃত",
+      phoneVerified: "ফোন যাচাইকৃত",
       documentsComplete: "কাগজপত্র সম্পূর্ণ",
-      refresh: "রিফ���রেশ",
-      loading: "লোডিং...",
+      refresh: "রিফ্রেশ",
+      loading: "���োডিং...",
       error: "ডেটা লোড করতে ত্রুটি",
       approving: "অনুমোদন করা হচ্ছে...",
       rejecting: "প্রত্যাখ্যান করা হচ্ছে...",
       approveSuccess: "আবেদন সফলভাবে অনুমোদিত হয়েছে",
-      rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যান করা হয়েছে",
-      actionError: "��বেদনের স্ট্যাটাস ���পডেট করতে ব্যর্থ",
-      program: "���্রোগ্রাম",
+      rejectSuccess: "আবেদন সফলভাবে প্রত্যাখ্যাত হয়েছে",
+      actionError: "আবেদনের স্ট্যাটাস আপডেট করতে ব্যর্থ",
+      program: "প্রোগ্রাম",
       department: "বিভাগ",
       amount: "পরিমাণ",
+      exportSummary: "সারাংশ এক্সপোর্ট",
+      exportCSV: "CSV এক্সপোর্ট",
+      exportPDF: "PDF এক্সপোর্ট",
     },
   };
 
   const t = texts[language];
+
+  // Fetch programs for filters
+  const loadPrograms = async () => {
+    try {
+      const res = await apiClient.getPrograms();
+      if (res.success && res.data) {
+        setPrograms(res.data.programs || []);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   // Fetch applications and stats
   const fetchData = async () => {
     try {
       setRefreshing(true);
 
-      // Fetch applications
+      // Fetch applications with filters
       const applicationsResponse = await apiClient.getApplications({
         status: statusFilter === "all" ? undefined : statusFilter,
         search: searchTerm || undefined,
         page: currentPage,
         limit: 10,
+        program_code: programFilter,
+        campus: campusFilter,
+        semester: semesterFilter,
+        admission_type: admissionTypeFilter,
+        admission_test_status: admissionTestFilter,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
       });
 
       if (applicationsResponse.success && applicationsResponse.data) {
         setApplications(applicationsResponse.data.applications || []);
-        // Calculate total pages based on total and current page size
         const totalItems = applicationsResponse.data.total || 0;
         setTotalPages(Math.ceil(totalItems / 10));
       }
 
-      // Use mock dashboard stats with realistic values
-      setStats({
-        totalApplications: 1247,
-        needReview: 89,
-        todayApplicants: 23,
-        pendingPayments: 156,
-      });
+      // Fetch stats from mock API
+      const statsRes = await apiClient.getApplicationStats();
+      if (statsRes.success && statsRes.data) {
+        setStats((prev) => ({
+          ...prev,
+          totalApplications: statsRes.data.total || 0,
+          needReview: statsRes.data.pending || 0,
+          approvedApplicants: statsRes.data.approved || 0,
+          pendingPayments: statsRes.data.payment_pending || 0,
+          creditTransferApplicants: statsRes.data.credit_transfer || 0,
+          admissionTestApplicants:
+            (statsRes.data.admission_test_required || 0) +
+            (statsRes.data.admission_test_completed || 0),
+          todayApplicants: applicationsResponse.data.applications.filter((a: Application) => {
+            const d = new Date(a.created_at);
+            const today = new Date();
+            return (
+              d.getDate() === today.getDate() &&
+              d.getMonth() === today.getMonth() &&
+              d.getFullYear() === today.getFullYear()
+            );
+          }).length,
+        }));
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       toast({
@@ -198,10 +265,16 @@ export default function AdminAdmissionList() {
     }
   };
 
-  // Initial data load
+  useEffect(() => {
+    loadPrograms();
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     fetchData();
-  }, [statusFilter, currentPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusFilter, currentPage, programFilter, campusFilter, semesterFilter, admissionTypeFilter, admissionTestFilter, dateFrom, dateTo]);
 
   // Search with debounce
   useEffect(() => {
@@ -209,110 +282,124 @@ export default function AdminAdmissionList() {
       if (currentPage === 1) {
         fetchData();
       } else {
-        setCurrentPage(1); // This will trigger fetchData via the previous useEffect
+        setCurrentPage(1);
       }
     }, 500);
 
     return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
   const toggleLock = (trackingId: string) => {
     setLockedApplications((prev) =>
-      prev.includes(trackingId)
-        ? prev.filter((id) => id !== trackingId)
-        : [...prev, trackingId],
+      prev.includes(trackingId) ? prev.filter((id) => id !== trackingId) : [...prev, trackingId],
     );
   };
 
-  const isLocked = (trackingId: string) =>
-    lockedApplications.includes(trackingId);
+  const isLocked = (trackingId: string) => lockedApplications.includes(trackingId);
 
-  const handleStatusUpdate = async (
-    applicationId: string,
-    newStatus: "approved" | "rejected",
-  ) => {
+  const handleStatusUpdate = async (applicationId: string, newStatus: "approved" | "rejected") => {
     try {
-      const response = await apiClient.updateApplicationStatus(
-        applicationId,
-        newStatus,
-      );
+      const response = await apiClient.updateApplicationStatus(applicationId, newStatus);
 
       if (response.success) {
-        toast({
-          title: newStatus === "approved" ? t.approveSuccess : t.rejectSuccess,
-        });
-        // Refresh the data
+        toast({ title: newStatus === "approved" ? t.approveSuccess : t.rejectSuccess });
         fetchData();
       } else {
-        toast({
-          title: t.actionError,
-          description: response.error,
-          variant: "destructive",
-        });
+        toast({ title: t.actionError, description: response.error, variant: "destructive" });
       }
     } catch (error) {
       console.error("Error updating status:", error);
-      toast({
-        title: t.actionError,
-        variant: "destructive",
-      });
+      toast({ title: t.actionError, variant: "destructive" });
     }
   };
 
   const getStatusBadge = (status: string) => {
-    const statusConfig = {
+    const statusConfig: Record<string, { color: string; label: string }> = {
       pending: { color: "bg-yellow-100 text-yellow-800", label: t.pending },
       approved: { color: "bg-green-100 text-green-800", label: t.approved },
       rejected: { color: "bg-red-100 text-red-800", label: t.rejected },
-      payment_pending: {
-        color: "bg-blue-100 text-blue-800",
-        label: "Payment Pending",
-      },
+      payment_pending: { color: "bg-blue-100 text-blue-800", label: "Payment Pending" },
     };
 
-    const config =
-      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+    const config = statusConfig[status] || statusConfig.pending;
     return <Badge className={config.color}>{config.label}</Badge>;
   };
 
   const getPaymentStatusBadge = (status: string) => {
-    const statusConfig = {
+    const statusConfig: Record<string, { color: string; label: string }> = {
       pending: { color: "bg-orange-100 text-orange-800", label: "Pending" },
       paid: { color: "bg-green-100 text-green-800", label: "Paid" },
       partial: { color: "bg-blue-100 text-blue-800", label: "Partial" },
     };
 
-    const config =
-      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+    const config = statusConfig[status] || statusConfig.pending;
     return <Badge className={config.color}>{config.label}</Badge>;
   };
 
   const summaryStats = [
-    {
-      label: t.totalApplications,
-      value: stats.totalApplications,
-      color: "bg-blue-100 text-blue-800",
-      icon: Users,
-    },
-    {
-      label: t.needReview,
-      value: stats.needReview,
-      color: "bg-yellow-100 text-yellow-800",
-      icon: Clock,
-    },
-    {
-      label: t.todayApplicants,
-      value: stats.todayApplicants,
-      color: "bg-green-100 text-green-800",
-      icon: Users,
-    },
-    {
-      label: t.pendingPayments,
-      value: stats.pendingPayments,
-      color: "bg-red-100 text-red-800",
-      icon: Clock,
-    },
+    { label: t.totalApplications, value: stats.totalApplications, color: "bg-blue-100 text-blue-800", icon: Users, action: () => { setStatusFilter("all"); setProgramFilter(undefined); } },
+    { label: t.needReview, value: stats.needReview, color: "bg-yellow-100 text-yellow-800", icon: Clock, action: () => setStatusFilter("pending") },
+    { label: "Approved Applicants", value: stats.approvedApplicants, color: "bg-green-100 text-green-800", icon: CheckCircle, action: () => setStatusFilter("approved") },
+    { label: t.todayApplicants, value: stats.todayApplicants, color: "bg-green-50 text-green-800", icon: Users, action: () => { /* filter already shows today via dateFrom/dateTo */ const today = new Date().toISOString().slice(0,10); setDateFrom(today); setDateTo(today);} },
+    { label: t.pendingPayments, value: stats.pendingPayments, color: "bg-red-100 text-red-800", icon: FilePlus, action: () => setStatusFilter("payment_pending") },
+    { label: "Credit Transfer Applicants", value: stats.creditTransferApplicants, color: "bg-purple-50 text-purple-800", icon: Users, action: () => setAdmissionTypeFilter("credit_transfer") },
+    { label: "Admission Test Applicants", value: stats.admissionTestApplicants, color: "bg-pink-50 text-pink-800", icon: Clock, action: () => setAdmissionTestFilter("required") },
   ];
+
+  const exportCSV = (rows: any[], filename = "admissions_summary.csv") => {
+    if (!rows || rows.length === 0) return;
+    const keys = Object.keys(rows[0]);
+    const lines = [keys.join(",")];
+    for (const r of rows) {
+      lines.push(keys.map((k) => ("" + (r[k] ?? "")).replace(/\"/g, '""')).join(","));
+    }
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportSummary = () => {
+    const rows = summaryStats.map((s) => ({ label: s.label, value: s.value }));
+    exportCSV(rows, "admission_summary.csv");
+    toast({ title: "Export started", description: "CSV download started" });
+  };
+
+  const computeTrend = (apps: Application[]) => {
+    // last 7 days
+    const days: Record<string, number> = {};
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      days[d.toISOString().slice(0,10)] = 0;
+    }
+    for (const a of apps) {
+      const key = new Date(a.created_at).toISOString().slice(0,10);
+      if (key in days) days[key]++;
+    }
+    return Object.values(days);
+  };
+
+  const TrendSparkline: React.FC<{ data: number[] }> = ({ data }) => {
+    const max = Math.max(...data, 1);
+    const points = data.map((d, i) => `${(i / (data.length - 1)) * 100},${100 - (d / max) * 100}`);
+    return (
+      <svg viewBox="0 0 100 100" className="w-28 h-10">
+        <polyline
+          fill="none"
+          stroke="#6B2F85"
+          strokeWidth={2}
+          points={points.join(" ")}
+        />
+      </svg>
+    );
+  };
 
   if (loading) {
     return (
@@ -332,50 +419,25 @@ export default function AdminAdmissionList() {
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-deep-plum font-poppins">
-                {t.title}
-              </h1>
-              <p className="text-gray-600 mt-1">
-                Manage and review new admission applications
-              </p>
+              <h1 className="text-3xl font-bold text-deep-plum font-poppins">{t.title}</h1>
+              <p className="text-gray-600 mt-1">Manage and review admission applications</p>
             </div>
 
             {/* Actions */}
             <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                onClick={fetchData}
-                disabled={refreshing}
-                className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white"
-              >
-                <RefreshCw
-                  className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
-                />
+              <Button variant="outline" onClick={fetchData} disabled={refreshing} className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white">
+                <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
                 {t.refresh}
               </Button>
-              <Button className="bg-deep-plum hover:bg-accent-purple">
+              <Button className="bg-deep-plum hover:bg-accent-purple" onClick={exportSummary}>
                 <Download className="w-4 h-4 mr-2" />
-                {t.export}
+                {t.exportSummary}
               </Button>
               <div className="flex items-center bg-white rounded-lg p-1 shadow-sm">
-                <button
-                  onClick={() => setLanguage("en")}
-                  className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                    language === "en"
-                      ? "bg-deep-plum text-white"
-                      : "text-gray-600 hover:text-deep-plum"
-                  }`}
-                >
+                <button onClick={() => setLanguage("en")} className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${language === "en" ? "bg-deep-plum text-white" : "text-gray-600 hover:text-deep-plum"}`}>
                   EN
                 </button>
-                <button
-                  onClick={() => setLanguage("bn")}
-                  className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                    language === "bn"
-                      ? "bg-deep-plum text-white"
-                      : "text-gray-600 hover:text-deep-plum"
-                  }`}
-                >
+                <button onClick={() => setLanguage("bn")} className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${language === "bn" ? "bg-deep-plum text-white" : "text-gray-600 hover:text-deep-plum"}`}>
                   BN
                 </button>
               </div>
@@ -385,17 +447,34 @@ export default function AdminAdmissionList() {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {summaryStats.map((stat, index) => (
-            <Card key={index} className="bg-white shadow-lg">
+          {summaryStats.slice(0,4).map((stat, index) => (
+            <Card key={index} className="bg-white shadow-lg cursor-pointer" onClick={stat.action}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
-                      {stat.label}
-                    </p>
-                    <p className="text-3xl font-bold text-deep-plum">
-                      {stat.value}
-                    </p>
+                    <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                    <p className="text-3xl font-bold text-deep-plum">{stat.value}</p>
+                  </div>
+                  <div className={`p-3 rounded-full ${stat.color}`}>
+                    <stat.icon className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <TrendSparkline data={computeTrend(applications)} />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {summaryStats.slice(4).map((stat, index) => (
+            <Card key={index} className="bg-white shadow-lg cursor-pointer" onClick={stat.action}>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                    <p className="text-2xl font-bold text-deep-plum">{stat.value}</p>
                   </div>
                   <div className={`p-3 rounded-full ${stat.color}`}>
                     <stat.icon className="w-6 h-6" />
@@ -413,28 +492,91 @@ export default function AdminAdmissionList() {
               {/* Search */}
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder={t.searchPlaceholder}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+                <Input placeholder={t.searchPlaceholder} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10" />
               </div>
 
-              {/* Status Filter */}
+              {/* Program Filter */}
               <div className="md:w-48">
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <Select value={programFilter || ""} onValueChange={(v) => setProgramFilter(v || undefined)}>
                   <SelectTrigger>
-                    <SelectValue placeholder={t.filterByStatus} />
+                    <SelectValue placeholder={t.program} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t.allStatus}</SelectItem>
-                    <SelectItem value="pending">{t.pending}</SelectItem>
-                    <SelectItem value="approved">{t.approved}</SelectItem>
-                    <SelectItem value="rejected">{t.rejected}</SelectItem>
+                    <SelectItem value="">All Programs</SelectItem>
+                    {programs.map((p) => (
+                      <SelectItem key={p.code} value={p.code}>{p.name}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Campus Filter */}
+              <div className="md:w-48">
+                <Select value={campusFilter || ""} onValueChange={(v) => setCampusFilter(v || undefined)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Campus" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Campuses</SelectItem>
+                    {Array.from(new Set(programs.flatMap((p) => p.campus || []))).map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Semester Filter */}
+              <div className="md:w-48">
+                <Select value={semesterFilter || ""} onValueChange={(v) => setSemesterFilter(v || undefined)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Semester" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Semesters</SelectItem>
+                    {Array.from(new Set(applications.map((a) => a.semester))).map((s) => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Admission Type */}
+              <div className="md:w-48">
+                <Select value={admissionTypeFilter || ""} onValueChange={(v) => setAdmissionTypeFilter(v || undefined)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Admission Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All</SelectItem>
+                    <SelectItem value="regular">Regular</SelectItem>
+                    <SelectItem value="credit_transfer">Credit Transfer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Admission Test */}
+              <div className="md:w-48">
+                <Select value={admissionTestFilter || ""} onValueChange={(v) => setAdmissionTestFilter(v || undefined)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Admission Test" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All</SelectItem>
+                    <SelectItem value="required">Required</SelectItem>
+                    <SelectItem value="not_required">Not Required</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Date Range */}
+              <div className="flex items-center gap-2">
+                <input type="date" value={dateFrom || ""} onChange={(e) => setDateFrom(e.target.value || undefined)} className="border rounded-md p-2" />
+                <span className="text-gray-400">to</span>
+                <input type="date" value={dateTo || ""} onChange={(e) => setDateTo(e.target.value || undefined)} className="border rounded-md p-2" />
+              </div>
+
             </div>
           </CardContent>
         </Card>
@@ -442,116 +584,70 @@ export default function AdminAdmissionList() {
         {/* Applications Table */}
         <Card className="bg-white shadow-lg">
           <CardHeader>
-            <CardTitle className="text-xl font-poppins text-deep-plum">
-              Applications ({applications.length})
-            </CardTitle>
+            <CardTitle className="text-xl font-poppins text-deep-plum">Applications ({applications.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>{t.slNo}</TableHead>
+                  <TableHead>Application Ref</TableHead>
                   <TableHead>{t.name}</TableHead>
-                  <TableHead>{t.email}</TableHead>
-                  <TableHead>{t.phone}</TableHead>
-                  <TableHead>{t.verified}</TableHead>
-                  <TableHead>{t.trackingId}</TableHead>
                   <TableHead>{t.program}</TableHead>
-                  <TableHead>Referrer</TableHead>
-                  <TableHead>Payment</TableHead>
+                  <TableHead>Campus</TableHead>
+                  <TableHead>Semester</TableHead>
+                  <TableHead>Admission Type</TableHead>
+                  <TableHead>Admission Test</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Payment Status</TableHead>
+                  <TableHead>Created At</TableHead>
                   <TableHead>{t.actions}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {applications.map((app, index) => (
                   <TableRow key={app.id}>
-                    <TableCell className="font-medium">
-                      {(currentPage - 1) * 10 + index + 1}
-                    </TableCell>
+                    <TableCell className="font-medium">{(currentPage - 1) * 10 + index + 1}</TableCell>
+                    <TableCell className="font-mono text-sm">{app.university_id || app.id}</TableCell>
                     <TableCell>
                       <div>
                         <div className="font-medium">{app.applicant_name}</div>
-                        <div className="text-sm text-gray-500">
-                          {new Date(app.created_at).toLocaleDateString()}
-                        </div>
+                        <div className="text-sm text-gray-500">{new Date(app.created_at).toLocaleDateString()}</div>
                       </div>
-                    </TableCell>
-                    <TableCell>{app.email}</TableCell>
-                    <TableCell>{app.phone}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <Badge variant="default" className="text-xs">
-                          Email: {t.yes}
-                        </Badge>
-                        <Badge variant="default" className="text-xs">
-                          Phone: {t.yes}
-                        </Badge>
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">
-                      {app.university_id || app.id}
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
                         <div className="font-medium">{app.program_name}</div>
-                        <div className="text-gray-500">
-                          {app.department_name}
-                        </div>
+                        <div className="text-gray-500">{app.department_name}</div>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="text-gray-500">
-                        No Referrer
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        {getPaymentStatusBadge("pending")}
-                        <div className="text-xs text-gray-500">
-                          ৳{(54750).toLocaleString()}
-                        </div>
-                      </div>
-                    </TableCell>
+                    <TableCell>{app.campus}</TableCell>
+                    <TableCell>{app.semester}</TableCell>
+                    <TableCell>{app.admission_type}</TableCell>
+                    <TableCell>{app.admission_test_status || "-"}</TableCell>
                     <TableCell>{getStatusBadge(app.status)}</TableCell>
+                    <TableCell>{getPaymentStatusBadge("pending")}</TableCell>
+                    <TableCell>{new Date(app.created_at).toLocaleString()}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => navigate(`/admin/applicant/${app.id}`)}
-                        >
-                          <Eye className="w-3 h-3 mr-1" />
-                          {t.view}
+                        <Button variant="outline" size="sm" onClick={() => navigate(`/admin/applicant/${app.id}`)}>
+                          <Eye className="w-3 h-3 mr-1" /> {t.view}
                         </Button>
 
-                        {!isLocked(app.university_id || app.id) &&
-                          app.status === "pending" && (
-                            <>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="text-green-600 border-green-200 hover:bg-green-50"
-                                onClick={() =>
-                                  handleStatusUpdate(app.id, "approved")
-                                }
-                              >
-                                <CheckCircle className="w-3 h-3 mr-1" />
-                                {t.approve}
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="text-red-600 border-red-200 hover:bg-red-50"
-                                onClick={() =>
-                                  handleStatusUpdate(app.id, "rejected")
-                                }
-                              >
-                                <XCircle className="w-3 h-3 mr-1" />
-                                {t.reject}
-                              </Button>
-                            </>
-                          )}
+                        {!isLocked(app.university_id || app.id) && app.status === "pending" && (
+                          <>
+                            <Button variant="outline" size="sm" className="text-green-600 border-green-200 hover:bg-green-50" onClick={() => handleStatusUpdate(app.id, "approved")}>
+                              <CheckCircle className="w-3 h-3 mr-1" /> {t.approve}
+                            </Button>
+                            <Button variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => handleStatusUpdate(app.id, "rejected")}>
+                              <XCircle className="w-3 h-3 mr-1" /> {t.reject}
+                            </Button>
+                          </>
+                        )}
+
+                        <Button variant="outline" size="sm" className="text-gray-600" onClick={() => { /* Edit action - navigate to edit form */ navigate(`/admin/applicant/${app.id}/edit`); }}>
+                          <FilePlus className="w-3 h-3 mr-1" /> Edit
+                        </Button>
 
                         <div className="flex items-center gap-1">
                           {isLocked(app.university_id || app.id) ? (
@@ -559,12 +655,7 @@ export default function AdminAdmissionList() {
                           ) : (
                             <Unlock className="w-4 h-4 text-gray-400" />
                           )}
-                          <Switch
-                            checked={isLocked(app.university_id || app.id)}
-                            onCheckedChange={() =>
-                              toggleLock(app.university_id || app.id)
-                            }
-                          />
+                          <Switch checked={isLocked(app.university_id || app.id)} onCheckedChange={() => toggleLock(app.university_id || app.id)} />
                         </div>
                       </div>
                     </TableCell>
@@ -576,27 +667,11 @@ export default function AdminAdmissionList() {
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex justify-center items-center gap-2 mt-6">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(1, prev - 1))
-                  }
-                  disabled={currentPage === 1}
-                >
+                <Button variant="outline" size="sm" onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))} disabled={currentPage === 1}>
                   Previous
                 </Button>
-                <span className="text-sm text-gray-600">
-                  Page {currentPage} of {totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                >
+                <span className="text-sm text-gray-600">Page {currentPage} of {totalPages}</span>
+                <Button variant="outline" size="sm" onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))} disabled={currentPage === totalPages}>
                   Next
                 </Button>
               </div>
@@ -604,40 +679,6 @@ export default function AdminAdmissionList() {
           </CardContent>
         </Card>
 
-        {/* Bottom Summary Boxes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
-            <CardHeader>
-              <CardTitle className="text-green-800 font-poppins">
-                {t.todayApplicants}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-green-600">
-                {stats.todayApplicants}
-              </div>
-              <p className="text-sm text-green-700">
-                New applications received today
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-200">
-            <CardHeader>
-              <CardTitle className="text-yellow-800 font-poppins">
-                {t.pendingPayments}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-yellow-600">
-                {stats.pendingPayments}
-              </div>
-              <p className="text-sm text-yellow-700">
-                Applications awaiting payment verification
-              </p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   );
