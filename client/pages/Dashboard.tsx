@@ -96,8 +96,8 @@ export default function Dashboard() {
     bn: {
       title: "আবেদনকারীর ড্যাশবোর্ড",
       welcome: "স্বাগতম",
-      applicationSummary: "আবেদনের সারসংক্ষেপ",
-      recentApplications: "সাম্প্রতিক আবেদনসম���হ",
+      applicationSummary: "আবে��নের সারসংক্ষেপ",
+      recentApplications: "সাম্প্রতিক আবেদনসমূহ",
       applicationProgress: "আবেদনের অগ্রগতি",
       applied: "আবেদনকৃত",
       underReview: "পর্য��লোচনাধীন",
@@ -117,7 +117,7 @@ export default function Dashboard() {
       paymentReceived: "পেমেন্ট প্রা��্ত",
       documentVerified: "কাগজপত্র যাচাইকৃত",
       applicationApproved: "আবেদন অনুমোদিত",
-      idCreated: "ছাত্র ���ইডি তৈরি",
+      idCreated: "ছাত্র ���ইডি তৈ��ি",
       enrollmentCompleted: "ভর্তি সম্পন্ন",
       notifications: "সাম্প্রতিক বিজ্ঞপ্তি",
       viewAllNotifications: "���ব বিজ্ঞপ্তি দেখুন",
@@ -131,7 +131,25 @@ export default function Dashboard() {
   const t = texts[language];
 
   // Compute counts from fetchedApplications (fallback to sample `applications` if none)
-  const apps = fetchedApplications ?? applications;
+  let apps = fetchedApplications ?? applications;
+
+  // If logged in as applicant, further filter to only their own applications
+  try {
+    if (userType === "applicant" && user?.university_id) {
+      const uid = user.university_id.toString();
+      apps = apps.filter((a: any) => {
+        return (
+          (a.trackingId && a.trackingId.toString() === uid) ||
+          (a.university_id && a.university_id.toString() === uid) ||
+          (a.applicant_university_id && a.applicant_university_id.toString() === uid) ||
+          (a.universityId && a.universityId.toString() === uid)
+        );
+      });
+    }
+  } catch (e) {
+    // ignore
+  }
+
   const counts = { applied: 0, under_review: 0, approved: 0, rejected: 0 };
   apps.forEach((a: any) => {
     const s = (a.status || "").toString().toLowerCase();
