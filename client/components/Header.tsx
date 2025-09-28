@@ -11,6 +11,8 @@ import {
 } from "./ui/dropdown-menu";
 import { useAuth } from "../contexts/AuthContext";
 import { useApplication } from "../contexts/ApplicationContext";
+import { useToast } from "../hooks/use-toast";
+import apiClient from "../lib/api";
 
 interface HeaderProps {
   showLogin?: boolean;
