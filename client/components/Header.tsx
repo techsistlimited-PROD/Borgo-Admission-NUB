@@ -242,9 +242,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
                     <div className="px-2 py-1.5">
                       <p className="text-sm font-medium">{user.name}</p>
                       <p className="text-xs text-gray-500">
-                        {user.type === "applicant"
-                          ? user.university_id
-                          : user.email}
+                        {roleLocal ? (roleLocal === 'admission_officer' ? 'Admission Officer' : roleLocal === 'finance_officer' ? 'Finance Officer' : roleLocal) : (user.type === "applicant" ? user.university_id : user.email)}
                       </p>
                       <p className="text-xs text-gray-500">{user.department}</p>
                     </div>
