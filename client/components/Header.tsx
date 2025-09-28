@@ -138,33 +138,57 @@ export default function Header({ showLogin = false }: HeaderProps) {
 
             {/* User Info or Login */}
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white"
+              <div className="flex items-center gap-3">
+                {/* Role selector visible only to admins (frontend demo) */}
+                {userType === "admin" && (
+                  <select
+                    aria-label="Select role"
+                    className="border rounded p-1 text-sm"
+                    defaultValue={localStorage.getItem("nu_user_role") || ""}
+                    onChange={(e) => {
+                      const r = e.target.value || null;
+                      setRole(r);
+                      if (r === "admin") setPermissions(["all"]);
+                      else if (r === "admission_officer") setPermissions(["applications:view","applications:approve","waivers:manage"]);
+                      else if (r === "finance_officer") setPermissions(["finance:view","finance:billing"]);
+                      else setPermissions([]);
+                      // reload sidebar by forcing a small timeout (UI-only)
+                      setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+                    }}
                   >
-                    <User className="w-4 h-4 mr-2" />
-                    {user.name}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-2 py-1.5">
-                    <p className="text-sm font-medium">{user.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {user.type === "applicant"
-                        ? user.universityId
-                        : user.email}
-                    </p>
-                    <p className="text-xs text-gray-500">{user.department}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>
-                    <LogOut className="w-4 h-4 mr-2" />
-                    {t.logout}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <option value="">Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="admission_officer">Admission Officer</option>
+                    <option value="finance_officer">Finance Officer</option>
+                  </select>
+                )}
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      {user.name}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium">{user.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {user.type === "applicant" ? user.university_id : user.email}
+                      </p>
+                      <p className="text-xs text-gray-500">{user.department}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={logout}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      {t.logout}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ) : showLogin ? (
               <div className="flex gap-2">
                 <Button
