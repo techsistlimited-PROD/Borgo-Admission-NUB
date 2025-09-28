@@ -165,6 +165,34 @@ export default function ProgramSelection() {
     message: string;
   } | null>(null);
 
+  // Existing application check (applicants can apply to only one program)
+  let userContext: any = { user: null, userType: "public" };
+  try {
+    userContext = useAuth();
+  } catch (e) {
+    // ignore if hook not available
+  }
+  const { user, userType } = userContext;
+  const [hasExistingApplication, setHasExistingApplication] = useState(false);
+  const [existingApplication, setExistingApplication] = useState<any | null>(null);
+
+  useEffect(() => {
+    const checkExisting = async () => {
+      try {
+        if (userType === "applicant" && user?.university_id) {
+          const res = await apiClient.getApplications({ search: user.university_id });
+          if (res.success && res.data && Array.isArray(res.data.applications) && res.data.applications.length > 0) {
+            setHasExistingApplication(true);
+            setExistingApplication(res.data.applications[0]);
+          }
+        }
+      } catch (e) {
+        // ignore errors
+      }
+    };
+    checkExisting();
+  }, [user, userType]);
+
   // Credit Transfer specific state
   const [previousInstitution, setPreviousInstitution] = useState<string>(
     applicationData.previousInstitution || "",
@@ -190,7 +218,7 @@ export default function ProgramSelection() {
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
-    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খ���লনা ক্যাম��পাস" },
   ];
 
   const semesterOptions = [
@@ -275,7 +303,7 @@ export default function ProgramSelection() {
         "৪টি ধাপের ১ম ধাপ - আপনার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
-      campusSelection: "ক্যাম্পাস নির্বাচন করুন",
+      campusSelection: "ক্যাম্পাস নির্বাচন করু��",
       semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
       semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
@@ -291,9 +319,9 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
+      fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ৪র্থ বিষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা কর��ন",
-      availableWaivers: "���পলব্ধ মওকুফ",
+      availableWaivers: "���পল��্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
       additionalWaivers: "অতি���িক্ত ম���কুফ",
@@ -312,7 +340,7 @@ export default function ProgramSelection() {
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "����িপিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চ�� করুন",
-      selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
+      selectDepartmentFirst: "প্রথ���ে একটি ��িভাগ নির্বাচন করুন",
       enterGPAValues:
         "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
