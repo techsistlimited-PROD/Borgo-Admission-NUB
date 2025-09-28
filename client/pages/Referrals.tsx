@@ -35,15 +35,21 @@ export default function Referrals() {
       const res = await apiClient.getReferrers();
       if (res.success && res.data) {
         // enhance with sample stats if missing
-        const enriched = (res.data.referrers || []).map((r: any) => ({
+        const server = (res.data.referrers || []);
+        const enriched = server.map((r: any) => ({
           total_referrals: r.total_referrals ?? Math.floor(Math.random() * 50),
           total_amount: r.total_amount ?? Math.floor(Math.random() * 200000),
           last_activity: r.last_activity ?? null,
           contact: r.contact ?? "",
           ...r,
         }));
-        setReferrers(enriched);
-        setFiltered(enriched);
+        // combine with sample data ensuring uniqueness
+        const combined = [...enriched];
+        for (const s of sampleReferrers) {
+          if (!combined.find((c:any) => c.employee_id === s.employee_id)) combined.push(s);
+        }
+        setReferrers(combined);
+        setFiltered(combined);
       }
     } catch (err) {
       console.error(err);
