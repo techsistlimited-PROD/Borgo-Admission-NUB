@@ -862,6 +862,78 @@ class MockApiService {
 
     return { success: true, data: requirements };
   }
+  // Visitors log (offline entries by admission officers)
+  private visitors: any[] = [
+    {
+      id: "vis-001",
+      visit_date: "2024-02-01",
+      campus: "Main Campus",
+      visitor_name: "Mr. Rahim",
+      district: "Dhaka",
+      no_of_visitors: 1,
+      contact_number: "+8801712345678",
+      interested_in: "CSE101",
+      sms_sent: false,
+      remarks: "Walk-in enquiry",
+      created_at: "2024-02-01T10:00:00Z",
+    },
+  ];
+
+  async getVisitors(params?: { page?: number; limit?: number; campus?: string; dateFrom?: string; dateTo?: string; search?: string; }): Promise<ApiResponse<{ visitors: any[]; total: number }>> {
+    await this.delay();
+    let list = [...this.visitors];
+    if (params?.campus) list = list.filter(v => v.campus === params.campus);
+    if (params?.search) {
+      const s = params.search.toLowerCase();
+      list = list.filter(v => v.visitor_name.toLowerCase().includes(s) || (v.contact_number || "").includes(s) || (v.district || "").toLowerCase().includes(s));
+    }
+    if (params?.dateFrom) {
+      const from = new Date(params.dateFrom);
+      list = list.filter(v => new Date(v.visit_date) >= from);
+    }
+    if (params?.dateTo) {
+      const to = new Date(params.dateTo);
+      list = list.filter(v => new Date(v.visit_date) <= to);
+    }
+    const page = params?.page || 1;
+    const limit = params?.limit || 20;
+    const start = (page - 1) * limit;
+    const paged = list.slice(start, start + limit);
+    return { success: true, data: { visitors: paged, total: list.length } };
+  }
+
+  async createVisitor(record: any): Promise<ApiResponse<{ visitor: any }>> {
+    await this.delay();
+    const id = `vis-${String(this.visitors.length + 1).padStart(3, '0')}`;
+    const rec = { id, created_at: new Date().toISOString(), ...record };
+    this.visitors.push(rec);
+    return { success: true, data: { visitor: rec } };
+  }
+
+  async updateVisitor(id: string, updates: any): Promise<ApiResponse> {
+    await this.delay();
+    const idx = this.visitors.findIndex(v => v.id === id);
+    if (idx === -1) return { success: false, error: 'Visitor not found' };
+    this.visitors[idx] = { ...this.visitors[idx], ...updates, updated_at: new Date().toISOString() };
+    return { success: true, data: { visitor: this.visitors[idx] } };
+  }
+
+  async deleteVisitor(id: string): Promise<ApiResponse> {
+    await this.delay();
+    const idx = this.visitors.findIndex(v => v.id === id);
+    if (idx === -1) return { success: false, error: 'Visitor not found' };
+    this.visitors.splice(idx, 1);
+    return { success: true, message: 'Deleted' };
+  }
+
+  async exportVisitors(params?: any): Promise<ApiResponse<any[]>> {
+    await this.delay();
+    // For simplicity, return all matching visitors without pagination
+    const res = await this.getVisitors({ page: 1, limit: 10000, ...params });
+    if (res.success && res.data) return { success: true, data: res.data.visitors };
+    return { success: false, error: 'Failed to export' };
+  }
+
   // Students (created after approval)
   private students: any[] = [];
 
