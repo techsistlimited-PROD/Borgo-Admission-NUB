@@ -474,8 +474,12 @@ export default function AdmissionCircular() {
                 </div>
 
                 <div>
-                  <Label>Description *</Label>
+                  <Label htmlFor="circular_description">Description *</Label>
                   <Textarea
+                    id="circular_description"
+                    required
+                    aria-required
+                    aria-label="Circular description"
                     placeholder="Brief description of the admission circular"
                     value={newCircular.description}
                     onChange={(e) =>
