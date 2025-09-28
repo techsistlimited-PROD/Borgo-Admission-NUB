@@ -84,7 +84,7 @@ export default function Referrals() {
         <h1 className="text-2xl font-semibold text-deep-plum">Referrals</h1>
         <div className="flex gap-2">
           <Input placeholder="Search by id, name or contact" value={search} onChange={(e:any) => setSearch(e.target.value)} />
-          <Select onValueChange={(v:any) => setDepartmentFilter(v || undefined)}>
+          <Select onValueChange={(v:any) => setDepartmentFilter(v === 'all' ? undefined : v)}>
             <SelectTrigger className="w-48"><SelectValue placeholder="All Departments"/></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
