@@ -78,7 +78,17 @@ export default function Referrals() {
   };
 
   const handleExport = () => {
-    exportCSV(filtered.map(r => ({ employee_id: r.employee_id, name: r.name, department: r.department, designation: r.designation, total_referrals: r.total_referrals, total_amount: r.total_amount })));
+    const rows = filtered.map(r => ({
+      employee_id: r.employee_id,
+      name: r.name,
+      department: r.department,
+      designation: r.designation,
+      total_referrals: r.total_referrals,
+      total_amount: r.total_amount,
+      contact: r.contact,
+      last_activity: r.last_activity || '',
+    }));
+    exportCSV(rows, 'referrers.csv');
     toast({ title: "Exported", description: "CSV generated" });
   };
 
