@@ -144,7 +144,7 @@ export default function AdminAdmissionList() {
       title: "ভর্তি অফিস - আবেদনসমূহ",
       searchPlaceholder: "নাম, ইমেইল, বা ট্র্যাকিং আইডি দিয়ে খুঁজুন...",
       filterByStatus: "অবস্থা অনুসারে ফিল্টার",
-      allStatus: "সব ��বস্থা",
+      allStatus: "সব অবস্থা",
       pending: "অপেক্ষমাণ",
       approved: "অনুমোদিত",
       rejected: "প্রত্যাখ্যাত",
@@ -170,8 +170,8 @@ export default function AdminAdmissionList() {
       needReview: "পর্যালোচনা প্রয়োজন",
       emailVerified: "ইমেইল যাচাইকৃত",
       phoneVerified: "ফোন যাচাইকৃত",
-      documentsComplete: "কাগজপত্র সম্পূর��ণ",
-      refresh: "রিফ্রেশ",
+      documentsComplete: "কাগজপত্র সম্পূর্ণ",
+      refresh: "র���ফ্রেশ",
       loading: "���োডিং...",
       error: "ডেটা লোড করতে ত্রুটি",
       approving: "অনুমোদন করা হচ্ছে...",
@@ -542,12 +542,12 @@ export default function AdminAdmissionList() {
 
               {/* Admission Type */}
               <div className="md:w-48">
-                <Select value={admissionTypeFilter || ""} onValueChange={(v) => setAdmissionTypeFilter(v || undefined)}>
+                <Select value={admissionTypeFilter ?? "all"} onValueChange={(v) => setAdmissionTypeFilter(v === "all" ? undefined : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Admission Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
                     <SelectItem value="regular">Regular</SelectItem>
                     <SelectItem value="credit_transfer">Credit Transfer</SelectItem>
                   </SelectContent>
