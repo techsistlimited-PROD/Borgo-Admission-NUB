@@ -129,6 +129,7 @@ export default function Sidebar({ userType }: SidebarProps) {
           icon: Shield,
         },
         { name: "Reports", path: "/admin/reports", icon: PieChart },
+        { name: "Referrals", path: "/admin/referrals", icon: Users },
       ];
 
     switch (userType) {
