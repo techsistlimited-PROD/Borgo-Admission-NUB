@@ -525,6 +525,76 @@ export default function Reports() {
   // Referral & Visitors stats
   const [referralStats, setReferralStats] = useState<{ total_referrers: number; total_commission: number } | null>(null);
   const [visitorsStats, setVisitorsStats] = useState<{ total_visits: number; visits_today: number } | null>(null);
+  const [referrersList, setReferrersList] = useState<any[]>([]);
+  const [visitorsList, setVisitorsList] = useState<any[]>([]);
+
+  // Helper: download CSV
+  const downloadCSV = (filename: string, rows: any[]) => {
+    if (!rows || rows.length === 0) {
+      alert('No data to export');
+      return;
+    }
+    const keys = Object.keys(rows[0]);
+    const csvContent = [keys.join(','), ...rows.map(r => keys.map(k => `"${String(r[k] ?? '')}"`).join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const fetchAndExportReferrers = async () => {
+    try {
+      const res = await apiClient.getReferrers();
+      if (res.success && res.data) {
+        const rows = res.data.referrers || [];
+        downloadCSV('referrers.csv', rows);
+      } else {
+        alert('Failed to export referrers');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Export failed');
+    }
+  };
+
+  const fetchAndExportVisitors = async () => {
+    try {
+      const res = await apiClient.exportVisitors({});
+      if (res.success && res.data) {
+        downloadCSV('visitors.csv', res.data);
+      } else {
+        alert('Failed to export visitors');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Export failed');
+    }
+  };
+
+  // Small sparkline component
+  const Sparkline = ({ points }: { points: number[] }) => {
+    if (!points || points.length === 0) return null;
+    const w = 120;
+    const h = 28;
+    const max = Math.max(...points);
+    const min = Math.min(...points);
+    const range = max - min || 1;
+    const step = w / (points.length - 1 || 1);
+    const path = points
+      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${i * step} ${h - ((p - min) / range) * h}`)
+      .join(' ');
+    return (
+      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
+        <path d={path} fill="none" stroke="#7c3aed" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  };
 
   const texts = {
     en: {
