@@ -131,7 +131,7 @@ export default function Dashboard() {
   const t = texts[language];
 
   // Compute counts from fetchedApplications (fallback to sample `applications` if none)
-  let apps = fetchedApplications ?? applications;
+  let apps = fetchedApplications ?? defaultApplications;
 
   // If logged in as applicant, further filter to only their own applications
   try {
