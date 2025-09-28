@@ -774,7 +774,7 @@ export default function Reports() {
       rate: "হার",
       cse: "কম্পিউটা�� সায়েন্স ও ইঞ্জিনিয়ারি���",
       eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জ��নিয়ারিং",
-      mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
+      mech: "মেকানিক্যাল ইঞ্��িনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
       textile: "টেক্সটাইল ইঞ্জিনিয়ারিং",
       bba: "ব্যবসায় প্রশাসন",
@@ -798,6 +798,7 @@ export default function Reports() {
           // Mock commission sum from mock data if available
           const totalCommission = refRes.data.referrers.reduce((sum:any, r:any) => sum + ((r.commission_rate||0) * 10000), 0);
           setReferralStats({ total_referrers: total, total_commission: totalCommission });
+          setReferrersList(refRes.data.referrers || []);
         }
 
         const visRes = await apiClient.getVisitors({ page: 1, limit: 1000 });
@@ -806,6 +807,7 @@ export default function Reports() {
           const today = new Date().toISOString().slice(0,10);
           const visitsToday = (visRes.data.visitors || []).filter((v:any)=>v.visit_date === today).length;
           setVisitorsStats({ total_visits: totalVisits, visits_today: visitsToday });
+          setVisitorsList(visRes.data.visitors || []);
         }
       } catch (err) {
         console.warn(err);
