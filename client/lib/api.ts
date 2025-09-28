@@ -219,6 +219,53 @@ class ApiClient {
     return await mockApi.deleteDocumentRequirement(id);
   }
 
+  // Messaging (server-backed via Supabase)
+  private async request(path: string, options: RequestInit = {}) {
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (this.token) headers["Authorization"] = `Bearer ${this.token}`;
+
+    const res = await fetch(`/api/messaging${path}`, { headers, ...options });
+    const json = await res.json().catch(() => ({}));
+    return json;
+  }
+
+  async getTemplates(): Promise<ApiResponse> {
+    return await this.request("/templates");
+  }
+
+  async createTemplate(template: any): Promise<ApiResponse> {
+    return await this.request(`/templates`, { method: "POST", body: JSON.stringify(template) });
+  }
+
+  async updateTemplate(id: string, template: any): Promise<ApiResponse> {
+    return await this.request(`/templates/${id}`, { method: "PUT", body: JSON.stringify(template) });
+  }
+
+  async deleteTemplate(id: string): Promise<ApiResponse> {
+    return await this.request(`/templates/${id}`, { method: "DELETE" });
+  }
+
+  async getCampaigns(): Promise<ApiResponse> {
+    return await this.request(`/campaigns`);
+  }
+
+  async createCampaign(campaign: any): Promise<ApiResponse> {
+    return await this.request(`/campaigns`, { method: "POST", body: JSON.stringify(campaign) });
+  }
+
+  async getMessagingLogs(params: { campaignId?: string; status?: string; limit?: number; offset?: number } = {}): Promise<ApiResponse> {
+    const qs = new URLSearchParams();
+    if (params.campaignId) qs.set("campaignId", params.campaignId);
+    if (params.status) qs.set("status", params.status);
+    if (params.limit) qs.set("limit", String(params.limit));
+    if (params.offset) qs.set("offset", String(params.offset));
+    return await this.request(`/logs?${qs.toString()}`);
+  }
+
+  async testSend(payload: { templateId: string; channel: string; to: string; vars?: any }): Promise<ApiResponse> {
+    return await this.request(`/test-send`, { method: "POST", body: JSON.stringify(payload) });
+  }
+
   // Students & Finance (mock)
   async createStudentRecord(applicationId: string, ids: { university_id: string; ugc_id?: string; batch?: string }): Promise<ApiResponse> {
     return await mockApi.createStudentRecord(applicationId, ids);
