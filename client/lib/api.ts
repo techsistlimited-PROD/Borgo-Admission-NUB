@@ -1,5 +1,3 @@
-// Frontend-Only API Client (Uses Mock Data - No Backend Required)
-
 import { mockApi } from "./mockApi";
 import type {
   LoginCredentials,
@@ -84,6 +82,13 @@ class ApiClient {
     search?: string;
     page?: number;
     limit?: number;
+    program_code?: string;
+    campus?: string;
+    semester?: string;
+    admission_type?: string;
+    admission_test_status?: string;
+    dateFrom?: string;
+    dateTo?: string;
   }): Promise<ApiResponse> {
     return await mockApi.getApplications(params);
   }
