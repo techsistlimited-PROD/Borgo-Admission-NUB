@@ -171,7 +171,8 @@ export default function Dashboard() {
         return (
           (a.trackingId && a.trackingId.toString() === uid) ||
           (a.university_id && a.university_id.toString() === uid) ||
-          (a.applicant_university_id && a.applicant_university_id.toString() === uid) ||
+          (a.applicant_university_id &&
+            a.applicant_university_id.toString() === uid) ||
           (a.universityId && a.universityId.toString() === uid)
         );
       });
@@ -184,16 +185,41 @@ export default function Dashboard() {
   apps.forEach((a: any) => {
     const s = (a.status || "").toString().toLowerCase();
     if (s.includes("approved")) counts.approved++;
-    else if (s.includes("under_review") || s.includes("under review") || s.includes("review")) counts.under_review++;
+    else if (
+      s.includes("under_review") ||
+      s.includes("under review") ||
+      s.includes("review")
+    )
+      counts.under_review++;
     else if (s.includes("rejected") || s.includes("reject")) counts.rejected++;
     else counts.applied++;
   });
 
   const summaryData = [
-    { label: t.applied, count: counts.applied, color: "bg-blue-100 text-blue-800", icon: FileText },
-    { label: t.underReview, count: counts.under_review, color: "bg-yellow-100 text-yellow-800", icon: Clock },
-    { label: t.approved, count: counts.approved, color: "bg-green-100 text-green-800", icon: CheckCircle },
-    { label: t.rejected, count: counts.rejected, color: "bg-red-100 text-red-800", icon: XCircle },
+    {
+      label: t.applied,
+      count: counts.applied,
+      color: "bg-blue-100 text-blue-800",
+      icon: FileText,
+    },
+    {
+      label: t.underReview,
+      count: counts.under_review,
+      color: "bg-yellow-100 text-yellow-800",
+      icon: Clock,
+    },
+    {
+      label: t.approved,
+      count: counts.approved,
+      color: "bg-green-100 text-green-800",
+      icon: CheckCircle,
+    },
+    {
+      label: t.rejected,
+      count: counts.rejected,
+      color: "bg-red-100 text-red-800",
+      icon: XCircle,
+    },
   ];
 
   const progressSteps = [
@@ -227,21 +253,38 @@ export default function Dashboard() {
   ];
 
   const getStatusBadge = (status: string) => {
-    const statusConfig: Record<string, { color: string; icon: any; label?: string }> = {
-      approved: { color: "bg-green-100 text-green-800", icon: CheckCircle, label: t.approved },
-      under_review: { color: "bg-yellow-100 text-yellow-800", icon: Clock, label: t.underReview },
-      rejected: { color: "bg-red-100 text-red-800", icon: XCircle, label: t.rejected },
+    const statusConfig: Record<
+      string,
+      { color: string; icon: any; label?: string }
+    > = {
+      approved: {
+        color: "bg-green-100 text-green-800",
+        icon: CheckCircle,
+        label: t.approved,
+      },
+      under_review: {
+        color: "bg-yellow-100 text-yellow-800",
+        icon: Clock,
+        label: t.underReview,
+      },
+      rejected: {
+        color: "bg-red-100 text-red-800",
+        icon: XCircle,
+        label: t.rejected,
+      },
     };
 
-    const key = (status || "").toString().toLowerCase().replace(/\s+/g, "_").replace(/-/g, "_");
+    const key = (status || "")
+      .toString()
+      .toLowerCase()
+      .replace(/\s+/g, "_")
+      .replace(/-/g, "_");
     const config = statusConfig[key] || null;
 
     if (!config) {
       // Unknown status: return a neutral badge
       return (
-        <Badge className="bg-gray-100 text-gray-800">
-          {status || "-"}
-        </Badge>
+        <Badge className="bg-gray-100 text-gray-800">{status || "-"}</Badge>
       );
     }
 

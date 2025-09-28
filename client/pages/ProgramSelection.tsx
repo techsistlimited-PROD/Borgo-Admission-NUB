@@ -174,14 +174,23 @@ export default function ProgramSelection() {
   }
   const { user, userType } = userContext;
   const [hasExistingApplication, setHasExistingApplication] = useState(false);
-  const [existingApplication, setExistingApplication] = useState<any | null>(null);
+  const [existingApplication, setExistingApplication] = useState<any | null>(
+    null,
+  );
 
   useEffect(() => {
     const checkExisting = async () => {
       try {
         if (userType === "applicant" && user?.university_id) {
-          const res = await apiClient.getApplications({ search: user.university_id });
-          if (res.success && res.data && Array.isArray(res.data.applications) && res.data.applications.length > 0) {
+          const res = await apiClient.getApplications({
+            search: user.university_id,
+          });
+          if (
+            res.success &&
+            res.data &&
+            Array.isArray(res.data.applications) &&
+            res.data.applications.length > 0
+          ) {
             setHasExistingApplication(true);
             setExistingApplication(res.data.applications[0]);
           }
@@ -1179,16 +1188,17 @@ export default function ProgramSelection() {
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="text-sm text-yellow-900">
-                      You already have an existing application{
-                        existingApplication?.trackingId
-                          ? ` (Tracking ID: ${existingApplication.trackingId})`
-                          : ""
-                      }. Applicants may only apply to one program. Please view or continue with your existing application.
+                      You already have an existing application
+                      {existingApplication?.trackingId
+                        ? ` (Tracking ID: ${existingApplication.trackingId})`
+                        : ""}
+                      . Applicants may only apply to one program. Please view or
+                      continue with your existing application.
                     </p>
                     <div className="mt-2">
                       <Button
                         variant="ghost"
-                        onClick={() => navigate('/dashboard')}
+                        onClick={() => navigate("/dashboard")}
                         className="text-sm"
                       >
                         View Application
@@ -2847,7 +2857,10 @@ export default function ProgramSelection() {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               ) : (
-                <Button variant="outline" onClick={() => navigate('/dashboard')}>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/dashboard")}
+                >
                   View Existing Application
                 </Button>
               )}
