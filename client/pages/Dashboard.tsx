@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Bell,
@@ -113,7 +114,7 @@ export default function Dashboard() {
       yes: "হ্যাঁ",
       no: "না",
       applicationTimeline: "আবেদনের সময়রেখা",
-      submitted: "আবেদন জমা দেওয়া হয়েছে",
+      submitted: "আ��েদন জমা দেওয়া হয়েছে",
       paymentReceived: "পেমেন্ট প্রা��্ত",
       documentVerified: "কাগজপত্র যাচাইকৃত",
       applicationApproved: "আবেদন অনুমোদিত",
