@@ -180,6 +180,7 @@ export default function AdmissionConfiguration() {
     useState<ProgramEligibilityConfig>({});
   // Referrers list for referral config preview
   const [referrersList, setReferrersList] = useState<any[]>([]);
+  const [programWaiverRules, setProgramWaiverRules] = useState<Record<string, { maxPercentage:number; types: string[] }>>({});
 
   // Dialog states
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
@@ -344,6 +345,7 @@ export default function AdmissionConfiguration() {
         ...settings,
         program_limits: programLimits,
         program_eligibility: programEligibility,
+        program_waiver_rules: programWaiverRules,
       };
 
       const response =
@@ -1426,6 +1428,58 @@ export default function AdmissionConfiguration() {
                   </ul>
                 </div>
               </div>
+
+<Card>
+  <CardHeader>
+    <CardTitle className="flex items-center gap-2">Waiver Rules</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="space-y-4">
+      <p className="text-sm text-gray-600">Configure per-program maximum waiver percentage and allowed waiver types.</p>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Program</TableHead>
+              <TableHead>Max Waiver %</TableHead>
+              <TableHead>Allowed Types</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Object.entries(programEligibility).map(([key, cfg]) => {
+              const rule = programWaiverRules[key] || { maxPercentage: settings.max_combined_waiver || 0, types: [] };
+              const programLabel = key.split("_").map(w => w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+              return (
+                <TableRow key={key}>
+                  <TableCell className="font-medium">{programLabel}</TableCell>
+                  <TableCell>
+                    <Input type="number" min={0} max={100} className="w-24" value={rule.maxPercentage} onChange={(e) => setProgramWaiverRules(prev => ({ ...prev, [key]: { ...(prev[key]||{types:[]}), maxPercentage: Number(e.target.value) } }))} />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      {['merit','sibling','staff','sports'].map(t => (
+                        <label key={t} className="inline-flex items-center gap-2 text-sm">
+                          <input type="checkbox" checked={rule.types.includes(t)} onChange={(e) => {
+                            setProgramWaiverRules(prev => {
+                              const prevTypes = prev[key]?.types || [];
+                              const nextTypes = e.target.checked ? [...prevTypes, t] : prevTypes.filter(x => x !== t);
+                              return { ...prev, [key]: { ...(prev[key]||{}), maxPercentage: rule.maxPercentage, types: nextTypes } };
+                            });
+                          }} />
+                          <span className="capitalize">{t}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  </CardContent>
+</Card>
 
               {/* Save Button */}
               <div className="flex justify-end">
