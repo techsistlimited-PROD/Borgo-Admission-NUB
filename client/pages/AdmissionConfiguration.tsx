@@ -178,6 +178,8 @@ export default function AdmissionConfiguration() {
   const [programLimits, setProgramLimits] = useState<ProgramLimits>({});
   const [programEligibility, setProgramEligibility] =
     useState<ProgramEligibilityConfig>({});
+  // Referrers list for referral config preview
+  const [referrersList, setReferrersList] = useState<any[]>([]);
 
   // Dialog states
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
