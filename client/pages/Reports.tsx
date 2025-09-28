@@ -722,7 +722,7 @@ export default function Reports() {
     },
     bn: {
       title: "রিপোর্ট ও বিশ্লেষণ",
-      subtitle: "সার্বিক ভর্তি রিপোর্ট এবং অন্তর্দৃষ্টি",
+      subtitle: "সার্বিক ভর্তি রিপোর্ট এবং অন্তর্দৃষ্���ি",
       dateRange: "তারিখের পরিসীমা",
       program: "প্রোগ্রাম",
       department: "বিভাগ",
@@ -766,7 +766,7 @@ export default function Reports() {
       revenueGenerated: "আয় সৃষ্টি",
 
       programWiseAdmissions:
-        "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
+        "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্��ীর সংখ্যা",
       employeeWiseCollection: "কর্মচারী অনুযায়ী ভর্তি ফি সংগ্রহ",
       dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্রহ রিপোর্ট",
 
@@ -774,7 +774,7 @@ export default function Reports() {
       rate: "হার",
       cse: "কম্পিউটা�� সায়েন্স ও ইঞ্জিনিয়ারি���",
       eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জ��নিয়ারিং",
-      mech: "মেকানিক্যাল ইঞ্��িনিয়ারিং",
+      mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
       textile: "টেক্সটাইল ইঞ্জিনিয়ারিং",
       bba: "ব্যবসায় প্রশাসন",
@@ -1830,6 +1830,65 @@ export default function Reports() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Referrals & Visitors Quick Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <Card className="bg-white shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-poppins text-deep-plum flex items-center gap-2">
+                    <Users className="w-5 h-5" /> Referral Program Summary
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Total Referrers</p>
+                      <p className="text-2xl font-bold text-deep-plum">{referralStats?.total_referrers ?? 0}</p>
+                      <p className="text-xs text-gray-500 mt-1">Total Commission: ৳{(referralStats?.total_commission || 0).toLocaleString()}</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <Sparkline points={Array(7).fill(referralStats?.total_referrers || 0)} />
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => setActiveReport('referrers')}>
+                          <Eye className="w-4 h-4 mr-2" /> View
+                        </Button>
+                        <Button size="sm" className="bg-deep-plum" onClick={fetchAndExportReferrers}>
+                          <Download className="w-4 h-4 mr-2" /> Export CSV
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-poppins text-deep-plum flex items-center gap-2">
+                    <Users className="w-5 h-5" /> Visitors Summary
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Total Visits</p>
+                      <p className="text-2xl font-bold text-deep-plum">{visitorsStats?.total_visits ?? 0}</p>
+                      <p className="text-xs text-gray-500 mt-1">Visits Today: {visitorsStats?.visits_today ?? 0}</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <Sparkline points={Array(7).fill(visitorsStats?.visits_today || 0)} />
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => setActiveReport('visitors')}>
+                          <Eye className="w-4 h-4 mr-2" /> View
+                        </Button>
+                        <Button size="sm" className="bg-deep-plum" onClick={fetchAndExportVisitors}>
+                          <Download className="w-4 h-4 mr-2" /> Export CSV
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               {/* Department-wise Admissions */}
