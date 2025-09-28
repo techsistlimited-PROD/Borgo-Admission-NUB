@@ -108,9 +108,13 @@ export default function Header({ showLogin = false }: HeaderProps) {
             <div className="hidden sm:flex items-center bg-gray-100 rounded-md p-1">
               <a href="/applicant-portal" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Applicant Portal</a>
               <a href="/admin" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admin Portal</a>
-              {/* Demo quick-access for role-specific portals */}
-              <button onClick={() => { signInAsLocal('admission_officer'); navigate('/admin/portal'); }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admission Officer</button>
-              <button onClick={() => { signInAsLocal('finance_officer'); navigate('/admin/portal'); }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Finance Officer</button>
+              {/* Demo quick-access for role-specific portals (homepage only) */}
+              {location.pathname === "/" && (
+                <>
+                  <button onClick={() => { signInAsLocal('admission_officer'); navigate('/admin/portal'); }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admission Officer</button>
+                  <button onClick={() => { signInAsLocal('finance_officer'); navigate('/admin/portal'); }} className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Finance Officer</button>
+                </>
+              )}
             </div>
 
             {/* New Application Button */}
