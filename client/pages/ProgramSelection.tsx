@@ -319,7 +319,7 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ৪র্থ বিষয় ছিল",
+      fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ৪র্থ ব��ষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা কর��ন",
       availableWaivers: "���পল��্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
@@ -991,6 +991,17 @@ export default function ProgramSelection() {
       }
     }
 
+    // Enforce single application rule
+    if (hasExistingApplication) {
+      toast({
+        title: "Existing Application Found",
+        description:
+          "You already have an application. Applicants are allowed to apply to only one program. Please view your existing application.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSaving(true);
 
     try {
@@ -1126,7 +1137,7 @@ export default function ProgramSelection() {
                 onClick={clearAllFormData}
                 className="bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
               >
-                🗑️ Clear Form
+                🗑�� Clear Form
               </Button>
 
               {/* Language Toggle */}
