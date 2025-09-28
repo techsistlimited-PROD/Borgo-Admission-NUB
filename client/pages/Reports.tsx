@@ -522,6 +522,10 @@ export default function Reports() {
   const [activeReportCategory, setActiveReportCategory] = useState("overview");
   const [activeReport, setActiveReport] = useState<string | null>(null);
 
+  // Referral & Visitors stats
+  const [referralStats, setReferralStats] = useState<{ total_referrers: number; total_commission: number } | null>(null);
+  const [visitorsStats, setVisitorsStats] = useState<{ total_visits: number; visits_today: number } | null>(null);
+
   const texts = {
     en: {
       title: "Reports & Analytics",
@@ -694,7 +698,7 @@ export default function Reports() {
       programWiseAdmissions:
         "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
       employeeWiseCollection: "কর্মচারী অনুযায়ী ভর্তি ফি সংগ্রহ",
-      dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্রহ রিপোর্ট",
+      dailyCollectionReport: "ভর্তি কর্ম���র্তাদের দ���নিক সংগ্রহ রিপোর্ট",
 
       departmentColumn: "বিভাগ",
       rate: "হার",
