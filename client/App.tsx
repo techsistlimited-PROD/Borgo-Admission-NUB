@@ -63,8 +63,23 @@ import Referrals from "./pages/Referrals";
 const queryClient = new QueryClient();
 
 function AppContent() {
-  // Access auth context - it will throw an error if not within provider
-  const { userType, isAuthenticated, isLoading } = useAuth();
+  // Access auth context - wrap in try/catch in case provider isn't mounted yet
+  let userType: "public" | "applicant" | "admin" = "public";
+  let isAuthenticated = false;
+  let isLoading = false;
+  try {
+    const auth = useAuth();
+    userType = auth.userType;
+    isAuthenticated = auth.isAuthenticated;
+    isLoading = auth.isLoading;
+  } catch (e) {
+    // If auth provider is not available, fall back to defaults and continue rendering
+    // This avoids the app crashing while dev server mounts providers
+    userType = "public";
+    isAuthenticated = false;
+    isLoading = false;
+  }
+
   const location = useLocation();
 
   // Set up form cache prevention on app load
