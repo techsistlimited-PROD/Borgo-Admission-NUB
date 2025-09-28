@@ -23,9 +23,10 @@ export default function Header({ showLogin = false }: HeaderProps) {
   const navigate = useNavigate();
 
   // Try to get auth context, but don't fail if it's not available
-  let user = null;
+  let user: any = null;
   let logout = () => {};
-  let userType = null;
+  let userType: "public" | "applicant" | "admin" = "public";
+  let roleLocal: string | null = null;
 
   let setRole = (r: string | null) => {};
   let setPermissions = (p: string[]) => {};
@@ -35,6 +36,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
     user = auth.user;
     logout = auth.logout;
     userType = auth.userType;
+    roleLocal = auth.role ?? null;
     // role/permissions helpers (frontend-only)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setRole = auth.setRole ?? setRole;
@@ -55,7 +57,23 @@ export default function Header({ showLogin = false }: HeaderProps) {
     // Application context not available
   }
 
-  const handleNewApplication = () => {
+  const { toast } = useToast();
+
+  const handleNewApplication = async () => {
+    // If logged in as applicant, check if they already have an application
+    try {
+      if (userType === "applicant" && user?.university_id) {
+        const res = await apiClient.getApplications({ search: user.university_id });
+        if (res.success && res.data && (res.data.applications || []).length > 0) {
+          toast({ title: "Application exists", description: "You already have an application. You cannot start a new one.", duration: 6000 });
+          navigate("/dashboard");
+          return;
+        }
+      }
+    } catch (err) {
+      // ignore errors and proceed
+    }
+
     // Clear all form data
     clearApplicationData();
 
