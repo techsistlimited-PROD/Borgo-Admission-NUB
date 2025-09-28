@@ -59,6 +59,7 @@ export default function ApplicantDetail() {
   const [approvalNote, setApprovalNote] = useState("");
   const [rejectionReason, setRejectionReason] = useState("");
   const [mrNumber, setMrNumber] = useState<string | null>(null);
+  const [mrUrl, setMrUrl] = useState<string | null>(null);
 
   const texts = {
     en: {
