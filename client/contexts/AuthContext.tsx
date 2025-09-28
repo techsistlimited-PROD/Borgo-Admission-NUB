@@ -143,6 +143,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const userType = user?.type || "public";
   const isAuthenticated = !!user;
 
+  // Demo helper to sign in as a specific role without real backend auth
+  const signInAs = (r: string) => {
+    // create a mock admin user in session
+    const demoUser: User = {
+      id: 9999,
+      name: r === "admission_officer" ? "Admission Officer (Demo)" : r === "finance_officer" ? "Finance Officer (Demo)" : "Admin (Demo)",
+      email: r + "@nu.demo",
+      type: "admin",
+      department: r === "finance_officer" ? "Finance" : "Admissions",
+    } as User;
+
+    setUser(demoUser);
+    localStorage.setItem("nu_token", "demo-token");
+    // Set role and default permissions per role
+    setRole(r);
+    if (r === "admin") setPermissions(["all"]);
+    else if (r === "admission_officer") setPermissions(["applications:view","applications:approve","waivers:manage"]);
+    else if (r === "finance_officer") setPermissions(["finance:view","finance:billing"]);
+    else setPermissions([]);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -157,6 +178,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         isLoading,
         isAuthenticated,
+        signInAs,
       }}
     >
       {children}
