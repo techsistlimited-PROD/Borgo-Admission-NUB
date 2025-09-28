@@ -748,16 +748,19 @@ export default function AdmissionConfiguration() {
                 <div>
                   <Label htmlFor="late_deadline">Late Fee Deadline</Label>
                   <Input
-                    id="late_deadline"
-                    type="datetime-local"
-                    value={settings.late_fee_deadline?.slice(0, 16) || ""}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        late_fee_deadline: e.target.value,
-                      })
-                    }
-                  />
+                  id="late_deadline"
+                  type="datetime-local"
+                  value={settings.late_fee_deadline?.slice(0, 16) || ""}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      late_fee_deadline: e.target.value,
+                    })
+                  }
+                />
+                {errors.late_fee_deadline && (
+                  <p className="text-sm text-red-600 mt-1">{errors.late_fee_deadline}</p>
+                )}
                 </div>
                 <div>
                   <Label htmlFor="session_name">Session Name</Label>
