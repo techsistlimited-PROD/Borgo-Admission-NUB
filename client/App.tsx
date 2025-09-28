@@ -37,6 +37,8 @@ import ReviewPayment from "./pages/ReviewPayment";
 
 // Admin Pages
 import AdminLogin from "./pages/AdminLogin";
+import AdmissionOfficerLogin from "./pages/AdmissionOfficerLogin";
+import FinanceOfficerLogin from "./pages/FinanceOfficerLogin";
 import AdminAdmissionList from "./pages/AdminAdmissionList";
 import ApplicantDetail from "./pages/ApplicantDetail";
 import AdmissionConfiguration from "./pages/AdmissionConfiguration";
