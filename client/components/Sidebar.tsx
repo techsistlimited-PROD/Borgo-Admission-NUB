@@ -92,6 +92,11 @@ export default function Sidebar({ userType }: SidebarProps) {
       path: "/admin/configuration",
       icon: Settings,
     },
+    {
+      name: "Permission Configuration",
+      path: "/admin/permissions",
+      icon: Shield,
+    },
   ];
 
   const loginPages = [

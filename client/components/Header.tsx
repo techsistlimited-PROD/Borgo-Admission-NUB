@@ -101,6 +101,12 @@ export default function Header({ showLogin = false }: HeaderProps) {
 
           {/* Right side */}
           <div className="flex items-center space-x-4">
+            {/* Top-level portal switcher (always visible) */}
+            <div className="hidden sm:flex items-center bg-gray-100 rounded-md p-1">
+              <a href="/applicant-portal" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Applicant Portal</a>
+              <a href="/admin" className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum">Admin Portal</a>
+            </div>
+
             {/* New Application Button */}
             <Button
               onClick={handleNewApplication}
