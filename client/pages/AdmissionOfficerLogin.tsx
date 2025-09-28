@@ -46,11 +46,11 @@ export default function AdmissionOfficerLogin() {
     try {
       const demo = getDemoCredentials();
       if (demo && demo.admin) {
-        setEmail(demo.admin.email || "admission@nu.edu.bd");
+        setEmail(demo.admin.identifier || "admin@nu.edu.bd");
         setPassword(demo.admin.password || "admin123");
       } else {
-        setEmail("admission@nu.edu.bd");
-        setPassword("admission123");
+        setEmail("admin@nu.edu.bd");
+        setPassword("admin123");
       }
     } catch {
       setEmail("admission@nu.edu.bd");
