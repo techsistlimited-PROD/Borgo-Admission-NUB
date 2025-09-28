@@ -866,6 +866,33 @@ class MockApiService {
 
     return { success: true, data: requirements };
   }
+
+  async createDocumentRequirement(requirement: any): Promise<ApiResponse<{ requirement: any }>> {
+    await this.delay();
+    const id = (Math.max(0, ...this.documentRequirements.map((d:any)=>d.id)) + 1) || 1;
+    const rec = { id, ...requirement };
+    // ensure array exists
+    (this as any).documentRequirements = (this as any).documentRequirements || [];
+    (this as any).documentRequirements.push(rec);
+    return { success: true, data: { requirement: rec } };
+  }
+
+  async updateDocumentRequirement(id: string, requirement: any): Promise<ApiResponse<{ requirement: any }>> {
+    await this.delay();
+    const idx = ((this as any).documentRequirements || []).findIndex((d:any)=>String(d.id)===String(id));
+    if (idx === -1) return { success: false, error: 'Document requirement not found' };
+    (this as any).documentRequirements[idx] = { ...((this as any).documentRequirements[idx]||{}), ...requirement };
+    return { success: true, data: { requirement: (this as any).documentRequirements[idx] } };
+  }
+
+  async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
+    await this.delay();
+    const arr = (this as any).documentRequirements || [];
+    const idx = arr.findIndex((d:any)=>String(d.id)===String(id));
+    if (idx === -1) return { success: false, error: 'Document requirement not found' };
+    arr.splice(idx,1);
+    return { success: true, message: 'Deleted' };
+  }
   // Visitors log (offline entries by admission officers)
   private visitors: any[] = [
     {
