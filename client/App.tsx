@@ -312,6 +312,17 @@ function AppContent() {
               }
             />
 
+            <Route
+              path="/admin/visitors-log"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <VisitorsLog />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
           </Routes>
