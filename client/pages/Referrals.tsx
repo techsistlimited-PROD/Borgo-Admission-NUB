@@ -87,7 +87,7 @@ export default function Referrals() {
           <Select onValueChange={(v:any) => setDepartmentFilter(v || undefined)}>
             <SelectTrigger className="w-48"><SelectValue placeholder="All Departments"/></SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All</SelectItem>
+              <SelectItem value="all">All</SelectItem>
               {departments.map(d => (
                 <SelectItem key={d} value={d}>{d}</SelectItem>
               ))}
