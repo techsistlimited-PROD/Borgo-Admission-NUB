@@ -289,6 +289,7 @@ export default function AdmissionConfiguration() {
       const settingsResponse = await apiClient.getAdmissionSettings();
       if (settingsResponse.success && settingsResponse.data) {
         setSettings(settingsResponse.data);
+        setProgramWaiverRules(settingsResponse.data.program_waiver_rules || {});
         // Initialize program configurations with settings data
         initializeProgramConfigurations(settingsResponse.data);
       } else {
