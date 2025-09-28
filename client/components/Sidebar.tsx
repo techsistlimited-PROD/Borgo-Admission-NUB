@@ -118,17 +118,14 @@ export default function Sidebar({ userType }: SidebarProps) {
         },
         { name: "Visitors Log", path: "/admin/visitors-log", icon: Users },
         { name: "Referrals", path: "/admin/referrals", icon: Users },
+        { name: "Reports", path: "/admin/reports?scope=admission", icon: PieChart },
       ];
 
     if (role === "finance_officer")
       return [
         { name: "Finance", path: "/admin/finance", icon: CreditCard },
-        {
-          name: "ID Card Generation",
-          path: "/admin/id-card-generation",
-          icon: Shield,
-        },
-        { name: "Reports", path: "/admin/reports", icon: PieChart },
+        // Finance officers shouldn't see ID Card Generation
+        { name: "Reports", path: "/admin/reports?scope=finance", icon: PieChart },
         { name: "Referrals", path: "/admin/referrals", icon: Users },
       ];
 
