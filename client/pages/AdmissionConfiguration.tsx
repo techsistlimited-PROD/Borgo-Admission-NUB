@@ -1577,6 +1577,44 @@ export default function AdmissionConfiguration() {
                 </div>
               </div>
 
+              {/* Program Test Requirements */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-deep-plum">Program-wise Test Requirements</h3>
+                <p className="text-sm text-gray-600">Toggle which programs require an admission test and adjust test fee per program.</p>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Program</TableHead>
+                        <TableHead>Level</TableHead>
+                        <TableHead>Requires Test</TableHead>
+                        <TableHead>Test Fee (৳)</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {PROGRAM_ELIGIBILITY_RULES.map((p) => {
+                        const cfg = programTestConfig[p.programId] || { requiresAdmissionTest: p.requiresAdmissionTest || false, admissionTestFee: p.admissionTestFee || 0 };
+                        return (
+                          <TableRow key={p.programId}>
+                            <TableCell className="font-medium">{p.programName}</TableCell>
+                            <TableCell>{p.level === 'undergraduate' ? 'Undergraduate' : 'Postgraduate'}</TableCell>
+                            <TableCell>
+                              <Switch checked={!!cfg.requiresAdmissionTest} onCheckedChange={(v) => setProgramTestConfig(prev => ({ ...prev, [p.programId]: { ...(prev[p.programId]||{}), requiresAdmissionTest: v as boolean, admissionTestFee: cfg.admissionTestFee } }))} aria-label={`Toggle admission test for ${p.programName}`} />
+                            </TableCell>
+                            <TableCell>
+                              <Input type="number" min={0} className="w-36" value={cfg.admissionTestFee} onChange={(e) => {
+                                const val = Number(e.target.value) || 0;
+                                setProgramTestConfig(prev => ({ ...prev, [p.programId]: { ...(prev[p.programId]||{}), admissionTestFee: val, requiresAdmissionTest: cfg.requiresAdmissionTest } }));
+                              }} aria-label={`Admission test fee for ${p.programName}`} />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+
               <Separator />
 
               {/* Law Department Test Configuration */}
