@@ -48,7 +48,7 @@ import {
   TableRow,
 } from "../components/ui/table";
 import { getIDGenerationStats, sampleStudentIDs } from "../lib/idGeneration";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useLocation } from "react-router-dom";
 
 // Dummy data for reports
@@ -730,7 +730,7 @@ export default function Reports() {
       department: "বিভাগ",
       semester: "সেমিস্টার",
       year: "বছর",
-      generateReport: "রিপোর্��� তৈরি করুন",
+      generateReport: "রিপোর্��� তৈর��� করুন",
       exportPDF: "পিডিএফ এক্সপোর্ট",
       downloadReport: "প��ডিএফ ডাউনলোড",
       viewReport: "রিপোর্ট দেখুন",
@@ -770,7 +770,7 @@ export default function Reports() {
       programWiseAdmissions:
         "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্��ীর সংখ্যা",
       employeeWiseCollection: "কর্মচারী অনুযায়ী ভর্তি ফি সংগ্রহ",
-      dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্রহ রিপোর্ট",
+      dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্র�� রিপোর্ট",
 
       departmentColumn: "বিভাগ",
       rate: "হার",
