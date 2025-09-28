@@ -1,5 +1,3 @@
-// Mock API Service for Development (No Backend Required)
-
 export interface User {
   id: number;
   uuid: string;
@@ -33,6 +31,7 @@ export interface Application {
   academic_history?: any;
   documents?: any;
   payment_info?: any;
+  admission_test_status?: "required" | "not_required" | "completed" | "pending";
 }
 
 export interface LoginCredentials {
@@ -87,6 +86,7 @@ class MockApiService {
       semester: "Spring 2024",
       semester_type: "Regular",
       created_at: "2024-01-15T10:00:00Z",
+      admission_test_status: "pending",
     },
     {
       id: "app-002",
@@ -106,6 +106,7 @@ class MockApiService {
       semester: "Spring 2024",
       semester_type: "Regular",
       created_at: "2024-01-14T09:00:00Z",
+      admission_test_status: "completed",
     },
   ];
 
@@ -248,6 +249,13 @@ class MockApiService {
     search?: string;
     page?: number;
     limit?: number;
+    program_code?: string;
+    campus?: string;
+    semester?: string;
+    admission_type?: string;
+    admission_test_status?: string;
+    dateFrom?: string;
+    dateTo?: string;
   }): Promise<ApiResponse<{ applications: Application[]; total: number }>> {
     await this.delay();
 
@@ -255,6 +263,42 @@ class MockApiService {
 
     if (params?.status && params.status !== "all") {
       filteredApps = filteredApps.filter((app) => app.status === params.status);
+    }
+
+    if (params?.program_code) {
+      filteredApps = filteredApps.filter(
+        (app) => app.program_code === params.program_code,
+      );
+    }
+
+    if (params?.campus) {
+      filteredApps = filteredApps.filter((app) => app.campus === params.campus);
+    }
+
+    if (params?.semester) {
+      filteredApps = filteredApps.filter((app) => app.semester === params.semester);
+    }
+
+    if (params?.admission_type) {
+      filteredApps = filteredApps.filter(
+        (app) => app.admission_type === params.admission_type,
+      );
+    }
+
+    if (params?.admission_test_status) {
+      filteredApps = filteredApps.filter(
+        (app) => app.admission_test_status === params.admission_test_status,
+      );
+    }
+
+    if (params?.dateFrom) {
+      const from = new Date(params.dateFrom);
+      filteredApps = filteredApps.filter((app) => new Date(app.created_at) >= from);
+    }
+
+    if (params?.dateTo) {
+      const to = new Date(params.dateTo);
+      filteredApps = filteredApps.filter((app) => new Date(app.created_at) <= to);
     }
 
     if (params?.search) {
@@ -268,10 +312,16 @@ class MockApiService {
       );
     }
 
+    // Pagination
+    const page = params?.page || 1;
+    const limit = params?.limit || filteredApps.length;
+    const start = (page - 1) * limit;
+    const paged = filteredApps.slice(start, start + limit);
+
     return {
       success: true,
       data: {
-        applications: filteredApps,
+        applications: paged,
         total: filteredApps.length,
       },
     };
@@ -353,6 +403,7 @@ class MockApiService {
       personal_info: data,
       academic_history: data.academic_history,
       documents: data.documents,
+      admission_test_status: data.admission_test_status || "pending",
     };
 
     this.applications.push(newApplication);
@@ -431,6 +482,15 @@ class MockApiService {
         .length,
       payment_pending: this.applications.filter(
         (app) => app.status === "payment_pending",
+      ).length,
+      credit_transfer: this.applications.filter(
+        (app) => app.admission_type === "credit_transfer",
+      ).length,
+      admission_test_required: this.applications.filter(
+        (app) => app.admission_test_status === "required",
+      ).length,
+      admission_test_completed: this.applications.filter(
+        (app) => app.admission_test_status === "completed",
       ).length,
     };
 
@@ -798,67 +858,12 @@ class MockApiService {
         description: "Original HSC certificate or equivalent",
         order_priority: 2,
       },
-      {
-        id: 3,
-        name: "Passport Photo",
-        type: "personal",
-        is_required: true,
-        allowed_formats: ["JPG", "PNG"],
-        max_file_size: "2MB",
-        description: "Recent passport-size photograph",
-        order_priority: 3,
-      },
-      {
-        id: 4,
-        name: "National ID",
-        type: "personal",
-        is_required: true,
-        allowed_formats: ["PDF", "JPG", "PNG"],
-        max_file_size: "3MB",
-        description: "National ID card or birth certificate",
-        order_priority: 4,
-      },
-      {
-        id: 5,
-        name: "Transcript",
-        type: "academic",
-        is_required: false,
-        allowed_formats: ["PDF"],
-        max_file_size: "10MB",
-        description: "Official academic transcript for credit transfer",
-        order_priority: 5,
-      },
     ];
 
     return { success: true, data: requirements };
   }
-
-  async createDocumentRequirement(requirement: any): Promise<ApiResponse> {
-    await this.delay();
-    return {
-      success: true,
-      message: "Document requirement created successfully",
-    };
-  }
-
-  async updateDocumentRequirement(
-    id: string,
-    requirement: any,
-  ): Promise<ApiResponse> {
-    await this.delay();
-    return {
-      success: true,
-      message: "Document requirement updated successfully",
-    };
-  }
-
-  async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
-    await this.delay();
-    return {
-      success: true,
-      message: "Document requirement deleted successfully",
-    };
-  }
 }
 
+// Export singleton
 export const mockApi = new MockApiService();
+export type { Application, ApiResponse, User };
