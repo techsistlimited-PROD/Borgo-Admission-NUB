@@ -353,12 +353,39 @@ export default function AdmissionConfiguration() {
     try {
       setSaving(true);
 
+      // Basic validation
+      // Ensure dates are logical
+      const start = settings.application_start_date ? new Date(settings.application_start_date) : null;
+      const deadline = settings.application_deadline ? new Date(settings.application_deadline) : null;
+      const lateDeadline = settings.late_fee_deadline ? new Date(settings.late_fee_deadline) : null;
+      if (start && deadline && start > deadline) {
+        toast({ title: "Validation Error", description: "Application start date must be before the application deadline.", variant: "destructive" });
+        setSaving(false);
+        return;
+      }
+      if (deadline && lateDeadline && deadline > lateDeadline) {
+        toast({ title: "Validation Error", description: "Application deadline must be before the late fee deadline.", variant: "destructive" });
+        setSaving(false);
+        return;
+      }
+
+      // Validate referral commission
+      if (settings.default_referral_commission != null) {
+        const v = Number(settings.default_referral_commission);
+        if (isNaN(v) || v < 0 || v > 100) {
+          toast({ title: "Validation Error", description: "Default referral commission must be between 0 and 100.", variant: "destructive" });
+          setSaving(false);
+          return;
+        }
+      }
+
       // Combine all settings including program limits and eligibility
       const combinedSettings = {
         ...settings,
         program_limits: programLimits,
         program_eligibility: programEligibility,
         program_waiver_rules: programWaiverRules,
+        program_test_config: programTestConfig,
       };
 
       const response =
