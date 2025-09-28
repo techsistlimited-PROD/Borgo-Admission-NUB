@@ -247,6 +247,39 @@ function AppContent() {
                 )
               }
             />
+
+            <Route
+              path="/admin/portal"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminPortal />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
+            <Route
+              path="/admin/users"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminUsers />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
+            <Route
+              path="/admin/permissions"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <PermissionConfig />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
             <Route
               path="/admin/syllabus"
               element={
