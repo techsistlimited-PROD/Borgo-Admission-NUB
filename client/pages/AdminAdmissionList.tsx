@@ -497,12 +497,12 @@ export default function AdminAdmissionList() {
 
               {/* Program Filter */}
               <div className="md:w-48">
-                <Select value={programFilter || ""} onValueChange={(v) => setProgramFilter(v || undefined)}>
+                <Select value={programFilter ?? "all"} onValueChange={(v) => setProgramFilter(v === "all" ? undefined : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder={t.program} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Programs</SelectItem>
+                    <SelectItem value="all">All Programs</SelectItem>
                     {programs.map((p) => (
                       <SelectItem key={p.code} value={p.code}>{p.name}</SelectItem>
                     ))}
