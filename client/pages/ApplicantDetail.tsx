@@ -702,7 +702,7 @@ export default function ApplicantDetail() {
                 <div className="border-t pt-3 space-y-2">
                   <Button variant="outline" className="w-full"><Mail className="w-4 h-4 mr-2" />{t.sendEmail}</Button>
                   <Button variant="outline" className="w-full"><MessageSquare className="w-4 h-4 mr-2" />{t.sendSMS}</Button>
-                  <Button variant="outline" className="w-full" onClick={() => { /* download invoice/preview */ }}><Download className="w-4 h-4 mr-2" />{t.downloadInvoice}</Button>
+                  <Button variant="outline" className="w-full" onClick={() => { if (mrUrl) { window.open(mrUrl, "_blank"); } else { toast({ title: "No receipt", description: "No money receipt available" }); } }}><Download className="w-4 h-4 mr-2" />{t.downloadInvoice}</Button>
                 </div>
               </CardContent>
             </Card>
