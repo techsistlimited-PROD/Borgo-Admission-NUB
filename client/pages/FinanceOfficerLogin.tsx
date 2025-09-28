@@ -44,11 +44,11 @@ export default function FinanceOfficerLogin() {
     try {
       const demo = getDemoCredentials();
       if (demo && demo.admin) {
-        setEmail(demo.admin.email || "finance@nu.edu.bd");
+        setEmail(demo.admin.identifier || "admin@nu.edu.bd");
         setPassword(demo.admin.password || "admin123");
       } else {
-        setEmail("finance@nu.edu.bd");
-        setPassword("finance123");
+        setEmail("admin@nu.edu.bd");
+        setPassword("admin123");
       }
     } catch {
       setEmail("finance@nu.edu.bd");
