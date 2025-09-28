@@ -761,7 +761,7 @@ export default function Reports() {
       pendingApplications: "��পেক্ষমাণ আবেদন",
       departmentWiseAdmissions: "বিভাগ অনুযায়ী ভর্তি",
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
-      admissionRate: "ভর্তির হার",
+      admissionRate: "ভর্তি�� হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
       topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
       revenueGenerated: "আয় ���ৃষ্টি",
@@ -777,7 +777,7 @@ export default function Reports() {
       eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জ��নিয়ারিং",
       mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
-      textile: "টেক্সটাইল ইঞ্জিনিয়ারিং",
+      textile: "টেক্সটাইল ইঞ্জ��নিয়ারিং",
       bba: "ব্যবসায় প্রশাসন",
       law: "আইন",
       architecture: "স্থাপত্য",
@@ -788,6 +788,20 @@ export default function Reports() {
   };
 
   const t: any = texts[language];
+
+  // scope/referrer from URL
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const scope = params.get('scope'); // 'finance' | 'admission' | null
+  const referrerFilter = params.get('referrer');
+  const showFinance = !scope || scope === 'finance';
+  const showAdmission = !scope || scope === 'admission';
+
+  // Helper to apply referrer filter on employee data
+  const getFilteredEmployeeData = () => {
+    if (!referrerFilter) return employeeCollectionData;
+    return employeeCollectionData.filter(e => (e.employeeId || '').toLowerCase() === referrerFilter.toLowerCase());
+  };
 
   // Fetch referral and visitors stats
   useEffect(() => {
