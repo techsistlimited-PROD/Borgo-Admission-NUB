@@ -27,6 +27,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
 
   let setRole = (r: string | null) => {};
   let setPermissions = (p: string[]) => {};
+  let signInAsLocal = (r: string) => {};
   try {
     const auth = useAuth();
     user = auth.user;
@@ -37,6 +38,8 @@ export default function Header({ showLogin = false }: HeaderProps) {
     setRole = auth.setRole ?? setRole;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setPermissions = auth.setPermissions ?? setPermissions;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    signInAsLocal = auth.signInAs ?? signInAsLocal;
   } catch {
     // Auth context not available (applicant app)
   }
