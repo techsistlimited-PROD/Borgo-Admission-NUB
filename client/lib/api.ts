@@ -190,6 +190,15 @@ class ApiClient {
   async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
     return await mockApi.deleteDocumentRequirement(id);
   }
+
+  // Students & Finance (mock)
+  async createStudentRecord(applicationId: string, ids: { university_id: string; ugc_id?: string; batch?: string }): Promise<ApiResponse> {
+    return await mockApi.createStudentRecord(applicationId, ids);
+  }
+
+  async generateMoneyReceipt(applicationId: string, amount: number): Promise<ApiResponse> {
+    return await mockApi.generateMoneyReceipt(applicationId, amount);
+  }
 }
 
 // Create singleton instance
