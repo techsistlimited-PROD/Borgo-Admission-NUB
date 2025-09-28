@@ -233,6 +233,17 @@ function AppContent() {
                 )
               }
             />
+
+            <Route
+              path="/admin/messaging"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <MessagingTemplates />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
             <Route
               path="/admin/syllabus"
               element={
