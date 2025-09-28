@@ -546,6 +546,10 @@ export default function AdmissionCircular() {
                     <Label>Application Fee (৳)</Label>
                     <Input
                       type="number"
+                      min={0}
+                      required
+                      aria-required
+                      aria-label="Application fee"
                       value={newCircular.fees?.application}
                       onChange={(e) =>
                         setNewCircular((prev) => ({
