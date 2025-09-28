@@ -147,6 +147,27 @@ class ApiClient {
     return await mockApi.getReferrerStats(employee_id);
   }
 
+  // Visitors Log
+  async getVisitors(params?: { page?: number; limit?: number; campus?: string; dateFrom?: string; dateTo?: string; search?: string; }): Promise<ApiResponse> {
+    return await mockApi.getVisitors(params);
+  }
+
+  async createVisitor(record: any): Promise<ApiResponse> {
+    return await mockApi.createVisitor(record);
+  }
+
+  async updateVisitor(id: string, updates: any): Promise<ApiResponse> {
+    return await mockApi.updateVisitor(id, updates);
+  }
+
+  async deleteVisitor(id: string): Promise<ApiResponse> {
+    return await mockApi.deleteVisitor(id);
+  }
+
+  async exportVisitors(params?: any): Promise<ApiResponse<any[]>> {
+    return await mockApi.exportVisitors(params);
+  }
+
   // Configuration methods
   async getAdmissionSettings(): Promise<ApiResponse> {
     return await mockApi.getAdmissionSettings();
