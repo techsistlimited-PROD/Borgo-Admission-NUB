@@ -24,8 +24,16 @@ class ApiClient {
   private token: string | null = null;
 
   constructor() {
-    // Get token from localStorage on initialization
-    this.token = localStorage.getItem("nu_token");
+    // Get token from localStorage on initialization (guard for SSR / test env)
+    try {
+      if (typeof localStorage !== "undefined" && localStorage.getItem) {
+        this.token = localStorage.getItem("nu_token");
+      } else {
+        this.token = null;
+      }
+    } catch (e) {
+      this.token = null;
+    }
   }
 
   setToken(token: string) {
