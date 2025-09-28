@@ -1088,7 +1088,8 @@ export default function ProgramSelection() {
     hasRequiredAcademicInfo() &&
     eligibilityChecked &&
     eligibilityResult?.isEligible &&
-    (!currentProgramStatus || currentProgramStatus.available); // Check program limits
+    (!currentProgramStatus || currentProgramStatus.available) &&
+    !hasExistingApplication; // Check program limits and single-application rule
 
   return (
     <div>
@@ -2029,7 +2030,7 @@ export default function ProgramSelection() {
                         {/* General Eligibility Information */}
                         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                           <h5 className="font-semibold text-blue-800 mb-2">
-                            📋 General Eligibility Requirements:
+                            �� General Eligibility Requirements:
                           </h5>
                           <div className="text-sm text-blue-700 space-y-2">
                             <div>
