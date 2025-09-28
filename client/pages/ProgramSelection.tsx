@@ -33,6 +33,8 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { Separator } from "../components/ui/separator";
 import { useApplication } from "../contexts/ApplicationContext";
 import { useToast } from "../hooks/use-toast";
+import { useAuth } from "../contexts/AuthContext";
+import apiClient from "../lib/api";
 import {
   programs,
   departments,
@@ -309,7 +311,7 @@ export default function ProgramSelection() {
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "����িপিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
-      selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চন করুন",
+      selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চ�� করুন",
       selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
       enterGPAValues:
         "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
