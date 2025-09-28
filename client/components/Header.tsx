@@ -196,7 +196,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
                 </DropdownMenu>
               </div>
             ) : showLogin ? (
-              <div className="flex gap-2">
+              <div className="flex gap-2 sm:hidden">
                 <Button
                   asChild
                   variant="outline"
