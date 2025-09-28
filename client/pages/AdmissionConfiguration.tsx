@@ -181,6 +181,7 @@ export default function AdmissionConfiguration() {
   // Referrers list for referral config preview
   const [referrersList, setReferrersList] = useState<any[]>([]);
   const [programWaiverRules, setProgramWaiverRules] = useState<Record<string, { maxPercentage:number; types: string[] }>>({});
+  const [programTestConfig, setProgramTestConfig] = useState<Record<string, { requiresAdmissionTest: boolean; admissionTestFee: number }>>({});
 
   // Dialog states
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
