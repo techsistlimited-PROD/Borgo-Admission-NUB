@@ -29,8 +29,31 @@ import {
   TableRow,
 } from "../components/ui/table";
 
+import { useAuth } from "@/contexts/AuthContext";
+import apiClient from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
+
 export default function Dashboard() {
   const [language, setLanguage] = useState<"en" | "bn">("en");
+  const { toast } = useToast();
+  const { user, userType } = useAuth();
+  const [fetchedApplications, setFetchedApplications] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      if (userType === "applicant" && user?.university_id) {
+        try {
+          const res = await apiClient.getApplications({ search: user.university_id });
+          if (res.success && res.data) {
+            setFetchedApplications(res.data.applications || []);
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
+    load();
+  }, [user, userType]);
 
   const texts = {
     en: {
