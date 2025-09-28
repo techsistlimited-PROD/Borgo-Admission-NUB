@@ -279,6 +279,16 @@ export default function AdmissionConfiguration() {
     });
 
     setProgramEligibility(defaultEligibility);
+
+    // Initialize programTestConfig defaults from PROGRAM_ELIGIBILITY_RULES if empty
+    const defaultTestConfig: Record<string, { requiresAdmissionTest: boolean; admissionTestFee: number }> = {};
+    PROGRAM_ELIGIBILITY_RULES.forEach((p) => {
+      defaultTestConfig[p.programId] = {
+        requiresAdmissionTest: p.requiresAdmissionTest || false,
+        admissionTestFee: p.admissionTestFee || 0,
+      };
+    });
+    setProgramTestConfig((prev) => ({ ...defaultTestConfig, ...prev }));
   };
 
   // Load data
