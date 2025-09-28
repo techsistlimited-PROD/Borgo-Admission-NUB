@@ -130,6 +130,36 @@ export default function Dashboard() {
 
   const t = texts[language];
 
+  const defaultApplications = [
+    {
+      id: 1,
+      trackingId: "NU2024001234",
+      program: "BSc Computer Science",
+      status: "approved",
+      payslip: true,
+      submittedDate: "2024-01-15",
+      statusText: t.approved,
+    },
+    {
+      id: 2,
+      trackingId: "NU2024001235",
+      program: "BSc Electrical Engineering",
+      status: "under_review",
+      payslip: true,
+      submittedDate: "2024-01-20",
+      statusText: t.underReview,
+    },
+    {
+      id: 3,
+      trackingId: "NU2024001236",
+      program: "MSc Data Science",
+      status: "rejected",
+      payslip: false,
+      submittedDate: "2024-01-10",
+      statusText: t.rejected,
+    },
+  ];
+
   // Compute counts from fetchedApplications (fallback to sample `applications` if none)
   let apps = fetchedApplications ?? defaultApplications;
 
