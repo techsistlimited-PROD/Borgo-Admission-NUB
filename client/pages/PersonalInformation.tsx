@@ -213,7 +213,7 @@ export default function PersonalInformation() {
       male: "পুরুষ",
       female: "মহিলা",
       other: "অন্যান্য",
-      photoUpload: "ছব�� আপলোড",
+      photoUpload: "ছব���� আপলোড",
       nidCertificate: "এনআইডি/পাসপোর্ট/জন্ম সনদ",
       sscCertificate: "এসএসসি সনদপত্র",
       hscCertificate: "এইচএসসি সনদপত্র",
@@ -802,101 +802,103 @@ export default function PersonalInformation() {
               </CardContent>
             </Card>
 
-            {/* Referral Information */}
-            <Card className="bg-white shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  {t.referralInfo}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-blue-800">{t.referralNote}</p>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="referenceId">{t.referenceId}</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        id="referenceId"
-                        value={referenceId}
-                        onChange={(e) => setReferenceId(e.target.value)}
-                        placeholder={t.referenceIdPlaceholder}
-                        className="flex-1"
-                        onKeyPress={(e) =>
-                          e.key === "Enter" && handleReferrerLookup()
-                        }
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleReferrerLookup}
-                        className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white"
-                      >
-                        <Search className="w-4 h-4 mr-2" />
-                        {t.lookupReferrer}
-                      </Button>
-                    </div>
+            {/* Referral Information (offline only) */}
+            {isOffline && (
+              <Card className="bg-white shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    {t.referralInfo}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-800">{t.referralNote}</p>
                   </div>
 
-                  {/* Referrer Information Display */}
-                  {referrerInfo && (
-                    <Alert className="border-green-200 bg-green-50">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <AlertDescription>
-                        <div className="text-green-800">
-                          <strong>{t.referrerFound}</strong>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 text-sm">
-                            <div>
-                              <span className="font-medium">
-                                {t.referrerName}:
-                              </span>{" "}
-                              {language === "en"
-                                ? referrerInfo.name
-                                : referrerInfo.namebn}
-                            </div>
-                            <div>
-                              <span className="font-medium">
-                                {t.referrerDesignation}:
-                              </span>{" "}
-                              {language === "en"
-                                ? referrerInfo.designation
-                                : referrerInfo.designationbn}
-                            </div>
-                            <div>
-                              <span className="font-medium">
-                                {t.referrerDept}:
-                              </span>{" "}
-                              {language === "en"
-                                ? referrerInfo.department
-                                : referrerInfo.departmentbn}
-                            </div>
-                            <div>
-                              <span className="font-medium">
-                                {t.referrerContact}:
-                              </span>{" "}
-                              {referrerInfo.email}
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="referenceId">{t.referenceId}</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="referenceId"
+                          value={referenceId}
+                          onChange={(e) => setReferenceId(e.target.value)}
+                          placeholder={t.referenceIdPlaceholder}
+                          className="flex-1"
+                          onKeyPress={(e) =>
+                            e.key === "Enter" && handleReferrerLookup()
+                          }
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleReferrerLookup}
+                          className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white"
+                        >
+                          <Search className="w-4 h-4 mr-2" />
+                          {t.lookupReferrer}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Referrer Information Display */}
+                    {referrerInfo && (
+                      <Alert className="border-green-200 bg-green-50">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <AlertDescription>
+                          <div className="text-green-800">
+                            <strong>{t.referrerFound}</strong>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 text-sm">
+                              <div>
+                                <span className="font-medium">
+                                  {t.referrerName}:
+                                </span>{" "}
+                                {language === "en"
+                                  ? referrerInfo.name
+                                  : referrerInfo.namebn}
+                              </div>
+                              <div>
+                                <span className="font-medium">
+                                  {t.referrerDesignation}:
+                                </span>{" "}
+                                {language === "en"
+                                  ? referrerInfo.designation
+                                  : referrerInfo.designationbn}
+                              </div>
+                              <div>
+                                <span className="font-medium">
+                                  {t.referrerDept}:
+                                </span>{" "}
+                                {language === "en"
+                                  ? referrerInfo.department
+                                  : referrerInfo.departmentbn}
+                              </div>
+                              <div>
+                                <span className="font-medium">
+                                  {t.referrerContact}:
+                                </span>{" "}
+                                {referrerInfo.email}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </AlertDescription>
-                    </Alert>
-                  )}
+                        </AlertDescription>
+                      </Alert>
+                    )}
 
-                  {/* Error Display */}
-                  {referrerError && (
-                    <Alert className="border-red-200 bg-red-50">
-                      <AlertCircle className="w-4 h-4 text-red-600" />
-                      <AlertDescription className="text-red-800">
-                        {referrerError}
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                    {/* Error Display */}
+                    {referrerError && (
+                      <Alert className="border-red-200 bg-red-50">
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                        <AlertDescription className="text-red-800">
+                          {referrerError}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Family Information */}
             <Card className="bg-white shadow-lg">
