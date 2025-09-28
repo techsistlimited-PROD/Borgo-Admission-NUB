@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Bell,
@@ -96,7 +97,7 @@ export default function Dashboard() {
       recentApplications: "সাম্প্রতিক আবেদনসমূহ",
       applicationProgress: "আবেদনের অগ্রগতি",
       applied: "আবেদনকৃত",
-      underReview: "পর্য��লো���নাধীন",
+      underReview: "পর্য��লোচনাধীন",
       approved: "অনুমোদিত",
       rejected: "প্রত্যাখ্যাত",
       trackingId: "ট্র্যাকিং আইডি",
@@ -117,10 +118,10 @@ export default function Dashboard() {
       enrollmentCompleted: "ভর্তি সম্পন্ন",
       notifications: "সাম্প্রতিক বিজ্ঞপ্তি",
       viewAllNotifications: "সব বিজ্ঞপ্তি দেখুন",
-      newApplication: "নতুন আবেদন ��ুরু করুন",
+      newApplication: "নতুন আবেদন শুরু করুন",
       studentId: "আপনার ছাত্র আইডি",
       universityId: "বিশ্ববিদ্যালয় আইডি",
-      keepIdSafe: "সব বিশ্ববিদ্যালয় কার্যক্রমের জন্য এই আইডি নিরাপদ রাখুন",
+      keepIdSafe: "সব বিশ্ববিদ্যালয় কার্যক্রমের জন্��� এই আইডি নিরাপদ রাখুন",
     },
   };
 
