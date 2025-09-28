@@ -1,5 +1,5 @@
 // @ts-nocheck - Temporarily disable type checking for this component
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Settings,
   Save,
@@ -183,6 +183,12 @@ export default function AdmissionConfiguration() {
   const [programWaiverRules, setProgramWaiverRules] = useState<Record<string, { maxPercentage:number; types: string[] }>>({});
   const [programTestConfig, setProgramTestConfig] = useState<Record<string, { requiresAdmissionTest: boolean; admissionTestFee: number }>>({});
 
+  // Validation errors for inline messages
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Keep track of last focused element to restore focus after dialogs close
+  const lastActiveElementRef = useRef<HTMLElement | null>(null);
+
   // Dialog states
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [documentDialogOpen, setDocumentDialogOpen] = useState(false);
@@ -346,6 +352,38 @@ export default function AdmissionConfiguration() {
     loadData();
   }, []);
 
+  // Focus management for payment dialog: focus first input when opened and restore focus on close
+  useEffect(() => {
+    if (paymentDialogOpen) {
+      // clear related errors when opening dialog
+      setErrors((prev) => Object.fromEntries(Object.entries(prev).filter(([k]) => !k.startsWith('payment_'))));
+      setTimeout(() => {
+        (document.getElementById('payment_name') as HTMLElement | null)?.focus();
+      }, 0);
+    } else {
+      // restore focus to last active element
+      try {
+        lastActiveElementRef.current?.focus?.();
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, [paymentDialogOpen]);
+
+  // Focus management for document dialog
+  useEffect(() => {
+    if (documentDialogOpen) {
+      setErrors((prev) => Object.fromEntries(Object.entries(prev).filter(([k]) => !k.startsWith('doc_'))));
+      setTimeout(() => {
+        (document.getElementById('doc_name') as HTMLElement | null)?.focus();
+      }, 0);
+    } else {
+      try {
+        lastActiveElementRef.current?.focus?.();
+      } catch (e) {}
+    }
+  }, [documentDialogOpen]);
+
   // Save admission settings
   const saveSettings = async () => {
     if (!settings) return;
@@ -353,18 +391,23 @@ export default function AdmissionConfiguration() {
     try {
       setSaving(true);
 
+      // Clear previous errors
+      setErrors({});
+
       // Basic validation
       // Ensure dates are logical
       const start = settings.application_start_date ? new Date(settings.application_start_date) : null;
       const deadline = settings.application_deadline ? new Date(settings.application_deadline) : null;
       const lateDeadline = settings.late_fee_deadline ? new Date(settings.late_fee_deadline) : null;
       if (start && deadline && start > deadline) {
-        toast({ title: "Validation Error", description: "Application start date must be before the application deadline.", variant: "destructive" });
+        setErrors((prev) => ({ ...prev, application_start_date: "Application start date must be before the application deadline." }));
+        toast({ title: "Validation Error", description: "Please fix the highlighted fields.", variant: "destructive" });
         setSaving(false);
         return;
       }
       if (deadline && lateDeadline && deadline > lateDeadline) {
-        toast({ title: "Validation Error", description: "Application deadline must be before the late fee deadline.", variant: "destructive" });
+        setErrors((prev) => ({ ...prev, application_deadline: "Application deadline must be before the late fee deadline." }));
+        toast({ title: "Validation Error", description: "Please fix the highlighted fields.", variant: "destructive" });
         setSaving(false);
         return;
       }
@@ -373,7 +416,8 @@ export default function AdmissionConfiguration() {
       if (settings.default_referral_commission != null) {
         const v = Number(settings.default_referral_commission);
         if (isNaN(v) || v < 0 || v > 100) {
-          toast({ title: "Validation Error", description: "Default referral commission must be between 0 and 100.", variant: "destructive" });
+          setErrors((prev) => ({ ...prev, default_referral_commission: "Default referral commission must be between 0 and 100." }));
+          toast({ title: "Validation Error", description: "Please fix the highlighted fields.", variant: "destructive" });
           setSaving(false);
           return;
         }
@@ -414,6 +458,13 @@ export default function AdmissionConfiguration() {
 
   // Payment method handlers
   const openPaymentDialog = (payment?: PaymentMethod) => {
+    // remember the element that had focus so we can restore it when dialog closes
+    try {
+      lastActiveElementRef.current = document.activeElement as HTMLElement | null;
+    } catch (e) {
+      lastActiveElementRef.current = null;
+    }
+
     if (payment) {
       setEditingPayment(payment);
       setPaymentForm(payment);
@@ -486,6 +537,12 @@ export default function AdmissionConfiguration() {
 
   // Document requirement handlers
   const openDocumentDialog = (document?: DocumentRequirement) => {
+    try {
+      lastActiveElementRef.current = document.activeElement as HTMLElement | null;
+    } catch (e) {
+      lastActiveElementRef.current = null;
+    }
+
     if (document) {
       setEditingDocument(document);
       setDocumentForm(document);
