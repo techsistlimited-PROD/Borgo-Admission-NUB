@@ -454,17 +454,21 @@ class MockApiService {
 
   async generateApplicationIds(
     id: string,
-  ): Promise<ApiResponse<{ university_id: string; password: string }>> {
+  ): Promise<ApiResponse<{ university_id: string; password: string; ugc_id?: string; batch?: string }>> {
     await this.delay();
 
     const universityId = `APP${String(Date.now()).slice(-6)}`;
     const password = `temp${Math.random().toString().slice(-6)}`;
+    const ugcId = `UGC${String(Date.now()).slice(-5)}`;
+    const batch = `Spring ${new Date().getFullYear()}`;
 
     return {
       success: true,
       data: {
         university_id: universityId,
         password: password,
+        ugc_id: ugcId,
+        batch,
       },
     };
   }
