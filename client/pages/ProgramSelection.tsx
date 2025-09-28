@@ -328,7 +328,7 @@ export default function ProgramSelection() {
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
       waiverAmount: "���ওকুফ পর��মাণ",
-      finalAmount: "চূড়ান্ত পরিম��ণ",
+      finalAmount: "চূড়��ন্ত পরিম��ণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
       labFee: "ল্যাব ফি",
@@ -345,7 +345,7 @@ export default function ProgramSelection() {
         "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরি����্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
+        "অতিরি����্��� ফি ���বং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ড���টা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -1161,6 +1161,33 @@ export default function ProgramSelection() {
           data-lpignore="true"
           onSubmit={(e) => e.preventDefault()}
         >
+          {/* If an applicant already has an application, show notice and prevent new application */}
+          {hasExistingApplication && (
+            <div className="mb-6">
+              <div className="rounded-md bg-yellow-50 p-4 border border-yellow-100">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm text-yellow-900">
+                      You already have an existing application{
+                        existingApplication?.trackingId
+                          ? ` (Tracking ID: ${existingApplication.trackingId})`
+                          : ""
+                      }. Applicants may only apply to one program. Please view or continue with your existing application.
+                    </p>
+                    <div className="mt-2">
+                      <Button
+                        variant="ghost"
+                        onClick={() => navigate('/dashboard')}
+                        className="text-sm"
+                      >
+                        View Application
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Selection Forms */}
             <div className="lg:col-span-2 space-y-8">
@@ -2030,7 +2057,7 @@ export default function ProgramSelection() {
                         {/* General Eligibility Information */}
                         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                           <h5 className="font-semibold text-blue-800 mb-2">
-                            �� General Eligibility Requirements:
+                            📋 General Eligibility Requirements:
                           </h5>
                           <div className="text-sm text-blue-700 space-y-2">
                             <div>
