@@ -291,6 +291,7 @@ export default function AdmissionConfiguration() {
       if (settingsResponse.success && settingsResponse.data) {
         setSettings(settingsResponse.data);
         setProgramWaiverRules(settingsResponse.data.program_waiver_rules || {});
+        setProgramTestConfig(settingsResponse.data.program_test_config || {});
         // Initialize program configurations with settings data
         initializeProgramConfigurations(settingsResponse.data);
       } else {
