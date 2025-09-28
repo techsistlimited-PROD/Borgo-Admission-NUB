@@ -167,11 +167,11 @@ export default function AdminAdmissionList() {
       todayApplicants: "আজকের নতুন আবেদনকারী",
       pendingPayments: "অপেক্ষমাণ পেমেন্ট",
       totalApplications: "মোট আবেদন",
-      needReview: "পর্যালোচনা প্রয়োজন",
+      needReview: "প���্যালোচনা প্রয়োজন",
       emailVerified: "ইমেইল যাচাইকৃত",
       phoneVerified: "ফোন যাচাইকৃত",
       documentsComplete: "কাগজপত্র সম্পূর্ণ",
-      refresh: "র���ফ্রেশ",
+      refresh: "রিফ্রেশ",
       loading: "���োডিং...",
       error: "ডেটা লোড করতে ত্রুটি",
       approving: "অনুমোদন করা হচ্ছে...",
@@ -556,12 +556,12 @@ export default function AdminAdmissionList() {
 
               {/* Admission Test */}
               <div className="md:w-48">
-                <Select value={admissionTestFilter || ""} onValueChange={(v) => setAdmissionTestFilter(v || undefined)}>
+                <Select value={admissionTestFilter ?? "all"} onValueChange={(v) => setAdmissionTestFilter(v === "all" ? undefined : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Admission Test" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
                     <SelectItem value="required">Required</SelectItem>
                     <SelectItem value="not_required">Not Required</SelectItem>
                     <SelectItem value="completed">Completed</SelectItem>
