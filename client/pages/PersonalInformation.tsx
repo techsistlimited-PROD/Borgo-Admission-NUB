@@ -89,7 +89,10 @@ export default function PersonalInformation() {
     applicationData.emailVerified || false,
   );
 
-  // Referrer system state
+  // Referrer system state (only for offline admissions)
+  const urlParams = new URLSearchParams(window.location.search);
+  const isOffline = urlParams.get("offline") === "true";
+
   const [referenceId, setReferenceId] = useState(
     applicationData.referrerId || "",
   );
