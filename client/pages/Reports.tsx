@@ -762,7 +762,7 @@ export default function Reports() {
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
       admissionRate: "ভর্তির হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
-      topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
+      topPerformingDepartments: "সেরা ���ারফরম্যান্স বিভাগ",
       revenueGenerated: "আয় সৃষ্টি",
 
       programWiseAdmissions:
@@ -1508,6 +1508,87 @@ export default function Reports() {
               </CardContent>
             </Card>
           )}
+
+        {/* Referrers Report */}
+        {activeReport === 'referrers' && (
+          <Card className="bg-white shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-xl font-poppins text-deep-plum">Referral Program - Referrers</CardTitle>
+              <div className="flex gap-2">
+                <Button className="bg-deep-plum" onClick={fetchAndExportReferrers}><Download className="w-4 h-4 mr-2"/>Export CSV</Button>
+                <Button variant="outline" onClick={() => setActiveReport(null)}>Back</Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Employee ID</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Designation</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {referrersList.map((r) => (
+                    <TableRow key={r.employee_id}>
+                      <TableCell className="font-mono">{r.employee_id}</TableCell>
+                      <TableCell className="font-medium">{r.name}</TableCell>
+                      <TableCell>{r.department}</TableCell>
+                      <TableCell>{r.designation}</TableCell>
+                      <TableCell>{r.email}</TableCell>
+                      <TableCell>{r.phone}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Visitors Report */}
+        {activeReport === 'visitors' && (
+          <Card className="bg-white shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-xl font-poppins text-deep-plum">Visitors Log</CardTitle>
+              <div className="flex gap-2">
+                <Button className="bg-deep-plum" onClick={fetchAndExportVisitors}><Download className="w-4 h-4 mr-2"/>Export CSV</Button>
+                <Button variant="outline" onClick={() => setActiveReport(null)}>Back</Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Visit Date</TableHead>
+                    <TableHead>Campus</TableHead>
+                    <TableHead>Visitor Name</TableHead>
+                    <TableHead>District</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Interested In</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {visitorsList.map((v) => (
+                    <TableRow key={v.id}>
+                      <TableCell className="font-mono">{v.id}</TableCell>
+                      <TableCell>{v.visit_date}</TableCell>
+                      <TableCell>{v.campus}</TableCell>
+                      <TableCell className="font-medium">{v.visitor_name}</TableCell>
+                      <TableCell>{v.district}</TableCell>
+                      <TableCell>{v.contact_number}</TableCell>
+                      <TableCell>{v.interested_in}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
         </div>
       </div>
     );
