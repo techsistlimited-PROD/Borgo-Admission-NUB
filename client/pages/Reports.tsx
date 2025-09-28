@@ -737,7 +737,7 @@ export default function Reports() {
       last30Days: "গত ৩০ দিন",
       last3Months: "গত ৩ মাস",
       lastYear: "গত বছর",
-      custom: "কাস্টম রেঞ্জ",
+      custom: "ক���স্টম রেঞ্জ",
       allPrograms: "সব প্রোগ্রাম",
       allDepartments: "সব বিভাগ",
       allSemesters: "সব সেমিস্টার",
@@ -759,7 +759,7 @@ export default function Reports() {
       admittedStudents: "ভর্তিকৃত শিক্ষার্থী",
       rejectedApplications: "প্রত্যাখ্যাত আবেদ���",
       pendingApplications: "��পেক্ষমাণ আবেদন",
-      departmentWiseAdmissions: "বিভাগ অনুযায়ী ভর্তি",
+      departmentWiseAdmissions: "বিভাগ অন��যায়ী ভর্তি",
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
       admissionRate: "ভর্তি�� হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
@@ -775,7 +775,7 @@ export default function Reports() {
       rate: "হার",
       cse: "কম্পিউটা�� সায়েন্স ও ইঞ্জিনিয়ারি���",
       eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জ��নিয়ারিং",
-      mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
+      mech: "মেকানিক্যাল ইঞ্��িনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
       textile: "টেক্সটাইল ইঞ্জ��নিয়ারিং",
       bba: "ব্যবসায় প্রশাসন",
@@ -1661,35 +1661,45 @@ export default function Reports() {
               {t.reportCategories}
             </h3>
             <div className="flex flex-wrap gap-2 mb-6">
-              {[
-                { id: "overview", label: t.overview, icon: BarChart3 },
-                { id: "student", label: t.studentReports, icon: Users },
-                {
-                  id: "financial",
-                  label: t.financialReports,
-                  icon: DollarSign,
-                },
-                { id: "waiver", label: t.waiverReports, icon: BookOpen },
-                { id: "idcards", label: t.idCardReports, icon: IdCard },
-                { id: "targets", label: t.targetReports, icon: Target },
-              ].map((category) => (
-                <Button
-                  key={category.id}
-                  variant={
-                    activeReportCategory === category.id ? "default" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => setActiveReportCategory(category.id)}
-                  className={`${
-                    activeReportCategory === category.id
-                      ? "bg-deep-plum text-white"
-                      : "text-deep-plum border-deep-plum hover:bg-deep-plum hover:text-white"
-                  }`}
-                >
-                  <category.icon className="w-4 h-4 mr-2" />
-                  {category.label}
-                </Button>
-              ))}
+              {(() => {
+                const allCategories = [
+                  { id: "overview", label: t.overview, icon: BarChart3 },
+                  { id: "student", label: t.studentReports, icon: Users },
+                  { id: "financial", label: t.financialReports, icon: DollarSign },
+                  { id: "waiver", label: t.waiverReports, icon: BookOpen },
+                  { id: "idcards", label: t.idCardReports, icon: IdCard },
+                  { id: "targets", label: t.targetReports, icon: Target },
+                ];
+                // Filter categories by scope if provided
+                const categories = scope === 'finance'
+                  ? allCategories.filter(c => ['overview','financial','waiver'].includes(c.id))
+                  : scope === 'admission'
+                    ? allCategories.filter(c => ['overview','student','idcards','targets','waiver'].includes(c.id))
+                    : allCategories;
+                // Ensure active category is valid for scope
+                if (!categories.find(c => c.id === activeReportCategory)) {
+                  // default to overview or financial for finance scope
+                  setActiveReportCategory(scope === 'finance' ? 'financial' : 'overview');
+                }
+                return categories.map((category) => (
+                  <Button
+                    key={category.id}
+                    variant={
+                      activeReportCategory === category.id ? "default" : "outline"
+                    }
+                    size="sm"
+                    onClick={() => setActiveReportCategory(category.id)}
+                    className={`${
+                      activeReportCategory === category.id
+                        ? "bg-deep-plum text-white"
+                        : "text-deep-plum border-deep-plum hover:bg-deep-plum hover:text-white"
+                    }`}
+                  >
+                    <category.icon className="w-4 h-4 mr-2" />
+                    {category.label}
+                  </Button>
+                ));
+              })()}
             </div>
           </CardContent>
         </Card>
