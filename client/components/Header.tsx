@@ -25,11 +25,18 @@ export default function Header({ showLogin = false }: HeaderProps) {
   let logout = () => {};
   let userType = null;
 
+  let setRole = (r: string | null) => {};
+  let setPermissions = (p: string[]) => {};
   try {
     const auth = useAuth();
     user = auth.user;
     logout = auth.logout;
     userType = auth.userType;
+    // role/permissions helpers (frontend-only)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setRole = auth.setRole ?? setRole;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setPermissions = auth.setPermissions ?? setPermissions;
   } catch {
     // Auth context not available (applicant app)
   }
