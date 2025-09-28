@@ -112,6 +112,11 @@ export default function Sidebar({ userType }: SidebarProps) {
         { name: "Waiver Management", path: "/admin/waivers", icon: Award },
         { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
         {
+          name: "ID Card Generation",
+          path: "/admin/id-card-generation",
+          icon: Shield,
+        },
+        {
           name: "Student Management",
           path: "/admin/student-management",
           icon: UserCog,
