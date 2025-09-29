@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import {
   Shield,
   Eye,
@@ -24,6 +25,9 @@ export default function AdmissionOfficerLogin() {
 
   const { login, setRole } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const next = params.get("next");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +44,17 @@ export default function AdmissionOfficerLogin() {
     if (success) {
       // Ensure role is set to admission_officer
       setRole("admission_officer");
-      navigate("/admin/admissions");
+      if (next) {
+        // decode next param
+        try {
+          const decoded = decodeURIComponent(next);
+          navigate(decoded);
+        } catch {
+          navigate("/admin/admissions");
+        }
+      } else {
+        navigate("/admin/admissions");
+      }
     } else {
       setError("Invalid email or password. Please try again.");
     }
