@@ -233,7 +233,7 @@ export default function ProgramSelection() {
   const semesterOptions = [
     { id: "fall", name: "Fall", namebn: "���ল" },
     { id: "summer", name: "Summer", namebn: "গ্রীষ্ম" },
-    { id: "winter", name: "Winter", namebn: "শীত" },
+    { id: "winter", name: "Winter", namebn: "শ���ত" },
   ];
 
   const semesterTypeOptions = [
@@ -1074,7 +1074,10 @@ export default function ProgramSelection() {
           });
         }
 
-        navigate("/personal-information");
+        // Preserve offline flag if present in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const isOfflineNav = urlParams.get("offline") === "true";
+        navigate(isOfflineNav ? "/personal-information?offline=true" : "/personal-information");
       } else {
         toast({
           title: t.saveError,
