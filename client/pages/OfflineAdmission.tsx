@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -13,14 +14,15 @@ export default function OfflineAdmission() {
   })();
 
   useEffect(() => {
-    // If not signed in as admission officer, redirect to admission login
+    // If not signed in as admission officer, redirect to admission login and include next param
+    const next = encodeURIComponent("/program-selection?new=true&offline=true");
     if (!auth || !auth.isAuthenticated || auth.role !== "admission_officer") {
-      navigate("/admin/admission-login");
+      navigate(`/admin/admission-login?next=${next}`);
       return;
     }
 
     // Start the offline admission workflow by opening the program selection with offline flag
-    navigate("/program-selection?new=true&offline=true");
+    navigate(`/program-selection?new=true&offline=true`);
   }, [auth, navigate]);
 
   return (
