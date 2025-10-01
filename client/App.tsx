@@ -49,6 +49,7 @@ import EmailTemplates from "./pages/EmailTemplates";
 import MessagingTemplates from "./pages/Messaging/Templates";
 import AdminPortal from "./pages/AdminPortal";
 import AdminImportJobs from "./pages/AdminImportJobs";
+import AdminKpiCache from "./pages/AdminKpiCache";
 import AdminUsers from "./pages/AdminUsers";
 import PermissionConfig from "./pages/PermissionConfig";
 import SyllabusManagement from "./pages/SyllabusManagement";
