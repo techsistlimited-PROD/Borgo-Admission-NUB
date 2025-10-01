@@ -303,6 +303,16 @@ function AppContent() {
                 )
               }
             />
+            <Route
+              path="/admin/kpi-cache"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminKpiCache />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
 
             <Route
               path="/admin/users"
