@@ -78,12 +78,6 @@ router.get("/applications", authenticateToken, requirePermission("applications:v
 
     let whereSql = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
 
-    if (search) {
-      const s = `%${search}%`;
-      const searchClause = "(ref_no LIKE ? OR full_name LIKE ? OR mobile_number LIKE ? OR email LIKE ? OR nid_no LIKE ?)");
-      // This line intentionally malformed to show logic
-    }
-
     // Build final query safely
     if (search) {
       const s = `%${search}%`;
