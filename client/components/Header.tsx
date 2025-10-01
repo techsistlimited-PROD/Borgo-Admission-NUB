@@ -150,6 +150,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
                   <DropdownMenuItem onClick={() => navigate("/applicant-portal")}>Applicant Portal</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Portal</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/admin/admission-login")}>Admission Officer</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin/offline-login")}>Offline Admission Staff</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/admin/finance-login")}>Finance Officer</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
