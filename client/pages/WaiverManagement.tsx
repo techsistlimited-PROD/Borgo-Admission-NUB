@@ -219,7 +219,6 @@ export default function WaiverManagement() {
     academicPerformance: { min: 85, percentage: 40 },
     financialNeed: { threshold: 50000, percentage: 50 },
     extracurricular: { points: 80, percentage: 30 },
-    familyIncome: { maxAmount: 40000, percentage: 60 },
   });
 
   const filteredStudents = students.filter((student) => {
