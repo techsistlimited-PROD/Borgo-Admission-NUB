@@ -237,6 +237,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
                     <option value="">Role</option>
                     <option value="admin">Admin</option>
                     <option value="admission_officer">Admission Officer</option>
+                    <option value="offline_officer">Offline Admission</option>
                     <option value="finance_officer">Finance Officer</option>
                   </select>
                 )}

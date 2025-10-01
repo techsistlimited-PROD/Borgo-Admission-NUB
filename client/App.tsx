@@ -40,6 +40,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdmissionOfficerLogin from "./pages/AdmissionOfficerLogin";
 import FinanceOfficerLogin from "./pages/FinanceOfficerLogin";
 import OfflineAdmission from "./pages/OfflineAdmission";
+import OfflineOfficerLogin from "./pages/OfflineOfficerLogin";
 import AdminAdmissionList from "./pages/AdminAdmissionList";
 import ApplicantDetail from "./pages/ApplicantDetail";
 import AdmissionConfiguration from "./pages/AdmissionConfiguration";
@@ -192,6 +193,10 @@ function AppContent() {
             <Route
               path="/admin/admission-login"
               element={<AdmissionOfficerLogin />}
+            />
+            <Route
+              path="/admin/offline-login"
+              element={<OfflineOfficerLogin />}
             />
             <Route
               path="/admin/finance-login"

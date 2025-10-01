@@ -15,8 +15,9 @@ export default function OfflineAdmission() {
   useEffect(() => {
     // If not signed in as admission officer, redirect to admission login and include next param
     const next = encodeURIComponent("/personal-information?offline=true");
-    if (!auth || !auth.isAuthenticated || auth.role !== "admission_officer") {
-      navigate(`/admin/admission-login?next=${next}`);
+    // Require offline_officer role; allow admission_officer as fallback for compatibility
+    if (!auth || !auth.isAuthenticated || (auth.role !== "offline_officer" && auth.role !== "admission_officer")) {
+      navigate(`/admin/offline-login?next=${next}`);
       return;
     }
 
