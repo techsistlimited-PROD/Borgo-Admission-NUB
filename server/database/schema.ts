@@ -497,6 +497,23 @@ export const initializeSchema = async (): Promise<void> => {
       )
     `);
 
+    // Payment webhook events
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS payment_webhook_events (
+        webhook_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        provider TEXT NOT NULL,
+        payload_json TEXT,
+        signature_header TEXT,
+        signature_valid INTEGER DEFAULT 0,
+        idempotency_key TEXT,
+        received_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        processed_at DATETIME,
+        status TEXT DEFAULT 'Queued' CHECK (status IN ('Queued','Processed','Failed')),
+        error TEXT
+      )
+    `);
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_webhook_idempotency ON payment_webhook_events(idempotency_key)`);
+
     // RBAC core tables (roles & permissions)
     await dbRun(`
       CREATE TABLE IF NOT EXISTS roles (
