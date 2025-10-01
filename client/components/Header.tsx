@@ -228,6 +228,8 @@ export default function Header({ showLogin = false }: HeaderProps) {
                         ]);
                       else if (r === "finance_officer")
                         setPermissions(["finance:view", "finance:billing"]);
+                      else if (r === "offline_officer")
+                        setPermissions([]);
                       else setPermissions([]);
                       // reload sidebar by forcing a small timeout (UI-only)
                       setTimeout(
