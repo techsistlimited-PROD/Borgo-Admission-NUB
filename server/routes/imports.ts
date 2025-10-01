@@ -1,5 +1,4 @@
 import express from "express";
-import express from "express";
 import { dbRun, dbGet, dbAll } from "../database/config.js";
 import { authenticateToken, requirePermission, AuthRequest } from "../middleware/auth.js";
 
