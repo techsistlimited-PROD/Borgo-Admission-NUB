@@ -62,6 +62,9 @@ export default function AdminPortal() {
               <Link to="/admin/waivers">
                 <Button variant="outline">Waivers</Button>
               </Link>
+              <Link to="/admin/imports">
+                <Button variant="ghost">Imports</Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -80,6 +83,9 @@ export default function AdminPortal() {
               </Link>
               <Link to="/admin/id-card-generation">
                 <Button variant="outline">ID Cards</Button>
+              </Link>
+              <Link to="/admin/imports">
+                <Button variant="ghost">Imports</Button>
               </Link>
             </div>
           </CardContent>
