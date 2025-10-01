@@ -319,7 +319,7 @@ export default function ProgramSelection() {
     bn: {
       title: "প্রোগ্রাম ও বিভ���গ নির্বা��ন",
       subtitle:
-        "৪টি ধাপের ১ম ধাপ - আপনার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
+        "৪টি ধাপের ১ম ধাপ - আপ���ার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
       campusSelection: "ক্যাম্পাস নির্বাচন করু��",
@@ -333,13 +333,13 @@ export default function ProgramSelection() {
       selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের ��থ্য",
-      costBreakdown: "খরচের বিভাজন",
+      costBreakdown: "খরচের বিভা���ন",
       waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ৪র্থ ব��ষয় ছিল",
-      calculateWaiver: "যোগ্�� মওকুফ গণনা কর��ন",
+      calculateWaiver: "যোগ্য মওকুফ গণনা কর��ন",
       availableWaivers: "���পল��্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
@@ -353,7 +353,7 @@ export default function ProgramSelection() {
       labFee: "ল্যাব ফি",
       others: "অন্যান���য",
       total: "ম��ট",
-      duration: "স���য়কাল",
+      duration: "স���য���কাল",
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
@@ -361,7 +361,7 @@ export default function ProgramSelection() {
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চ�� করুন",
       selectDepartmentFirst: "প্রথ���ে একটি ��িভাগ নির্বাচন করুন",
       enterGPAValues:
-        "যোগ্য মওকুফ �����খতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
+        "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
         "অতিরি����্��� ফি ���বং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
@@ -1289,7 +1289,11 @@ export default function ProgramSelection() {
                       </Label>
                       <Select
                         value={selectedSemesterType}
-                        onValueChange={setSelectedSemesterType}
+                        onValueChange={(val) => {
+                          setSelectedSemesterType(val);
+                          const allowed = getSemesterOptionsForType(val).map((s) => s.id);
+                          if (!allowed.includes(selectedSemester)) setSelectedSemester("");
+                        }}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={t.selectSemesterType} />
