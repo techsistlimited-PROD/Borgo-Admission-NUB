@@ -801,18 +801,24 @@ export default function WaiverManagement() {
                                     <SelectValue placeholder="Select Waiver Policy" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectLabel>Result-based (Merit)</SelectLabel>
-                                    {getResultBasedWaivers().map((w) => (
-                                      <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
-                                    ))}
-                                    <SelectLabel>Special Waivers</SelectLabel>
-                                    {getSpecialWaivers().map((w) => (
-                                      <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
-                                    ))}
-                                    <SelectLabel>Additional Waivers</SelectLabel>
-                                    {getAdditionalWaivers().map((w) => (
-                                      <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
-                                    ))}
+                                    <SelectGroup>
+                                      <SelectLabel>Result-based (Merit)</SelectLabel>
+                                      {getResultBasedWaivers().map((w) => (
+                                        <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                    <SelectGroup>
+                                      <SelectLabel>Special Waivers</SelectLabel>
+                                      {getSpecialWaivers().map((w) => (
+                                        <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                    <SelectGroup>
+                                      <SelectLabel>Additional Waivers</SelectLabel>
+                                      {getAdditionalWaivers().map((w) => (
+                                        <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
+                                      ))}
+                                    </SelectGroup>
                                   </SelectContent>
                                 </Select>
                               </div>
