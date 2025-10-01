@@ -796,15 +796,15 @@ export default function WaiverManagement() {
                                     <SelectValue placeholder="Select Waiver Policy" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="">-- Result-based (Merit) --</SelectItem>
+                                    <SelectLabel>Result-based (Merit)</SelectLabel>
                                     {getResultBasedWaivers().map((w) => (
                                       <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
                                     ))}
-                                    <SelectItem value="">-- Special Waivers --</SelectItem>
+                                    <SelectLabel>Special Waivers</SelectLabel>
                                     {getSpecialWaivers().map((w) => (
                                       <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
                                     ))}
-                                    <SelectItem value="">-- Additional Waivers --</SelectItem>
+                                    <SelectLabel>Additional Waivers</SelectLabel>
                                     {getAdditionalWaivers().map((w) => (
                                       <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
                                     ))}
