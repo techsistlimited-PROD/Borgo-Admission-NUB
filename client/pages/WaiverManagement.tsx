@@ -83,7 +83,6 @@ interface WaiverCriteria {
   academicPerformance: { min: number; percentage: number };
   financialNeed: { threshold: number; percentage: number };
   extracurricular: { points: number; percentage: number };
-  familyIncome: { maxAmount: number; percentage: number };
 }
 
 const mockStudents: WaiverStudent[] = [
