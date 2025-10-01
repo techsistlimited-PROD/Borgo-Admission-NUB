@@ -13,6 +13,7 @@ import authRoutes from "./routes/auth.js";
 import applicationRoutes from "./routes/applications.js";
 import programRoutes from "./routes/programs.js";
 import referrerRoutes from "./routes/referrers.js";
+import messagingRoutes from "./routes/messaging.js";
 import {
   getAdmissionSettings,
   updateAdmissionSettings,
@@ -47,6 +48,7 @@ export function createServer() {
   app.use("/api/applications", applicationRoutes);
   app.use("/api/programs", programRoutes);
   app.use("/api/referrers", referrerRoutes);
+  app.use("/api/messaging", messagingRoutes);
 
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);

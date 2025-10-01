@@ -1,6 +1,6 @@
 import "./global.css";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -37,19 +37,53 @@ import ReviewPayment from "./pages/ReviewPayment";
 
 // Admin Pages
 import AdminLogin from "./pages/AdminLogin";
+import AdmissionOfficerLogin from "./pages/AdmissionOfficerLogin";
+import FinanceOfficerLogin from "./pages/FinanceOfficerLogin";
+import OfflineAdmission from "./pages/OfflineAdmission";
 import AdminAdmissionList from "./pages/AdminAdmissionList";
 import ApplicantDetail from "./pages/ApplicantDetail";
 import AdmissionConfiguration from "./pages/AdmissionConfiguration";
 import FinancePanel from "./pages/FinancePanel";
 import Reports from "./pages/Reports";
 import EmailTemplates from "./pages/EmailTemplates";
+import MessagingTemplates from "./pages/Messaging/Templates";
+import AdminPortal from "./pages/AdminPortal";
+import AdminUsers from "./pages/AdminUsers";
+import PermissionConfig from "./pages/PermissionConfig";
 import SyllabusManagement from "./pages/SyllabusManagement";
+import WaiverManagement from "./pages/WaiverManagement";
+import OfferCourses from "./pages/OfferCourses";
+import StudentManagement from "./pages/StudentManagement";
+import AccountManagement from "./pages/AccountManagement";
+import AdmissionCircular from "./pages/AdmissionCircular";
+import ChangeHistory from "./pages/ChangeHistory";
+import IdCardGeneration from "./pages/IdCardGeneration";
+import VisitorsLog from "./pages/VisitorsLog";
+import Referrals from "./pages/Referrals";
 
 const queryClient = new QueryClient();
 
 function AppContent() {
-  // Access auth context - it will throw an error if not within provider
-  const { userType, isAuthenticated, isLoading } = useAuth();
+  // Access auth context - wrap in try/catch in case provider isn't mounted yet
+  let userType: "public" | "applicant" | "admin" = "public";
+  let isAuthenticated = false;
+  let isLoading = false;
+  let roleLocal: string | null = null;
+  try {
+    const auth = useAuth();
+    userType = auth.userType;
+    isAuthenticated = auth.isAuthenticated;
+    isLoading = auth.isLoading;
+    roleLocal = auth.role ?? null;
+  } catch (e) {
+    // If auth provider is not available, fall back to defaults and continue rendering
+    // This avoids the app crashing while dev server mounts providers
+    userType = "public";
+    isAuthenticated = false;
+    isLoading = false;
+    roleLocal = null;
+  }
+
   const location = useLocation();
 
   // Set up form cache prevention on app load
@@ -154,6 +188,18 @@ function AppContent() {
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
+              path="/admin/admission-login"
+              element={<AdmissionOfficerLogin />}
+            />
+            <Route
+              path="/admin/finance-login"
+              element={<FinanceOfficerLogin />}
+            />
+            <Route
+              path="/admin/offline-admission"
+              element={<OfflineAdmission />}
+            />
+            <Route
               path="/admin/admissions"
               element={
                 isAuthenticated && userType === "admin" ? (
@@ -223,11 +269,147 @@ function AppContent() {
                 )
               }
             />
+
+            <Route
+              path="/admin/messaging"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <MessagingTemplates />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
+            <Route
+              path="/admin/portal"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminPortal />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
+            <Route
+              path="/admin/users"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminUsers />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
+            <Route
+              path="/admin/permissions"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <PermissionConfig />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
             <Route
               path="/admin/syllabus"
               element={
                 isAuthenticated && userType === "admin" ? (
                   <SyllabusManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/waivers"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <WaiverManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/offer-courses"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <OfferCourses />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/student-management"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <StudentManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/account-management"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AccountManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/admission-circular"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdmissionCircular />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/change-history"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <ChangeHistory />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/id-card-generation"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <IdCardGeneration />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
+            <Route
+              path="/admin/visitors-log"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <VisitorsLog />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
+            <Route
+              path="/admin/referrals"
+              element={
+                isAuthenticated && (userType === "admin" || roleLocal === "admission_officer" || roleLocal === "finance_officer") ? (
+                  <Referrals />
                 ) : (
                   <Navigate to="/admin" replace />
                 )

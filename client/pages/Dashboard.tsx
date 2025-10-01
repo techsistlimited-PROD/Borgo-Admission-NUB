@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Bell,
@@ -29,8 +29,35 @@ import {
   TableRow,
 } from "../components/ui/table";
 
+import { useAuth } from "@/contexts/AuthContext";
+import apiClient from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
+
 export default function Dashboard() {
   const [language, setLanguage] = useState<"en" | "bn">("en");
+  const { toast } = useToast();
+  const { user, userType } = useAuth();
+  const [fetchedApplications, setFetchedApplications] = useState<any[] | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const load = async () => {
+      if (userType === "applicant" && user?.university_id) {
+        try {
+          const res = await apiClient.getApplications({
+            search: user.university_id,
+          });
+          if (res.success && res.data) {
+            setFetchedApplications(res.data.applications || []);
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
+    load();
+  }, [user, userType]);
 
   const texts = {
     en: {
@@ -69,7 +96,7 @@ export default function Dashboard() {
     bn: {
       title: "আবেদনকারীর ড্যাশবোর্ড",
       welcome: "স্বাগতম",
-      applicationSummary: "আবেদনের সারসংক্ষেপ",
+      applicationSummary: "আবে��নের সারসংক্ষেপ",
       recentApplications: "সাম্প্রতিক আবেদনসমূহ",
       applicationProgress: "আবেদনের অগ্রগতি",
       applied: "আবেদনকৃত",
@@ -78,7 +105,7 @@ export default function Dashboard() {
       rejected: "প্রত্যাখ্যাত",
       trackingId: "ট্র্যাকিং আইডি",
       program: "প্রোগ্রাম",
-      status: "অবস্থা",
+      status: "অব���্থা",
       payslipUploaded: "পে-স্লিপ আপলোড",
       actions: "কর্ম",
       viewDetails: "বিস্তারিত দেখুন",
@@ -86,51 +113,24 @@ export default function Dashboard() {
       yes: "হ্যাঁ",
       no: "না",
       applicationTimeline: "আবেদনের সময়রেখা",
-      submitted: "আবেদন জমা দেওয়া হয়েছে",
+      submitted: "আ��েদন জমা দেওয়��� হয়েছে",
       paymentReceived: "পেমেন্ট প্রা��্ত",
       documentVerified: "কাগজপত্র যাচাইকৃত",
       applicationApproved: "আবেদন অনুমোদিত",
-      idCreated: "ছাত্র ���ইডি তৈরি",
+      idCreated: "ছাত্র ���ইডি তৈ��ি",
       enrollmentCompleted: "ভর্তি সম্পন্ন",
-      notifications: "সাম্প্রতিক বিজ্ঞপ্তি",
-      viewAllNotifications: "সব বিজ্ঞপ্তি দেখুন",
+      notifications: "সাম্প্রতিক বিজ���ঞপ্তি",
+      viewAllNotifications: "���ব বিজ্ঞপ্তি দেখুন",
       newApplication: "নতুন আবেদন শুরু করুন",
       studentId: "আপনার ছাত্র আইডি",
       universityId: "বিশ্ববিদ্যালয় আইডি",
-      keepIdSafe: "সব বিশ্ববিদ্যালয় কার্যক্রমের জন্য এই আইডি নিরাপদ রাখুন",
+      keepIdSafe: "সব বিশ্ববিদ্যালয় কার্যক্রমের জন্��� এই আইডি নিরাপদ রাখুন",
     },
   };
 
   const t = texts[language];
 
-  const summaryData = [
-    {
-      label: t.applied,
-      count: 3,
-      color: "bg-blue-100 text-blue-800",
-      icon: FileText,
-    },
-    {
-      label: t.underReview,
-      count: 1,
-      color: "bg-yellow-100 text-yellow-800",
-      icon: Clock,
-    },
-    {
-      label: t.approved,
-      count: 1,
-      color: "bg-green-100 text-green-800",
-      icon: CheckCircle,
-    },
-    {
-      label: t.rejected,
-      count: 1,
-      color: "bg-red-100 text-red-800",
-      icon: XCircle,
-    },
-  ];
-
-  const applications = [
+  const defaultApplications = [
     {
       id: 1,
       trackingId: "NU2024001234",
@@ -157,6 +157,68 @@ export default function Dashboard() {
       payslip: false,
       submittedDate: "2024-01-10",
       statusText: t.rejected,
+    },
+  ];
+
+  // Compute counts from fetchedApplications (fallback to sample `applications` if none)
+  let apps = fetchedApplications ?? defaultApplications;
+
+  // If logged in as applicant, further filter to only their own applications
+  try {
+    if (userType === "applicant" && user?.university_id) {
+      const uid = user.university_id.toString();
+      apps = apps.filter((a: any) => {
+        return (
+          (a.trackingId && a.trackingId.toString() === uid) ||
+          (a.university_id && a.university_id.toString() === uid) ||
+          (a.applicant_university_id &&
+            a.applicant_university_id.toString() === uid) ||
+          (a.universityId && a.universityId.toString() === uid)
+        );
+      });
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  const counts = { applied: 0, under_review: 0, approved: 0, rejected: 0 };
+  apps.forEach((a: any) => {
+    const s = (a.status || "").toString().toLowerCase();
+    if (s.includes("approved")) counts.approved++;
+    else if (
+      s.includes("under_review") ||
+      s.includes("under review") ||
+      s.includes("review")
+    )
+      counts.under_review++;
+    else if (s.includes("rejected") || s.includes("reject")) counts.rejected++;
+    else counts.applied++;
+  });
+
+  const summaryData = [
+    {
+      label: t.applied,
+      count: counts.applied,
+      color: "bg-blue-100 text-blue-800",
+      icon: FileText,
+    },
+    {
+      label: t.underReview,
+      count: counts.under_review,
+      color: "bg-yellow-100 text-yellow-800",
+      icon: Clock,
+    },
+    {
+      label: t.approved,
+      count: counts.approved,
+      color: "bg-green-100 text-green-800",
+      icon: CheckCircle,
+    },
+    {
+      label: t.rejected,
+      count: counts.rejected,
+      color: "bg-red-100 text-red-800",
+      icon: XCircle,
     },
   ];
 
@@ -191,21 +253,46 @@ export default function Dashboard() {
   ];
 
   const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      approved: { color: "bg-green-100 text-green-800", icon: CheckCircle },
-      under_review: { color: "bg-yellow-100 text-yellow-800", icon: Clock },
-      rejected: { color: "bg-red-100 text-red-800", icon: XCircle },
+    const statusConfig: Record<
+      string,
+      { color: string; icon: any; label?: string }
+    > = {
+      approved: {
+        color: "bg-green-100 text-green-800",
+        icon: CheckCircle,
+        label: t.approved,
+      },
+      under_review: {
+        color: "bg-yellow-100 text-yellow-800",
+        icon: Clock,
+        label: t.underReview,
+      },
+      rejected: {
+        color: "bg-red-100 text-red-800",
+        icon: XCircle,
+        label: t.rejected,
+      },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig];
+    const key = (status || "")
+      .toString()
+      .toLowerCase()
+      .replace(/\s+/g, "_")
+      .replace(/-/g, "_");
+    const config = statusConfig[key] || null;
+
+    if (!config) {
+      // Unknown status: return a neutral badge
+      return (
+        <Badge className="bg-gray-100 text-gray-800">{status || "-"}</Badge>
+      );
+    }
+
+    const Icon = config.icon;
     return (
       <Badge className={config.color}>
-        <config.icon className="w-3 h-3 mr-1" />
-        {status === "approved"
-          ? t.approved
-          : status === "under_review"
-            ? t.underReview
-            : t.rejected}
+        {Icon && <Icon className="w-3 h-3 mr-1" />}
+        {config.label ?? status}
       </Badge>
     );
   };
@@ -289,11 +376,25 @@ export default function Dashboard() {
                 <CardTitle className="text-xl font-poppins text-deep-plum">
                   {t.recentApplications}
                 </CardTitle>
-                <Button asChild>
-                  <Link to="/" className="bg-deep-plum hover:bg-accent-purple">
-                    {t.newApplication}
-                  </Link>
-                </Button>
+                {!(fetchedApplications && fetchedApplications.length > 0) ? (
+                  <Button asChild>
+                    <Link
+                      to="/program-selection?new=true"
+                      className="bg-deep-plum hover:bg-accent-purple"
+                    >
+                      {t.newApplication}
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button asChild>
+                    <Link
+                      to="/application-review"
+                      className="bg-deep-plum hover:bg-accent-purple"
+                    >
+                      View Application
+                    </Link>
+                  </Button>
+                )}
               </CardHeader>
               <CardContent>
                 <Table>
@@ -307,7 +408,7 @@ export default function Dashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {applications.map((app) => (
+                    {apps.map((app) => (
                       <TableRow key={app.id}>
                         <TableCell className="font-medium">
                           {app.trackingId}

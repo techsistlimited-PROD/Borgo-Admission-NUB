@@ -1,5 +1,3 @@
-// Mock API Service for Development (No Backend Required)
-
 export interface User {
   id: number;
   uuid: string;
@@ -33,6 +31,7 @@ export interface Application {
   academic_history?: any;
   documents?: any;
   payment_info?: any;
+  admission_test_status?: "required" | "not_required" | "completed" | "pending";
 }
 
 export interface LoginCredentials {
@@ -87,6 +86,7 @@ class MockApiService {
       semester: "Spring 2024",
       semester_type: "Regular",
       created_at: "2024-01-15T10:00:00Z",
+      admission_test_status: "pending",
     },
     {
       id: "app-002",
@@ -106,6 +106,7 @@ class MockApiService {
       semester: "Spring 2024",
       semester_type: "Regular",
       created_at: "2024-01-14T09:00:00Z",
+      admission_test_status: "completed",
     },
   ];
 
@@ -148,6 +149,29 @@ class MockApiService {
     { code: "BBA", name: "Business Administration" },
     { code: "ENG", name: "English" },
     { code: "LAW", name: "Law" },
+  ];
+
+  private documentRequirements: any[] = [
+    {
+      id: 1,
+      name: "SSC Certificate",
+      type: "academic",
+      is_required: true,
+      allowed_formats: ["PDF", "JPG", "PNG"],
+      max_file_size: "5MB",
+      description: "Original SSC certificate or equivalent",
+      order_priority: 1,
+    },
+    {
+      id: 2,
+      name: "HSC Certificate",
+      type: "academic",
+      is_required: true,
+      allowed_formats: ["PDF", "JPG", "PNG"],
+      max_file_size: "5MB",
+      description: "Original HSC certificate or equivalent",
+      order_priority: 2,
+    },
   ];
 
   private referrers = [
@@ -248,6 +272,13 @@ class MockApiService {
     search?: string;
     page?: number;
     limit?: number;
+    program_code?: string;
+    campus?: string;
+    semester?: string;
+    admission_type?: string;
+    admission_test_status?: string;
+    dateFrom?: string;
+    dateTo?: string;
   }): Promise<ApiResponse<{ applications: Application[]; total: number }>> {
     await this.delay();
 
@@ -255,6 +286,42 @@ class MockApiService {
 
     if (params?.status && params.status !== "all") {
       filteredApps = filteredApps.filter((app) => app.status === params.status);
+    }
+
+    if (params?.program_code) {
+      filteredApps = filteredApps.filter(
+        (app) => app.program_code === params.program_code,
+      );
+    }
+
+    if (params?.campus) {
+      filteredApps = filteredApps.filter((app) => app.campus === params.campus);
+    }
+
+    if (params?.semester) {
+      filteredApps = filteredApps.filter((app) => app.semester === params.semester);
+    }
+
+    if (params?.admission_type) {
+      filteredApps = filteredApps.filter(
+        (app) => app.admission_type === params.admission_type,
+      );
+    }
+
+    if (params?.admission_test_status) {
+      filteredApps = filteredApps.filter(
+        (app) => app.admission_test_status === params.admission_test_status,
+      );
+    }
+
+    if (params?.dateFrom) {
+      const from = new Date(params.dateFrom);
+      filteredApps = filteredApps.filter((app) => new Date(app.created_at) >= from);
+    }
+
+    if (params?.dateTo) {
+      const to = new Date(params.dateTo);
+      filteredApps = filteredApps.filter((app) => new Date(app.created_at) <= to);
     }
 
     if (params?.search) {
@@ -268,10 +335,16 @@ class MockApiService {
       );
     }
 
+    // Pagination
+    const page = params?.page || 1;
+    const limit = params?.limit || filteredApps.length;
+    const start = (page - 1) * limit;
+    const paged = filteredApps.slice(start, start + limit);
+
     return {
       success: true,
       data: {
-        applications: filteredApps,
+        applications: paged,
         total: filteredApps.length,
       },
     };
@@ -353,6 +426,7 @@ class MockApiService {
       personal_info: data,
       academic_history: data.academic_history,
       documents: data.documents,
+      admission_test_status: data.admission_test_status || "pending",
     };
 
     this.applications.push(newApplication);
@@ -403,17 +477,21 @@ class MockApiService {
 
   async generateApplicationIds(
     id: string,
-  ): Promise<ApiResponse<{ university_id: string; password: string }>> {
+  ): Promise<ApiResponse<{ university_id: string; password: string; ugc_id?: string; batch?: string }>> {
     await this.delay();
 
     const universityId = `APP${String(Date.now()).slice(-6)}`;
     const password = `temp${Math.random().toString().slice(-6)}`;
+    const ugcId = `UGC${String(Date.now()).slice(-5)}`;
+    const batch = `Spring ${new Date().getFullYear()}`;
 
     return {
       success: true,
       data: {
         university_id: universityId,
         password: password,
+        ugc_id: ugcId,
+        batch,
       },
     };
   }
@@ -431,6 +509,15 @@ class MockApiService {
         .length,
       payment_pending: this.applications.filter(
         (app) => app.status === "payment_pending",
+      ).length,
+      credit_transfer: this.applications.filter(
+        (app) => app.admission_type === "credit_transfer",
+      ).length,
+      admission_test_required: this.applications.filter(
+        (app) => app.admission_test_status === "required",
+      ).length,
+      admission_test_completed: this.applications.filter(
+        (app) => app.admission_test_status === "completed",
       ).length,
     };
 
@@ -798,67 +885,156 @@ class MockApiService {
         description: "Original HSC certificate or equivalent",
         order_priority: 2,
       },
-      {
-        id: 3,
-        name: "Passport Photo",
-        type: "personal",
-        is_required: true,
-        allowed_formats: ["JPG", "PNG"],
-        max_file_size: "2MB",
-        description: "Recent passport-size photograph",
-        order_priority: 3,
-      },
-      {
-        id: 4,
-        name: "National ID",
-        type: "personal",
-        is_required: true,
-        allowed_formats: ["PDF", "JPG", "PNG"],
-        max_file_size: "3MB",
-        description: "National ID card or birth certificate",
-        order_priority: 4,
-      },
-      {
-        id: 5,
-        name: "Transcript",
-        type: "academic",
-        is_required: false,
-        allowed_formats: ["PDF"],
-        max_file_size: "10MB",
-        description: "Official academic transcript for credit transfer",
-        order_priority: 5,
-      },
     ];
 
     return { success: true, data: requirements };
   }
 
-  async createDocumentRequirement(requirement: any): Promise<ApiResponse> {
+  async createDocumentRequirement(requirement: any): Promise<ApiResponse<{ requirement: any }>> {
     await this.delay();
-    return {
-      success: true,
-      message: "Document requirement created successfully",
-    };
+    const id = (Math.max(0, ...this.documentRequirements.map((d:any)=>d.id)) + 1) || 1;
+    const rec = { id, ...requirement };
+    // ensure array exists
+    (this as any).documentRequirements = (this as any).documentRequirements || [];
+    (this as any).documentRequirements.push(rec);
+    return { success: true, data: { requirement: rec } };
   }
 
-  async updateDocumentRequirement(
-    id: string,
-    requirement: any,
-  ): Promise<ApiResponse> {
+  async updateDocumentRequirement(id: string, requirement: any): Promise<ApiResponse<{ requirement: any }>> {
     await this.delay();
-    return {
-      success: true,
-      message: "Document requirement updated successfully",
-    };
+    const idx = ((this as any).documentRequirements || []).findIndex((d:any)=>String(d.id)===String(id));
+    if (idx === -1) return { success: false, error: 'Document requirement not found' };
+    (this as any).documentRequirements[idx] = { ...((this as any).documentRequirements[idx]||{}), ...requirement };
+    return { success: true, data: { requirement: (this as any).documentRequirements[idx] } };
   }
 
   async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
     await this.delay();
-    return {
-      success: true,
-      message: "Document requirement deleted successfully",
+    const arr = (this as any).documentRequirements || [];
+    const idx = arr.findIndex((d:any)=>String(d.id)===String(id));
+    if (idx === -1) return { success: false, error: 'Document requirement not found' };
+    arr.splice(idx,1);
+    return { success: true, message: 'Deleted' };
+  }
+  // Visitors log (offline entries by admission officers)
+  private visitors: any[] = [
+    {
+      id: "vis-001",
+      visit_date: "2024-02-01",
+      campus: "Main Campus",
+      visitor_name: "Mr. Rahim",
+      district: "Dhaka",
+      no_of_visitors: 1,
+      contact_number: "+8801712345678",
+      interested_in: "CSE101",
+      sms_sent: false,
+      remarks: "Walk-in enquiry",
+      created_at: "2024-02-01T10:00:00Z",
+    },
+  ];
+
+  async getVisitors(params?: { page?: number; limit?: number; campus?: string; dateFrom?: string; dateTo?: string; search?: string; }): Promise<ApiResponse<{ visitors: any[]; total: number }>> {
+    await this.delay();
+    let list = [...this.visitors];
+    if (params?.campus) list = list.filter(v => v.campus === params.campus);
+    if (params?.search) {
+      const s = params.search.toLowerCase();
+      list = list.filter(v => v.visitor_name.toLowerCase().includes(s) || (v.contact_number || "").includes(s) || (v.district || "").toLowerCase().includes(s));
+    }
+    if (params?.dateFrom) {
+      const from = new Date(params.dateFrom);
+      list = list.filter(v => new Date(v.visit_date) >= from);
+    }
+    if (params?.dateTo) {
+      const to = new Date(params.dateTo);
+      list = list.filter(v => new Date(v.visit_date) <= to);
+    }
+    const page = params?.page || 1;
+    const limit = params?.limit || 20;
+    const start = (page - 1) * limit;
+    const paged = list.slice(start, start + limit);
+    return { success: true, data: { visitors: paged, total: list.length } };
+  }
+
+  async createVisitor(record: any): Promise<ApiResponse<{ visitor: any }>> {
+    await this.delay();
+    const id = `vis-${String(this.visitors.length + 1).padStart(3, '0')}`;
+    const rec = { id, created_at: new Date().toISOString(), ...record };
+    this.visitors.push(rec);
+    return { success: true, data: { visitor: rec } };
+  }
+
+  async updateVisitor(id: string, updates: any): Promise<ApiResponse> {
+    await this.delay();
+    const idx = this.visitors.findIndex(v => v.id === id);
+    if (idx === -1) return { success: false, error: 'Visitor not found' };
+    this.visitors[idx] = { ...this.visitors[idx], ...updates, updated_at: new Date().toISOString() };
+    return { success: true, data: { visitor: this.visitors[idx] } };
+  }
+
+  async deleteVisitor(id: string): Promise<ApiResponse> {
+    await this.delay();
+    const idx = this.visitors.findIndex(v => v.id === id);
+    if (idx === -1) return { success: false, error: 'Visitor not found' };
+    this.visitors.splice(idx, 1);
+    return { success: true, message: 'Deleted' };
+  }
+
+  async exportVisitors(params?: any): Promise<ApiResponse<any[]>> {
+    await this.delay();
+    // For simplicity, return all matching visitors without pagination
+    const res = await this.getVisitors({ page: 1, limit: 10000, ...params });
+    if (res.success && res.data) return { success: true, data: res.data.visitors };
+    return { success: false, error: 'Failed to export' };
+  }
+
+  // Students (created after approval)
+  private students: any[] = [];
+
+  async createStudentRecord(applicationId: string, ids: { university_id: string; ugc_id?: string; batch?: string }): Promise<ApiResponse<{ student: any }>> {
+    await this.delay();
+    const app = this.applications.find((a) => a.id === applicationId || a.uuid === applicationId);
+    if (!app) return { success: false, error: "Application not found" };
+
+    const student = {
+      id: `stu-${this.students.length + 1}`,
+      student_id: ids.university_id || `NU${String(Date.now()).slice(-6)}`,
+      ugc_id: ids.ugc_id || null,
+      name: app.applicant_name,
+      email: app.email,
+      phone: app.phone,
+      program_code: app.program_code,
+      program_name: app.program_name,
+      department_code: app.department_code,
+      batch: ids.batch || app.semester,
+      created_at: new Date().toISOString(),
     };
+
+    this.students.push(student);
+
+    // Link student_id back to application
+    const appIndex = this.applications.findIndex((a) => a.id === applicationId || a.uuid === applicationId);
+    if (appIndex !== -1) {
+      this.applications[appIndex].student_id = student.student_id;
+    }
+
+    return { success: true, data: { student } };
+  }
+
+  async generateMoneyReceipt(applicationId: string, amount: number): Promise<ApiResponse<{ mr_number: string; receipt_url: string }>> {
+    await this.delay(300);
+
+    const app = this.applications.find((a) => a.id === applicationId || a.uuid === applicationId);
+    if (!app) return { success: false, error: "Application not found" };
+
+    const mr_number = `MR-${Date.now()}`;
+    const receipt = `Receipt for ${app.applicant_name}\nApplication: ${app.id}\nAmount: BDT ${amount}\nMR No: ${mr_number}`;
+    const blob = new Blob([receipt], { type: "text/plain" });
+    const receipt_url = URL.createObjectURL(blob);
+
+    return { success: true, data: { mr_number, receipt_url } };
   }
 }
 
+// Export singleton
 export const mockApi = new MockApiService();

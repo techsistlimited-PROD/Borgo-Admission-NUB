@@ -33,6 +33,8 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { Separator } from "../components/ui/separator";
 import { useApplication } from "../contexts/ApplicationContext";
 import { useToast } from "../hooks/use-toast";
+import { useAuth } from "../contexts/AuthContext";
+import apiClient from "../lib/api";
 import {
   programs,
   departments,
@@ -163,6 +165,43 @@ export default function ProgramSelection() {
     message: string;
   } | null>(null);
 
+  // Existing application check (applicants can apply to only one program)
+  let userContext: any = { user: null, userType: "public" };
+  try {
+    userContext = useAuth();
+  } catch (e) {
+    // ignore if hook not available
+  }
+  const { user, userType } = userContext;
+  const [hasExistingApplication, setHasExistingApplication] = useState(false);
+  const [existingApplication, setExistingApplication] = useState<any | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const checkExisting = async () => {
+      try {
+        if (userType === "applicant" && user?.university_id) {
+          const res = await apiClient.getApplications({
+            search: user.university_id,
+          });
+          if (
+            res.success &&
+            res.data &&
+            Array.isArray(res.data.applications) &&
+            res.data.applications.length > 0
+          ) {
+            setHasExistingApplication(true);
+            setExistingApplication(res.data.applications[0]);
+          }
+        }
+      } catch (e) {
+        // ignore errors
+      }
+    };
+    checkExisting();
+  }, [user, userType]);
+
   // Credit Transfer specific state
   const [previousInstitution, setPreviousInstitution] = useState<string>(
     applicationData.previousInstitution || "",
@@ -188,13 +227,13 @@ export default function ProgramSelection() {
   // Filter options
   const campusOptions = [
     { id: "main", name: "Main Campus", namebn: "প্রধান ক্যাম্পাস" },
-    { id: "khulna", name: "Khulna Campus", namebn: "খুলনা ক্যাম��পাস" },
+    { id: "khulna", name: "Khulna Campus", namebn: "খ���লনা ক্যাম��পাস" },
   ];
 
   const semesterOptions = [
     { id: "fall", name: "Fall", namebn: "���ল" },
     { id: "summer", name: "Summer", namebn: "গ্রীষ্ম" },
-    { id: "winter", name: "Winter", namebn: "শীত" },
+    { id: "winter", name: "Winter", namebn: "শ���ত" },
   ];
 
   const semesterTypeOptions = [
@@ -273,7 +312,7 @@ export default function ProgramSelection() {
         "৪টি ধাপের ১ম ধাপ - আপনার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
       continue: "সেভ ����রে এগিয়ে যান",
-      campusSelection: "ক্যাম্পাস নির্বাচন করুন",
+      campusSelection: "ক্যাম্পাস নির্বাচন করু��",
       semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
       semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
@@ -289,16 +328,16 @@ export default function ProgramSelection() {
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এইচএসসি উভয়েই ৪র্থ বিষয় ছিল",
+      fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ৪র্থ ব��ষয় ছিল",
       calculateWaiver: "যোগ্য মওকুফ গণনা কর��ন",
-      availableWaivers: "���পলব্ধ মওকুফ",
+      availableWaivers: "���পল��্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
-      additionalWaivers: "অতি���িক্ত ম���কুফ",
+      additionalWaivers: "অতি���িক্ত ম�����ুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
       waiverAmount: "���ওকুফ পর��মাণ",
-      finalAmount: "চূড়ান্ত পরিম��ণ",
+      finalAmount: "চূড়��ন্ত পরিম��ণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
       labFee: "ল্যাব ফি",
@@ -309,13 +348,13 @@ export default function ProgramSelection() {
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
       noWaiverEligible: "����িপিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
-      selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চন করুন",
-      selectDepartmentFirst: "প্রথ���ে একটি বিভাগ নির্বাচন করুন",
+      selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চ�� করুন",
+      selectDepartmentFirst: "প্রথ���ে একটি ��িভাগ নির্বাচন করুন",
       enterGPAValues:
         "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরি����্��� ফি এবং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
+        "অতিরি����্��� ফি ���বং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ড���টা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
@@ -961,6 +1000,17 @@ export default function ProgramSelection() {
       }
     }
 
+    // Enforce single application rule
+    if (hasExistingApplication) {
+      toast({
+        title: "Existing Application Found",
+        description:
+          "You already have an application. Applicants are allowed to apply to only one program. Please view your existing application.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSaving(true);
 
     try {
@@ -1024,7 +1074,10 @@ export default function ProgramSelection() {
           });
         }
 
-        navigate("/personal-information");
+        // Preserve offline flag if present in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const isOfflineNav = urlParams.get("offline") === "true";
+        navigate(isOfflineNav ? "/personal-information?offline=true" : "/personal-information");
       } else {
         toast({
           title: t.saveError,
@@ -1058,7 +1111,8 @@ export default function ProgramSelection() {
     hasRequiredAcademicInfo() &&
     eligibilityChecked &&
     eligibilityResult?.isEligible &&
-    (!currentProgramStatus || currentProgramStatus.available); // Check program limits
+    (!currentProgramStatus || currentProgramStatus.available) &&
+    !hasExistingApplication; // Check program limits and single-application rule
 
   return (
     <div>
@@ -1095,7 +1149,7 @@ export default function ProgramSelection() {
                 onClick={clearAllFormData}
                 className="bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
               >
-                🗑️ Clear Form
+                🗑�� Clear Form
               </Button>
 
               {/* Language Toggle */}
@@ -1130,6 +1184,34 @@ export default function ProgramSelection() {
           data-lpignore="true"
           onSubmit={(e) => e.preventDefault()}
         >
+          {/* If an applicant already has an application, show notice and prevent new application */}
+          {hasExistingApplication && (
+            <div className="mb-6">
+              <div className="rounded-md bg-yellow-50 p-4 border border-yellow-100">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm text-yellow-900">
+                      You already have an existing application
+                      {existingApplication?.trackingId
+                        ? ` (Tracking ID: ${existingApplication.trackingId})`
+                        : ""}
+                      . Applicants may only apply to one program. Please view or
+                      continue with your existing application.
+                    </p>
+                    <div className="mt-2">
+                      <Button
+                        variant="ghost"
+                        onClick={() => navigate("/dashboard")}
+                        className="text-sm"
+                      >
+                        View Application
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Selection Forms */}
             <div className="lg:col-span-2 space-y-8">
@@ -2764,18 +2846,27 @@ export default function ProgramSelection() {
             )}
 
             <div className="flex justify-end">
-              <Button
-                onClick={handleContinue}
-                className={`${
-                  canProceed
-                    ? "bg-deep-plum hover:bg-accent-purple"
-                    : "bg-gray-300 cursor-not-allowed"
-                } font-poppins px-8 py-3`}
-                disabled={!canProceed || isSaving}
-              >
-                {isSaving ? t.saving : t.continue}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              {!hasExistingApplication ? (
+                <Button
+                  onClick={handleContinue}
+                  className={`${
+                    canProceed
+                      ? "bg-deep-plum hover:bg-accent-purple"
+                      : "bg-gray-300 cursor-not-allowed"
+                  } font-poppins px-8 py-3`}
+                  disabled={!canProceed || isSaving}
+                >
+                  {isSaving ? t.saving : t.continue}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  View Existing Application
+                </Button>
+              )}
             </div>
           </div>
         </form>

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Home,
   User,
@@ -17,6 +18,11 @@ import {
   LogIn,
   UserCheck,
   BookOpen,
+  Award,
+  Settings,
+  History,
+  Lock,
+  UserCog,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
@@ -29,6 +35,7 @@ interface SidebarProps {
 export default function Sidebar({ userType }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
+  const { role } = useAuth();
 
   const publicPages = [
     { name: "Home", path: "/", icon: Home },
@@ -50,14 +57,45 @@ export default function Sidebar({ userType }: SidebarProps) {
 
   const adminPages = [
     { name: "Admissions", path: "/admin/admissions", icon: Users },
+    { name: "Waiver Management", path: "/admin/waivers", icon: Award },
+    { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
+    {
+      name: "ID Card Generation",
+      path: "/admin/id-card-generation",
+      icon: Shield,
+    },
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
+    {
+      name: "Student Management",
+      path: "/admin/student-management",
+      icon: UserCog,
+    },
+    {
+      name: "Account Management",
+      path: "/admin/account-management",
+      icon: Lock,
+    },
+    {
+      name: "Admission Circular",
+      path: "/admin/admission-circular",
+      icon: Mail,
+    },
+    { name: "Change History", path: "/admin/change-history", icon: History },
     { name: "Reports", path: "/admin/reports", icon: PieChart },
+    { name: "Messaging", path: "/admin/messaging", icon: Mail },
     { name: "Templates", path: "/admin/templates", icon: Mail },
     { name: "Syllabus", path: "/admin/syllabus", icon: BookOpen },
+    { name: "Visitors Log", path: "/admin/visitors-log", icon: Users },
+    { name: "Referrals", path: "/admin/referrals", icon: Users },
     {
       name: "Configuration",
       path: "/admin/configuration",
-      icon: LayoutDashboard,
+      icon: Settings,
+    },
+    {
+      name: "Permission Configuration",
+      path: "/admin/permissions",
+      icon: Shield,
     },
   ];
 
@@ -67,6 +105,35 @@ export default function Sidebar({ userType }: SidebarProps) {
   ];
 
   const getPages = () => {
+    // Role overrides userType when present
+    if (role === "admission_officer")
+      return [
+        { name: "Admissions", path: "/admin/admissions", icon: Users },
+        { name: "Waiver Management", path: "/admin/waivers", icon: Award },
+        { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
+        {
+          name: "ID Card Generation",
+          path: "/admin/id-card-generation",
+          icon: Shield,
+        },
+        {
+          name: "Student Management",
+          path: "/admin/student-management",
+          icon: UserCog,
+        },
+        { name: "Visitors Log", path: "/admin/visitors-log", icon: Users },
+        { name: "Referrals", path: "/admin/referrals", icon: Users },
+        { name: "Reports", path: "/admin/reports?scope=admission", icon: PieChart },
+      ];
+
+    if (role === "finance_officer")
+      return [
+        { name: "Finance", path: "/admin/finance", icon: CreditCard },
+        // Finance officers shouldn't see ID Card Generation
+        { name: "Reports", path: "/admin/reports?scope=finance", icon: PieChart },
+        { name: "Referrals", path: "/admin/referrals", icon: Users },
+      ];
+
     switch (userType) {
       case "applicant":
         return applicantPages;

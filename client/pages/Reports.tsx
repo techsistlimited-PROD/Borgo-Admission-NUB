@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Download,
   BarChart3,
@@ -48,6 +48,8 @@ import {
   TableRow,
 } from "../components/ui/table";
 import { getIDGenerationStats, sampleStudentIDs } from "../lib/idGeneration";
+import React from "react";
+import { useLocation } from "react-router-dom";
 
 // Dummy data for reports
 const programWiseData = [
@@ -385,31 +387,92 @@ const studentCreditsData = [
 
 const idCardData = [
   {
-    studentId: "ID001",
-    studentName: "Kamal Ahmed",
+    studentId: "NUB-CSE-2024-001",
+    studentName: "Mohammad Rahman",
     department: "cse",
-    program: "bachelor",
+    program: "BSc in CSE",
     semester: "spring_2024",
-    cardGenerated: "Yes",
-    generatedDate: "2024-01-20",
+    cardGenerated: "Generated",
+    generatedDate: "2024-02-15",
+    batch: "Spring 2024",
+    admissionDate: "2024-01-15",
   },
   {
-    studentId: "ID002",
-    studentName: "Rashida Khatun",
-    department: "eee",
-    program: "bachelor",
+    studentId: "NUB-BBA-2024-002",
+    studentName: "Fatima Sultana",
+    department: "bba",
+    program: "BBA",
     semester: "spring_2024",
-    cardGenerated: "Yes",
-    generatedDate: "2024-01-21",
-  },
-  {
-    studentId: "ID003",
-    studentName: "Abdul Rahman",
-    department: "civil",
-    program: "bachelor",
-    semester: "spring_2024",
-    cardGenerated: "No",
+    cardGenerated: "Pending",
     generatedDate: "-",
+    batch: "Spring 2024",
+    admissionDate: "2024-01-20",
+  },
+  {
+    studentId: "NUB-EEE-2024-003",
+    studentName: "Ahmed Hassan",
+    department: "eee",
+    program: "BSc in EEE",
+    semester: "spring_2024",
+    cardGenerated: "Pending",
+    generatedDate: "-",
+    batch: "Spring 2024",
+    admissionDate: "2024-01-25",
+  },
+  {
+    studentId: "NUB-CE-2024-004",
+    studentName: "Rashida Begum",
+    department: "civil",
+    program: "BSc in Civil",
+    semester: "spring_2024",
+    cardGenerated: "Generated",
+    generatedDate: "2024-02-20",
+    batch: "Spring 2024",
+    admissionDate: "2024-02-01",
+  },
+  {
+    studentId: "NUB-CSE-2024-005",
+    studentName: "Karim Uddin",
+    department: "cse",
+    program: "BSc in CSE",
+    semester: "spring_2024",
+    cardGenerated: "Pending",
+    generatedDate: "-",
+    batch: "Spring 2024",
+    admissionDate: "2024-02-10",
+  },
+  {
+    studentId: "NUB-BBA-2024-006",
+    studentName: "Sakina Akter",
+    department: "bba",
+    program: "BBA",
+    semester: "spring_2024",
+    cardGenerated: "Generated",
+    generatedDate: "2024-02-18",
+    batch: "Spring 2024",
+    admissionDate: "2024-02-15",
+  },
+  {
+    studentId: "NUB-EEE-2023-067",
+    studentName: "Abdul Karim",
+    department: "eee",
+    program: "BSc in EEE",
+    semester: "fall_2023",
+    cardGenerated: "Generated",
+    generatedDate: "2023-09-15",
+    batch: "Fall 2023",
+    admissionDate: "2023-08-01",
+  },
+  {
+    studentId: "NUB-CSE-2023-089",
+    studentName: "Nusrat Jahan",
+    department: "cse",
+    program: "BSc in CSE",
+    semester: "fall_2023",
+    cardGenerated: "Generated",
+    generatedDate: "2023-09-20",
+    batch: "Fall 2023",
+    admissionDate: "2023-08-05",
   },
 ];
 
@@ -460,6 +523,80 @@ export default function Reports() {
   const [selectedYear, setSelectedYear] = useState("2024");
   const [activeReportCategory, setActiveReportCategory] = useState("overview");
   const [activeReport, setActiveReport] = useState<string | null>(null);
+
+  // Referral & Visitors stats
+  const [referralStats, setReferralStats] = useState<{ total_referrers: number; total_commission: number } | null>(null);
+  const [visitorsStats, setVisitorsStats] = useState<{ total_visits: number; visits_today: number } | null>(null);
+  const [referrersList, setReferrersList] = useState<any[]>([]);
+  const [visitorsList, setVisitorsList] = useState<any[]>([]);
+
+  // Helper: download CSV
+  const downloadCSV = (filename: string, rows: any[]) => {
+    if (!rows || rows.length === 0) {
+      alert('No data to export');
+      return;
+    }
+    const keys = Object.keys(rows[0]);
+    const csvContent = [keys.join(','), ...rows.map(r => keys.map(k => `"${String(r[k] ?? '')}"`).join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const fetchAndExportReferrers = async () => {
+    try {
+      const res = await apiClient.getReferrers();
+      if (res.success && res.data) {
+        const rows = res.data.referrers || [];
+        downloadCSV('referrers.csv', rows);
+      } else {
+        alert('Failed to export referrers');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Export failed');
+    }
+  };
+
+  const fetchAndExportVisitors = async () => {
+    try {
+      const res = await apiClient.exportVisitors({});
+      if (res.success && res.data) {
+        downloadCSV('visitors.csv', res.data);
+      } else {
+        alert('Failed to export visitors');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Export failed');
+    }
+  };
+
+  // Small sparkline component
+  const Sparkline = ({ points }: { points: number[] }) => {
+    if (!points || points.length === 0) return null;
+    const w = 120;
+    const h = 28;
+    const max = Math.max(...points);
+    const min = Math.min(...points);
+    const range = max - min || 1;
+    const step = w / (points.length - 1 || 1);
+    const path = points
+      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${i * step} ${h - ((p - min) / range) * h}`)
+      .join(' ');
+    return (
+      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
+        <path d={path} fill="none" stroke="#7c3aed" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  };
 
   const texts = {
     en: {
@@ -517,7 +654,6 @@ export default function Reports() {
       studentList: "Student List",
       detailedStudentList: "Detailed Student List",
       studentIdCards: "Student ID Cards",
-      bulkIdCardDownload: "All Students ID Cards Download (Bulk)",
       studentRequiredCredits: "Student Required Credits",
       studentWaiverReport: "Student Waiver Report (Department-wise)",
       creditTransferStudentList: "Credit Transfer Student List",
@@ -588,15 +724,15 @@ export default function Reports() {
     },
     bn: {
       title: "রিপোর্ট ও বিশ্লেষণ",
-      subtitle: "সার্বিক ভর্তি রিপোর্ট এবং অন্তর্দৃষ্টি",
+      subtitle: "সার্বিক ভর্তি রিপোর্ট এবং অন্তর্দৃষ্���ি",
       dateRange: "তারিখের পরিসীমা",
       program: "প্রোগ্রাম",
       department: "বিভাগ",
       semester: "সেমিস্টার",
       year: "বছর",
-      generateReport: "রিপোর্ট তৈরি করুন",
+      generateReport: "রিপোর্��� তৈর��� করুন",
       exportPDF: "পিডিএফ এক্সপোর্ট",
-      downloadReport: "পিডিএফ ডাউনলোড",
+      downloadReport: "প��ডিএফ ডাউনলোড",
       viewReport: "রিপোর্ট দেখুন",
       last7Days: "গত ৭ দিন",
       last30Days: "গত ৩০ দিন",
@@ -609,7 +745,7 @@ export default function Reports() {
       spring2024: "বসন্ত ২০২৪",
       fall2024: "শরৎ ২০২৪",
       summer2024: "গ্রীষ্ম ২০২৪",
-      backToReports: "রিপোর্টে ফিরুন",
+      backToReports: "রিপোর্টে ���িরুন",
 
       // Report Categories
       reportCategories: "রিপোর্ট বিভাগসমূহ",
@@ -618,31 +754,31 @@ export default function Reports() {
       financialReports: "আর্থিক রিপোর্ট",
       waiverReports: "মওকুফ রিপোর্ট",
       idCardReports: "আইডি কার্ড রিপোর্ট",
-      targetReports: "লক্ষ্য রিপোর্ট",
+      targetReports: "লক্ষ্য র��পোর্ট",
 
       totalApplications: "মোট আবেদন",
       admittedStudents: "ভর্তিকৃত শিক্ষার্থী",
-      rejectedApplications: "প্রত্যাখ্যাত আবেদন",
-      pendingApplications: "অপেক্ষমাণ আবেদন",
+      rejectedApplications: "প্রত্যাখ্যাত আবেদ���",
+      pendingApplications: "��পেক্ষমাণ আবেদন",
       departmentWiseAdmissions: "বিভাগ অনুযায়ী ভর্তি",
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
-      admissionRate: "ভর্তির হার",
+      admissionRate: "ভর্তি�� হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
       topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
-      revenueGenerated: "আয় সৃষ্টি",
+      revenueGenerated: "আয় ���ৃষ্টি",
 
       programWiseAdmissions:
-        "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্থীর সংখ্যা",
+        "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্��ীর সংখ্যা",
       employeeWiseCollection: "কর্মচারী অনুযায়ী ভর্তি ফি সংগ্রহ",
-      dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্রহ রিপোর্ট",
+      dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্র�� রিপোর্ট",
 
       departmentColumn: "বিভাগ",
       rate: "হার",
-      cse: "কম্পিউটার সায়েন্স ও ইঞ্জিনিয়ারিং",
-      eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জিনিয়ারিং",
+      cse: "কম্পিউটা�� সায়েন্স ও ইঞ্জিনিয়ারি���",
+      eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জ��নিয়ারিং",
       mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
-      textile: "টেক্সটাইল ইঞ্জিনিয়ারিং",
+      textile: "টেক্সটাইল ইঞ্জ��নিয়ারিং",
       bba: "ব্যবসায় প্রশাসন",
       law: "আইন",
       architecture: "স্থাপত্য",
@@ -652,7 +788,59 @@ export default function Reports() {
     },
   };
 
-  const t = texts[language];
+  const t: any = texts[language];
+
+  // scope/referrer from URL
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const scope = params.get('scope'); // 'finance' | 'admission' | null
+  const referrerFilter = params.get('referrer');
+  const showFinance = !scope || scope === 'finance';
+  const showAdmission = !scope || scope === 'admission';
+
+  // Helper to apply referrer filter on employee data
+  const getFilteredEmployeeData = () => {
+    if (!referrerFilter) return employeeCollectionData;
+    return employeeCollectionData.filter(e => (e.employeeId || '').toLowerCase() === referrerFilter.toLowerCase());
+  };
+
+  // Ensure active report category aligns with scope on mount/update
+  useEffect(() => {
+    if (scope === 'finance') {
+      setActiveReportCategory('financial');
+    } else if (scope === 'admission') {
+      setActiveReportCategory('overview');
+    }
+  }, [scope]);
+
+  // Fetch referral and visitors stats
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const refRes = await apiClient.getReferrers();
+        if (refRes.success && refRes.data) {
+          const total = refRes.data.referrers.length;
+          // Mock commission sum from mock data if available
+          const totalCommission = refRes.data.referrers.reduce((sum:any, r:any) => sum + ((r.commission_rate||0) * 10000), 0);
+          setReferralStats({ total_referrers: total, total_commission: totalCommission });
+          setReferrersList(refRes.data.referrers || []);
+        }
+
+        const visRes = await apiClient.getVisitors({ page: 1, limit: 1000 });
+        if (visRes.success && visRes.data) {
+          const totalVisits = visRes.data.total || visRes.data.visitors.length;
+          const today = new Date().toISOString().slice(0,10);
+          const visitsToday = (visRes.data.visitors || []).filter((v:any)=>v.visit_date === today).length;
+          setVisitorsStats({ total_visits: totalVisits, visits_today: visitsToday });
+          setVisitorsList(visRes.data.visitors || []);
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    };
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Filter functions for each report type
   const filteredProgramWiseData = useMemo(() => {
@@ -1345,6 +1533,87 @@ export default function Reports() {
               </CardContent>
             </Card>
           )}
+
+        {/* Referrers Report */}
+        {activeReport === 'referrers' && (
+          <Card className="bg-white shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-xl font-poppins text-deep-plum">Referral Program - Referrers</CardTitle>
+              <div className="flex gap-2">
+                <Button className="bg-deep-plum" onClick={fetchAndExportReferrers}><Download className="w-4 h-4 mr-2"/>Export CSV</Button>
+                <Button variant="outline" onClick={() => setActiveReport(null)}>Back</Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Employee ID</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Designation</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {referrersList.map((r) => (
+                    <TableRow key={r.employee_id}>
+                      <TableCell className="font-mono">{r.employee_id}</TableCell>
+                      <TableCell className="font-medium">{r.name}</TableCell>
+                      <TableCell>{r.department}</TableCell>
+                      <TableCell>{r.designation}</TableCell>
+                      <TableCell>{r.email}</TableCell>
+                      <TableCell>{r.phone}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Visitors Report */}
+        {activeReport === 'visitors' && (
+          <Card className="bg-white shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-xl font-poppins text-deep-plum">Visitors Log</CardTitle>
+              <div className="flex gap-2">
+                <Button className="bg-deep-plum" onClick={fetchAndExportVisitors}><Download className="w-4 h-4 mr-2"/>Export CSV</Button>
+                <Button variant="outline" onClick={() => setActiveReport(null)}>Back</Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Visit Date</TableHead>
+                    <TableHead>Campus</TableHead>
+                    <TableHead>Visitor Name</TableHead>
+                    <TableHead>District</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Interested In</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {visitorsList.map((v) => (
+                    <TableRow key={v.id}>
+                      <TableCell className="font-mono">{v.id}</TableCell>
+                      <TableCell>{v.visit_date}</TableCell>
+                      <TableCell>{v.campus}</TableCell>
+                      <TableCell className="font-medium">{v.visitor_name}</TableCell>
+                      <TableCell>{v.district}</TableCell>
+                      <TableCell>{v.contact_number}</TableCell>
+                      <TableCell>{v.interested_in}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
         </div>
       </div>
     );
@@ -1402,35 +1671,45 @@ export default function Reports() {
               {t.reportCategories}
             </h3>
             <div className="flex flex-wrap gap-2 mb-6">
-              {[
-                { id: "overview", label: t.overview, icon: BarChart3 },
-                { id: "student", label: t.studentReports, icon: Users },
-                {
-                  id: "financial",
-                  label: t.financialReports,
-                  icon: DollarSign,
-                },
-                { id: "waiver", label: t.waiverReports, icon: BookOpen },
-                { id: "idcards", label: t.idCardReports, icon: IdCard },
-                { id: "targets", label: t.targetReports, icon: Target },
-              ].map((category) => (
-                <Button
-                  key={category.id}
-                  variant={
-                    activeReportCategory === category.id ? "default" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => setActiveReportCategory(category.id)}
-                  className={`${
-                    activeReportCategory === category.id
-                      ? "bg-deep-plum text-white"
-                      : "text-deep-plum border-deep-plum hover:bg-deep-plum hover:text-white"
-                  }`}
-                >
-                  <category.icon className="w-4 h-4 mr-2" />
-                  {category.label}
-                </Button>
-              ))}
+              {(() => {
+                const allCategories = [
+                  { id: "overview", label: t.overview, icon: BarChart3 },
+                  { id: "student", label: t.studentReports, icon: Users },
+                  { id: "financial", label: t.financialReports, icon: DollarSign },
+                  { id: "waiver", label: t.waiverReports, icon: BookOpen },
+                  { id: "idcards", label: t.idCardReports, icon: IdCard },
+                  { id: "targets", label: t.targetReports, icon: Target },
+                ];
+                // Filter categories by scope if provided
+                const categories = scope === 'finance'
+                  ? allCategories.filter(c => ['overview','financial','waiver'].includes(c.id))
+                  : scope === 'admission'
+                    ? allCategories.filter(c => ['overview','student','idcards','targets','waiver'].includes(c.id))
+                    : allCategories;
+                // Ensure active category is valid for scope
+                if (!categories.find(c => c.id === activeReportCategory)) {
+                  // default to overview or financial for finance scope
+                  setActiveReportCategory(scope === 'finance' ? 'financial' : 'overview');
+                }
+                return categories.map((category) => (
+                  <Button
+                    key={category.id}
+                    variant={
+                      activeReportCategory === category.id ? "default" : "outline"
+                    }
+                    size="sm"
+                    onClick={() => setActiveReportCategory(category.id)}
+                    className={`${
+                      activeReportCategory === category.id
+                        ? "bg-deep-plum text-white"
+                        : "text-deep-plum border-deep-plum hover:bg-deep-plum hover:text-white"
+                    }`}
+                  >
+                    <category.icon className="w-4 h-4 mr-2" />
+                    {category.label}
+                  </Button>
+                ));
+              })()}
             </div>
           </CardContent>
         </Card>
@@ -1667,6 +1946,65 @@ export default function Reports() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Referrals & Visitors Quick Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <Card className="bg-white shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-poppins text-deep-plum flex items-center gap-2">
+                    <Users className="w-5 h-5" /> Referral Program Summary
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Total Referrers</p>
+                      <p className="text-2xl font-bold text-deep-plum">{referralStats?.total_referrers ?? 0}</p>
+                      <p className="text-xs text-gray-500 mt-1">Total Commission: ৳{(referralStats?.total_commission || 0).toLocaleString()}</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <Sparkline points={Array(7).fill(referralStats?.total_referrers || 0)} />
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => setActiveReport('referrers')}>
+                          <Eye className="w-4 h-4 mr-2" /> View
+                        </Button>
+                        <Button size="sm" className="bg-deep-plum" onClick={fetchAndExportReferrers}>
+                          <Download className="w-4 h-4 mr-2" /> Export CSV
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-poppins text-deep-plum flex items-center gap-2">
+                    <Users className="w-5 h-5" /> Visitors Summary
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Total Visits</p>
+                      <p className="text-2xl font-bold text-deep-plum">{visitorsStats?.total_visits ?? 0}</p>
+                      <p className="text-xs text-gray-500 mt-1">Visits Today: {visitorsStats?.visits_today ?? 0}</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <Sparkline points={Array(7).fill(visitorsStats?.visits_today || 0)} />
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => setActiveReport('visitors')}>
+                          <Eye className="w-4 h-4 mr-2" /> View
+                        </Button>
+                        <Button size="sm" className="bg-deep-plum" onClick={fetchAndExportVisitors}>
+                          <Download className="w-4 h-4 mr-2" /> Export CSV
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               {/* Department-wise Admissions */}
@@ -2027,25 +2365,15 @@ export default function Reports() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   {[
                     {
                       key: "studentIdCards",
                       title: t.studentIdCards,
                       description:
-                        "Individual student ID card generation and status",
+                        "Historical data of student ID card generation with status tracking by department and date",
                       icon: IdCard,
                       count: filteredIdCardData.length,
-                    },
-                    {
-                      key: "bulkIdCardDownload",
-                      title: t.bulkIdCardDownload,
-                      description:
-                        "Download all student ID cards for selected semester/program in one click",
-                      icon: Package,
-                      count: filteredIdCardData.filter(
-                        (item) => item.cardGenerated === "Yes",
-                      ).length,
                     },
                   ].map((report, index) => (
                     <Card
@@ -2087,6 +2415,117 @@ export default function Reports() {
               </CardContent>
             </Card>
           </div>
+        )}
+
+        {/* Student ID Cards Report */}
+        {activeReport === "studentIdCards" && (
+          <Card className="bg-white shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
+                <IdCard className="w-5 h-5" />
+                Student ID Card Report - Historical Data
+              </CardTitle>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setActiveReport(null)}
+                  variant="outline"
+                  className="text-deep-plum border-deep-plum"
+                >
+                  {t.backToReports}
+                </Button>
+                <Button
+                  onClick={() =>
+                    exportToPDF("Student ID Card Report", filteredIdCardData)
+                  }
+                  className="bg-deep-plum hover:bg-accent-purple"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.downloadReport}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* Additional Filters for ID Card Report */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">
+                    Status Filter
+                  </Label>
+                  <Select defaultValue="all">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="Generated">Generated</SelectItem>
+                      <SelectItem value="Pending">Pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">
+                    Date From
+                  </Label>
+                  <Input type="date" />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">
+                    Date To
+                  </Label>
+                  <Input type="date" />
+                </div>
+              </div>
+
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student ID</TableHead>
+                    <TableHead>Student Name</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Program</TableHead>
+                    <TableHead>Batch</TableHead>
+                    <TableHead>Admission Date</TableHead>
+                    <TableHead>Card Status</TableHead>
+                    <TableHead>Generated Date</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredIdCardData.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-mono font-medium">
+                        {item.studentId}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {item.studentName}
+                      </TableCell>
+                      <TableCell>{item.department.toUpperCase()}</TableCell>
+                      <TableCell>{item.program}</TableCell>
+                      <TableCell>{item.batch}</TableCell>
+                      <TableCell>
+                        {new Date(item.admissionDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          className={
+                            item.cardGenerated === "Generated"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }
+                        >
+                          {item.cardGenerated}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {item.generatedDate !== "-"
+                          ? new Date(item.generatedDate).toLocaleDateString()
+                          : "-"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         )}
 
         {/* Target Reports Category */}

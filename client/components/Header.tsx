@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LogOut, User, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -11,6 +11,8 @@ import {
 } from "./ui/dropdown-menu";
 import { useAuth } from "../contexts/AuthContext";
 import { useApplication } from "../contexts/ApplicationContext";
+import { useToast } from "../hooks/use-toast";
+import apiClient from "../lib/api";
 
 interface HeaderProps {
   showLogin?: boolean;
@@ -19,17 +21,30 @@ interface HeaderProps {
 export default function Header({ showLogin = false }: HeaderProps) {
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Try to get auth context, but don't fail if it's not available
-  let user = null;
+  let user: any = null;
   let logout = () => {};
-  let userType = null;
+  let userType: "public" | "applicant" | "admin" = "public";
+  let roleLocal: string | null = null;
 
+  let setRole = (r: string | null) => {};
+  let setPermissions = (p: string[]) => {};
+  let signInAsLocal = (r: string) => {};
   try {
     const auth = useAuth();
     user = auth.user;
     logout = auth.logout;
     userType = auth.userType;
+    roleLocal = auth.role ?? null;
+    // role/permissions helpers (frontend-only)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setRole = auth.setRole ?? setRole;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setPermissions = auth.setPermissions ?? setPermissions;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    signInAsLocal = auth.signInAs ?? signInAsLocal;
   } catch {
     // Auth context not available (applicant app)
   }
@@ -43,7 +58,34 @@ export default function Header({ showLogin = false }: HeaderProps) {
     // Application context not available
   }
 
-  const handleNewApplication = () => {
+  const { toast } = useToast();
+
+  const handleNewApplication = async () => {
+    // If logged in as applicant, check if they already have an application
+    try {
+      if (userType === "applicant" && user?.university_id) {
+        const res = await apiClient.getApplications({
+          search: user.university_id,
+        });
+        if (
+          res.success &&
+          res.data &&
+          (res.data.applications || []).length > 0
+        ) {
+          toast({
+            title: "Application exists",
+            description:
+              "You already have an application. You cannot start a new one.",
+            duration: 6000,
+          });
+          navigate("/dashboard");
+          return;
+        }
+      }
+    } catch (err) {
+      // ignore errors and proceed
+    }
+
     // Clear all form data
     clearApplicationData();
 
@@ -94,6 +136,40 @@ export default function Header({ showLogin = false }: HeaderProps) {
 
           {/* Right side */}
           <div className="flex items-center space-x-4">
+            {/* Top-level portal switcher (always visible) */}
+          <div className="hidden sm:flex items-center bg-gray-100 rounded-md p-1">
+            {location.pathname === "/" ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white">
+                    {t.login}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuItem onClick={() => navigate("/applicant-portal")}>Applicant Portal</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Portal</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin/admission-login")}>Admission Officer</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin/finance-login")}>Finance Officer</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <a
+                  href="/applicant-portal"
+                  className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
+                >
+                  Applicant Portal
+                </a>
+                <a
+                  href="/admin"
+                  className="px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:text-deep-plum"
+                >
+                  Admin Portal
+                </a>
+              </>
+            )}
+          </div>
+
             {/* New Application Button */}
             <Button
               onClick={handleNewApplication}
@@ -131,51 +207,89 @@ export default function Header({ showLogin = false }: HeaderProps) {
 
             {/* User Info or Login */}
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white"
+              <div className="flex items-center gap-3">
+                {/* Role selector visible only to admins (frontend demo) */}
+                {userType === "admin" && (
+                  <select
+                    aria-label="Select role"
+                    className="border rounded p-1 text-sm"
+                    defaultValue={localStorage.getItem("nu_user_role") || ""}
+                    onChange={(e) => {
+                      const r = e.target.value || null;
+                      setRole(r);
+                      if (r === "admin") setPermissions(["all"]);
+                      else if (r === "admission_officer")
+                        setPermissions([
+                          "applications:view",
+                          "applications:approve",
+                          "waivers:manage",
+                        ]);
+                      else if (r === "finance_officer")
+                        setPermissions(["finance:view", "finance:billing"]);
+                      else setPermissions([]);
+                      // reload sidebar by forcing a small timeout (UI-only)
+                      setTimeout(
+                        () => window.dispatchEvent(new Event("resize")),
+                        100,
+                      );
+                    }}
                   >
-                    <User className="w-4 h-4 mr-2" />
-                    {user.name}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-2 py-1.5">
-                    <p className="text-sm font-medium">{user.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {user.type === "applicant"
-                        ? user.universityId
-                        : user.email}
-                    </p>
-                    <p className="text-xs text-gray-500">{user.department}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>
-                    <LogOut className="w-4 h-4 mr-2" />
-                    {t.logout}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <option value="">Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="admission_officer">Admission Officer</option>
+                    <option value="finance_officer">Finance Officer</option>
+                  </select>
+                )}
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      {user.name}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium">{user.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {roleLocal
+                          ? roleLocal === "admission_officer"
+                            ? "Admission Officer"
+                            : roleLocal === "finance_officer"
+                              ? "Finance Officer"
+                              : roleLocal
+                          : user.type === "applicant"
+                            ? user.university_id
+                            : user.email}
+                      </p>
+                      <p className="text-xs text-gray-500">{user.department}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={logout}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      {t.logout}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ) : showLogin ? (
-              <div className="flex gap-2">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white"
-                >
-                  <a href="/applicant-portal">Applicant Portal</a>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white"
-                >
-                  <a href="/admin">Admin Portal</a>
-                </Button>
+              <div className="flex gap-2 sm:hidden">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="border-deep-plum text-deep-plum hover:bg-deep-plum hover:text-white">
+                      {t.login}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem onClick={() => navigate("/applicant-portal")}>Applicant Portal</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Portal</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/admin/admission-login")}>Admission Officer</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/admin/finance-login")}>Finance Officer</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ) : null}
           </div>

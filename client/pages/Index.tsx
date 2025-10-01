@@ -79,7 +79,7 @@ export default function Index() {
       heroSubtitle:
         "নর্দার্ন ইউনিভার্সিটি বাংলাদেশে যোগ দিন - যেখানে উৎকর্ষতা সুযোগের সাথে মিলিত হয়",
       heroDescription:
-        "মাত্র ৫টি সহজ ধাপে আপনার অনলাইন ভর্তি প্রক্রিয়া শুরু করুন। আমাদের সুবিধাজনক সিস্টেম ���পনার স্বপ্নের প্রোগ্রামে আবেদন করা সহজ করে তোলে।",
+        "মাত্র ৫টি সহজ ধাপে আপনার অনলাইন ভর্তি প্রক্রিয়া শুরু করুন। আমাদের সুবিধাজনক স��স্টেম ���পনার স্বপ্নের প্রোগ্রামে আবেদন করা সহজ করে তোলে।",
       startJourney: "আপনার যাত্রা শুরু করুন",
       uploadOffline: "অফ���াইন আবেদন আপলোড করুন",
       admissionProcess: "সহজ ৪-ধাপের ভর্তি প্রক্রিয়া",
@@ -121,7 +121,7 @@ export default function Index() {
       quickLinks: "দ্রুত লিংক",
       aboutUs: "আমাদের সম্পর্কে",
       admissions: "ভর্তি",
-      news: "সংবাদ ও ইভেন্ট",
+      news: "সং��াদ ও ইভেন্ট",
       campusLife: "ক্যাম্পাস জীবন",
     },
   };
@@ -279,14 +279,16 @@ export default function Index() {
                 </div>
 
                 <div className="pt-4">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-deep-plum text-lg px-8 py-4"
-                  >
-                    <Upload className="w-5 h-5 mr-2" />
-                    {t.uploadOffline}
-                  </Button>
+                  <Link to="/admin/offline-admission">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-deep-plum text-lg px-8 py-4"
+                    >
+                      <Upload className="w-5 h-5 mr-2" />
+                      Offline Admission
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

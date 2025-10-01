@@ -46,8 +46,9 @@ export default function EmailTemplates() {
   const [sendStatus, setSendStatus] = useState<"idle" | "success" | "error">(
     "idle",
   );
-  const [selectedSemester, setSelectedSemester] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("all-semesters");
+  const [selectedDepartment, setSelectedDepartment] =
+    useState("all-departments");
   const [selectedStudent, setSelectedStudent] = useState("");
 
   const texts = {
@@ -88,7 +89,7 @@ export default function EmailTemplates() {
       invoiceLink: "Invoice Link",
     },
     bn: {
-      title: "সিস্টেম ইমেইল ও এসএমএস টেমপ্লেট",
+      title: "সিস���টেম ইমেই��� ও এসএমএস টেমপ্লেট",
       subtitle: "যোগাযোগ টেমপ্লেট ব্যবস্থাপনা",
       emailTemplates: "ইমেইল টেমপ্লেট",
       smsTemplates: "এসএমএস টেমপ্লেট",
@@ -107,9 +108,9 @@ export default function EmailTemplates() {
       error: "পাঠাতে ব্যর্থ",
       admissionApproved: "ভর্তি অনুমোদিত",
       paymentReceived: "পেমেন্ট প্রাপ্ত",
-      documentsRequired: "কাগজপত্র প্রয়োজন",
+      documentsRequired: "কাগজপত্র প্রয়ো��ন",
       applicationRejected: "আবেদন প্রত্যাখ্যাত",
-      idCreated: "ছাত্র আইডি তৈরি",
+      idCreated: "ছাত্র আইডি ত��রি",
       enrollmentComplete: "ভর্তি সম্পন্ন",
       studentName: "ছাত্রের নাম",
       trackingId: "ট্র্যাকিং আইডি",
@@ -179,9 +180,13 @@ export default function EmailTemplates() {
   // Filter students based on selected criteria
   const filteredStudents = dummyStudents.filter((student) => {
     const semesterMatch =
-      !selectedSemester || student.semester === selectedSemester;
+      !selectedSemester ||
+      selectedSemester === "all-semesters" ||
+      student.semester === selectedSemester;
     const departmentMatch =
-      !selectedDepartment || student.department === selectedDepartment;
+      !selectedDepartment ||
+      selectedDepartment === "all-departments" ||
+      student.department === selectedDepartment;
     return semesterMatch && departmentMatch;
   });
 
@@ -365,13 +370,27 @@ IT Department
     navigator.clipboard.writeText(text);
   };
 
+  const getEmailTemplate = () => {
+    return (
+      emailTemplates[selectedTemplate as keyof typeof emailTemplates] || {
+        subject: "",
+        content: "",
+      }
+    );
+  };
+
+  const getSmsTemplate = () => {
+    return {
+      content:
+        smsTemplates[selectedTemplate as keyof typeof smsTemplates] || "",
+    };
+  };
+
   const getTemplate = (type: "email" | "sms") => {
     if (type === "email") {
-      return emailTemplates[selectedTemplate as keyof typeof emailTemplates];
+      return getEmailTemplate();
     } else {
-      return {
-        content: smsTemplates[selectedTemplate as keyof typeof smsTemplates],
-      };
+      return getSmsTemplate();
     }
   };
 
@@ -461,7 +480,9 @@ IT Department
                       <SelectValue placeholder="All Semesters" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Semesters</SelectItem>
+                      <SelectItem value="all-semesters">
+                        All Semesters
+                      </SelectItem>
                       {semesters.map((semester) => (
                         <SelectItem key={semester} value={semester}>
                           {semester}
@@ -481,7 +502,9 @@ IT Department
                       <SelectValue placeholder="All Departments" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Departments</SelectItem>
+                      <SelectItem value="all-departments">
+                        All Departments
+                      </SelectItem>
                       {departments.map((dept) => (
                         <SelectItem key={dept} value={dept}>
                           {dept}
@@ -615,10 +638,10 @@ IT Department
                     value={
                       currentStudent
                         ? renderTemplate(
-                            getTemplate("email")?.subject || "",
+                            getEmailTemplate().subject || "",
                             currentStudent,
                           )
-                        : getTemplate("email")?.subject || ""
+                        : getEmailTemplate().subject || ""
                     }
                     readOnly
                     className={`${currentStudent ? "bg-blue-50 border-blue-200" : "bg-gray-50"}`}
@@ -633,10 +656,10 @@ IT Department
                     value={
                       currentStudent
                         ? renderTemplate(
-                            getTemplate("email")?.content || "",
+                            getEmailTemplate().content || "",
                             currentStudent,
                           )
-                        : getTemplate("email")?.content || ""
+                        : getEmailTemplate().content || ""
                     }
                     readOnly
                     className={`font-mono text-sm ${currentStudent ? "bg-blue-50 border-blue-200" : "bg-gray-50"}`}
@@ -669,13 +692,13 @@ IT Department
                           <div className="text-sm text-gray-600 mb-2">
                             Subject:{" "}
                             {renderTemplate(
-                              getTemplate("email")?.subject || "",
+                              getEmailTemplate().subject || "",
                               currentStudent,
                             )}
                           </div>
                           <div className="whitespace-pre-wrap text-sm border-t pt-2">
                             {renderTemplate(
-                              getTemplate("email")?.content || "",
+                              getEmailTemplate().content || "",
                               currentStudent,
                             )}
                           </div>
@@ -686,8 +709,8 @@ IT Department
                               Preview with {currentStudent.name}'s data:
                             </div>
                             <div className="text-blue-700">
-                              All {{ VARIABLE }} placeholders have been replaced
-                              with actual student information.
+                              All {"{{ VARIABLE }}"} placeholders have been
+                              replaced with actual student information.
                             </div>
                           </div>
                         )}
@@ -753,10 +776,10 @@ IT Department
                     value={
                       currentStudent
                         ? renderTemplate(
-                            getTemplate("sms")?.content || "",
+                            getSmsTemplate().content || "",
                             currentStudent,
                           )
-                        : getTemplate("sms")?.content || ""
+                        : getSmsTemplate().content || ""
                     }
                     readOnly
                     className={`font-mono text-sm ${currentStudent ? "bg-blue-50 border-blue-200" : "bg-gray-50"}`}
@@ -773,10 +796,10 @@ IT Department
                       {
                         (currentStudent
                           ? renderTemplate(
-                              getTemplate("sms")?.content || "",
+                              getSmsTemplate().content || "",
                               currentStudent,
                             )
-                          : getTemplate("sms")?.content || ""
+                          : getSmsTemplate().content || ""
                         ).length
                       }
                     </span>
@@ -785,10 +808,10 @@ IT Department
                       {Math.ceil(
                         (currentStudent
                           ? renderTemplate(
-                              getTemplate("sms")?.content || "",
+                              getSmsTemplate().content || "",
                               currentStudent,
                             )
-                          : getTemplate("sms")?.content || ""
+                          : getSmsTemplate().content || ""
                         ).length / 160,
                       )}
                     </span>
@@ -814,7 +837,7 @@ IT Department
                           </div>
                           <div className="text-sm border-t pt-2">
                             {renderTemplate(
-                              getTemplate("sms")?.content || "",
+                              getSmsTemplate().content || "",
                               currentStudent,
                             )}
                           </div>
@@ -825,8 +848,8 @@ IT Department
                               Preview with {currentStudent.name}'s data:
                             </div>
                             <div className="text-blue-700">
-                              All {{ VARIABLE }} placeholders have been replaced
-                              with actual student information.
+                              All {"{{ VARIABLE }}"} placeholders have been
+                              replaced with actual student information.
                             </div>
                           </div>
                         )}
