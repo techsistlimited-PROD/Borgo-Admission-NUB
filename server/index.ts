@@ -50,6 +50,13 @@ export function createServer() {
   app.use("/api/referrers", referrerRoutes);
   app.use("/api/messaging", messagingRoutes);
 
+  // Public admissions endpoints (applicant-facing)
+  import("./routes/publicAdmissions.js").then((m) => {
+    app.use("/public/admissions", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load public admissions routes:", e);
+  });
+
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
   app.put("/api/admission-settings", updateAdmissionSettings);
