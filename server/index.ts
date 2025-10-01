@@ -57,6 +57,13 @@ export function createServer() {
     console.warn("Failed to load public admissions routes:", e);
   });
 
+  // Staff admissions endpoints (admin/officer)
+  import("./routes/admissions.js").then((m) => {
+    app.use("/api/admissions", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load staff admissions routes:", e);
+  });
+
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
   app.put("/api/admission-settings", updateAdmissionSettings);
