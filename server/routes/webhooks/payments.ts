@@ -61,4 +61,32 @@ router.post("/:provider", async (req, res) => {
   }
 });
 
+// Endpoint to process queued webhooks (idempotent)
+router.post('/process-queue', async (req, res) => {
+  try {
+    // Fetch queued events (limit 50)
+    const rows = await dbGet(`SELECT COUNT(*) as cnt FROM payment_webhook_events WHERE status = 'Queued'`);
+    // For simplicity, process all queued events one by one
+    const queued = await (async () => {
+      const db = await import('../../server/database/config.js');
+      return db.dbAll(`SELECT * FROM payment_webhook_events WHERE status = 'Queued' ORDER BY received_at ASC LIMIT 100`, []);
+    })();
+
+    for (const ev of queued) {
+      try {
+        // Basic processing stub: mark processed
+        await dbRun(`UPDATE payment_webhook_events SET processed_at = datetime('now'), status = 'Processed' WHERE webhook_id = ?`, [ev.webhook_id]);
+      } catch (err) {
+        console.error('Failed processing webhook', ev.webhook_id, err);
+        await dbRun(`UPDATE payment_webhook_events SET status = 'Failed', error = ? WHERE webhook_id = ?`, [String(err), ev.webhook_id]);
+      }
+    }
+
+    res.json({ success: true, processed: queued.length });
+  } catch (error) {
+    console.error('Process queue error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 export default router;
