@@ -293,6 +293,67 @@ router.get('/kpi/cache', authenticateToken, requirePermission('settings:manage')
 });
 
 
+// Export applications (sync for <=100k rows, otherwise enqueue)
+router.get('/applications/export', authenticateToken, requirePermission('reports:export'), async (req: AuthRequest, res) => {
+  try {
+    const { format = 'csv' } = req.query as any;
+    // Reuse same filtering as list
+    const filters = req.query as any;
+    const whereClauses: string[] = [];
+    const params: any[] = [];
+
+    if (filters.status && filters.status !== 'all') { whereClauses.push('status = ?'); params.push(filters.status); }
+    if (filters.program_code) { whereClauses.push('program_code = ?'); params.push(filters.program_code); }
+    if (filters.campus_id) { whereClauses.push('campus_id = ?'); params.push(Number(filters.campus_id)); }
+    if (filters.semester_id) { whereClauses.push('semester_id = ?'); params.push(Number(filters.semester_id)); }
+    if (filters.admission_type) { whereClauses.push('admission_type = ?'); params.push(filters.admission_type); }
+    if (filters.dateFrom) { whereClauses.push("date(created_at) >= date(?)"); params.push(filters.dateFrom); }
+    if (filters.dateTo) { whereClauses.push("date(created_at) <= date(?)"); params.push(filters.dateTo); }
+
+    let whereSql = whereClauses.length ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+    // Support simple search
+    if (filters.search) {
+      const s = `%${filters.search}%`;
+      whereSql = whereSql ? `${whereSql} AND (ref_no LIKE ? OR full_name LIKE ? OR mobile_number LIKE ? OR email LIKE ? OR nid_no LIKE ?)` : `WHERE (ref_no LIKE ? OR full_name LIKE ? OR mobile_number LIKE ? OR email LIKE ? OR nid_no LIKE ?)`;
+      params.push(s, s, s, s, s);
+    }
+
+    // Count rows
+    const countRow = await dbGet(`SELECT COUNT(*) as total FROM applications_v2 ${whereSql}`, params);
+    const total = countRow ? countRow.total || 0 : 0;
+
+    if (total > 100000) {
+      // Enqueue export (simplified: log to audit_dashboard_export)
+      await dbRun(`INSERT INTO audit_dashboard_export (user_id, params_json, export_format, row_count) VALUES (?, ?, ?, ?)`, [req.user?.id || null, JSON.stringify(req.query || {}), String(format), total]);
+      return res.json({ success: true, async: true, message: 'Export queued. You will be notified when ready.' });
+    }
+
+    // Fetch rows and stream CSV
+    const rows = await dbAll(`SELECT application_id, ref_no, full_name, program_code, campus_id, semester_id, admission_type, admission_test_status, status, payment_status, created_at FROM applications_v2 ${whereSql} ORDER BY created_at DESC`, params);
+
+    if (format === 'csv') {
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="admissions_export_${Date.now()}.csv"`);
+
+      const keys = ['application_id','ref_no','full_name','program_code','campus_id','semester_id','admission_type','admission_test_status','status','payment_status','created_at'];
+      res.write(keys.join(',') + '\n');
+      for (const r of rows) {
+        const line = keys.map((k) => '"' + (r[k] == null ? '' : String(r[k]).replace(/"/g, '""')) + '"').join(',');
+        res.write(line + '\n');
+      }
+      res.end();
+      return;
+    }
+
+    // Other formats: return JSON for now
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Export error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Lock identifiers (permission: applications:lock_identifiers)
 router.post("/applications/:id/identifiers/lock", authenticateToken, requirePermission("applications:lock_identifiers"), async (req: AuthRequest, res) => {
   try {
