@@ -92,7 +92,7 @@ export const closeDB = (): Promise<void> => {
     if (db && isConnected) {
       try {
         db.close((err) => {
-          if (err && err.code !== 'SQLITE_MISUSE') {
+          if (err && (err as any).code !== 'SQLITE_MISUSE') {
             reject(err);
           } else {
             db = null as any; // Clear the reference
