@@ -81,7 +81,7 @@ export default function Index() {
         "নর্দার্ন ইউনিভার্সিটি বাংলাদেশে যোগ দিন - যেখানে উৎকর্ষতা সুযোগের সাথে মিলিত হয়",
       heroDescription:
         "মাত্র ৫টি সহজ ধাপে আপনার অনলাইন ভর্তি প্রক্রিয়া শুরু করুন। আমাদের সুবিধাজনক স��স্টেম ���পনার স্বপ্নের প্রোগ্রামে আবেদন করা সহজ করে তোলে।",
-      startJourney: "আপনার যাত্রা শুরু করুন",
+      startJourney: "আপ��ার যাত্রা শুরু করুন",
       uploadOffline: "অফ���াইন আবেদন আপলোড করুন",
       admissionProcess: "সহজ ৪-ধাপের ভর্তি প্রক্রিয়া",
       regularAdmission: "নিয়মিত ভর্তি",
@@ -94,7 +94,7 @@ export default function Index() {
       step2: "ব্যক্তিগত তথ্য",
       step2Desc: "আপনার ব্যক্তিগত তথ্য পূরণ করুন",
       step3: "শিক্ষাগত ইতিহাস",
-      step3Desc: "আপনার শিক্ষা��ত কাগজপত্র আপলোড করুন",
+      step3Desc: "আপনার শিক্ষা��ত কাগজপত্র আপ���োড করুন",
       step4: "পর্যালোচনা ও পেমেন্ট",
       step4Desc: "আপনার আবেদন সম্পূর্ণ করুন",
       whyChooseUs: "কেন নর্দার্ন ইউনিভার্সিটি বাংলাদেশ বেছে নেবেন?",
@@ -107,7 +107,7 @@ export default function Index() {
       careerSupportDesc: "নিবেদিত চাকরির সহায়তা এবং ক্যারিয়ার গাইডেন্স",
       affordableEducation: "সাশ্রয়ী শিক্ষা",
       affordableEducationDesc: "বিভিন্ন বৃত্তির সুযোগ সহ মানসম্পন্ন শিক্ষা",
-      waiverHighlights: "বৃত্তি ও মওকুফের সুযোগ",
+      waiverHighlights: "বৃত্তি ও ম���কুফের সুযোগ",
       meritBased: "মেধাভিত্তিক বৃত্তি",
       meritBasedDesc: "এসএসসি ও এইচএসসি ফলাফলের ভিত্তিতে ১০০% পর্যন্ত মওকুফ",
       specialWaivers: "বিশেষ মওকুফ উপলব্ধ",
@@ -132,8 +132,6 @@ export default function Index() {
   const [programs, setPrograms] = useState<any[]>([]);
   const [programsLoading, setProgramsLoading] = useState(false);
   const [programsError, setProgramsError] = useState<string | null>(null);
-  const [costResults, setCostResults] = useState<Record<string, any>>({});
-  const [calculating, setCalculating] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     let mounted = true;
@@ -155,28 +153,6 @@ export default function Index() {
     fetchPrograms();
     return () => { mounted = false; };
   }, []);
-
-  const estimateCost = async (program: any) => {
-    const code = program.code || program.program_code;
-    const dept = program.department_code || program.department?.code;
-    if (!code || !dept) {
-      setProgramsError("Program or department code missing");
-      return;
-    }
-    setCalculating(prev => ({ ...prev, [code]: true }));
-    try {
-      const res = await apiClient.calculateCost({ program_code: code, department_code: dept });
-      if (res.success) {
-        setCostResults(prev => ({ ...prev, [code]: res.data }));
-      } else {
-        setProgramsError(res.error || "Cost calculation failed");
-      }
-    } catch (e) {
-      setProgramsError("Cost calculation failed");
-    } finally {
-      setCalculating(prev => ({ ...prev, [code]: false }));
-    }
-  };
 
   const admissionSteps = [
     {
@@ -361,28 +337,21 @@ export default function Index() {
                 <div className="grid grid-cols-1 gap-4">
                   {programs.slice(0, 4).map((program: any) => {
                     const code = program.code || program.program_code;
-                    const fee = program.base_cost ?? program.tuition_fee ?? program.fee ?? "N/A";
-                    const result = costResults[code];
+                    const dept = program.department_code || program.department?.code || "";
+                    const shortDesc = program.short_description || program.description || program.department_name || "A leading program with strong industry ties.";
                     return (
                       <Card key={code} className="bg-white/10 backdrop-blur-lg border-white/20 text-white">
                         <CardContent className="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between">
                           <div>
                             <div className="font-bold text-lg">{program.name || program.program_name}</div>
                             <div className="text-sm text-white/80">Code: {code} • {program.duration ?? program.duration_years}</div>
-                            <div className="text-sm text-white/80">Base fee: {typeof fee === 'number' ? fee.toLocaleString() : fee}</div>
+                            <div className="text-sm text-white/80">{shortDesc}</div>
                           </div>
 
                           <div className="mt-4 md:mt-0 flex items-center gap-4">
-                            <Button size="sm" onClick={() => estimateCost(program)} disabled={calculating[code]}>
-                              {calculating[code] ? "Calculating..." : "Estimate Cost"}
-                            </Button>
-
-                            {result && (
-                              <div className="text-right">
-                                <div className="text-sm text-white/80">Final: <span className="font-bold">{Number(result.final_cost).toLocaleString()}</span></div>
-                                <div className="text-xs text-white/70">Saved: {Number(result.savings).toLocaleString()}</div>
-                              </div>
-                            )}
+                            <Link to={`/program-selection?program=${encodeURIComponent(code)}&department=${encodeURIComponent(dept)}`}>
+                              <Button size="sm">Apply</Button>
+                            </Link>
                           </div>
                         </CardContent>
                       </Card>
