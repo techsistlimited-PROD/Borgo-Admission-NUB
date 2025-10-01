@@ -271,6 +271,267 @@ export const initializeSchema = async (): Promise<void> => {
         ('Guardian National ID', 'Upload guardian National ID card', 0, 5)
     `);
 
+    // Module 1 — Canonical Data Model (lite SQLite version)
+    // Applications v2 (canonical)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS applications_v2 (
+        application_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ref_no TEXT UNIQUE NOT NULL,
+        first_name TEXT NOT NULL,
+        middle_name TEXT,
+        last_name TEXT NOT NULL,
+        full_name TEXT,
+        date_of_birth DATE,
+        gender TEXT,
+        mobile_number TEXT,
+        email TEXT,
+        nid_no TEXT,
+        passport_no TEXT,
+        birth_certificate_no TEXT,
+        permanent_address TEXT,
+        present_address TEXT,
+        photo_url TEXT,
+        admission_type TEXT CHECK (admission_type IN ('Regular','CreditTransfer')),
+        previous_university TEXT,
+        credits_earned REAL,
+        program_code TEXT NOT NULL,
+        campus_id INTEGER,
+        semester_id INTEGER,
+        referral_employee_id INTEGER,
+        temporary_user_id TEXT,
+        status TEXT NOT NULL DEFAULT 'PROVISIONAL' CHECK (status IN ('PROVISIONAL','PAID','ADMITTED','REJECTED','FLAGGED')),
+        payment_status TEXT NOT NULL DEFAULT 'Unpaid' CHECK (payment_status IN ('Unpaid','Partial','Paid')),
+        admission_test_required INTEGER NOT NULL DEFAULT 0,
+        admission_test_status TEXT NOT NULL DEFAULT 'Not Required' CHECK (admission_test_status IN ('Not Required','Pending','Pass','Fail')),
+        converted_student_id TEXT,
+        identifiers_locked INTEGER NOT NULL DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by_user_id INTEGER,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_by_user_id INTEGER,
+        notes TEXT
+      )
+    `);
+
+    // Unique constraints (partial uniqueness emulation via triggers is heavy; store simple indexes)
+    await dbRun(`CREATE UNIQUE INDEX IF NOT EXISTS ix_app_v2_ref_no ON applications_v2(ref_no)`);
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_app_v2_semester_status ON applications_v2(semester_id, status)`);
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_app_v2_program_created ON applications_v2(program_code, created_at)`);
+
+    // Academic history
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS academic_history (
+        academic_history_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        application_id INTEGER NOT NULL,
+        level TEXT CHECK (level IN ('SSC','HSC','Diploma','Graduation','Masters','Other')),
+        exam_name TEXT,
+        group_subject TEXT,
+        board_university TEXT,
+        institute_name TEXT,
+        passing_year INTEGER,
+        roll_no TEXT,
+        registration_no TEXT,
+        grade_point REAL,
+        obtained_class TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by_user_id INTEGER,
+        FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
+      )
+    `);
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_academic_history_app ON academic_history(application_id)`);
+
+    // Documents
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS documents (
+        document_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        application_id INTEGER NOT NULL,
+        doc_type TEXT CHECK (doc_type IN ('SSC','HSC','Transcript','Photo','Other')),
+        file_url TEXT,
+        file_name TEXT,
+        mime_type TEXT,
+        file_size_bytes INTEGER,
+        uploaded_by_user_id INTEGER,
+        uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        status TEXT NOT NULL DEFAULT 'Uploaded' CHECK (status IN ('Uploaded','Validated','Rejected')),
+        validated_by_user_id INTEGER,
+        validated_at DATETIME,
+        rejection_reason TEXT,
+        virus_scanned INTEGER DEFAULT 0,
+        hash_sha256 TEXT,
+        FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
+      )
+    `);
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_documents_app ON documents(application_id)`);
+
+    // Waiver assignments
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS waiver_assignments (
+        waiver_assignment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        application_id INTEGER NOT NULL,
+        waiver_code TEXT NOT NULL,
+        percent REAL NOT NULL,
+        assigned_by_user_id INTEGER,
+        assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        locked INTEGER DEFAULT 0,
+        locked_by_user_id INTEGER,
+        locked_at DATETIME,
+        FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
+      )
+    `);
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_waiver_assignments_app ON waiver_assignments(application_id)`);
+
+    // Admission tests
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS admission_tests (
+        admission_test_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        application_id INTEGER NOT NULL,
+        test_required INTEGER NOT NULL DEFAULT 0,
+        test_fee_status TEXT NOT NULL DEFAULT 'Unpaid' CHECK (test_fee_status IN ('Unpaid','Partial','Paid')),
+        admit_card_url TEXT,
+        test_center TEXT,
+        test_slot DATETIME,
+        result TEXT NOT NULL DEFAULT 'Pending' CHECK (result IN ('Pending','Pass','Fail')),
+        result_uploaded_by INTEGER,
+        result_uploaded_at DATETIME,
+        FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
+      )
+    `);
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_admission_tests_app ON admission_tests(application_id)`);
+
+    // Audit trail (append-only)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS audit_trail (
+        audit_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        entity TEXT NOT NULL,
+        entity_id TEXT NOT NULL,
+        field_name TEXT,
+        old_value TEXT,
+        new_value TEXT,
+        changed_by_user_id INTEGER,
+        changed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        reason TEXT
+      )
+    `);
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_audit_entity ON audit_trail(entity, entity_id, changed_at)`);
+
+    // Visitors/Leads
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS lead_sources (
+        lead_source_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL,
+        active INTEGER DEFAULT 1
+      )
+    `);
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS visitors_log (
+        visit_log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        visit_date DATE NOT NULL,
+        campus_id INTEGER,
+        visitor_name TEXT,
+        district TEXT,
+        no_of_visitors INTEGER,
+        contact_number TEXT,
+        interested_program_code TEXT,
+        assigned_officer_user_id INTEGER,
+        sms_sent INTEGER DEFAULT 0,
+        lead_source TEXT,
+        follow_up_date DATE,
+        remarks TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by_user_id INTEGER,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_by_user_id INTEGER,
+        deleted_at DATETIME,
+        deleted_by_user_id INTEGER
+      )
+    `);
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS follow_up_log (
+        follow_up_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        visit_log_id INTEGER NOT NULL,
+        follow_up_date DATE,
+        action_taken TEXT,
+        next_follow_up_date DATE,
+        logged_by_user_id INTEGER,
+        logged_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (visit_log_id) REFERENCES visitors_log(visit_log_id)
+      )
+    `);
+
+    // Dashboard & Metrics cache
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS kpi_definitions (
+        kpi_key TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        sql_query TEXT,
+        filters_schema_json TEXT,
+        owner_role TEXT,
+        refresh_cron TEXT,
+        active INTEGER DEFAULT 1
+      )
+    `);
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS admission_dashboard_cache (
+        cache_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        semester_id INTEGER,
+        campus_id INTEGER,
+        program_id INTEGER,
+        metric_key TEXT NOT NULL,
+        metric_value REAL,
+        date_from DATE,
+        date_to DATE,
+        generated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        generated_by_user_id INTEGER,
+        notes TEXT
+      )
+    `);
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS audit_dashboard_export (
+        export_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        params_json TEXT,
+        export_format TEXT CHECK (export_format IN ('csv','xlsx','pdf')),
+        row_count INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // RBAC core tables (roles & permissions)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS roles (
+        role_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        role_key TEXT UNIQUE NOT NULL
+      )
+    `);
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS permissions (
+        permission_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        permission_key TEXT UNIQUE NOT NULL
+      )
+    `);
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS role_permissions (
+        role_id INTEGER NOT NULL,
+        permission_id INTEGER NOT NULL,
+        PRIMARY KEY (role_id, permission_id),
+        FOREIGN KEY (role_id) REFERENCES roles(role_id),
+        FOREIGN KEY (permission_id) REFERENCES permissions(permission_id)
+      )
+    `);
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS user_roles (
+        user_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        PRIMARY KEY (user_id, role_id),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (role_id) REFERENCES roles(role_id)
+      )
+    `);
+
+    // Seed basic roles and permissions if empty
+    await dbRun(`INSERT OR IGNORE INTO roles (role_id, role_key) VALUES (1,'Applicant'),(2,'AdmissionOfficer'),(3,'FinanceOfficer'),(4,'Registrar'),(5,'FraudAnalyst'),(6,'Admin')`);
+
     console.log("✅ Database schema initialized successfully");
   } catch (error) {
     console.error("❌ Error initializing database schema:", error);
