@@ -95,7 +95,7 @@ router.get("/:id", authenticateToken, async (req: AuthRequest, res) => {
       LEFT JOIN users u ON a.user_id = u.id 
       WHERE a.id = ?
     `;
-    const params = [id];
+    const params: any[] = [id];
 
     // If user is applicant, only allow access to their own application
     if (req.user!.type === "applicant") {
