@@ -719,39 +719,46 @@ export default function WaiverManagement() {
                             <DialogTitle>Student Waiver Details</DialogTitle>
                           </DialogHeader>
                           <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <Label>Academic Performance</Label>
-                                <div className="text-2xl font-bold text-blue-600">
-                                  {student.criteria.academicPerformance}
-                                </div>
+                            <div>
+                              <Label>Waiver Percentage</Label>
+                              <div className="text-2xl font-bold text-deep-plum">
+                                {student.waiverPercentage}%
                               </div>
-                              <div>
-                                <Label>Financial Need Score</Label>
-                                <div className="text-2xl font-bold text-purple-600">
-                                  {student.criteria.financialNeed}
-                                </div>
-                              </div>
-                              <div>
-                                <Label>Extracurricular Score</Label>
-                                <div className="text-2xl font-bold text-orange-600">
-                                  {student.criteria.extracurricular}
-                                </div>
-                              </div>
-                              <div>
-                                <Label>Family Income</Label>
-                                <div className="text-2xl font-bold text-green-600">
-                                  ৳
-                                  {student.criteria.familyIncome.toLocaleString()}
-                                </div>
+                              <div className="text-sm text-gray-500">
+                                ৳{student.waiverAmount.toLocaleString()} of ৳{student.totalFee.toLocaleString()}
                               </div>
                             </div>
+
                             <div>
-                              <Label>Applied Date</Label>
+                              <Label>Date Applied</Label>
                               <div className="text-lg">
-                                {new Date(
-                                  student.appliedDate,
-                                ).toLocaleDateString()}
+                                {new Date(student.appliedDate).toLocaleDateString()}
+                              </div>
+                            </div>
+
+                            <div>
+                              <Label>Status</Label>
+                              <div>{getStatusBadge(student.status)}</div>
+                            </div>
+
+                            <div>
+                              <Label>Applied Policies</Label>
+                              <div className="space-y-1">
+                                {(() => {
+                                  const allPolicies = getResultBasedWaivers()
+                                    .concat(getSpecialWaivers())
+                                    .concat(getAdditionalWaivers());
+                                  const matched = allPolicies.filter((p) => p.name === student.waiverType);
+                                  return matched.length ? (
+                                    matched.map((p) => (
+                                      <div key={p.id} className="text-sm">
+                                        {p.name} — {p.percentage}%
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="text-sm text-gray-500">{student.waiverType || 'None'}</div>
+                                  );
+                                })()}
                               </div>
                             </div>
                           </div>
