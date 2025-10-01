@@ -86,3 +86,41 @@ export const requireApplicant = (
 export const generateToken = (userId: number): string => {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: "7d" });
 };
+
+// RBAC helpers: fetch permissions and enforce per-request
+export const requirePermission = (permissionKey: string) => {
+  return async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      if (!req.user) return res.status(401).json({ error: "Authentication required" });
+
+      // Admin users are allowed by default
+      if (req.user.type === "admin") return next();
+
+      // Load user permissions via roles
+      const rows = await dbGet(
+        `SELECT p.permission_key AS perm
+         FROM user_roles ur
+         JOIN roles r ON r.role_id = ur.role_id
+         JOIN role_permissions rp ON rp.role_id = r.role_id
+         JOIN permissions p ON p.permission_id = rp.permission_id
+         WHERE ur.user_id = ?`,
+        [req.user.id],
+      );
+
+      const userPerms: string[] = Array.isArray(rows)
+        ? rows.map((r: any) => r.perm)
+        : rows?.perm
+        ? [rows.perm]
+        : [];
+
+      if (userPerms.includes(permissionKey) || userPerms.includes("all")) {
+        return next();
+      }
+
+      return res.status(403).json({ error: `Missing permission: ${permissionKey}` });
+    } catch (e) {
+      console.error("Permission check error", e);
+      return res.status(500).json({ error: "Permission evaluation failed" });
+    }
+  };
+};
