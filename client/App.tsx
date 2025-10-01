@@ -292,6 +292,16 @@ function AppContent() {
                 )
               }
             />
+            <Route
+              path="/admin/imports"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminImportJobs />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
 
             <Route
               path="/admin/users"
