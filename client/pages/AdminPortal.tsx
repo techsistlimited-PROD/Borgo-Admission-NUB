@@ -106,6 +106,9 @@ export default function AdminPortal() {
               <Link to="/admin/users">
                 <Button variant="outline">Users & Permissions</Button>
               </Link>
+              <Link to="/admin/kpi-cache">
+                <Button variant="ghost">KPI Cache</Button>
+              </Link>
             </div>
 
             <div className="mt-6">
