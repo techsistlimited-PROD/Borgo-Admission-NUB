@@ -47,6 +47,12 @@ import {
 } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { useToast } from "../hooks/use-toast";
+import {
+  getResultBasedWaivers,
+  getSpecialWaivers,
+  getAdditionalWaivers,
+  getWaiverById,
+} from "../lib/programData";
 
 interface WaiverStudent {
   id: string;
@@ -255,6 +261,41 @@ export default function WaiverManagement() {
       title: student?.isLocked ? "Waiver Unlocked" : "Waiver Locked",
       description: `${student?.name}'s waiver has been ${student?.isLocked ? "unlocked" : "locked"}.`,
     });
+  };
+
+  const updateWaiverForStudent = (studentId: string, updates: { amount?: number; waiverId?: string; status?: string }) => {
+    setStudents((prev) =>
+      prev.map((student) => {
+        if (student.id !== studentId) return student;
+        let updated = { ...student };
+        if (updates.waiverId) {
+          const policy = getWaiverById(updates.waiverId);
+          if (policy) {
+            const amount = Math.round((student.totalFee * policy.percentage) / 100);
+            updated = {
+              ...updated,
+              waiverType: policy.name,
+              waiverPercentage: policy.percentage,
+              waiverAmount: amount,
+            };
+          }
+        }
+        if (typeof updates.amount === "number") {
+          const amt = updates.amount;
+          updated = {
+            ...updated,
+            waiverAmount: amt,
+            waiverPercentage: Math.round((amt / student.totalFee) * 100),
+          };
+        }
+        if (updates.status) {
+          updated = { ...updated, status: updates.status as any };
+        }
+        return updated;
+      }),
+    );
+
+    toast({ title: "Waiver Updated", description: "Waiver details have been saved." });
   };
 
   const updateWaiverAmount = (studentId: string, newAmount: number) => {
@@ -732,11 +773,45 @@ export default function WaiverManagement() {
                               Edit
                             </Button>
                           </DialogTrigger>
-                          <DialogContent>
+                              <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>Edit Waiver Amount</DialogTitle>
+                              <DialogTitle>Edit Waiver Amount & Type</DialogTitle>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
+                              <div>
+                                <Label>Choose Waiver Policy</Label>
+                                <Select
+                                  defaultValue={
+                                    // try to find policy by name
+                                    (getResultBasedWaivers()
+                                      .concat(getSpecialWaivers())
+                                      .concat(getAdditionalWaivers())
+                                      .find((p) => p.name === student.waiverType)?.id as string) || undefined
+                                  }
+                                  onValueChange={(val) => {
+                                    if (val) updateWaiverForStudent(student.id, { waiverId: val });
+                                  }}
+                                >
+                                  <SelectTrigger className="md:w-full">
+                                    <SelectValue placeholder="Select Waiver Policy" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="">-- Result-based (Merit) --</SelectItem>
+                                    {getResultBasedWaivers().map((w) => (
+                                      <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
+                                    ))}
+                                    <SelectItem value="">-- Special Waivers --</SelectItem>
+                                    {getSpecialWaivers().map((w) => (
+                                      <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
+                                    ))}
+                                    <SelectItem value="">-- Additional Waivers --</SelectItem>
+                                    {getAdditionalWaivers().map((w) => (
+                                      <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
                               <div>
                                 <Label>Current Waiver Amount</Label>
                                 <Input
@@ -744,15 +819,30 @@ export default function WaiverManagement() {
                                   defaultValue={student.waiverAmount}
                                   onChange={(e) => {
                                     const newAmount = Number(e.target.value);
-                                    if (
-                                      newAmount >= 0 &&
-                                      newAmount <= student.totalFee
-                                    ) {
-                                      updateWaiverAmount(student.id, newAmount);
+                                    if (newAmount >= 0 && newAmount <= student.totalFee) {
+                                      updateWaiverForStudent(student.id, { amount: newAmount });
                                     }
                                   }}
                                 />
                               </div>
+
+                              <div>
+                                <Label>Status</Label>
+                                <Select
+                                  defaultValue={student.status}
+                                  onValueChange={(val) => updateWaiverForStudent(student.id, { status: val })}
+                                >
+                                  <SelectTrigger className="md:w-full">
+                                    <SelectValue placeholder="Status" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="expired">Expired</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
                               <div className="text-sm text-gray-500">
                                 Total Fee: ৳{student.totalFee.toLocaleString()}
                               </div>
