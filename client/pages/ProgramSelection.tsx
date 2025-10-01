@@ -319,9 +319,9 @@ export default function ProgramSelection() {
     bn: {
       title: "প্রোগ্রাম ও বিভ���গ নির্বা��ন",
       subtitle:
-        "৪টি ধাপের ১ম ধাপ - আপ���ার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
+        "৪টি ধাপের ১ম ধাপ - আপনার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
-      continue: "সেভ ����রে এগিয়ে যান",
+      continue: "সেভ ����রে এগিয়ে যা��",
       campusSelection: "ক্যাম্পাস নির্বাচন করু��",
       semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
       semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
@@ -333,13 +333,13 @@ export default function ProgramSelection() {
       selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের ��থ্য",
-      costBreakdown: "খরচের বিভা���ন",
+      costBreakdown: "খরচের বিভাজন",
       waiverCalculator: "মওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
-      hscGPA: "����ইচএসসি জিপিএ",
+      hscGPA: "����ই���এসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ৪র্থ ব��ষয় ছিল",
-      calculateWaiver: "যোগ্য মওকুফ গণনা কর��ন",
+      calculateWaiver: "য���গ্য মওকুফ গণনা কর��ন",
       availableWaivers: "���পল��্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
@@ -353,7 +353,7 @@ export default function ProgramSelection() {
       labFee: "ল্যাব ফি",
       others: "অন্যান���য",
       total: "ম��ট",
-      duration: "স���য���কাল",
+      duration: "স���য়কাল",
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
@@ -1265,16 +1265,15 @@ export default function ProgramSelection() {
                       <Select
                         value={selectedSemester}
                         onValueChange={setSelectedSemester}
+                        disabled={!selectedSemesterType}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={t.selectSemester} />
                         </SelectTrigger>
                         <SelectContent>
-                          {semesterOptions.map((semester) => (
+                          {(getSemesterOptionsForType(selectedSemesterType) || []).map((semester) => (
                             <SelectItem key={semester.id} value={semester.id}>
-                              {language === "en"
-                                ? semester.name
-                                : semester.namebn}
+                              {language === "en" ? semester.name : semester.namebn}
                             </SelectItem>
                           ))}
                         </SelectContent>
