@@ -1,6 +1,6 @@
 import express from "express";
 import crypto from "crypto";
-import { dbRun, dbGet } from "../../server/database/config.js";
+import { dbRun, dbGet } from "../../database/config.js";
 
 const router = express.Router();
 
