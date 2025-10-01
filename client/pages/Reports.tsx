@@ -49,6 +49,9 @@ import {
 } from "../components/ui/table";
 import { getIDGenerationStats, sampleStudentIDs } from "../lib/idGeneration";
 import React from "react";
+import apiClient from "../lib/api";
+import { Label } from "../components/ui/label";
+import { Badge } from "../components/ui/badge";
 import { useLocation } from "react-router-dom";
 
 // Dummy data for reports
@@ -740,7 +743,7 @@ export default function Reports() {
       lastYear: "গত বছর",
       custom: "কাস্টম রেঞ্জ",
       allPrograms: "সব প্রোগ্রাম",
-      allDepartments: "সব বিভাগ",
+      allDepartments: "সব বিভা���",
       allSemesters: "সব সেমিস্টার",
       spring2024: "বসন্ত ২০২৪",
       fall2024: "শরৎ ২০২৪",
@@ -778,7 +781,7 @@ export default function Reports() {
       eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জ��নিয়ারিং",
       mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
-      textile: "টেক্সটাইল ইঞ্জ��নিয়ারিং",
+      textile: "টেক��সটাইল ইঞ্জ��নিয়ারিং",
       bba: "ব্যবসায় প্রশাসন",
       law: "আইন",
       architecture: "স্থাপত্য",
