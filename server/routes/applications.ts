@@ -1,6 +1,7 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
 import { dbGet, dbAll, dbRun } from "../database/config.js";
+import { supabase } from "../database/supabase.js";
 import { createApplicationRecord } from "../database/adapter.js";
 import {
   authenticateToken,
@@ -94,7 +95,7 @@ router.get("/:id", authenticateToken, async (req: AuthRequest, res) => {
       LEFT JOIN users u ON a.user_id = u.id 
       WHERE a.id = ?
     `;
-    const params = [id];
+    const params: any[] = [id];
 
     // If user is applicant, only allow access to their own application
     if (req.user!.type === "applicant") {

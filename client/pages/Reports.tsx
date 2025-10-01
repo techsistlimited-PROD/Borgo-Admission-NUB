@@ -49,6 +49,9 @@ import {
 } from "../components/ui/table";
 import { getIDGenerationStats, sampleStudentIDs } from "../lib/idGeneration";
 import React from "react";
+import apiClient from "../lib/api";
+import { Label } from "../components/ui/label";
+import { Badge } from "../components/ui/badge";
 import { useLocation } from "react-router-dom";
 
 // Dummy data for reports
@@ -525,25 +528,34 @@ export default function Reports() {
   const [activeReport, setActiveReport] = useState<string | null>(null);
 
   // Referral & Visitors stats
-  const [referralStats, setReferralStats] = useState<{ total_referrers: number; total_commission: number } | null>(null);
-  const [visitorsStats, setVisitorsStats] = useState<{ total_visits: number; visits_today: number } | null>(null);
+  const [referralStats, setReferralStats] = useState<{
+    total_referrers: number;
+    total_commission: number;
+  } | null>(null);
+  const [visitorsStats, setVisitorsStats] = useState<{
+    total_visits: number;
+    visits_today: number;
+  } | null>(null);
   const [referrersList, setReferrersList] = useState<any[]>([]);
   const [visitorsList, setVisitorsList] = useState<any[]>([]);
 
   // Helper: download CSV
   const downloadCSV = (filename: string, rows: any[]) => {
     if (!rows || rows.length === 0) {
-      alert('No data to export');
+      alert("No data to export");
       return;
     }
     const keys = Object.keys(rows[0]);
-    const csvContent = [keys.join(','), ...rows.map(r => keys.map(k => `"${String(r[k] ?? '')}"`).join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const csvContent = [
+      keys.join(","),
+      ...rows.map((r) => keys.map((k) => `"${String(r[k] ?? "")}"`).join(",")),
+    ].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', filename);
-    link.style.visibility = 'hidden';
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -555,13 +567,13 @@ export default function Reports() {
       const res = await apiClient.getReferrers();
       if (res.success && res.data) {
         const rows = res.data.referrers || [];
-        downloadCSV('referrers.csv', rows);
+        downloadCSV("referrers.csv", rows);
       } else {
-        alert('Failed to export referrers');
+        alert("Failed to export referrers");
       }
     } catch (err) {
       console.error(err);
-      alert('Export failed');
+      alert("Export failed");
     }
   };
 
@@ -569,13 +581,13 @@ export default function Reports() {
     try {
       const res = await apiClient.exportVisitors({});
       if (res.success && res.data) {
-        downloadCSV('visitors.csv', res.data);
+        downloadCSV("visitors.csv", res.data);
       } else {
-        alert('Failed to export visitors');
+        alert("Failed to export visitors");
       }
     } catch (err) {
       console.error(err);
-      alert('Export failed');
+      alert("Export failed");
     }
   };
 
@@ -589,11 +601,21 @@ export default function Reports() {
     const range = max - min || 1;
     const step = w / (points.length - 1 || 1);
     const path = points
-      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${i * step} ${h - ((p - min) / range) * h}`)
-      .join(' ');
+      .map(
+        (p, i) =>
+          `${i === 0 ? "M" : "L"} ${i * step} ${h - ((p - min) / range) * h}`,
+      )
+      .join(" ");
     return (
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
-        <path d={path} fill="none" stroke="#7c3aed" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d={path}
+          fill="none"
+          stroke="#7c3aed"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     );
   };
@@ -740,7 +762,7 @@ export default function Reports() {
       lastYear: "গত বছর",
       custom: "কাস্টম রেঞ্জ",
       allPrograms: "সব প্রোগ্রাম",
-      allDepartments: "সব বিভাগ",
+      allDepartments: "সব বিভা���",
       allSemesters: "সব সেমিস্টার",
       spring2024: "বসন্ত ২০২৪",
       fall2024: "শরৎ ২০২৪",
@@ -778,7 +800,7 @@ export default function Reports() {
       eee: "ইলেকট্রিক্যাল ও ইলেকট্রনিক ইঞ্জ��নিয়ারিং",
       mech: "মেকানিক্যাল ইঞ্জিনিয়ারিং",
       civil: "সিভিল ইঞ্জিনিয়ারিং",
-      textile: "টেক্সটাইল ইঞ্জ��নিয়ারিং",
+      textile: "টেক��সটাইল ইঞ্জ��নিয়ারিং",
       bba: "ব্যবসায় প্রশাসন",
       law: "আইন",
       architecture: "স্থাপত্য",
@@ -793,23 +815,26 @@ export default function Reports() {
   // scope/referrer from URL
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const scope = params.get('scope'); // 'finance' | 'admission' | null
-  const referrerFilter = params.get('referrer');
-  const showFinance = !scope || scope === 'finance';
-  const showAdmission = !scope || scope === 'admission';
+  const scope = params.get("scope"); // 'finance' | 'admission' | null
+  const referrerFilter = params.get("referrer");
+  const showFinance = !scope || scope === "finance";
+  const showAdmission = !scope || scope === "admission";
 
   // Helper to apply referrer filter on employee data
   const getFilteredEmployeeData = () => {
     if (!referrerFilter) return employeeCollectionData;
-    return employeeCollectionData.filter(e => (e.employeeId || '').toLowerCase() === referrerFilter.toLowerCase());
+    return employeeCollectionData.filter(
+      (e) =>
+        (e.employeeId || "").toLowerCase() === referrerFilter.toLowerCase(),
+    );
   };
 
   // Ensure active report category aligns with scope on mount/update
   useEffect(() => {
-    if (scope === 'finance') {
-      setActiveReportCategory('financial');
-    } else if (scope === 'admission') {
-      setActiveReportCategory('overview');
+    if (scope === "finance") {
+      setActiveReportCategory("financial");
+    } else if (scope === "admission") {
+      setActiveReportCategory("overview");
     }
   }, [scope]);
 
@@ -821,17 +846,28 @@ export default function Reports() {
         if (refRes.success && refRes.data) {
           const total = refRes.data.referrers.length;
           // Mock commission sum from mock data if available
-          const totalCommission = refRes.data.referrers.reduce((sum:any, r:any) => sum + ((r.commission_rate||0) * 10000), 0);
-          setReferralStats({ total_referrers: total, total_commission: totalCommission });
+          const totalCommission = refRes.data.referrers.reduce(
+            (sum: any, r: any) => sum + (r.commission_rate || 0) * 10000,
+            0,
+          );
+          setReferralStats({
+            total_referrers: total,
+            total_commission: totalCommission,
+          });
           setReferrersList(refRes.data.referrers || []);
         }
 
         const visRes = await apiClient.getVisitors({ page: 1, limit: 1000 });
         if (visRes.success && visRes.data) {
           const totalVisits = visRes.data.total || visRes.data.visitors.length;
-          const today = new Date().toISOString().slice(0,10);
-          const visitsToday = (visRes.data.visitors || []).filter((v:any)=>v.visit_date === today).length;
-          setVisitorsStats({ total_visits: totalVisits, visits_today: visitsToday });
+          const today = new Date().toISOString().slice(0, 10);
+          const visitsToday = (visRes.data.visitors || []).filter(
+            (v: any) => v.visit_date === today,
+          ).length;
+          setVisitorsStats({
+            total_visits: totalVisits,
+            visits_today: visitsToday,
+          });
           setVisitorsList(visRes.data.visitors || []);
         }
       } catch (err) {
@@ -1534,86 +1570,115 @@ export default function Reports() {
             </Card>
           )}
 
-        {/* Referrers Report */}
-        {activeReport === 'referrers' && (
-          <Card className="bg-white shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-xl font-poppins text-deep-plum">Referral Program - Referrers</CardTitle>
-              <div className="flex gap-2">
-                <Button className="bg-deep-plum" onClick={fetchAndExportReferrers}><Download className="w-4 h-4 mr-2"/>Export CSV</Button>
-                <Button variant="outline" onClick={() => setActiveReport(null)}>Back</Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Department</TableHead>
-                    <TableHead>Designation</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {referrersList.map((r) => (
-                    <TableRow key={r.employee_id}>
-                      <TableCell className="font-mono">{r.employee_id}</TableCell>
-                      <TableCell className="font-medium">{r.name}</TableCell>
-                      <TableCell>{r.department}</TableCell>
-                      <TableCell>{r.designation}</TableCell>
-                      <TableCell>{r.email}</TableCell>
-                      <TableCell>{r.phone}</TableCell>
+          {/* Referrers Report */}
+          {activeReport === "referrers" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  Referral Program - Referrers
+                </CardTitle>
+                <div className="flex gap-2">
+                  <Button
+                    className="bg-deep-plum"
+                    onClick={fetchAndExportReferrers}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Export CSV
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setActiveReport(null)}
+                  >
+                    Back
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Employee ID</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Department</TableHead>
+                      <TableHead>Designation</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        )}
+                  </TableHeader>
+                  <TableBody>
+                    {referrersList.map((r) => (
+                      <TableRow key={r.employee_id}>
+                        <TableCell className="font-mono">
+                          {r.employee_id}
+                        </TableCell>
+                        <TableCell className="font-medium">{r.name}</TableCell>
+                        <TableCell>{r.department}</TableCell>
+                        <TableCell>{r.designation}</TableCell>
+                        <TableCell>{r.email}</TableCell>
+                        <TableCell>{r.phone}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* Visitors Report */}
-        {activeReport === 'visitors' && (
-          <Card className="bg-white shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-xl font-poppins text-deep-plum">Visitors Log</CardTitle>
-              <div className="flex gap-2">
-                <Button className="bg-deep-plum" onClick={fetchAndExportVisitors}><Download className="w-4 h-4 mr-2"/>Export CSV</Button>
-                <Button variant="outline" onClick={() => setActiveReport(null)}>Back</Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Visit Date</TableHead>
-                    <TableHead>Campus</TableHead>
-                    <TableHead>Visitor Name</TableHead>
-                    <TableHead>District</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Interested In</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {visitorsList.map((v) => (
-                    <TableRow key={v.id}>
-                      <TableCell className="font-mono">{v.id}</TableCell>
-                      <TableCell>{v.visit_date}</TableCell>
-                      <TableCell>{v.campus}</TableCell>
-                      <TableCell className="font-medium">{v.visitor_name}</TableCell>
-                      <TableCell>{v.district}</TableCell>
-                      <TableCell>{v.contact_number}</TableCell>
-                      <TableCell>{v.interested_in}</TableCell>
+          {/* Visitors Report */}
+          {activeReport === "visitors" && (
+            <Card className="bg-white shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-xl font-poppins text-deep-plum">
+                  Visitors Log
+                </CardTitle>
+                <div className="flex gap-2">
+                  <Button
+                    className="bg-deep-plum"
+                    onClick={fetchAndExportVisitors}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Export CSV
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setActiveReport(null)}
+                  >
+                    Back
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>Visit Date</TableHead>
+                      <TableHead>Campus</TableHead>
+                      <TableHead>Visitor Name</TableHead>
+                      <TableHead>District</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>Interested In</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        )}
-
+                  </TableHeader>
+                  <TableBody>
+                    {visitorsList.map((v) => (
+                      <TableRow key={v.id}>
+                        <TableCell className="font-mono">{v.id}</TableCell>
+                        <TableCell>{v.visit_date}</TableCell>
+                        <TableCell>{v.campus}</TableCell>
+                        <TableCell className="font-medium">
+                          {v.visitor_name}
+                        </TableCell>
+                        <TableCell>{v.district}</TableCell>
+                        <TableCell>{v.contact_number}</TableCell>
+                        <TableCell>{v.interested_in}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     );
@@ -1675,27 +1740,46 @@ export default function Reports() {
                 const allCategories = [
                   { id: "overview", label: t.overview, icon: BarChart3 },
                   { id: "student", label: t.studentReports, icon: Users },
-                  { id: "financial", label: t.financialReports, icon: DollarSign },
+                  {
+                    id: "financial",
+                    label: t.financialReports,
+                    icon: DollarSign,
+                  },
                   { id: "waiver", label: t.waiverReports, icon: BookOpen },
                   { id: "idcards", label: t.idCardReports, icon: IdCard },
                   { id: "targets", label: t.targetReports, icon: Target },
                 ];
                 // Filter categories by scope if provided
-                const categories = scope === 'finance'
-                  ? allCategories.filter(c => ['overview','financial','waiver'].includes(c.id))
-                  : scope === 'admission'
-                    ? allCategories.filter(c => ['overview','student','idcards','targets','waiver'].includes(c.id))
-                    : allCategories;
+                const categories =
+                  scope === "finance"
+                    ? allCategories.filter((c) =>
+                        ["overview", "financial", "waiver"].includes(c.id),
+                      )
+                    : scope === "admission"
+                      ? allCategories.filter((c) =>
+                          [
+                            "overview",
+                            "student",
+                            "idcards",
+                            "targets",
+                            "waiver",
+                          ].includes(c.id),
+                        )
+                      : allCategories;
                 // Ensure active category is valid for scope
-                if (!categories.find(c => c.id === activeReportCategory)) {
+                if (!categories.find((c) => c.id === activeReportCategory)) {
                   // default to overview or financial for finance scope
-                  setActiveReportCategory(scope === 'finance' ? 'financial' : 'overview');
+                  setActiveReportCategory(
+                    scope === "finance" ? "financial" : "overview",
+                  );
                 }
                 return categories.map((category) => (
                   <Button
                     key={category.id}
                     variant={
-                      activeReportCategory === category.id ? "default" : "outline"
+                      activeReportCategory === category.id
+                        ? "default"
+                        : "outline"
                     }
                     size="sm"
                     onClick={() => setActiveReportCategory(category.id)}
@@ -1959,16 +2043,35 @@ export default function Reports() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Total Referrers</p>
-                      <p className="text-2xl font-bold text-deep-plum">{referralStats?.total_referrers ?? 0}</p>
-                      <p className="text-xs text-gray-500 mt-1">Total Commission: ৳{(referralStats?.total_commission || 0).toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-deep-plum">
+                        {referralStats?.total_referrers ?? 0}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Total Commission: ৳
+                        {(
+                          referralStats?.total_commission || 0
+                        ).toLocaleString()}
+                      </p>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <Sparkline points={Array(7).fill(referralStats?.total_referrers || 0)} />
+                      <Sparkline
+                        points={Array(7).fill(
+                          referralStats?.total_referrers || 0,
+                        )}
+                      />
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" onClick={() => setActiveReport('referrers')}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setActiveReport("referrers")}
+                        >
                           <Eye className="w-4 h-4 mr-2" /> View
                         </Button>
-                        <Button size="sm" className="bg-deep-plum" onClick={fetchAndExportReferrers}>
+                        <Button
+                          size="sm"
+                          className="bg-deep-plum"
+                          onClick={fetchAndExportReferrers}
+                        >
                           <Download className="w-4 h-4 mr-2" /> Export CSV
                         </Button>
                       </div>
@@ -1987,16 +2090,30 @@ export default function Reports() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Total Visits</p>
-                      <p className="text-2xl font-bold text-deep-plum">{visitorsStats?.total_visits ?? 0}</p>
-                      <p className="text-xs text-gray-500 mt-1">Visits Today: {visitorsStats?.visits_today ?? 0}</p>
+                      <p className="text-2xl font-bold text-deep-plum">
+                        {visitorsStats?.total_visits ?? 0}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Visits Today: {visitorsStats?.visits_today ?? 0}
+                      </p>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <Sparkline points={Array(7).fill(visitorsStats?.visits_today || 0)} />
+                      <Sparkline
+                        points={Array(7).fill(visitorsStats?.visits_today || 0)}
+                      />
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" onClick={() => setActiveReport('visitors')}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setActiveReport("visitors")}
+                        >
                           <Eye className="w-4 h-4 mr-2" /> View
                         </Button>
-                        <Button size="sm" className="bg-deep-plum" onClick={fetchAndExportVisitors}>
+                        <Button
+                          size="sm"
+                          className="bg-deep-plum"
+                          onClick={fetchAndExportVisitors}
+                        >
                           <Download className="w-4 h-4 mr-2" /> Export CSV
                         </Button>
                       </div>

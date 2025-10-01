@@ -364,10 +364,23 @@ export default function ProgramSelection() {
         "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরি����্��� ফি ���বং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
+        "অতিরি����্��� ফি ���বং বিশ্ববিদ্যালয়ের ���ীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ড���টা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
+
+      // Credit Transfer specific
+      creditTransferInfo: "ক্রেডিট ট্রান্সফার তথ্য",
+      previousInstitution: "পূর্ববর্তী প্রতিষ্ঠান",
+      previousProgram: "পূর্ববর্তী প্রোগ্রাম",
+      totalCredits: "প্রোগ্রামের মোট ক্রেডিট",
+      completedCredits: "সম্পন্ন ক্রেডিট",
+      previousCGPA: "পূর্ববর্তী জিপিএ",
+      reasonForTransfer: "ক্রেডিট ট্রান্সফারের কারণ",
+      uploadTranscript: "ট্রান্সক্রিপ্ট আপলোড করুন",
+      creditTransferTitle: "ক্রেডিট ট্রান্সফার আবেদন",
+      creditTransferSubtitle:
+        "৪টি ��াপের ১ম ধাপ - প্রোগ্রাম নির্বাচন ও পূর্ববর্তী একাডেমিক তথ্য",
     },
   };
 
@@ -1103,7 +1116,11 @@ export default function ProgramSelection() {
         // Preserve offline flag if present in URL
         const urlParams = new URLSearchParams(window.location.search);
         const isOfflineNav = urlParams.get("offline") === "true";
-        navigate(isOfflineNav ? "/personal-information?offline=true" : "/personal-information");
+        navigate(
+          isOfflineNav
+            ? "/personal-information?offline=true"
+            : "/personal-information",
+        );
       } else {
         toast({
           title: t.saveError,
@@ -1287,9 +1304,14 @@ export default function ProgramSelection() {
                           <SelectValue placeholder={t.selectSemester} />
                         </SelectTrigger>
                         <SelectContent>
-                          {(getSemesterOptionsForType(selectedSemesterType) || []).map((semester) => (
+                          {(
+                            getSemesterOptionsForType(selectedSemesterType) ||
+                            []
+                          ).map((semester) => (
                             <SelectItem key={semester.id} value={semester.id}>
-                              {language === "en" ? semester.name : semester.namebn}
+                              {language === "en"
+                                ? semester.name
+                                : semester.namebn}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -1306,8 +1328,11 @@ export default function ProgramSelection() {
                         value={selectedSemesterType}
                         onValueChange={(val) => {
                           setSelectedSemesterType(val);
-                          const allowed = getSemesterOptionsForType(val).map((s) => s.id);
-                          if (!allowed.includes(selectedSemester)) setSelectedSemester("");
+                          const allowed = getSemesterOptionsForType(val).map(
+                            (s) => s.id,
+                          );
+                          if (!allowed.includes(selectedSemester))
+                            setSelectedSemester("");
                         }}
                       >
                         <SelectTrigger>
@@ -2606,7 +2631,7 @@ export default function ProgramSelection() {
                     </div>
                   )}
 
-                                  {/* Available Waivers */}
+                  {/* Available Waivers */}
                   <div>
                     <h3 className="font-semibold text-deep-plum mb-4">
                       {t.availableWaivers}
@@ -2624,8 +2649,8 @@ export default function ProgramSelection() {
                             className="flex items-center space-x-2 p-2 bg-green-50 rounded"
                           >
                             <Label className="text-sm flex-1">
-                              {language === "en" ? waiver.name : waiver.namebn} (
-                              {waiver.percentage}%)
+                              {language === "en" ? waiver.name : waiver.namebn}{" "}
+                              ({waiver.percentage}%)
                             </Label>
                             <Badge variant="outline" className="text-xs">
                               {waiver.percentage}%
@@ -2766,25 +2791,31 @@ export default function ProgramSelection() {
                   <CardContent>
                     <div className="space-y-2">
                       {selectedWaivers
-                      .filter((id) => waiverPolicies.find((w) => w.id === id && w.type === 'result'))
-                      .map((waiverId) => {
-                        const waiver = waiverPolicies.find(
-                          (w) => w.id === waiverId,
-                        );
-                        return waiver ? (
-                          <div
-                            key={waiverId}
-                            className="flex justify-between items-center p-2 bg-white rounded text-sm"
-                          >
-                            <span>
-                              {language === "en" ? waiver.name : waiver.namebn}
-                            </span>
-                            <Badge className="bg-green-600 text-white">
-                              {waiver.percentage}%
-                            </Badge>
-                          </div>
-                        ) : null;
-                      })}
+                        .filter((id) =>
+                          waiverPolicies.find(
+                            (w) => w.id === id && w.type === "result",
+                          ),
+                        )
+                        .map((waiverId) => {
+                          const waiver = waiverPolicies.find(
+                            (w) => w.id === waiverId,
+                          );
+                          return waiver ? (
+                            <div
+                              key={waiverId}
+                              className="flex justify-between items-center p-2 bg-white rounded text-sm"
+                            >
+                              <span>
+                                {language === "en"
+                                  ? waiver.name
+                                  : waiver.namebn}
+                              </span>
+                              <Badge className="bg-green-600 text-white">
+                                {waiver.percentage}%
+                              </Badge>
+                            </div>
+                          ) : null;
+                        })}
                     </div>
                   </CardContent>
                 </Card>

@@ -13,6 +13,7 @@ export interface ApplicationData {
   sscGPA?: number;
   hscGPA?: number;
   selectedWaivers?: string[];
+  academicBackgroundType?: string;
   totalCost?: number;
   waiverAmount?: number;
   finalAmount?: number;

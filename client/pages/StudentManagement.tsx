@@ -668,7 +668,7 @@ export default function StudentManagement() {
                                       onValueChange={(value) =>
                                         setNewCorrectionRequest((prev) => ({
                                           ...prev,
-                                          type: value,
+                                          type: value as CorrectionRequest["type"],
                                         }))
                                       }
                                     >
@@ -703,7 +703,7 @@ export default function StudentManagement() {
                                         onValueChange={(value) =>
                                           setNewCorrectionRequest((prev) => ({
                                             ...prev,
-                                            requestedValue: value,
+                                            requestedValue: value as string,
                                           }))
                                         }
                                       >
@@ -728,7 +728,8 @@ export default function StudentManagement() {
                                         onChange={(e) =>
                                           setNewCorrectionRequest((prev) => ({
                                             ...prev,
-                                            requestedValue: e.target.value,
+                                            requestedValue: e.target
+                                              .value as string,
                                           }))
                                         }
                                       />
@@ -743,7 +744,7 @@ export default function StudentManagement() {
                                     onChange={(e) =>
                                       setNewCorrectionRequest((prev) => ({
                                         ...prev,
-                                        reason: e.target.value,
+                                        reason: e.target.value as string,
                                       }))
                                     }
                                   />
