@@ -67,6 +67,13 @@ export function createServer() {
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
   app.put("/api/admission-settings", updateAdmissionSettings);
+
+  // Payment webhooks (provider integrations)
+  import("./routes/webhooks/payments.js").then((m) => {
+    app.use("/webhooks/payments", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load payment webhooks route:", e);
+  });
   app.get("/api/payment-methods", getPaymentMethods);
   app.post("/api/payment-methods", createPaymentMethod);
   app.put("/api/payment-methods/:id", updatePaymentMethod);
