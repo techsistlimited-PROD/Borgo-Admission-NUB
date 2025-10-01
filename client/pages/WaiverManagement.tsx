@@ -677,9 +677,6 @@ export default function WaiverManagement() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {getWaiverTypeBadge(student.waiverType)}
-                  </TableCell>
-                  <TableCell>
                     <div>
                       <div className="font-bold text-green-600">
                         ৳{student.waiverAmount.toLocaleString()}
