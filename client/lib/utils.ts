@@ -1,7 +1,14 @@
 import { twMerge } from "tailwind-merge";
 
 // Minimal implementation of clsx-like behavior to avoid external dependency in tests
-type ClassValue = string | number | boolean | null | undefined | { [k: string]: any } | ClassValue[];
+type ClassValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | { [k: string]: any }
+  | ClassValue[];
 
 function clsx(inputs: ClassValue[]) {
   const classes: string[] = [];

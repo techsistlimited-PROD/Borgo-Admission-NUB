@@ -668,7 +668,7 @@ export default function StudentManagement() {
                                       onValueChange={(value) =>
                                         setNewCorrectionRequest((prev) => ({
                                           ...prev,
-                                          type: value as CorrectionRequest['type'],
+                                          type: value as CorrectionRequest["type"],
                                         }))
                                       }
                                     >
@@ -728,7 +728,8 @@ export default function StudentManagement() {
                                         onChange={(e) =>
                                           setNewCorrectionRequest((prev) => ({
                                             ...prev,
-                                            requestedValue: e.target.value as string,
+                                            requestedValue: e.target
+                                              .value as string,
                                           }))
                                         }
                                       />
