@@ -76,38 +76,38 @@ export default function Index() {
       campusLife: "Campus Life",
     },
     bn: {
-      heroTitle: "আপনার শিক্ষা যাত্রায় ��্বাগতম",
+      heroTitle: "আপনার শ��ক্ষা যাত্রায় ��্বাগতম",
       heroSubtitle:
         "নর্দার্ন ইউনিভার্সিটি বাংলাদেশে যোগ দিন - যেখানে উৎকর্ষতা সুযোগের সাথে মিলিত হয়",
       heroDescription:
         "মাত্র ৫টি সহজ ধাপে আপনার অনলাইন ভর্তি প্রক্রিয়া শুরু করুন। আমাদের সুবিধাজনক স��স্টেম ���পনার স্বপ্নের প্রোগ্রামে আবেদন করা সহজ করে তোলে।",
-      startJourney: "আপ��ার যাত্রা শুরু করুন",
+      startJourney: "আপনার যাত্রা শুরু করুন",
       uploadOffline: "অফ���াইন আবেদন আপলোড করুন",
       admissionProcess: "সহজ ৪-ধাপের ভর্তি প্রক্রিয়া",
       regularAdmission: "নিয়মিত ভর্তি",
       creditTransfer: "ক্রেডিট ট্রান্সফার",
       regularAdmissionDesc:
-        "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করুন",
+        "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করু��",
       creditTransferDesc: "অন্��� প্রতিষ্ঠান থেকে আপনার ক্রেডিট স্থানান্তর করুন",
       step1: "প্রোগ্রাম নির্বাচন ও খরচ গণনা",
       step1Desc: "প্রোগ্রাম, বিভাগ নির্বাচন এবং উপলব্ধ মওকুফ দেখুন",
       step2: "ব্যক্তিগত তথ্য",
       step2Desc: "আপনার ব্যক্তিগত তথ্য পূরণ করুন",
       step3: "শিক্ষাগত ইতিহাস",
-      step3Desc: "আপনার শিক্ষা��ত কাগজপত্র আপ���োড করুন",
+      step3Desc: "আপনার শিক্ষা��ত কাগজপত্র আপলোড করুন",
       step4: "পর্যালোচনা ও পেমেন্ট",
       step4Desc: "আপনার আবেদন সম্পূর্ণ করুন",
       whyChooseUs: "কেন নর্দার্ন ইউনিভার্সিটি বাংলাদেশ বেছে নেবেন?",
       excellentFaculty: "উৎকৃষ্ট শিক্ষকমণ্��লী",
       excellentFacultyDesc:
-        "শিল্প বিশেষজ্ঞ এবং অভিজ্ঞ অধ্যাপকদের কাছ থেকে শিখুন",
+        "শিল্প বিশেষজ্ঞ এবং অভিজ্ঞ অধ্যাপকদের কা��� থেকে শিখুন",
       modernFacilities: "আধুনিক সুবিধা",
       modernFacilitiesDesc: "অত্যাধুনিক ল্যাব এবং শিক্ষার পরিবেশ",
       careerSupport: "ক্যারিয়ার সাপোর্ট",
       careerSupportDesc: "নিবেদিত চাকরির সহায়তা এবং ক্যারিয়ার গাইডেন্স",
       affordableEducation: "সাশ্রয়ী শিক্ষা",
       affordableEducationDesc: "বিভিন্ন বৃত্তির সুযোগ সহ মানসম্পন্ন শিক্ষা",
-      waiverHighlights: "বৃত্তি ও ম���কুফের সুযোগ",
+      waiverHighlights: "বৃত্তি ও মওকুফের সুযোগ",
       meritBased: "মেধাভিত্তিক বৃত্তি",
       meritBasedDesc: "এসএসসি ও এইচএসসি ফলাফলের ভিত্তিতে ১০০% পর্যন্ত মওকুফ",
       specialWaivers: "বিশেষ মওকুফ উপলব্ধ",
@@ -305,7 +305,7 @@ export default function Index() {
                 </div>
 
                 <div className="pt-4">
-                  <Link to="/admin/offline-admission">
+                  <Link to="/program-selection?offline=true">
                     <Button
                       variant="outline"
                       size="lg"
