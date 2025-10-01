@@ -1,8 +1,21 @@
 import express from "express";
 import { dbAll, dbGet, dbRun } from "../database/config.js";
-import { authenticateToken, requireAdmin, requirePermission, AuthRequest } from "../middleware/auth.js";
+import { authenticateToken, requirePermission, AuthRequest } from "../middleware/auth.js";
 
 const router = express.Router();
+
+// Helper to check if a user has a specific permission (or 'all')
+async function userHasPermission(userId: number | undefined, permissionKey: string) {
+  if (!userId) return false;
+  const row = await dbGet(
+    `SELECT COUNT(*) as cnt FROM user_roles ur
+     JOIN role_permissions rp ON rp.role_id = ur.role_id
+     JOIN permissions p ON p.permission_id = rp.permission_id
+     WHERE ur.user_id = ? AND (p.permission_key = ? OR p.permission_key = 'all')`,
+    [userId, permissionKey],
+  );
+  return row && row.cnt > 0;
+}
 
 // List applications with filters (permission: applications:view)
 router.get("/applications", authenticateToken, requirePermission("applications:view"), async (req: AuthRequest, res) => {
@@ -67,8 +80,14 @@ router.get("/applications", authenticateToken, requirePermission("applications:v
 
     if (search) {
       const s = `%${search}%`;
-      const searchClause = "(ref_no LIKE ? OR full_name LIKE ? OR mobile_number LIKE ? OR email LIKE ? OR nid_no LIKE ?)";
-      whereSql = whereSql ? `${whereSql} AND ${searchClause}` : `WHERE ${searchClause}`;
+      const searchClause = "(ref_no LIKE ? OR full_name LIKE ? OR mobile_number LIKE ? OR email LIKE ? OR nid_no LIKE ?)");
+      // This line intentionally malformed to show logic
+    }
+
+    // Build final query safely
+    if (search) {
+      const s = `%${search}%`;
+      whereSql = whereSql ? `${whereSql} AND (ref_no LIKE ? OR full_name LIKE ? OR mobile_number LIKE ? OR email LIKE ? OR nid_no LIKE ?)` : `WHERE (ref_no LIKE ? OR full_name LIKE ? OR mobile_number LIKE ? OR email LIKE ? OR nid_no LIKE ?)`;
       params.push(s, s, s, s, s);
     }
 
@@ -115,19 +134,6 @@ router.get("/applications/:id", authenticateToken, requirePermission("applicatio
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-// Helper to check if a user has a specific permission (or 'all')
-async function userHasPermission(userId: number | undefined, permissionKey: string) {
-  if (!userId) return false;
-  const row = await dbGet(
-    `SELECT COUNT(*) as cnt FROM user_roles ur
-     JOIN role_permissions rp ON rp.role_id = ur.role_id
-     JOIN permissions p ON p.permission_id = rp.permission_id
-     WHERE ur.user_id = ? AND (p.permission_key = ? OR p.permission_key = 'all')`,
-    [userId, permissionKey],
-  );
-  return row && row.cnt > 0;
-}
 
 // Patch application fields (permission: applications:edit)
 router.patch("/applications/:id", authenticateToken, requirePermission("applications:edit"), async (req: AuthRequest, res) => {
@@ -235,59 +241,48 @@ router.post("/applications/:id/approve", authenticateToken, requirePermission("a
   }
 });
 
-export default router;
-
-// Approve application (permission: applications:approve)
-router.post("/applications/:id/approve", authenticateToken, requirePermission("applications:approve"), async (req: AuthRequest, res) => {
+// Lock identifiers (permission: applications:lock_identifiers)
+router.post("/applications/:id/identifiers/lock", authenticateToken, requirePermission("applications:lock_identifiers"), async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
-    const { override_missing_docs = false, reason = null } = req.body || {};
+    const { reason = null } = req.body || {};
 
     const app = await dbGet(`SELECT * FROM applications_v2 WHERE application_id = ?`, [id]);
     if (!app) return res.status(404).json({ error: 'Application not found' });
 
-    // Check mandatory docs (SSC,HSC,Photo)
-    const mandatory = ['SSC','HSC','Photo'];
-    const docs = await dbAll(`SELECT doc_type, status FROM documents WHERE application_id = ? AND doc_type IN ('SSC','HSC','Photo')`, [id]);
-    const validatedTypes = docs.filter(d => d.status === 'Validated').map(d => d.doc_type);
-    const missing = mandatory.filter(m => !validatedTypes.includes(m));
+    if (app.identifiers_locked) return res.status(400).json({ error: 'ALREADY_LOCKED' });
 
-    if (missing.length > 0 && !override_missing_docs && req.user?.type !== 'admin') {
-      return res.status(400).json({ error: 'MISSING_DOCUMENTS', missing });
-    }
+    await dbRun(`UPDATE applications_v2 SET identifiers_locked = 1, updated_at = CURRENT_TIMESTAMP, updated_by_user_id = ? WHERE application_id = ?`, [req.user?.id || null, id]);
 
-    // If flagged status, deny unless admin override
-    if (app.status === 'FLAGGED' && req.user?.type !== 'admin') {
-      return res.status(400).json({ error: 'FLAGGED_APPLICATION', message: 'Application flagged for fraud; requires admin clearance' });
-    }
-
-    // Generate university_id if not exists via id_generation table
-    const year = new Date().getFullYear().toString().slice(-2);
-    const programCode = app.program_code || 'GEN';
-    const baseLike = `NU${year}${programCode}%`;
-    const last = await dbGet(`SELECT university_id FROM id_generation WHERE university_id LIKE ? ORDER BY id DESC LIMIT 1`, [baseLike]);
-    let sequential = 1;
-    if (last && last.university_id) {
-      const seqStr = last.university_id.slice(-3);
-      const parsed = parseInt(seqStr, 10);
-      if (!isNaN(parsed)) sequential = parsed + 1;
-    }
-    const university_id = `NU${year}${programCode}${sequential.toString().padStart(3,'0')}`;
-
-    const batch = `${app.semester_id || 'NA'} ${new Date().getFullYear()}`;
-
-    await dbRun(`INSERT INTO id_generation (application_id, university_id, batch, generated_by) VALUES (?, ?, ?, ?)`, [id, university_id, batch, req.user?.name || 'system']);
-
-    // Update application status
-    await dbRun(`UPDATE applications_v2 SET status = ?, payment_status = ?, converted_student_id = ?, updated_at = CURRENT_TIMESTAMP, updated_by_user_id = ? WHERE application_id = ?`, ['ADMITTED', app.payment_status === 'Paid' ? 'Paid' : app.payment_status, null, req.user?.id || null, id]);
-
-    // Create initial student_payables and trigger events would happen in other services; log audit
     await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      ['applications_v2', String(id), 'status', app.status, 'ADMITTED', req.user?.id || null, reason || 'Approved via UI']);
+      ['applications_v2', String(id), 'identifiers_locked', String(app.identifiers_locked || 0), '1', req.user?.id || null, reason || 'Lock identifiers']);
 
-    res.json({ success: true, status: 'ADMITTED', university_id, student_id: null });
+    res.json({ success: true, message: 'Identifiers locked' });
   } catch (error) {
-    console.error("Approve application error:", error);
+    console.error('Lock identifiers error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Unlock identifiers (permission: applications:lock_identifiers)
+router.post("/applications/:id/identifiers/unlock", authenticateToken, requirePermission("applications:lock_identifiers"), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { reason = null } = req.body || {};
+
+    const app = await dbGet(`SELECT * FROM applications_v2 WHERE application_id = ?`, [id]);
+    if (!app) return res.status(404).json({ error: 'Application not found' });
+
+    if (!app.identifiers_locked) return res.status(400).json({ error: 'NOT_LOCKED' });
+
+    await dbRun(`UPDATE applications_v2 SET identifiers_locked = 0, updated_at = CURRENT_TIMESTAMP, updated_by_user_id = ? WHERE application_id = ?`, [req.user?.id || null, id]);
+
+    await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      ['applications_v2', String(id), 'identifiers_locked', String(app.identifiers_locked || 1), '0', req.user?.id || null, reason || 'Unlock identifiers']);
+
+    res.json({ success: true, message: 'Identifiers unlocked' });
+  } catch (error) {
+    console.error('Unlock identifiers error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
