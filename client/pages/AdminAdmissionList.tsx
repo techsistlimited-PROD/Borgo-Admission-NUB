@@ -159,7 +159,7 @@ export default function AdminAdmissionList() {
       actions: "কর্ম",
       view: "দেখুন",
       approve: "অনুমোদন",
-      reject: "প্রত্যাখ্যান",
+      reject: "প্রত্যাখ���যান",
       lock: "লক",
       unlock: "আনলক",
       yes: "হ্যাঁ",
@@ -195,7 +195,9 @@ export default function AdminAdmissionList() {
     try {
       const res = await apiClient.getPrograms();
       if (res.success && res.data) {
-        setPrograms(res.data.programs || []);
+        // Normalize different server responses into an array
+        const fetched = (res.data as any).programs ?? res.data ?? [];
+        setPrograms(Array.isArray(fetched) ? fetched : Object.values(fetched));
       }
     } catch (e) {
       console.error(e);
@@ -401,6 +403,8 @@ export default function AdminAdmissionList() {
     );
   };
 
+  const programList = Array.isArray(programs) ? programs : Object.values(programs || {});
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -503,7 +507,7 @@ export default function AdminAdmissionList() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Programs</SelectItem>
-                    {programs.map((p) => (
+                    {programList.map((p) => (
                       <SelectItem key={p.code} value={p.code}>{p.name}</SelectItem>
                     ))}
                   </SelectContent>
@@ -518,7 +522,7 @@ export default function AdminAdmissionList() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Campuses</SelectItem>
-                    {Array.from(new Set(programs.flatMap((p) => p.campus || []))).map((c) => (
+                    {Array.from(new Set(programList.flatMap((p) => p.campus || []))).map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
                   </SelectContent>
