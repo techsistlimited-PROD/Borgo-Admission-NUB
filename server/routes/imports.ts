@@ -95,4 +95,31 @@ router.post('/applications/bulk/import', authenticateToken, requirePermission('a
   }
 });
 
+// List import jobs (admin/officer)
+router.get('/imports', authenticateToken, requirePermission('applications:edit'), async (req: AuthRequest, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query as any;
+    const offset = (Number(page) - 1) * Number(limit);
+    const rows = await dbAll('SELECT * FROM import_jobs ORDER BY created_at DESC LIMIT ? OFFSET ?', [Number(limit), Number(offset)]);
+    const countRow = await dbGet('SELECT COUNT(*) as total FROM import_jobs');
+    const total = countRow ? countRow.total || 0 : 0;
+    res.json({ success: true, data: { jobs: rows, page: Number(page), limit: Number(limit), total } });
+  } catch (error) {
+    console.error('List import jobs error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Get import job errors
+router.get('/imports/:id/errors', authenticateToken, requirePermission('applications:edit'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const rows = await dbAll('SELECT * FROM import_job_errors WHERE import_job_id = ? ORDER BY error_id ASC', [id]);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Get import job errors:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 export default router;
