@@ -269,6 +269,96 @@ class ApiClient {
 
   async deleteDocumentRequirement(id: string): Promise<ApiResponse> { if (this.serverAvailable) { try { const res = await fetch(`/api/document-requirements/${id}`, { method: 'DELETE' }); const json = await res.json().catch(()=>({})); if (res.ok) return { success: true, data: json.data }; } catch (e) { console.warn('deleteDocumentRequirement server failed, falling back to mock', e); } } return await mockApi.deleteDocumentRequirement(id); }
 
+  // Messaging templates
+  async getTemplates(): Promise<ApiResponse<any[]>> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch('/api/messaging/templates', { headers: this.token ? { 'Authorization': `Bearer ${this.token}` } : {} });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json };
+      } catch (e) {
+        console.warn('getTemplates server failed, falling back to local', e);
+      }
+    }
+    try {
+      const raw = (typeof localStorage !== 'undefined' && localStorage.getItem('nu_templates')) || '[]';
+      const list = JSON.parse(raw || '[]');
+      return { success: true, data: list };
+    } catch {
+      return { success: true, data: [] };
+    }
+  }
+
+  async createTemplate(template: any): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch('/api/messaging/templates', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}) }, body: JSON.stringify(template) });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json };
+      } catch (e) {
+        console.warn('createTemplate server failed, falling back to local', e);
+      }
+    }
+    try {
+      const raw = (typeof localStorage !== 'undefined' && localStorage.getItem('nu_templates')) || '[]';
+      const list = JSON.parse(raw || '[]');
+      const item = { id: String(Date.now()), created_at: new Date().toISOString(), ...template };
+      list.unshift(item);
+      if (typeof localStorage !== 'undefined') localStorage.setItem('nu_templates', JSON.stringify(list));
+      return { success: true, data: item };
+    } catch (e) {
+      return { success: false, error: 'Failed to save template locally' };
+    }
+  }
+
+  async updateTemplate(id: string, updates: any): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch(`/api/messaging/templates/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {}) }, body: JSON.stringify(updates) });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json };
+      } catch (e) {
+        console.warn('updateTemplate server failed, falling back to local', e);
+      }
+    }
+    try {
+      const list = JSON.parse((localStorage.getItem('nu_templates') || '[]'));
+      const idx = list.findIndex((t: any) => String(t.id) === String(id));
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], ...updates };
+        localStorage.setItem('nu_templates', JSON.stringify(list));
+        return { success: true, data: list[idx] };
+      }
+      return { success: false, error: 'Template not found' };
+    } catch (e) {
+      return { success: false, error: 'Failed to update template locally' };
+    }
+  }
+
+  async deleteTemplate(id: string): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch(`/api/messaging/templates/${id}`, { method: 'DELETE', headers: this.token ? { 'Authorization': `Bearer ${this.token}` } : {} });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json };
+      } catch (e) {
+        console.warn('deleteTemplate server failed, falling back to local', e);
+      }
+    }
+    try {
+      const list = JSON.parse((localStorage.getItem('nu_templates') || '[]'));
+      const idx = list.findIndex((t: any) => String(t.id) === String(id));
+      if (idx !== -1) {
+        list.splice(idx, 1);
+        localStorage.setItem('nu_templates', JSON.stringify(list));
+        return { success: true };
+      }
+      return { success: false, error: 'Template not found' };
+    } catch (e) {
+      return { success: false, error: 'Failed to delete template locally' };
+    }
+  }
+
   // Students & finance remain mocked
   async createStudentRecord(applicationId: string, ids: { university_id: string; ugc_id?: string; batch?: string }): Promise<ApiResponse> { return await mockApi.createStudentRecord(applicationId, ids); }
   async generateMoneyReceipt(applicationId: string, amount: number): Promise<ApiResponse> { return await mockApi.generateMoneyReceipt(applicationId, amount); }
