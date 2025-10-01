@@ -91,7 +91,7 @@ export default function PersonalInformation() {
 
   // Referrer system state (only for offline admissions)
   const urlParams = new URLSearchParams(window.location.search);
-  const isOffline = urlParams.get("offline") === "true";
+  const isOffline = urlParams.get("offline") === "true" || !!applicationData.offline;
 
   const [referenceId, setReferenceId] = useState(
     applicationData.referrerId || "",
@@ -175,7 +175,7 @@ export default function PersonalInformation() {
       title: "ব্যক্তিগত তথ্য",
       subtitle: "৪টি ধাপের ২য় ধাপ",
       backToPrevious: "প্রোগ্রাম নির্বাচনে ফিরুন",
-      saveAndContinue: "সেভ করে এগিয়ে যান",
+      saveAndContinue: "সেভ কর�� এগিয়ে যান",
       saveAndExit: "সেভ করে বেরিয়ে যান",
       uploadPhoto: "ছবি আপলোড করুন",
       cropPhoto: "ছবি ক্রপ করুন",
