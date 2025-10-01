@@ -74,6 +74,13 @@ export function createServer() {
   }).catch((e) => {
     console.warn("Failed to load payment webhooks route:", e);
   });
+
+  // Bulk import routes
+  import("./routes/imports.js").then((m) => {
+    app.use("/api/admissions", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load imports routes:", e);
+  });
   app.get("/api/payment-methods", getPaymentMethods);
   app.post("/api/payment-methods", createPaymentMethod);
   app.put("/api/payment-methods/:id", updatePaymentMethod);
