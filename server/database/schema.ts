@@ -549,6 +549,34 @@ export const initializeSchema = async (): Promise<void> => {
     // Seed basic roles and permissions if empty
     await dbRun(`INSERT OR IGNORE INTO roles (role_id, role_key) VALUES (1,'Applicant'),(2,'AdmissionOfficer'),(3,'FinanceOfficer'),(4,'Registrar'),(5,'FraudAnalyst'),(6,'Admin')`);
 
+    // Import jobs
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS import_jobs (
+        import_job_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        file_name TEXT,
+        idempotency_key TEXT,
+        status TEXT DEFAULT 'Queued',
+        total_rows INTEGER DEFAULT 0,
+        success_rows INTEGER DEFAULT 0,
+        failed_rows INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by_user_id INTEGER
+      )
+    `);
+
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS import_job_errors (
+        error_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        import_job_id INTEGER NOT NULL,
+        row_number INTEGER,
+        column_name TEXT,
+        error_code TEXT,
+        error_message TEXT,
+        raw_row_json TEXT,
+        FOREIGN KEY (import_job_id) REFERENCES import_jobs(import_job_id)
+      )
+    `);
+
     console.log("✅ Database schema initialized successfully");
   } catch (error) {
     console.error("❌ Error initializing database schema:", error);
