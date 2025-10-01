@@ -68,7 +68,7 @@ router.post('/process-queue', async (req, res) => {
     const rows = await dbGet(`SELECT COUNT(*) as cnt FROM payment_webhook_events WHERE status = 'Queued'`);
     // For simplicity, process all queued events one by one
     const queued = await (async () => {
-      const db = await import('../../server/database/config.js');
+      const db = await import('../../database/config.js');
       return db.dbAll(`SELECT * FROM payment_webhook_events WHERE status = 'Queued' ORDER BY received_at ASC LIMIT 100`, []);
     })();
 
