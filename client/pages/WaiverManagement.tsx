@@ -647,7 +647,6 @@ export default function WaiverManagement() {
               <TableRow>
                 <TableHead>Student Info</TableHead>
                 <TableHead>Department</TableHead>
-                <TableHead>Waiver Type</TableHead>
                 <TableHead>Waiver Amount</TableHead>
                 <TableHead>Percentage</TableHead>
                 <TableHead>Status</TableHead>
