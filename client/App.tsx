@@ -40,6 +40,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdmissionOfficerLogin from "./pages/AdmissionOfficerLogin";
 import FinanceOfficerLogin from "./pages/FinanceOfficerLogin";
 import OfflineAdmission from "./pages/OfflineAdmission";
+import OfflineOfficerLogin from "./pages/OfflineOfficerLogin";
 import AdminAdmissionList from "./pages/AdminAdmissionList";
 import ApplicantDetail from "./pages/ApplicantDetail";
 import AdmissionConfiguration from "./pages/AdmissionConfiguration";
@@ -48,6 +49,8 @@ import Reports from "./pages/Reports";
 import EmailTemplates from "./pages/EmailTemplates";
 import MessagingTemplates from "./pages/Messaging/Templates";
 import AdminPortal from "./pages/AdminPortal";
+import AdminImportJobs from "./pages/AdminImportJobs";
+import AdminKpiCache from "./pages/AdminKpiCache";
 import AdminUsers from "./pages/AdminUsers";
 import PermissionConfig from "./pages/PermissionConfig";
 import SyllabusManagement from "./pages/SyllabusManagement";
@@ -192,6 +195,10 @@ function AppContent() {
               element={<AdmissionOfficerLogin />}
             />
             <Route
+              path="/admin/offline-login"
+              element={<OfflineOfficerLogin />}
+            />
+            <Route
               path="/admin/finance-login"
               element={<FinanceOfficerLogin />}
             />
@@ -286,6 +293,26 @@ function AppContent() {
               element={
                 isAuthenticated && userType === "admin" ? (
                   <AdminPortal />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/imports"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminImportJobs />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/kpi-cache"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminKpiCache />
                 ) : (
                   <Navigate to="/admin" replace />
                 )

@@ -59,6 +59,52 @@ const seedDatabase = async () => {
 
     console.log("📚 Creating programs...");
 
+    // Seed RBAC permissions and assign to Admin role
+    console.log("🔐 Seeding RBAC permissions and role assignments...");
+
+    const permissionsList = [
+      'all',
+      'applications:view',
+      'applications:edit',
+      'applications:edit.pii_override',
+      'applications:approve',
+      'applications:delete',
+      'waivers:assign',
+      'waivers:lock',
+      'applications:lock_identifiers',
+      'finance:payment.create',
+      'finance:refund',
+      'fraud:review.clear',
+      'fraud:review.mark_fraud',
+      'settings:manage',
+      'reports:export',
+      'documents:validate'
+    ];
+
+    for (const pk of permissionsList) {
+      await dbRun(`INSERT OR IGNORE INTO permissions (permission_key) VALUES (?)`, [pk]);
+    }
+
+    // Ensure Admin role exists and get its id
+    const adminRole = await dbGet(`SELECT role_id FROM roles WHERE role_key = 'Admin'`);
+    const adminRoleId = adminRole ? adminRole.role_id : 6;
+
+    // Map all permissions to Admin role
+    for (const pk of permissionsList) {
+      const permRow = await dbGet(`SELECT permission_id FROM permissions WHERE permission_key = ?`, [pk]);
+      if (permRow) {
+        await dbRun(`INSERT OR IGNORE INTO role_permissions (role_id, permission_id) VALUES (?, ?)`, [adminRoleId, permRow.permission_id]);
+      }
+    }
+
+    // Assign Admin role to existing admin users (by email)
+    const admin1 = await dbGet(`SELECT id FROM users WHERE email = ?`, ['admin@nu.edu.bd']);
+    const admin2 = await dbGet(`SELECT id FROM users WHERE email = ?`, ['fatima@nu.edu.bd']);
+    if (admin1) await dbRun(`INSERT OR IGNORE INTO user_roles (user_id, role_id) VALUES (?, ?)`, [admin1.id, adminRoleId]);
+    if (admin2) await dbRun(`INSERT OR IGNORE INTO user_roles (user_id, role_id) VALUES (?, ?)`, [admin2.id, adminRoleId]);
+
+    console.log("🔐 RBAC seeding completed.");
+
     // Create programs
     const programs = [
       {

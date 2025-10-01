@@ -41,11 +41,11 @@ import {
   waiverPolicies,
   getProgramById,
   getDepartmentsByProgram,
+  getDepartmentById,
+  getWaiverById,
   calculateWaiverAmount,
   getResultBasedWaiverByGPA,
   getResultBasedWaivers,
-  getSpecialWaivers,
-  getAdditionalWaivers,
   type Program,
   type Department,
   type WaiverPolicy,
@@ -230,16 +230,26 @@ export default function ProgramSelection() {
     { id: "khulna", name: "Khulna Campus", namebn: "খ���লনা ক্যাম��পাস" },
   ];
 
-  const semesterOptions = [
-    { id: "fall", name: "Fall", namebn: "���ল" },
-    { id: "summer", name: "Summer", namebn: "গ্রীষ্ম" },
-    { id: "winter", name: "Winter", namebn: "শ���ত" },
-  ];
+  const semesterOptionsAll = {
+    "bi-semester": [
+      { id: "fall", name: "Fall", namebn: "শরত" },
+      { id: "winter", name: "Winter", namebn: "শীত" },
+    ],
+    "tri-semester": [
+      { id: "fall", name: "Fall", namebn: "শরত" },
+      { id: "summer", name: "Summer", namebn: "গ্রীষ্ম" },
+      { id: "winter", name: "Winter", namebn: "শীত" },
+    ],
+  } as Record<string, { id: string; name: string; namebn: string }[]>;
 
   const semesterTypeOptions = [
-    { id: "bi-semester", name: "Bi-Semester", namebn: "দ্���ি-সেমিস্টার" },
-    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমি������্টার" },
+    { id: "bi-semester", name: "Bi-Semester", namebn: "দ্বি-সেমিস্টার" },
+    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমিস্টার" },
   ];
+
+  const getSemesterOptionsForType = (type: string) => {
+    return semesterOptionsAll[type] || semesterOptionsAll["tri-semester"];
+  };
 
   const texts = {
     en: {
@@ -311,9 +321,9 @@ export default function ProgramSelection() {
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
-      continue: "সেভ ����রে এগিয়ে যান",
+      continue: "সেভ ����রে এগিয়ে যা��",
       campusSelection: "ক্যাম্পাস নির্বাচন করু��",
-      semesterSelection: "সেমিস্টার ন���র্বাচন করুন",
+      semesterSelection: "সেমিস���টার ন���র্বাচন করুন",
       semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
@@ -324,12 +334,12 @@ export default function ProgramSelection() {
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের ��থ্য",
       costBreakdown: "খরচের বিভাজন",
-      waiverCalculator: "মওক��ফ ক্যালকুলেটর",
+      waiverCalculator: "���ওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
-      hscGPA: "����ইচএসসি জিপিএ",
-      fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ৪র্থ ব��ষয় ছিল",
-      calculateWaiver: "যোগ্য মওকুফ গণনা কর��ন",
+      hscGPA: "����ই���এসসি জিপিএ",
+      fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ���র্থ ব��ষয় ছিল",
+      calculateWaiver: "য���গ্য মওকুফ গণনা কর��ন",
       availableWaivers: "���পল��্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
@@ -347,7 +357,7 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "����িপিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
+      noWaiverEligible: "������পিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চ�� করুন",
       selectDepartmentFirst: "প্রথ���ে একটি ��িভাগ নির্বাচন করুন",
       enterGPAValues:
@@ -382,9 +392,13 @@ export default function ProgramSelection() {
     if (selectedProgram) {
       const program = getProgramById(selectedProgram);
       if (program) {
+        // Only consider result-based (merit) waivers for applicant-facing cost calculation
+        const visibleSelected = selectedWaivers.filter(
+          (id) => getWaiverById(id)?.type === "result",
+        );
         const calculation = calculateWaiverAmount(
           program.costStructure.total,
-          selectedWaivers,
+          visibleSelected,
         );
         setCostCalculation({
           originalAmount: program.costStructure.total,
@@ -902,6 +916,18 @@ export default function ProgramSelection() {
         sscGPA ||
         hscGPA
       ) {
+        // Preserve any admin-applied non-result waivers from existing applicationData
+        const adminNonResult = (applicationData.selectedWaivers || []).filter(
+          (id: string) => getWaiverById(id)?.type !== "result",
+        );
+        // Only save applicant-visible (result) waivers from this form
+        const visibleSelected = selectedWaivers.filter(
+          (id) => getWaiverById(id)?.type === "result",
+        );
+        const mergedSelectedWaivers = Array.from(
+          new Set([...adminNonResult, ...visibleSelected]),
+        );
+
         updateApplicationData({
           campus: selectedCampus,
           semester: selectedSemester,
@@ -910,7 +936,7 @@ export default function ProgramSelection() {
           department: selectedDepartment,
           sscGPA: sscGPA ? parseFloat(sscGPA) : undefined,
           hscGPA: hscGPA ? parseFloat(hscGPA) : undefined,
-          selectedWaivers,
+          selectedWaivers: mergedSelectedWaivers,
           totalCost: costCalculation.originalAmount,
           waiverAmount: costCalculation.waiverAmount,
           finalAmount: costCalculation.finalAmount,
@@ -1255,16 +1281,15 @@ export default function ProgramSelection() {
                       <Select
                         value={selectedSemester}
                         onValueChange={setSelectedSemester}
+                        disabled={!selectedSemesterType}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={t.selectSemester} />
                         </SelectTrigger>
                         <SelectContent>
-                          {semesterOptions.map((semester) => (
+                          {(getSemesterOptionsForType(selectedSemesterType) || []).map((semester) => (
                             <SelectItem key={semester.id} value={semester.id}>
-                              {language === "en"
-                                ? semester.name
-                                : semester.namebn}
+                              {language === "en" ? semester.name : semester.namebn}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -1279,7 +1304,11 @@ export default function ProgramSelection() {
                       </Label>
                       <Select
                         value={selectedSemesterType}
-                        onValueChange={setSelectedSemesterType}
+                        onValueChange={(val) => {
+                          setSelectedSemesterType(val);
+                          const allowed = getSemesterOptionsForType(val).map((s) => s.id);
+                          if (!allowed.includes(selectedSemester)) setSelectedSemester("");
+                        }}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={t.selectSemesterType} />
@@ -2577,75 +2606,26 @@ export default function ProgramSelection() {
                     </div>
                   )}
 
-                  {/* Available Waivers */}
+                                  {/* Available Waivers */}
                   <div>
                     <h3 className="font-semibold text-deep-plum mb-4">
                       {t.availableWaivers}
                     </h3>
 
-                    {/* Special Waivers */}
+                    {/* Result-based waivers are automatically applied and visible */}
                     <div className="mb-4">
                       <h4 className="font-medium text-gray-700 mb-2">
-                        {t.specialWaivers}
+                        {t.resultBasedWaivers}
                       </h4>
                       <div className="space-y-2">
-                        {getSpecialWaivers().map((waiver) => (
+                        {getResultBasedWaivers().map((waiver) => (
                           <div
                             key={waiver.id}
-                            className="flex items-center space-x-2 p-2 bg-purple-50 rounded"
+                            className="flex items-center space-x-2 p-2 bg-green-50 rounded"
                           >
-                            <Checkbox
-                              id={waiver.id}
-                              checked={selectedWaivers.includes(waiver.id)}
-                              onCheckedChange={(checked) =>
-                                handleWaiverToggle(
-                                  waiver.id,
-                                  checked as boolean,
-                                )
-                              }
-                            />
-                            <Label
-                              htmlFor={waiver.id}
-                              className="text-sm flex-1"
-                            >
-                              {language === "en" ? waiver.name : waiver.namebn}{" "}
-                              ({waiver.percentage}%)
-                            </Label>
-                            <Badge variant="outline" className="text-xs">
-                              {waiver.percentage}%
-                            </Badge>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Additional Waivers */}
-                    <div className="mb-4">
-                      <h4 className="font-medium text-gray-700 mb-2">
-                        {t.additionalWaivers}
-                      </h4>
-                      <div className="space-y-2">
-                        {getAdditionalWaivers().map((waiver) => (
-                          <div
-                            key={waiver.id}
-                            className="flex items-center space-x-2 p-2 bg-yellow-50 rounded"
-                          >
-                            <Checkbox
-                              id={waiver.id}
-                              checked={selectedWaivers.includes(waiver.id)}
-                              onCheckedChange={(checked) =>
-                                handleWaiverToggle(
-                                  waiver.id,
-                                  checked as boolean,
-                                )
-                              }
-                            />
-                            <Label
-                              htmlFor={waiver.id}
-                              className="text-sm flex-1"
-                            >
-                              {language === "en" ? waiver.name : waiver.namebn}{" "}
-                              ({waiver.percentage}%)
+                            <Label className="text-sm flex-1">
+                              {language === "en" ? waiver.name : waiver.namebn} (
+                              {waiver.percentage}%)
                             </Label>
                             <Badge variant="outline" className="text-xs">
                               {waiver.percentage}%
@@ -2785,7 +2765,9 @@ export default function ProgramSelection() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      {selectedWaivers.map((waiverId) => {
+                      {selectedWaivers
+                      .filter((id) => waiverPolicies.find((w) => w.id === id && w.type === 'result'))
+                      .map((waiverId) => {
                         const waiver = waiverPolicies.find(
                           (w) => w.id === waiverId,
                         );

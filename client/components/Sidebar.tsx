@@ -126,6 +126,9 @@ export default function Sidebar({ userType }: SidebarProps) {
         { name: "Reports", path: "/admin/reports?scope=admission", icon: PieChart },
       ];
 
+    // Offline admission staff should see only public application pages (form entry) — not admin menus
+    if (role === "offline_officer") return publicPages;
+
     if (role === "finance_officer")
       return [
         { name: "Finance", path: "/admin/finance", icon: CreditCard },

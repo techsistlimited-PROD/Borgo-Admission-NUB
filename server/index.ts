@@ -50,9 +50,37 @@ export function createServer() {
   app.use("/api/referrers", referrerRoutes);
   app.use("/api/messaging", messagingRoutes);
 
+  // Public admissions endpoints (applicant-facing)
+  import("./routes/publicAdmissions.js").then((m) => {
+    app.use("/public/admissions", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load public admissions routes:", e);
+  });
+
+  // Staff admissions endpoints (admin/officer)
+  import("./routes/admissions.js").then((m) => {
+    app.use("/api/admissions", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load staff admissions routes:", e);
+  });
+
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
   app.put("/api/admission-settings", updateAdmissionSettings);
+
+  // Payment webhooks (provider integrations)
+  import("./routes/webhooks/payments.js").then((m) => {
+    app.use("/webhooks/payments", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load payment webhooks route:", e);
+  });
+
+  // Bulk import routes
+  import("./routes/imports.js").then((m) => {
+    app.use("/api/admissions", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load imports routes:", e);
+  });
   app.get("/api/payment-methods", getPaymentMethods);
   app.post("/api/payment-methods", createPaymentMethod);
   app.put("/api/payment-methods/:id", updatePaymentMethod);

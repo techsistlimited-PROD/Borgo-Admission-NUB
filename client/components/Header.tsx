@@ -149,6 +149,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
                   <DropdownMenuItem onClick={() => navigate("/applicant-portal")}>Applicant Portal</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Portal</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/admin/admission-login")}>Admission Officer</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/admin/offline-login")}>Offline Admission Staff</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/admin/finance-login")}>Finance Officer</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -226,6 +227,8 @@ export default function Header({ showLogin = false }: HeaderProps) {
                         ]);
                       else if (r === "finance_officer")
                         setPermissions(["finance:view", "finance:billing"]);
+                      else if (r === "offline_officer")
+                        setPermissions([]);
                       else setPermissions([]);
                       // reload sidebar by forcing a small timeout (UI-only)
                       setTimeout(
@@ -237,6 +240,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
                     <option value="">Role</option>
                     <option value="admin">Admin</option>
                     <option value="admission_officer">Admission Officer</option>
+                    <option value="offline_officer">Offline Admission</option>
                     <option value="finance_officer">Finance Officer</option>
                   </select>
                 )}
@@ -287,6 +291,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
                     <DropdownMenuItem onClick={() => navigate("/applicant-portal")}>Applicant Portal</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Portal</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/admin/admission-login")}>Admission Officer</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/admin/offline-login")}>Offline Admission Staff</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/admin/finance-login")}>Finance Officer</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

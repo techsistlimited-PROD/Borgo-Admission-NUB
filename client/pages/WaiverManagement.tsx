@@ -23,10 +23,12 @@ import {
 import { Input } from "../components/ui/input";
 import {
   Select,
+  SelectGroup,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectLabel,
 } from "../components/ui/select";
 import { Badge } from "../components/ui/badge";
 import {
@@ -47,6 +49,12 @@ import {
 } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { useToast } from "../hooks/use-toast";
+import {
+  getResultBasedWaivers,
+  getSpecialWaivers,
+  getAdditionalWaivers,
+  getWaiverById,
+} from "../lib/programData";
 
 interface WaiverStudent {
   id: string;
@@ -75,7 +83,6 @@ interface WaiverCriteria {
   academicPerformance: { min: number; percentage: number };
   financialNeed: { threshold: number; percentage: number };
   extracurricular: { points: number; percentage: number };
-  familyIncome: { maxAmount: number; percentage: number };
 }
 
 const mockStudents: WaiverStudent[] = [
@@ -212,7 +219,6 @@ export default function WaiverManagement() {
     academicPerformance: { min: 85, percentage: 40 },
     financialNeed: { threshold: 50000, percentage: 50 },
     extracurricular: { points: 80, percentage: 30 },
-    familyIncome: { maxAmount: 40000, percentage: 60 },
   });
 
   const filteredStudents = students.filter((student) => {
@@ -255,6 +261,41 @@ export default function WaiverManagement() {
       title: student?.isLocked ? "Waiver Unlocked" : "Waiver Locked",
       description: `${student?.name}'s waiver has been ${student?.isLocked ? "unlocked" : "locked"}.`,
     });
+  };
+
+  const updateWaiverForStudent = (studentId: string, updates: { amount?: number; waiverId?: string; status?: string }) => {
+    setStudents((prev) =>
+      prev.map((student) => {
+        if (student.id !== studentId) return student;
+        let updated = { ...student };
+        if (updates.waiverId) {
+          const policy = getWaiverById(updates.waiverId);
+          if (policy) {
+            const amount = Math.round((student.totalFee * policy.percentage) / 100);
+            updated = {
+              ...updated,
+              waiverType: policy.name,
+              waiverPercentage: policy.percentage,
+              waiverAmount: amount,
+            };
+          }
+        }
+        if (typeof updates.amount === "number") {
+          const amt = updates.amount;
+          updated = {
+            ...updated,
+            waiverAmount: amt,
+            waiverPercentage: Math.round((amt / student.totalFee) * 100),
+          };
+        }
+        if (updates.status) {
+          updated = { ...updated, status: updates.status as any };
+        }
+        return updated;
+      }),
+    );
+
+    toast({ title: "Waiver Updated", description: "Waiver details have been saved." });
   };
 
   const updateWaiverAmount = (studentId: string, newAmount: number) => {
@@ -605,7 +646,6 @@ export default function WaiverManagement() {
               <TableRow>
                 <TableHead>Student Info</TableHead>
                 <TableHead>Department</TableHead>
-                <TableHead>Waiver Type</TableHead>
                 <TableHead>Waiver Amount</TableHead>
                 <TableHead>Percentage</TableHead>
                 <TableHead>Status</TableHead>
@@ -634,9 +674,6 @@ export default function WaiverManagement() {
                         {student.program}
                       </div>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    {getWaiverTypeBadge(student.waiverType)}
                   </TableCell>
                   <TableCell>
                     <div>
@@ -681,39 +718,46 @@ export default function WaiverManagement() {
                             <DialogTitle>Student Waiver Details</DialogTitle>
                           </DialogHeader>
                           <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <Label>Academic Performance</Label>
-                                <div className="text-2xl font-bold text-blue-600">
-                                  {student.criteria.academicPerformance}
-                                </div>
+                            <div>
+                              <Label>Waiver Percentage</Label>
+                              <div className="text-2xl font-bold text-deep-plum">
+                                {student.waiverPercentage}%
                               </div>
-                              <div>
-                                <Label>Financial Need Score</Label>
-                                <div className="text-2xl font-bold text-purple-600">
-                                  {student.criteria.financialNeed}
-                                </div>
-                              </div>
-                              <div>
-                                <Label>Extracurricular Score</Label>
-                                <div className="text-2xl font-bold text-orange-600">
-                                  {student.criteria.extracurricular}
-                                </div>
-                              </div>
-                              <div>
-                                <Label>Family Income</Label>
-                                <div className="text-2xl font-bold text-green-600">
-                                  ৳
-                                  {student.criteria.familyIncome.toLocaleString()}
-                                </div>
+                              <div className="text-sm text-gray-500">
+                                ৳{student.waiverAmount.toLocaleString()} of ৳{student.totalFee.toLocaleString()}
                               </div>
                             </div>
+
                             <div>
-                              <Label>Applied Date</Label>
+                              <Label>Date Applied</Label>
                               <div className="text-lg">
-                                {new Date(
-                                  student.appliedDate,
-                                ).toLocaleDateString()}
+                                {new Date(student.appliedDate).toLocaleDateString()}
+                              </div>
+                            </div>
+
+                            <div>
+                              <Label>Status</Label>
+                              <div>{getStatusBadge(student.status)}</div>
+                            </div>
+
+                            <div>
+                              <Label>Applied Policies</Label>
+                              <div className="space-y-1">
+                                {(() => {
+                                  const allPolicies = getResultBasedWaivers()
+                                    .concat(getSpecialWaivers())
+                                    .concat(getAdditionalWaivers());
+                                  const matched = allPolicies.filter((p) => p.name === student.waiverType);
+                                  return matched.length ? (
+                                    matched.map((p) => (
+                                      <div key={p.id} className="text-sm">
+                                        {p.name} — {p.percentage}%
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="text-sm text-gray-500">{student.waiverType || 'None'}</div>
+                                  );
+                                })()}
                               </div>
                             </div>
                           </div>
@@ -732,11 +776,51 @@ export default function WaiverManagement() {
                               Edit
                             </Button>
                           </DialogTrigger>
-                          <DialogContent>
+                              <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>Edit Waiver Amount</DialogTitle>
+                              <DialogTitle>Edit Waiver Amount & Type</DialogTitle>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
+                              <div>
+                                <Label>Choose Waiver Policy</Label>
+                                <Select
+                                  defaultValue={
+                                    // try to find policy by name
+                                    (getResultBasedWaivers()
+                                      .concat(getSpecialWaivers())
+                                      .concat(getAdditionalWaivers())
+                                      .find((p) => p.name === student.waiverType)?.id as string) || undefined
+                                  }
+                                  onValueChange={(val) => {
+                                    if (val) updateWaiverForStudent(student.id, { waiverId: val });
+                                  }}
+                                >
+                                  <SelectTrigger className="md:w-full">
+                                    <SelectValue placeholder="Select Waiver Policy" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectLabel>Result-based (Merit)</SelectLabel>
+                                      {getResultBasedWaivers().map((w) => (
+                                        <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                    <SelectGroup>
+                                      <SelectLabel>Special Waivers</SelectLabel>
+                                      {getSpecialWaivers().map((w) => (
+                                        <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                    <SelectGroup>
+                                      <SelectLabel>Additional Waivers</SelectLabel>
+                                      {getAdditionalWaivers().map((w) => (
+                                        <SelectItem key={w.id} value={w.id}>{w.name} ({w.percentage}%)</SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
                               <div>
                                 <Label>Current Waiver Amount</Label>
                                 <Input
@@ -744,15 +828,30 @@ export default function WaiverManagement() {
                                   defaultValue={student.waiverAmount}
                                   onChange={(e) => {
                                     const newAmount = Number(e.target.value);
-                                    if (
-                                      newAmount >= 0 &&
-                                      newAmount <= student.totalFee
-                                    ) {
-                                      updateWaiverAmount(student.id, newAmount);
+                                    if (newAmount >= 0 && newAmount <= student.totalFee) {
+                                      updateWaiverForStudent(student.id, { amount: newAmount });
                                     }
                                   }}
                                 />
                               </div>
+
+                              <div>
+                                <Label>Status</Label>
+                                <Select
+                                  defaultValue={student.status}
+                                  onValueChange={(val) => updateWaiverForStudent(student.id, { status: val })}
+                                >
+                                  <SelectTrigger className="md:w-full">
+                                    <SelectValue placeholder="Status" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="expired">Expired</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
                               <div className="text-sm text-gray-500">
                                 Total Fee: ৳{student.totalFee.toLocaleString()}
                               </div>

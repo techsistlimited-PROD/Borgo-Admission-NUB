@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import apiClient from "../lib/api";
 import {
   ChevronRight,
   Upload,
@@ -75,7 +76,7 @@ export default function Index() {
       campusLife: "Campus Life",
     },
     bn: {
-      heroTitle: "আপনার শিক্ষা যাত্রায় স্বাগতম",
+      heroTitle: "আপনার শ��ক্ষা যাত্রায় ��্বাগতম",
       heroSubtitle:
         "নর্দার্ন ইউনিভার্সিটি বাংলাদেশে যোগ দিন - যেখানে উৎকর্ষতা সুযোগের সাথে মিলিত হয়",
       heroDescription:
@@ -86,8 +87,8 @@ export default function Index() {
       regularAdmission: "নিয়মিত ভর্তি",
       creditTransfer: "ক্রেডিট ট্রান্সফার",
       regularAdmissionDesc:
-        "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করুন",
-      creditTransferDesc: "অন্য প্রতিষ্ঠান থেকে আপনার ক্রেডিট স্থানান্তর করুন",
+        "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করু��",
+      creditTransferDesc: "অন্��� প্রতিষ্ঠান থেকে আপনার ক্রেডিট স্থানান্তর করুন",
       step1: "প্রোগ্রাম নির্বাচন ও খরচ গণনা",
       step1Desc: "প্রোগ্রাম, বিভাগ নির্বাচন এবং উপলব্ধ মওকুফ দেখুন",
       step2: "ব্যক্তিগত তথ্য",
@@ -99,7 +100,7 @@ export default function Index() {
       whyChooseUs: "কেন নর্দার্ন ইউনিভার্সিটি বাংলাদেশ বেছে নেবেন?",
       excellentFaculty: "উৎকৃষ্ট শিক্ষকমণ্��লী",
       excellentFacultyDesc:
-        "শিল্প বিশেষজ্ঞ এবং অভিজ্ঞ অধ্যাপকদের কাছ থেকে শিখুন",
+        "শিল্প বিশেষজ্ঞ এবং অভিজ্ঞ অধ্যাপকদের কা��� থেকে শিখুন",
       modernFacilities: "আধুনিক সুবিধা",
       modernFacilitiesDesc: "অত্যাধুনিক ল্যাব এবং শিক্ষার পরিবেশ",
       careerSupport: "ক্যারিয়ার সাপোর্ট",
@@ -127,6 +128,31 @@ export default function Index() {
   };
 
   const t = texts[language];
+
+  const [programs, setPrograms] = useState<any[]>([]);
+  const [programsLoading, setProgramsLoading] = useState(false);
+  const [programsError, setProgramsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchPrograms = async () => {
+      setProgramsLoading(true);
+      try {
+        const res = await apiClient.getPrograms();
+        if (res.success && res.data?.programs) {
+          if (mounted) setPrograms(res.data.programs);
+        } else {
+          if (mounted) setProgramsError(res.error || "Failed to load programs");
+        }
+      } catch (e) {
+        if (mounted) setProgramsError("Failed to load programs");
+      } finally {
+        if (mounted) setProgramsLoading(false);
+      }
+    };
+    fetchPrograms();
+    return () => { mounted = false; };
+  }, []);
 
   const admissionSteps = [
     {
@@ -279,7 +305,7 @@ export default function Index() {
                 </div>
 
                 <div className="pt-4">
-                  <Link to="/admin/offline-admission">
+                  <Link to="/program-selection?offline=true">
                     <Button
                       variant="outline"
                       size="lg"
@@ -291,6 +317,48 @@ export default function Index() {
                   </Link>
                 </div>
               </div>
+            </div>
+
+            {/* Programs Preview - fetched from API */}
+            <div className="w-full">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-white/90">Popular Programs</h3>
+              </div>
+
+              {programsLoading && (
+                <div className="text-white">Loading programs...</div>
+              )}
+
+              {programsError && (
+                <div className="text-red-300">{programsError}</div>
+              )}
+
+              {!programsLoading && !programsError && programs.length > 0 && (
+                <div className="grid grid-cols-1 gap-4">
+                  {programs.slice(0, 4).map((program: any) => {
+                    const code = program.code || program.program_code;
+                    const dept = program.department_code || program.department?.code || "";
+                    const shortDesc = program.short_description || program.description || program.department_name || "A leading program with strong industry ties.";
+                    return (
+                      <Card key={code} className="bg-white/10 backdrop-blur-lg border-white/20 text-white">
+                        <CardContent className="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between">
+                          <div>
+                            <div className="font-bold text-lg">{program.name || program.program_name}</div>
+                            <div className="text-sm text-white/80">Code: {code} • {program.duration ?? program.duration_years}</div>
+                            <div className="text-sm text-white/80">{shortDesc}</div>
+                          </div>
+
+                          <div className="mt-4 md:mt-0 flex items-center gap-4">
+                            <Link to={`/program-selection?program=${encodeURIComponent(code)}&department=${encodeURIComponent(dept)}`}>
+                              <Button size="sm">Apply</Button>
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Right Content - Quick Stats */}

@@ -154,7 +154,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           ? "Admission Officer (Demo)"
           : r === "finance_officer"
             ? "Finance Officer (Demo)"
-            : "Admin (Demo)",
+            : r === "offline_officer"
+              ? "Offline Admission Staff (Demo)"
+              : "Admin (Demo)",
       email: r + "@nu.demo",
       type: "admin",
       department: r === "finance_officer" ? "Finance" : "Admissions",
@@ -173,6 +175,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ]);
     else if (r === "finance_officer")
       setPermissions(["finance:view", "finance:billing"]);
+    else if (r === "offline_officer")
+      setPermissions([]);
     else setPermissions([]);
   };
 

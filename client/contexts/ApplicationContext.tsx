@@ -9,6 +9,7 @@ export interface ApplicationData {
   program?: string;
   department?: string;
   session?: string;
+  offline?: boolean;
   sscGPA?: number;
   hscGPA?: number;
   selectedWaivers?: string[];

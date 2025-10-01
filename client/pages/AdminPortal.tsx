@@ -62,6 +62,9 @@ export default function AdminPortal() {
               <Link to="/admin/waivers">
                 <Button variant="outline">Waivers</Button>
               </Link>
+              <Link to="/admin/imports">
+                <Button variant="ghost">Imports</Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -80,6 +83,9 @@ export default function AdminPortal() {
               </Link>
               <Link to="/admin/id-card-generation">
                 <Button variant="outline">ID Cards</Button>
+              </Link>
+              <Link to="/admin/imports">
+                <Button variant="ghost">Imports</Button>
               </Link>
             </div>
           </CardContent>
@@ -100,6 +106,29 @@ export default function AdminPortal() {
               <Link to="/admin/users">
                 <Button variant="outline">Users & Permissions</Button>
               </Link>
+              <Link to="/admin/kpi-cache">
+                <Button variant="ghost">KPI Cache</Button>
+              </Link>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-sm font-medium text-gray-700 mb-2">KPI Cache</h3>
+              <div className="flex items-center gap-2">
+                <input id="kpi_semester" placeholder="Semester ID" className="border rounded px-2 py-1 text-sm" />
+                <Button onClick={async () => {
+                  try {
+                    const sem = (document.getElementById('kpi_semester') as HTMLInputElement).value;
+                    if (!sem) return alert('Please enter semester_id');
+                    const res = await fetch('/api/admissions/kpi/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ semester_id: sem }) });
+                    const json = await res.json().catch(() => ({}));
+                    if (!res.ok) throw new Error(json.error || 'Failed');
+                    alert('KPI refresh started.\n' + JSON.stringify(json.data || json));
+                  } catch (e) {
+                    console.error(e);
+                    alert('KPI refresh failed');
+                  }
+                }}>Force Refresh</Button>
+              </div>
             </div>
           </CardContent>
         </Card>
