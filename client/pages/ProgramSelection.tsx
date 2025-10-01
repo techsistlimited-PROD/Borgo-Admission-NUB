@@ -230,16 +230,26 @@ export default function ProgramSelection() {
     { id: "khulna", name: "Khulna Campus", namebn: "খ���লনা ক্যাম��পাস" },
   ];
 
-  const semesterOptions = [
-    { id: "fall", name: "Fall", namebn: "���ল" },
-    { id: "summer", name: "Summer", namebn: "গ্রীষ্ম" },
-    { id: "winter", name: "Winter", namebn: "শ���ত" },
-  ];
+  const semesterOptionsAll = {
+    "bi-semester": [
+      { id: "fall", name: "Fall", namebn: "শরত" },
+      { id: "winter", name: "Winter", namebn: "শীত" },
+    ],
+    "tri-semester": [
+      { id: "fall", name: "Fall", namebn: "শরত" },
+      { id: "summer", name: "Summer", namebn: "গ্রীষ্ম" },
+      { id: "winter", name: "Winter", namebn: "শীত" },
+    ],
+  } as Record<string, { id: string; name: string; namebn: string }[]>;
 
   const semesterTypeOptions = [
-    { id: "bi-semester", name: "Bi-Semester", namebn: "দ্���ি-সেমিস্টার" },
-    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমি������্টার" },
+    { id: "bi-semester", name: "Bi-Semester", namebn: "দ্বি-সেমিস্টার" },
+    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমিস্টার" },
   ];
+
+  const getSemesterOptionsForType = (type: string) => {
+    return semesterOptionsAll[type] || semesterOptionsAll["tri-semester"];
+  };
 
   const texts = {
     en: {
@@ -329,7 +339,7 @@ export default function ProgramSelection() {
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ইচএসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ৪র্থ ব��ষয় ছিল",
-      calculateWaiver: "যোগ্য মওকুফ গণনা কর��ন",
+      calculateWaiver: "যোগ্�� মওকুফ গণনা কর��ন",
       availableWaivers: "���পল��্ধ মওকুফ",
       resultBasedWaivers: "ফলাফল ভিত্তিক মওকুফ",
       specialWaivers: "��িশেষ মওকু��",
@@ -351,7 +361,7 @@ export default function ProgramSelection() {
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চ�� করুন",
       selectDepartmentFirst: "প্রথ���ে একটি ��িভাগ নির্বাচন করুন",
       enterGPAValues:
-        "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
+        "যোগ্য মওকুফ �����খতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
         "অতিরি����্��� ফি ���বং বিশ্ববিদ্যালয়ের নীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
