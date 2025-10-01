@@ -21,8 +21,8 @@ export default function OfflineAdmission() {
       return;
     }
 
-    // Start the offline admission workflow by opening the personal information form with offline flag
-    navigate(`/personal-information?offline=true`);
+    // Start the offline admission workflow by opening the program selection with offline flag
+    navigate(`/program-selection?offline=true`);
   }, [auth, navigate]);
 
   return (
