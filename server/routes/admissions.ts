@@ -235,6 +235,64 @@ router.post("/applications/:id/approve", authenticateToken, requirePermission("a
   }
 });
 
+// KPI endpoints
+// Admin-only: refresh KPI cache for a semester (minimal implementation)
+router.post('/kpi/refresh', authenticateToken, requirePermission('settings:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { semester_id, campus_id, program_code } = req.body || {};
+
+    if (!semester_id) {
+      return res.status(400).json({ error: 'semester_id is required' });
+    }
+
+    // Compute total_applicants
+    const totalRow = await dbGet(`SELECT COUNT(*) as cnt FROM applications_v2 WHERE semester_id = ?`, [semester_id]);
+    const totalApplicants = totalRow ? totalRow.cnt || 0 : 0;
+
+    // Compute pending_reviews similar to sample SQL: status='PROVISIONAL' and mandatory docs not validated
+    const pendingRow = await dbGet(`
+      SELECT COUNT(DISTINCT a.application_id) as cnt
+      FROM applications_v2 a
+      LEFT JOIN (
+        SELECT application_id, bool_and(status = 'Validated') as all_mandatory_validated
+        FROM documents
+        WHERE doc_type IN ('SSC','HSC','Photo')
+        GROUP BY application_id
+      ) d ON d.application_id = a.application_id
+      WHERE a.semester_id = ? AND a.status = 'PROVISIONAL' AND coalesce(d.all_mandatory_validated, 0) = 0
+    `, [semester_id]);
+
+    const pendingReviews = pendingRow ? pendingRow.cnt || 0 : 0;
+
+    // Insert into admission_dashboard_cache for both metrics
+    await dbRun(`INSERT INTO admission_dashboard_cache (semester_id, campus_id, program_id, metric_key, metric_value, date_from, date_to, generated_at, generated_by_user_id) VALUES (?, ?, ?, ?, ?, NULL, NULL, datetime('now'), ?)`,
+      [semester_id, campus_id || null, program_code || null, 'total_applicants', totalApplicants, req.user?.id || null]);
+
+    await dbRun(`INSERT INTO admission_dashboard_cache (semester_id, campus_id, program_id, metric_key, metric_value, date_from, date_to, generated_at, generated_by_user_id) VALUES (?, ?, ?, ?, ?, NULL, NULL, datetime('now'), ?)`,
+      [semester_id, campus_id || null, program_code || null, 'pending_reviews', pendingReviews, req.user?.id || null]);
+
+    res.json({ success: true, data: { totalApplicants, pendingReviews } });
+  } catch (error) {
+    console.error('KPI refresh error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Fetch latest cache for semester
+router.get('/kpi/cache', authenticateToken, requirePermission('settings:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { semester_id } = req.query as any;
+    if (!semester_id) return res.status(400).json({ error: 'semester_id required' });
+
+    const rows = await dbAll(`SELECT * FROM admission_dashboard_cache WHERE semester_id = ? ORDER BY generated_at DESC LIMIT 100`, [semester_id]);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('KPI fetch error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 // Lock identifiers (permission: applications:lock_identifiers)
 router.post("/applications/:id/identifiers/lock", authenticateToken, requirePermission("applications:lock_identifiers"), async (req: AuthRequest, res) => {
   try {
