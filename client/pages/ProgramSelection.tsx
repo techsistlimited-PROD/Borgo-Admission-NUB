@@ -138,6 +138,68 @@ export default function ProgramSelection() {
   const [autoSelectedResultWaiver, setAutoSelectedResultWaiver] =
     useState<string>("");
 
+  // Semester options (auto-selected from admission settings)
+  const [semesterOptions, setSemesterOptions] = useState<string[]>([]);
+
+  // Cost Calculation
+
+  // Load admission settings and determine semester options/default
+  useEffect(() => {
+    let mounted = true;
+    const loadSettings = async () => {
+      try {
+        const res = await apiClient.getAdmissionSettings();
+        if (res.success && res.data) {
+          const sys = res.data.semester_system || res.data.semesterSystem || "tri";
+          const optsRaw = res.data.semester_options_json || res.data.semester_options || res.data.semesterOptions || null;
+          let opts: string[] = [];
+          if (optsRaw) {
+            try {
+              opts = typeof optsRaw === "string" ? JSON.parse(optsRaw) : optsRaw;
+            } catch (e) {
+              opts = optsRaw as string[];
+            }
+          }
+          // Fallback defaults
+          if (!opts || opts.length === 0) {
+            opts = sys === "bi" ? ["Spring", "Fall"] : ["Spring", "Summer", "Fall"];
+          }
+
+          if (mounted) {
+            setSemesterOptions(opts);
+            // If no semester selected yet, auto pick based on current month
+            if (!selectedSemester) {
+              const now = new Date();
+              const month = now.getMonth() + 1; // 1-12
+              let chosen = opts[0] || "Spring";
+              if (opts.length === 3) {
+                // tri-semester mapping: Spring Jan-Apr, Summer May-Aug, Fall Sep-Dec
+                if (month >= 1 && month <= 4) chosen = "Spring";
+                else if (month >= 5 && month <= 8) chosen = "Summer";
+                else chosen = "Fall";
+              } else {
+                // bi-semester: Spring Jan-Jun, Fall Jul-Dec
+                if (month >= 1 && month <= 6) chosen = "Spring";
+                else chosen = "Fall";
+              }
+              setSelectedSemester(chosen);
+              setSelectedSemesterType(sys);
+
+              // Persist to application context
+              updateApplicationData({ semester: chosen, semesterType: sys });
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to load admission settings for semester options", e);
+      }
+    };
+    loadSettings();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   // Cost Calculation
   const [costCalculation, setCostCalculation] = useState({
     originalAmount: applicationData.totalCost || 0,
@@ -346,7 +408,7 @@ export default function ProgramSelection() {
       additionalWaivers: "অতি���িক্ত ম�����ুফ",
       estimatedCost: "আনুমানিক খরচ",
       originalAmount: "মূল পরিমাণ",
-      waiverAmount: "���ওকুফ পর��মাণ",
+      waiverAmount: "���ওকুফ পর��ম���ণ",
       finalAmount: "চূড়��ন্ত পরিম��ণ",
       admissionFee: "ভর্তি ফি",
       courseFee: "কোর্স ফি",
@@ -378,7 +440,7 @@ export default function ProgramSelection() {
       previousCGPA: "পূর্ববর্তী জিপিএ",
       reasonForTransfer: "ক্রেডিট ট্রান্সফারের কারণ",
       uploadTranscript: "ট্রান্সক্রিপ্ট আপলোড করুন",
-      creditTransferTitle: "ক্রেডিট ট্রান্সফার আবেদন",
+      creditTransferTitle: "���্রেডিট ট্রান্সফার আবেদন",
       creditTransferSubtitle:
         "৪টি ��াপের ১ম ধাপ - প্রোগ্রাম নির্বাচন ও পূর্ববর্তী একাডেমিক তথ্য",
     },
