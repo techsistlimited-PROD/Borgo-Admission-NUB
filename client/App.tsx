@@ -63,6 +63,7 @@ import ChangeHistory from "./pages/ChangeHistory";
 import IdCardGeneration from "./pages/IdCardGeneration";
 import VisitorsLog from "./pages/VisitorsLog";
 import Referrals from "./pages/Referrals";
+import MockEmails from "./pages/MockEmails";
 
 const queryClient = new QueryClient();
 
