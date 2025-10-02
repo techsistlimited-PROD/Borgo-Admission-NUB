@@ -394,6 +394,38 @@ export const initializeSchema = async (): Promise<void> => {
     `);
     await dbRun(`CREATE INDEX IF NOT EXISTS ix_academic_history_app ON academic_history(application_id)`);
 
+    // Credit equivalency rules (map external grades to local grade points)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS credit_equivalency (
+        equivalency_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        source_scale TEXT NOT NULL,
+        source_value TEXT NOT NULL,
+        mapped_grade_point REAL NOT NULL,
+        notes TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by_user_id INTEGER
+      )
+    `);
+
+    // Credit transfer records (log of transfer calculations and assignments)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS credit_transfer_records (
+        transfer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        application_id INTEGER NOT NULL,
+        transferred_credits REAL NOT NULL,
+        previous_credits REAL,
+        previous_cgpa REAL,
+        new_credits REAL,
+        new_cgpa REAL,
+        details_json TEXT,
+        processed_by_user_id INTEGER,
+        processed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
+      )
+    `);
+
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_credit_transfer_app ON credit_transfer_records(application_id)`);
+
     // Documents
     await dbRun(`
       CREATE TABLE IF NOT EXISTS documents (
