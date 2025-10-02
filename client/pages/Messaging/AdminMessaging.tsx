@@ -12,10 +12,25 @@ export default function AdminMessaging() {
   const [sms, setSms] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const [emailQuery, setEmailQuery] = useState("");
+  const [smsQuery, setSmsQuery] = useState("");
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<null | { type: 'resend' | 'send', id: number }>(null);
 
   const { toast } = useToast();
+
+  const filteredEmails = emails.filter((e) => {
+    if (!emailQuery) return true;
+    const q = emailQuery.toLowerCase();
+    return [e.to_address, e.subject, e.body, String(e.application_id)].filter(Boolean).join(" ").toLowerCase().includes(q);
+  });
+
+  const filteredSms = sms.filter((s) => {
+    if (!smsQuery) return true;
+    const q = smsQuery.toLowerCase();
+    return [s.to_number, s.message, s.provider, String(s.status)].filter(Boolean).join(" ").toLowerCase().includes(q);
+  });
 
   const load = async () => {
     setLoading(true);
