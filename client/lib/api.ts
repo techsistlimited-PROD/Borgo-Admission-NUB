@@ -756,6 +756,33 @@ class ApiClient {
   ): Promise<ApiResponse> {
     return await mockApi.generateMoneyReceipt(applicationId, amount);
   }
+
+  // Students
+  async getStudent(id: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/students/${id}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load student' };
+    } catch (e) {
+      console.warn('getStudent failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async updateStudent(id: number, updates: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/students/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(updates) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to update student' };
+    } catch (e) {
+      console.warn('updateStudent failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
 }
 
 const apiClient = new ApiClient();
