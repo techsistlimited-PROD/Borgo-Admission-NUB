@@ -156,7 +156,7 @@ class ApiClient {
         );
       }
     }
-    // No mock fallback available — return empty list
+    // No mock fallback available �� return empty list
     return { success: true, data: [] };
   }
 
@@ -755,6 +755,28 @@ class ApiClient {
     amount: number,
   ): Promise<ApiResponse> {
     return await mockApi.generateMoneyReceipt(applicationId, amount);
+  }
+
+  // Server-side PDF generation for money receipt
+  async generateMoneyReceiptPdf(applicationId: string): Promise<ApiResponse> {
+    if (!this.serverAvailable)
+      return { success: false, error: 'Server unavailable' };
+    try {
+      const qs = new URLSearchParams({ application_id: String(applicationId) }).toString();
+      const res = await fetch(`/api/pdf/money-receipt?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/pdf')) {
+        const blob = await res.blob();
+        const disposition = res.headers.get('content-disposition') || '';
+        const filename = disposition.match(/filename="?(.*)"?/)?.[1] || `money_receipt_${Date.now()}.pdf`;
+        return { success: true, data: { blob, filename, isFile: true } } as any;
+      }
+      const json = await res.json().catch(() => ({}));
+      return { success: res.ok, data: json } as any;
+    } catch (e) {
+      console.warn('generateMoneyReceiptPdf failed', e);
+      return { success: false, error: String(e) };
+    }
   }
 
   // Students
