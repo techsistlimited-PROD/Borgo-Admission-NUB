@@ -760,21 +760,27 @@ class ApiClient {
   // Server-side PDF generation for money receipt
   async generateMoneyReceiptPdf(applicationId: string): Promise<ApiResponse> {
     if (!this.serverAvailable)
-      return { success: false, error: 'Server unavailable' };
+      return { success: false, error: "Server unavailable" };
     try {
-      const qs = new URLSearchParams({ application_id: String(applicationId) }).toString();
-      const res = await fetch(`/api/pdf/money-receipt?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
-      const contentType = res.headers.get('content-type') || '';
-      if (res.ok && contentType.includes('application/pdf')) {
+      const qs = new URLSearchParams({
+        application_id: String(applicationId),
+      }).toString();
+      const res = await fetch(`/api/pdf/money-receipt?${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
+      const contentType = res.headers.get("content-type") || "";
+      if (res.ok && contentType.includes("application/pdf")) {
         const blob = await res.blob();
-        const disposition = res.headers.get('content-disposition') || '';
-        const filename = disposition.match(/filename="?(.*)"?/)?.[1] || `money_receipt_${Date.now()}.pdf`;
+        const disposition = res.headers.get("content-disposition") || "";
+        const filename =
+          disposition.match(/filename="?(.*)"?/)?.[1] ||
+          `money_receipt_${Date.now()}.pdf`;
         return { success: true, data: { blob, filename, isFile: true } } as any;
       }
       const json = await res.json().catch(() => ({}));
       return { success: res.ok, data: json } as any;
     } catch (e) {
-      console.warn('generateMoneyReceiptPdf failed', e);
+      console.warn("generateMoneyReceiptPdf failed", e);
       return { success: false, error: String(e) };
     }
   }
@@ -822,13 +828,21 @@ class ApiClient {
 
   // Academic history
   async getAcademicHistory(applicationId: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const qs = new URLSearchParams({ application_id: String(applicationId) }).toString();
-      const res = await fetch(`/api/academic/history?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const qs = new URLSearchParams({
+        application_id: String(applicationId),
+      }).toString();
+      const res = await fetch(`/api/academic/history?${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || "Failed to load academic history" };
+      return {
+        success: false,
+        error: json.error || "Failed to load academic history",
+      };
     } catch (e) {
       console.warn("getAcademicHistory failed", e);
       return { success: false, error: String(e) };
@@ -836,424 +850,681 @@ class ApiClient {
   }
 
   async addAcademicHistory(entry: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/academic/history', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(entry) });
+      const res = await fetch("/api/academic/history", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(entry),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to add academic history' };
+      return {
+        success: false,
+        error: json.error || "Failed to add academic history",
+      };
     } catch (e) {
-      console.warn('addAcademicHistory failed', e);
+      console.warn("addAcademicHistory failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Credit transfers
   async getCreditTransfers(applicationId: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const qs = new URLSearchParams({ application_id: String(applicationId) }).toString();
-      const res = await fetch(`/api/academic/credit-transfers?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const qs = new URLSearchParams({
+        application_id: String(applicationId),
+      }).toString();
+      const res = await fetch(`/api/academic/credit-transfers?${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || "Failed to load credit transfers" };
+      return {
+        success: false,
+        error: json.error || "Failed to load credit transfers",
+      };
     } catch (e) {
-      console.warn('getCreditTransfers failed', e);
+      console.warn("getCreditTransfers failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async addCreditTransfer(payload: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/academic/credit-transfers', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const res = await fetch("/api/academic/credit-transfers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to create credit transfer' };
+      return {
+        success: false,
+        error: json.error || "Failed to create credit transfer",
+      };
     } catch (e) {
-      console.warn('addCreditTransfer failed', e);
+      console.warn("addCreditTransfer failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async calculateCreditEquivalency(items: any[]): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/academic/credit-transfers/calc', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify({ items }) });
+      const res = await fetch("/api/academic/credit-transfers/calc", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify({ items }),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to calculate equivalency' };
+      return {
+        success: false,
+        error: json.error || "Failed to calculate equivalency",
+      };
     } catch (e) {
-      console.warn('calculateCreditEquivalency failed', e);
+      console.warn("calculateCreditEquivalency failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Finance / Waivers / Bills
   async getWaiverPolicies(): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/finance/waiver-policies', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch("/api/finance/waiver-policies", {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load waiver policies' };
+      return {
+        success: false,
+        error: json.error || "Failed to load waiver policies",
+      };
     } catch (e) {
-      console.warn('getWaiverPolicies failed', e);
+      console.warn("getWaiverPolicies failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async listWaiverAssignments(applicationId?: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const qs = applicationId ? `?application_id=${encodeURIComponent(String(applicationId))}` : '';
-      const res = await fetch(`/api/finance/waiver-assignments${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const qs = applicationId
+        ? `?application_id=${encodeURIComponent(String(applicationId))}`
+        : "";
+      const res = await fetch(`/api/finance/waiver-assignments${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load waiver assignments' };
+      return {
+        success: false,
+        error: json.error || "Failed to load waiver assignments",
+      };
     } catch (e) {
-      console.warn('listWaiverAssignments failed', e);
+      console.warn("listWaiverAssignments failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async assignWaiver(payload: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/finance/waiver-assignments', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const res = await fetch("/api/finance/waiver-assignments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to assign waiver' };
+      return { success: false, error: json.error || "Failed to assign waiver" };
     } catch (e) {
-      console.warn('assignWaiver failed', e);
+      console.warn("assignWaiver failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async updateWaiverAssignment(id: number, updates: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/finance/waiver-assignments/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(updates) });
+      const res = await fetch(`/api/finance/waiver-assignments/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(updates),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to update waiver assignment' };
+      return {
+        success: false,
+        error: json.error || "Failed to update waiver assignment",
+      };
     } catch (e) {
-      console.warn('updateWaiverAssignment failed', e);
+      console.warn("updateWaiverAssignment failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Fee packages
   async getFeePackages(): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/finance/fee-packages', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch("/api/finance/fee-packages", {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load fee packages' };
+      return {
+        success: false,
+        error: json.error || "Failed to load fee packages",
+      };
     } catch (e) {
-      console.warn('getFeePackages failed', e);
+      console.warn("getFeePackages failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async createFeePackage(payload: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/finance/fee-packages', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const res = await fetch("/api/finance/fee-packages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to create fee package' };
+      return {
+        success: false,
+        error: json.error || "Failed to create fee package",
+      };
     } catch (e) {
-      console.warn('createFeePackage failed', e);
+      console.warn("createFeePackage failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async updateFeePackage(id: number, updates: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/finance/fee-packages/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(updates) });
+      const res = await fetch(`/api/finance/fee-packages/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(updates),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to update fee package' };
+      return {
+        success: false,
+        error: json.error || "Failed to update fee package",
+      };
     } catch (e) {
-      console.warn('updateFeePackage failed', e);
+      console.warn("updateFeePackage failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async deleteFeePackage(id: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/finance/fee-packages/${id}`, { method: 'DELETE', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch(`/api/finance/fee-packages/${id}`, {
+        method: "DELETE",
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true };
-      return { success: false, error: json.error || 'Failed to delete fee package' };
+      return {
+        success: false,
+        error: json.error || "Failed to delete fee package",
+      };
     } catch (e) {
-      console.warn('deleteFeePackage failed', e);
+      console.warn("deleteFeePackage failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Bills
-  async getStudentBills(query: { student_id?: number; application_id?: number } = {}): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+  async getStudentBills(
+    query: { student_id?: number; application_id?: number } = {},
+  ): Promise<ApiResponse> {
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
       const qs = new URLSearchParams(query as any).toString();
-      const res = await fetch(`/api/finance/bills?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch(`/api/finance/bills?${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load bills' };
+      return { success: false, error: json.error || "Failed to load bills" };
     } catch (e) {
-      console.warn('getStudentBills failed', e);
+      console.warn("getStudentBills failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async createStudentBill(payload: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/finance/bills', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const res = await fetch("/api/finance/bills", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to create bill' };
+      return { success: false, error: json.error || "Failed to create bill" };
     } catch (e) {
-      console.warn('createStudentBill failed', e);
+      console.warn("createStudentBill failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async markBillPaid(billId: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/finance/bills/${billId}/pay`, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify({}) });
+      const res = await fetch(`/api/finance/bills/${billId}/pay`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify({}),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to mark bill paid' };
+      return {
+        success: false,
+        error: json.error || "Failed to mark bill paid",
+      };
     } catch (e) {
-      console.warn('markBillPaid failed', e);
+      console.warn("markBillPaid failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Scholarships
   async getScholarships(): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/scholarships', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch("/api/scholarships", {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load scholarships' };
+      return {
+        success: false,
+        error: json.error || "Failed to load scholarships",
+      };
     } catch (e) {
-      console.warn('getScholarships failed', e);
+      console.warn("getScholarships failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async createScholarship(payload: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/scholarships', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const res = await fetch("/api/scholarships", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to create scholarship' };
+      return {
+        success: false,
+        error: json.error || "Failed to create scholarship",
+      };
     } catch (e) {
-      console.warn('createScholarship failed', e);
+      console.warn("createScholarship failed", e);
       return { success: false, error: String(e) };
     }
   }
 
-  async listScholarshipAssignments(applicationId?: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+  async listScholarshipAssignments(
+    applicationId?: number,
+  ): Promise<ApiResponse> {
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const qs = applicationId ? `?application_id=${encodeURIComponent(String(applicationId))}` : '';
-      const res = await fetch(`/api/scholarships/assignments${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const qs = applicationId
+        ? `?application_id=${encodeURIComponent(String(applicationId))}`
+        : "";
+      const res = await fetch(`/api/scholarships/assignments${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load scholarship assignments' };
+      return {
+        success: false,
+        error: json.error || "Failed to load scholarship assignments",
+      };
     } catch (e) {
-      console.warn('listScholarshipAssignments failed', e);
+      console.warn("listScholarshipAssignments failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async assignScholarship(payload: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/scholarships/assignments', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const res = await fetch("/api/scholarships/assignments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to assign scholarship' };
+      return {
+        success: false,
+        error: json.error || "Failed to assign scholarship",
+      };
     } catch (e) {
-      console.warn('assignScholarship failed', e);
+      console.warn("assignScholarship failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async lockScholarshipAssignment(id: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/scholarships/assignments/${id}/lock`, { method: 'PUT', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch(`/api/scholarships/assignments/${id}/lock`, {
+        method: "PUT",
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to lock assignment' };
+      return {
+        success: false,
+        error: json.error || "Failed to lock assignment",
+      };
     } catch (e) {
-      console.warn('lockScholarshipAssignment failed', e);
+      console.warn("lockScholarshipAssignment failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async unlockScholarshipAssignment(id: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/scholarships/assignments/${id}/unlock`, { method: 'PUT', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch(`/api/scholarships/assignments/${id}/unlock`, {
+        method: "PUT",
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to unlock assignment' };
+      return {
+        success: false,
+        error: json.error || "Failed to unlock assignment",
+      };
     } catch (e) {
-      console.warn('unlockScholarshipAssignment failed', e);
+      console.warn("unlockScholarshipAssignment failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Students listing (wraps server /api/students)
-  async getStudents(params: { search?: string; program_code?: string; semester_id?: number; page?: number; limit?: number } = {}): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+  async getStudents(
+    params: {
+      search?: string;
+      program_code?: string;
+      semester_id?: number;
+      page?: number;
+      limit?: number;
+    } = {},
+  ): Promise<ApiResponse> {
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
       const qs = new URLSearchParams(params as any).toString();
-      const res = await fetch(`/api/students?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch(`/api/students?${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load students' };
+      return { success: false, error: json.error || "Failed to load students" };
     } catch (e) {
-      console.warn('getStudents failed', e);
+      console.warn("getStudents failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Dashboard
   async getDashboardSummary(): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/dashboard/summary', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch("/api/dashboard/summary", {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load dashboard' };
+      return {
+        success: false,
+        error: json.error || "Failed to load dashboard",
+      };
     } catch (e) {
-      console.warn('getDashboardSummary failed', e);
+      console.warn("getDashboardSummary failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Notifications / Notices
   async createNotice(payload: any): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/notifications/notices', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const res = await fetch("/api/notifications/notices", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to create notice' };
+      return { success: false, error: json.error || "Failed to create notice" };
     } catch (e) {
-      console.warn('createNotice failed', e);
+      console.warn("createNotice failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async listNotices(onlyActive = true): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/notifications/notices?onlyActive=${onlyActive ? '1' : '0'}`);
+      const res = await fetch(
+        `/api/notifications/notices?onlyActive=${onlyActive ? "1" : "0"}`,
+      );
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load notices' };
+      return { success: false, error: json.error || "Failed to load notices" };
     } catch (e) {
-      console.warn('listNotices failed', e);
+      console.warn("listNotices failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async getNoticeAttachments(noticeId: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/notifications/notices/${noticeId}/attachments`);
+      const res = await fetch(
+        `/api/notifications/notices/${noticeId}/attachments`,
+      );
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load attachments' };
+      return {
+        success: false,
+        error: json.error || "Failed to load attachments",
+      };
     } catch (e) {
-      console.warn('getNoticeAttachments failed', e);
+      console.warn("getNoticeAttachments failed", e);
       return { success: false, error: String(e) };
     }
   }
 
-  async getUserNotifications(page = 1, limit = 50, unreadOnly = false): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+  async getUserNotifications(
+    page = 1,
+    limit = 50,
+    unreadOnly = false,
+  ): Promise<ApiResponse> {
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const qs = new URLSearchParams({ page: String(page), limit: String(limit), unreadOnly: unreadOnly ? '1' : '0' }).toString();
-      const res = await fetch(`/api/notifications/me?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const qs = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+        unreadOnly: unreadOnly ? "1" : "0",
+      }).toString();
+      const res = await fetch(`/api/notifications/me?${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load notifications' };
+      return {
+        success: false,
+        error: json.error || "Failed to load notifications",
+      };
     } catch (e) {
-      console.warn('getUserNotifications failed', e);
+      console.warn("getUserNotifications failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async markNotificationRead(notificationId: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/notifications/${notificationId}/read`, { method: 'POST', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch(`/api/notifications/${notificationId}/read`, {
+        method: "POST",
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true };
-      return { success: false, error: json.error || 'Failed to mark read' };
+      return { success: false, error: json.error || "Failed to mark read" };
     } catch (e) {
-      console.warn('markNotificationRead failed', e);
+      console.warn("markNotificationRead failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Employees (roles)
   async listEmployees(role?: string): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const qs = role ? `?role=${encodeURIComponent(role)}` : '';
-      const res = await fetch(`/api/employees${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const qs = role ? `?role=${encodeURIComponent(role)}` : "";
+      const res = await fetch(`/api/employees${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to load employees' };
+      return {
+        success: false,
+        error: json.error || "Failed to load employees",
+      };
     } catch (e) {
-      console.warn('listEmployees failed', e);
+      console.warn("listEmployees failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async assignUserRole(userId: number, roleKey: string): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/employees/${userId}/roles`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify({ role_key: roleKey }) });
+      const res = await fetch(`/api/employees/${userId}/roles`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
+        body: JSON.stringify({ role_key: roleKey }),
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to assign role' };
+      return { success: false, error: json.error || "Failed to assign role" };
     } catch (e) {
-      console.warn('assignUserRole failed', e);
+      console.warn("assignUserRole failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async removeUserRole(userId: number, roleKey: string): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/employees/${userId}/roles/${encodeURIComponent(roleKey)}`, { method: 'DELETE', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch(
+        `/api/employees/${userId}/roles/${encodeURIComponent(roleKey)}`,
+        {
+          method: "DELETE",
+          headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+        },
+      );
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true };
-      return { success: false, error: json.error || 'Failed to remove role' };
+      return { success: false, error: json.error || "Failed to remove role" };
     } catch (e) {
-      console.warn('removeUserRole failed', e);
+      console.warn("removeUserRole failed", e);
       return { success: false, error: String(e) };
     }
   }
-
 }
 
 const apiClient = new ApiClient();

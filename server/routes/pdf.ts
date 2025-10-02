@@ -2,7 +2,11 @@ import express from "express";
 import puppeteer from "puppeteer";
 import path from "path";
 import fs from "fs";
-import { authenticateToken, requirePermission, AuthRequest } from "../middleware/auth.js";
+import {
+  authenticateToken,
+  requirePermission,
+  AuthRequest,
+} from "../middleware/auth.js";
 import { dbGet, dbAll } from "../database/config.js";
 
 const router = express.Router();
@@ -15,34 +19,53 @@ async function ensurePdfDir() {
 }
 
 // GET /api/pdf/money-receipt?application_id=...
-router.get("/money-receipt", authenticateToken, requirePermission("applications:view"), async (req: AuthRequest, res) => {
-  const { application_id } = req.query as any;
-  if (!application_id) {
-    return res.status(400).json({ success: false, error: "application_id is required" });
-  }
-
-  try {
-    const application = await dbGet(`SELECT * FROM applications WHERE id = ?`, [application_id]);
-    if (!application) {
-      return res.status(404).json({ success: false, error: "Application not found" });
+router.get(
+  "/money-receipt",
+  authenticateToken,
+  requirePermission("applications:view"),
+  async (req: AuthRequest, res) => {
+    const { application_id } = req.query as any;
+    if (!application_id) {
+      return res
+        .status(400)
+        .json({ success: false, error: "application_id is required" });
     }
 
-    // Fetch fee details (assuming a fee structure or bill exists)
-    // For demo purposes, we'll use mock data or simplified structure
-    const feeDetails = await dbGet(`SELECT * FROM student_bills WHERE application_id = ? AND status = 'Paid' ORDER BY paid_at DESC LIMIT 1`, [application_id]);
-    if (!feeDetails) {
-      return res.status(404).json({ success: false, error: "No paid fee details found for this application" });
-    }
+    try {
+      const application = await dbGet(
+        `SELECT * FROM applications WHERE id = ?`,
+        [application_id],
+      );
+      if (!application) {
+        return res
+          .status(404)
+          .json({ success: false, error: "Application not found" });
+      }
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-    const page = await browser.newPage();
+      // Fetch fee details (assuming a fee structure or bill exists)
+      // For demo purposes, we'll use mock data or simplified structure
+      const feeDetails = await dbGet(
+        `SELECT * FROM student_bills WHERE application_id = ? AND status = 'Paid' ORDER BY paid_at DESC LIMIT 1`,
+        [application_id],
+      );
+      if (!feeDetails) {
+        return res
+          .status(404)
+          .json({
+            success: false,
+            error: "No paid fee details found for this application",
+          });
+      }
 
-    // Construct HTML content for the receipt
-    // This is a simplified HTML structure for demo purposes
-    const htmlContent = `
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      });
+      const page = await browser.newPage();
+
+      // Construct HTML content for the receipt
+      // This is a simplified HTML structure for demo purposes
+      const htmlContent = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -84,7 +107,7 @@ router.get("/money-receipt", authenticateToken, requirePermission("applications:
               <label>Student Name:</label> <span>${application.first_name} ${application.last_name}</span>
             </div>
             <div>
-              <label>Program:</label> <span>${application.program || 'N/A'}</span>
+              <label>Program:</label> <span>${application.program || "N/A"}</span>
             </div>
           </div>
           <table class="items-table">
@@ -119,19 +142,22 @@ router.get("/money-receipt", authenticateToken, requirePermission("applications:
       </html>
     `;
 
-    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+      await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+      const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
 
-    await browser.close();
+      await browser.close();
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="money_receipt_${application.tracking_id || application.id}.pdf"`);
-    res.send(pdfBuffer);
-
-  } catch (error) {
-    console.error("Money receipt PDF generation failed:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="money_receipt_${application.tracking_id || application.id}.pdf"`,
+      );
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Money receipt PDF generation failed:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
 export default router;

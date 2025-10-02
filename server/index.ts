@@ -50,127 +50,161 @@ export function createServer() {
   app.use("/api/referrers", referrerRoutes);
   app.use("/api/messaging", messagingRoutes);
   // Mock emails (development-only)
-  import("./routes/mockEmails.js").then((m) => {
-    app.use("/api/mock-emails", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load mock emails routes:", e);
-  });
+  import("./routes/mockEmails.js")
+    .then((m) => {
+      app.use("/api/mock-emails", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load mock emails routes:", e);
+    });
 
   // Public admissions endpoints (applicant-facing)
-  import("./routes/publicAdmissions.js").then((m) => {
-    app.use("/public/admissions", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load public admissions routes:", e);
-  });
+  import("./routes/publicAdmissions.js")
+    .then((m) => {
+      app.use("/public/admissions", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load public admissions routes:", e);
+    });
 
   // Staff admissions endpoints (admin/officer)
-  import("./routes/admissions.js").then((m) => {
-    app.use("/api/admissions", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load staff admissions routes:", e);
-  });
+  import("./routes/admissions.js")
+    .then((m) => {
+      app.use("/api/admissions", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load staff admissions routes:", e);
+    });
 
   // Students endpoints
-  import("./routes/students.js").then((m) => {
-    app.use("/api/students", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load students routes:", e);
-  });
+  import("./routes/students.js")
+    .then((m) => {
+      app.use("/api/students", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load students routes:", e);
+    });
 
   // Visitors endpoints
-  import("./routes/visitors.js").then((m) => {
-    app.use("/api/visitors", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load visitors routes:", e);
-  });
+  import("./routes/visitors.js")
+    .then((m) => {
+      app.use("/api/visitors", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load visitors routes:", e);
+    });
 
   // Notifications & Notices
-  import("./routes/notifications.js").then((m) => {
-    app.use("/api/notifications", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load notifications routes:", e);
-  });
+  import("./routes/notifications.js")
+    .then((m) => {
+      app.use("/api/notifications", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load notifications routes:", e);
+    });
 
   // Reports & Exports
-  import("./routes/reports.js").then((m) => {
-    app.use("/api/reports", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load reports routes:", e);
-  });
+  import("./routes/reports.js")
+    .then((m) => {
+      app.use("/api/reports", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load reports routes:", e);
+    });
 
   // Server-side exports (large dataset CSV generation / queue)
-  import("./routes/exports.js").then((m) => {
-    app.use("/api/exports", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load exports routes:", e);
-  });
+  import("./routes/exports.js")
+    .then((m) => {
+      app.use("/api/exports", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load exports routes:", e);
+    });
 
   // Academic routes (academic history & credit transfer)
-  import("./routes/academic.js").then((m) => {
-    app.use("/api/academic", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load academic routes:", e);
-  });
+  import("./routes/academic.js")
+    .then((m) => {
+      app.use("/api/academic", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load academic routes:", e);
+    });
 
   // Finance routes (waivers, fee packages, bills)
-  import("./routes/finance.js").then((m) => {
-    app.use("/api/finance", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load finance routes:", e);
-  });
+  import("./routes/finance.js")
+    .then((m) => {
+      app.use("/api/finance", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load finance routes:", e);
+    });
 
   // Scholarships & assignments
-  import("./routes/scholarships.js").then((m) => {
-    app.use("/api/scholarships", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load scholarships routes:", e);
-  });
+  import("./routes/scholarships.js")
+    .then((m) => {
+      app.use("/api/scholarships", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load scholarships routes:", e);
+    });
 
   // Dashboard summary
-  import("./routes/dashboard.js").then((m) => {
-    app.use("/api/dashboard", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load dashboard routes:", e);
-  });
+  import("./routes/dashboard.js")
+    .then((m) => {
+      app.use("/api/dashboard", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load dashboard routes:", e);
+    });
 
   // Employees management (roles)
-  import("./routes/employees.js").then((m) => {
-    app.use("/api/employees", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load employees routes:", e);
-  });
+  import("./routes/employees.js")
+    .then((m) => {
+      app.use("/api/employees", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load employees routes:", e);
+    });
 
   // PDF generation (admit cards, reports) - development/mock implementation
-  import("./routes/pdf.js").then((m) => {
-    app.use("/api/pdf", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load PDF generation route:", e);
-  });
+  import("./routes/pdf.js")
+    .then((m) => {
+      app.use("/api/pdf", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load PDF generation route:", e);
+    });
 
   // Mock SMS queue management (development-only)
-  import("./routes/sms.js").then((m) => {
-    app.use("/api/sms", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load SMS routes:", e);
-  });
+  import("./routes/sms.js")
+    .then((m) => {
+      app.use("/api/sms", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load SMS routes:", e);
+    });
 
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
   app.put("/api/admission-settings", updateAdmissionSettings);
 
   // Payment webhooks (provider integrations)
-  import("./routes/webhooks/payments.js").then((m) => {
-    app.use("/webhooks/payments", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load payment webhooks route:", e);
-  });
+  import("./routes/webhooks/payments.js")
+    .then((m) => {
+      app.use("/webhooks/payments", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load payment webhooks route:", e);
+    });
 
   // Bulk import routes
-  import("./routes/imports.js").then((m) => {
-    app.use("/api/admissions", m.default);
-  }).catch((e) => {
-    console.warn("Failed to load imports routes:", e);
-  });
+  import("./routes/imports.js")
+    .then((m) => {
+      app.use("/api/admissions", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load imports routes:", e);
+    });
   app.get("/api/payment-methods", getPaymentMethods);
   app.post("/api/payment-methods", createPaymentMethod);
   app.put("/api/payment-methods/:id", updatePaymentMethod);
