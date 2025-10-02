@@ -311,3 +311,34 @@ export default function Header({ showLogin = false }: HeaderProps) {
     </header>
   );
 }
+
+// Minimal DB indicator component — fetches /api/ping and shows databaseType
+function DbIndicator() {
+  const [dbType, setDbType] = React.useState<string | null>(null);
+  const [isMock, setIsMock] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/ping', { cache: 'no-store' });
+        const j = await res.json().catch(() => ({}));
+        if (!mounted) return;
+        if (j && j.databaseType) setDbType(String(j.databaseType));
+        if (j && j.useNeonMock) setIsMock(Boolean(j.useNeonMock));
+      } catch (e) {
+        // ignore
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  if (!dbType) return null;
+
+  const label = isMock ? `${dbType} (mock)` : dbType;
+  return (
+    <div className="hidden sm:flex items-center ml-3">
+      <div className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700 border border-gray-200">DB: {label}</div>
+    </div>
+  );
+}
