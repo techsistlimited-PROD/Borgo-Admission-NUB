@@ -150,6 +150,28 @@ export default function AdminMessaging() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Confirmation Dialog */}
+        <Dialog open={confirmOpen} onOpenChange={(open) => setConfirmOpen(open)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Action</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to {confirmAction?.type === 'resend' ? 'resend this email' : 'send this SMS'}?
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => { setConfirmOpen(false); setConfirmAction(null); }}>
+                  Cancel
+                </Button>
+                <Button onClick={performConfirmAction}>
+                  Confirm
+                </Button>
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
