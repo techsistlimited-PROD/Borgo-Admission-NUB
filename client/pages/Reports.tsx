@@ -770,7 +770,7 @@ export default function Reports() {
       allSemesters: "সব সেমিস্টার",
       spring2024: "বসন্ত ২০২৪",
       fall2024: "শরৎ ২০২৪",
-      summer2024: "গ্রীষ্ম ২০২৪",
+      summer2024: "গ্রীষ্�� ২০২৪",
       backToReports: "রিপোর্টে ���িরুন",
 
       // Report Categories
@@ -790,7 +790,7 @@ export default function Reports() {
       monthlyTrends: "মাসিক আবেদনের প্রবণতা",
       admissionRate: "ভর্তি�� হার",
       averageProcessingTime: "গড় প্রক্রিয়াকরণ সময়",
-      topPerformingDepartments: "সেরা পারফরম্যান্স বিভাগ",
+      topPerformingDepartments: "সেরা পারফ��ম্যান্স বিভাগ",
       revenueGenerated: "আয় ���ৃষ্টি",
 
       programWiseAdmissions:
@@ -807,7 +807,7 @@ export default function Reports() {
       textile: "টেক��সটাইল ইঞ্জ��নিয়ারিং",
       bba: "ব্যবসায় প্রশাসন",
       law: "আইন",
-      architecture: "স্থাপত্য",
+      architecture: "স্��াপত্য",
       pharmacy: "ফার্মেসি",
       english: "ইংরেজি",
       days: "দিন",
@@ -915,6 +915,23 @@ export default function Reports() {
       return true;
     });
   }, [selectedDepartment]);
+
+  const filteredApprovedReferrals = useMemo(() => {
+    return (approvedReferrals || []).filter((item: any) => {
+      if (referralSearch) {
+        const s = referralSearch.toLowerCase();
+        if (!(
+          (item.applicant_name || "").toLowerCase().includes(s) ||
+          (item.referrer_name || "").toLowerCase().includes(s) ||
+          (item.referrer_employee_id || "").toLowerCase().includes(s)
+        ))
+          return false;
+      }
+      if (minPercent != null && Number(item.percentage) < Number(minPercent)) return false;
+      if (maxPercent != null && Number(item.percentage) > Number(maxPercent)) return false;
+      return true;
+    });
+  }, [approvedReferrals, referralSearch, minPercent, maxPercent]);
 
   const filteredStudentData = useMemo(() => {
     return studentListData.filter((item) => {
