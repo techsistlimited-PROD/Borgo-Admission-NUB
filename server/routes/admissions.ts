@@ -387,6 +387,118 @@ router.get('/applications/export', authenticateToken, requirePermission('reports
   }
 });
 
+// Academic history CRUD for an application
+router.post("/applications/:id/academic-history", authenticateToken, requirePermission("applications:edit"), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const payload = req.body || {};
+    const required = ['level','exam_name','institute_name','passing_year'];
+    for (const f of required) {
+      if (!payload[f]) return res.status(400).json({ error: 'MISSING_FIELD', field: f });
+    }
+    const result = await dbRun(`INSERT INTO academic_history (application_id, level, exam_name, group_subject, board_university, institute_name, passing_year, roll_no, registration_no, grade_point, obtained_class, created_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id, payload.level, payload.exam_name, payload.group_subject || null, payload.board_university || null, payload.institute_name, payload.passing_year, payload.roll_no || null, payload.registration_no || null, payload.grade_point || null, payload.obtained_class || null, req.user?.id || null]);
+    const inserted = await dbGet(`SELECT * FROM academic_history WHERE academic_history_id = last_insert_rowid()`);
+    res.json({ success: true, data: inserted });
+  } catch (error) {
+    console.error('Create academic history error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.patch("/applications/:id/academic-history/:hid", authenticateToken, requirePermission("applications:edit"), async (req: AuthRequest, res) => {
+  try {
+    const { id, hid } = req.params;
+    const updates = req.body || {};
+    const allowed = ['level','exam_name','group_subject','board_university','institute_name','passing_year','roll_no','registration_no','grade_point','obtained_class'];
+    const fields = Object.keys(updates).filter(k => allowed.includes(k));
+    if (fields.length === 0) return res.status(400).json({ error: 'NO_VALID_FIELDS' });
+    const set = fields.map(f => `${f} = ?`).join(', ');
+    const params = fields.map(f => updates[f]);
+    params.push(req.user?.id || null);
+    params.push(hid);
+    await dbRun(`UPDATE academic_history SET ${set}, created_by_user_id = ? WHERE academic_history_id = ?`, params);
+    const updated = await dbGet(`SELECT * FROM academic_history WHERE academic_history_id = ?`, [hid]);
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    console.error('Update academic history error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.delete("/applications/:id/academic-history/:hid", authenticateToken, requirePermission("applications:edit"), async (req: AuthRequest, res) => {
+  try {
+    const { id, hid } = req.params;
+    const row = await dbGet(`SELECT * FROM academic_history WHERE academic_history_id = ? AND application_id = ?`, [hid, id]);
+    if (!row) return res.status(404).json({ error: 'NOT_FOUND' });
+    await dbRun(`DELETE FROM academic_history WHERE academic_history_id = ?`, [hid]);
+    res.json({ success: true, message: 'Deleted' });
+  } catch (error) {
+    console.error('Delete academic history error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Credit equivalency management (admin)
+router.post('/credit-equivalency', authenticateToken, requirePermission('settings:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { source_scale, source_value, mapped_grade_point, notes } = req.body || {};
+    if (!source_scale || !source_value || mapped_grade_point == null) return res.status(400).json({ error: 'MISSING_FIELDS' });
+    await dbRun(`INSERT INTO credit_equivalency (source_scale, source_value, mapped_grade_point, notes, created_by_user_id) VALUES (?, ?, ?, ?, ?)`, [source_scale, source_value, mapped_grade_point, notes || null, req.user?.id || null]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Create equivalency error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/credit-equivalency', authenticateToken, requirePermission('settings:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { source_scale } = req.query as any;
+    const rows = source_scale ? await dbAll(`SELECT * FROM credit_equivalency WHERE source_scale = ? ORDER BY created_at DESC`, [source_scale]) : await dbAll(`SELECT * FROM credit_equivalency ORDER BY created_at DESC`);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Fetch equivalency error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Calculate credit transfer impact
+router.post('/applications/:id/credit-transfer/calculate', authenticateToken, requirePermission('applications:edit'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { current_cgpa = 0, current_credits = 0, transferred_courses = [] } = req.body || {};
+    if (!Array.isArray(transferred_courses)) return res.status(400).json({ error: 'INVALID_PAYLOAD' });
+
+    // Each transferred_course: { credits: number, grade_point: number }
+    let transferredCredits = 0;
+    let transferredWeighted = 0;
+    const details = [] as any[];
+
+    for (const c of transferred_courses) {
+      const credits = Number(c.credits) || 0;
+      const gp = Number(c.grade_point) || 0;
+      transferredCredits += credits;
+      transferredWeighted += credits * gp;
+      details.push({ credits, grade_point: gp, weighted: credits * gp });
+    }
+
+    const prevTotalWeighted = Number(current_cgpa) * Number(current_credits);
+    const newTotalCredits = Number(current_credits) + transferredCredits;
+    const newTotalWeighted = prevTotalWeighted + transferredWeighted;
+    const newCgpa = newTotalCredits > 0 ? Number((newTotalWeighted / newTotalCredits).toFixed(4)) : 0;
+
+    // Store record
+    await dbRun(`INSERT INTO credit_transfer_records (application_id, transferred_credits, previous_credits, previous_cgpa, new_credits, new_cgpa, details_json, processed_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id, transferredCredits, current_credits, current_cgpa, newTotalCredits, newCgpa, JSON.stringify(details), req.user?.id || null]);
+
+    res.json({ success: true, data: { previous_credits: Number(current_credits), previous_cgpa: Number(current_cgpa), transferred_credits: transferredCredits, new_credits: newTotalCredits, new_cgpa: newCgpa, details } });
+  } catch (error) {
+    console.error('Credit transfer calculation error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Lock identifiers (permission: applications:lock_identifiers)
 router.post("/applications/:id/identifiers/lock", authenticateToken, requirePermission("applications:lock_identifiers"), async (req: AuthRequest, res) => {
   try {
