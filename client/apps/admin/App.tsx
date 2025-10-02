@@ -27,7 +27,7 @@ const queryClient = new QueryClient();
 const ProtectedLayout = () => {
   const { user, userType } = useAuth();
 
-  if (!user || userType !== 'admin') {
+  if (!user || userType !== "admin") {
     return <AdminLogin />;
   }
 
@@ -40,8 +40,14 @@ const ProtectedLayout = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/admissions" replace />} />
             <Route path="/admissions" element={<AdminAdmissionList />} />
-            <Route path="/admin/credit-transfers" element={<CreditTransferList />} />
-            <Route path="/admin/credit-transfer/:id" element={<CreditTransferReview />} />
+            <Route
+              path="/admin/credit-transfers"
+              element={<CreditTransferList />}
+            />
+            <Route
+              path="/admin/credit-transfer/:id"
+              element={<CreditTransferReview />}
+            />
             <Route path="/applicant/:id" element={<ApplicantDetail />} />
             <Route path="/finance" element={<FinancePanel />} />
             <Route path="/reports" element={<Reports />} />
