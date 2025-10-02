@@ -1023,6 +1023,74 @@ class MockApiService {
     return { success: true, data: { student } };
   }
 
+  // Generate Student ID (backend-like mock)
+  async generateStudentForApplicant(applicantId: string): Promise<ApiResponse<{ student_id: string; ugc_id: string }>> {
+    await this.delay(200);
+    const appIndex = this.applications.findIndex((a) => a.id === applicantId || a.uuid === applicantId);
+    if (appIndex === -1) return { success: false, error: 'Application not found' };
+
+    const app = this.applications[appIndex];
+
+    // Program abbreviation
+    const programAbbr = (app.program_code || app.program_name || 'GEN').toString().toUpperCase().replace(/[^A-Z]/g, '').slice(0,5) || 'GEN';
+
+    // Campus code (ensure two digits)
+    const campusRaw = (app.campus || '01').toString();
+    const campusCode = (campusRaw + '00').slice(0,2);
+
+    // Year (last two digits)
+    const year = new Date().getFullYear().toString().slice(-2);
+
+    // Department code: try to derive from department_code or department_name
+    const deptRaw = (app.department_code || app.department_name || '').toString().toLowerCase();
+    const deptMap: Record<string,string> = { 'bba':'01','business':'01','cse':'02','computer':'02','eee':'03','civil':'04','architecture':'05','law':'06' };
+    let deptCode = '00';
+    for (const k of Object.keys(deptMap)) {
+      if (deptRaw.includes(k)) { deptCode = deptMap[k]; break; }
+    }
+    if (deptCode === '00') {
+      // fallback: hash first two letters
+      const chars = deptRaw.slice(0,2).padEnd(2,'x');
+      deptCode = ( (chars.charCodeAt(0) + chars.charCodeAt(1)) % 99 ).toString().padStart(2,'0');
+    }
+
+    // Serial: count existing students with same campus+year+dept and increment
+    const serialBase = this.students.filter(s => s.student_id && s.student_id.includes(`${campusCode}${year}${deptCode}`)).length + 1;
+    const serial = String(serialBase).padStart(5,'0');
+
+    const student_id = `${programAbbr}-${campusCode}${year}${deptCode}${serial}`;
+
+    // UGC ID: UNIV(029) FAC(04) DISC(08) PROGRAM_LEVEL(01) YEAR SERIAL
+    const univ = '029';
+    const faculty = '04';
+    const discipline = '08';
+    const programLevel = '01';
+    const ugcSerial = String(this.students.length + 1).padStart(5,'0');
+    const ugc_id = `${univ}${faculty}${discipline}${programLevel}${year}${ugcSerial}`;
+
+    // Save student record
+    const student = {
+      id: `stu-${this.students.length + 1}`,
+      student_id,
+      ugc_id,
+      name: app.applicant_name,
+      email: app.email,
+      phone: app.phone,
+      program_code: app.program_code,
+      program_name: app.program_name,
+      department_code: app.department_code,
+      batch: app.semester,
+      created_at: new Date().toISOString(),
+    };
+    this.students.push(student);
+
+    // Link back to application
+    this.applications[appIndex].student_id = student_id;
+    this.applications[appIndex].id_generation = { student_id, ugc_id };
+
+    return { success: true, data: { student_id, ugc_id } };
+  }
+
   async generateMoneyReceipt(applicationId: string, amount: number): Promise<ApiResponse<{ mr_number: string; receipt_url: string }>> {
     await this.delay(300);
 
