@@ -434,6 +434,9 @@ export default function ApplicantDetail() {
                       <Badge className="bg-green-600 text-white">{t.active}</Badge>
                     </div>
                     <div className="text-2xl font-bold text-blue-900 font-mono tracking-wider">{studentIDs.universityId}</div>
+                    {studentIDs.universityEmail && (
+                      <div className="text-sm text-gray-700 mt-1">Email: <span className="font-mono text-blue-700">{studentIDs.universityEmail}</span></div>
+                    )}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 text-sm text-gray-600">
                       <div><strong>{t.batch}:</strong> {studentIDs.batch}</div>
                       <div><strong>{t.generatedOn}:</strong> {new Date(studentIDs.generatedDate).toLocaleDateString()}</div>
