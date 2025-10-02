@@ -502,6 +502,39 @@ export default function ApplicantDetail() {
 
   return (
     <div>
+      {/* Student Created Modal */}
+      <Dialog open={studentModalOpen} onOpenChange={setStudentModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>✅ Student Created Successfully</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="text-center">
+              <div className="text-3xl font-bold font-mono">{studentCreatedData?.student_id}</div>
+              <div className="text-sm text-gray-600">This Student ID has been assigned to the student.</div>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <Button
+                onClick={() => {
+                  try {
+                    const id = studentCreatedData?.student_id || '';
+                    navigator.clipboard.writeText(id);
+                    toast({ title: 'Copied', description: 'Student ID copied to clipboard' });
+                  } catch (e) {
+                    toast({ title: 'Error', description: 'Failed to copy' });
+                  }
+                }}
+                className="bg-deep-plum"
+              >
+                Copy Student ID
+              </Button>
+              <Button variant="outline" onClick={() => setStudentModalOpen(false)}>Close</Button>
+            </div>
+            <div className="text-xs text-gray-500 text-center">UGC ID is securely stored for official reporting.</div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <Link
