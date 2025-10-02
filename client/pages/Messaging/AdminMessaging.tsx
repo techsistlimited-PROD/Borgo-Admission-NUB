@@ -110,8 +110,13 @@ export default function AdminMessaging() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2"><Mail className="w-4 h-4"/> Mock Emails</CardTitle>
-                <div className="w-64">
-                  <Input placeholder="Search emails by recipient, subject or body" value={emailQuery} onChange={(e) => setEmailQuery(e.target.value)} />
+                <div className="flex items-center gap-2">
+                  <div className="w-64">
+                    <Input placeholder="Search emails by recipient, subject or body" value={emailQuery} onChange={(e) => setEmailQuery(e.target.value)} />
+                  </div>
+                  <Button size="sm" onClick={() => exportToCsv(`mock_emails_${Date.now()}.csv`, filteredEmails, ["id","to_address","subject","application_id","created_at","sent_at","body"]) } disabled={filteredEmails.length===0}>
+                    Export CSV
+                  </Button>
                 </div>
               </div>
             </CardHeader>
