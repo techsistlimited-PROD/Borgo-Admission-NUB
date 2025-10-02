@@ -186,6 +186,8 @@ export default function Header({ showLogin = false }: HeaderProps) {
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => setLanguage("en")}
+                aria-pressed={language === "en"}
+                aria-label="Switch to English"
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
                   language === "en"
                     ? "bg-white text-deep-plum shadow-sm"
@@ -196,6 +198,8 @@ export default function Header({ showLogin = false }: HeaderProps) {
               </button>
               <button
                 onClick={() => setLanguage("bn")}
+                aria-pressed={language === "bn"}
+                aria-label="Switch to Bangla"
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
                   language === "bn"
                     ? "bg-white text-deep-plum shadow-sm"
