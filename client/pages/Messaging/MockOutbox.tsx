@@ -52,8 +52,28 @@ export default function MockOutbox() {
             <div className="w-64">
               <Input placeholder="Search emails by recipient, subject or body" value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>
-            <Button onClick={() => exportToCsv(`mock_emails_${Date.now()}.csv`, filtered, ["id","to_address","subject","application_id","created_at","sent_at","body"]) } disabled={loading || filtered.length===0}>
+            <Button onClick={() => setShowExportDialog(true)} disabled={loading || filtered.length===0}>
               Export CSV
+            </Button>
+            <Button onClick={async () => {
+              const res = await apiClient.serverExportMockEmails({ search: debouncedQuery, format: 'csv' });
+              if (res.success && (res.data as any)?.isFile) {
+                const { blob, filename } = (res.data as any);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+              } else if (res.success && (res.data as any)?.async) {
+                alert((res.data as any).message || 'Export queued');
+              } else {
+                alert(res.error || 'Export failed');
+              }
+            }} disabled={loading}>
+              Server Export
             </Button>
             <Button onClick={load} disabled={loading}>
               Refresh
