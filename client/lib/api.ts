@@ -109,12 +109,16 @@ class ApiClient {
         });
         const json = await res.json().catch(() => ({}));
         if (res.ok) return { success: true, data: json };
-        return { success: false, error: json.error || "Server error" };
+        // Non-ok -> fallback to mock to avoid blocking applicants
+        console.warn("createApplication server returned non-ok", res.status, json);
+        this.serverAvailable = false;
+        return await mockApi.createApplication(data);
       } catch (e) {
         console.warn(
           "createApplication server failed, falling back to mock",
           e,
         );
+        this.serverAvailable = false;
         return await mockApi.createApplication(data);
       }
     }
