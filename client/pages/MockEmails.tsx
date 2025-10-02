@@ -122,7 +122,7 @@ export default function MockEmails() {
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHead>
+                <TableHeader>
                   <TableRow>
                     <TableHead>To</TableHead>
                     <TableHead>Subject</TableHead>
@@ -130,7 +130,7 @@ export default function MockEmails() {
                     <TableHead>Created At</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
-                </TableHead>
+                </TableHeader>
                 <TableBody>
                   {filtered.map((e: any) => (
                     <TableRow key={e.id}>
