@@ -107,14 +107,19 @@ export default function AdminMessaging() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Mail className="w-4 h-4"/> Mock Emails</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2"><Mail className="w-4 h-4"/> Mock Emails</CardTitle>
+                <div className="w-64">
+                  <Input placeholder="Search emails by recipient, subject or body" value={emailQuery} onChange={(e) => setEmailQuery(e.target.value)} />
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              {emails.length === 0 ? (
+              {filteredEmails.length === 0 ? (
                 <div className="text-sm text-gray-500">No mock emails found.</div>
               ) : (
                 <div className="space-y-3">
-                  {emails.map((e) => (
+                  {filteredEmails.map((e) => (
                     <div key={e.id} className="border rounded p-3">
                       <div className="flex justify-between items-start">
                         <div>
