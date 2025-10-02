@@ -376,6 +376,28 @@ function AppContent() {
                 )
               }
             />
+
+            <Route
+              path="/admin/credit-transfers"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <CreditTransferList />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
+            <Route
+              path="/admin/credit-transfer/:id"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <CreditTransferReview />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
             <Route
               path="/admin/student-management"
               element={
