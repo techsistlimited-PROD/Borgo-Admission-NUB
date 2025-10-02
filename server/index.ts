@@ -112,6 +112,13 @@ export function createServer() {
     console.warn("Failed to load academic routes:", e);
   });
 
+  // Finance routes (waivers, fee packages, bills)
+  import("./routes/finance.js").then((m) => {
+    app.use("/api/finance", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load finance routes:", e);
+  });
+
   // PDF generation (admit cards, reports) - development/mock implementation
   import("./routes/pdf.js").then((m) => {
     app.use("/api/pdf", m.default);
