@@ -188,6 +188,40 @@ class ApiClient {
     }
   }
 
+  async sendSmsById(sms_id: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const res = await fetch("/api/sms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+        body: JSON.stringify({ sms_id }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || "Failed to send sms" };
+    } catch (e) {
+      console.warn("sendSmsById failed", e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async resendMockEmail(emailId: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const res = await fetch("/api/mock-emails/resend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+        body: JSON.stringify({ id: emailId }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || "Failed to resend email" };
+    } catch (e) {
+      console.warn("resendMockEmail failed", e);
+      return { success: false, error: String(e) };
+    }
+  }
+
   // Programs and departments — prefer server when available
   async getPrograms(): Promise<ApiResponse> {
     if (this.serverAvailable) {
