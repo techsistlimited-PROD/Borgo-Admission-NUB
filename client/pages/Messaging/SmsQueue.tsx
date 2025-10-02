@@ -69,6 +69,9 @@ export default function SmsQueue() {
             <MessageCircle className="w-5 h-5" /> SMS Queue
           </h2>
           <div className="flex items-center gap-2">
+            <div className="w-64">
+              <Input placeholder="Search SMS by number, message or status" value={query} onChange={(e) => setQuery(e.target.value)} />
+            </div>
             <Button onClick={load} disabled={loading}>
               Refresh
             </Button>
