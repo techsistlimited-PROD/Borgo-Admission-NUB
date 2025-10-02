@@ -406,6 +406,16 @@ function AppContent() {
               }
             />
             <Route
+              path="/admin/admission-dashboard"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminDashboard />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
               path="/admin/student-profile"
               element={
                 isAuthenticated && userType === "admin" ? (
