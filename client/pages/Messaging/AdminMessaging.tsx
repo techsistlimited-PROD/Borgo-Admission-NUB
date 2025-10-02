@@ -17,6 +17,10 @@ export default function AdminMessaging() {
 
   const [emailQuery, setEmailQuery] = useState("");
   const [smsQuery, setSmsQuery] = useState("");
+  const debouncedEmailQuery = useDebouncedValue(emailQuery, 300);
+  const debouncedSmsQuery = useDebouncedValue(smsQuery, 300);
+  const [showEmailExportDialog, setShowEmailExportDialog] = useState(false);
+  const [showSmsExportDialog, setShowSmsExportDialog] = useState(false);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<null | { type: 'resend' | 'send', id: number }>(null);
