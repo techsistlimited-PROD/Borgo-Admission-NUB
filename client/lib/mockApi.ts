@@ -786,6 +786,9 @@ class MockApiService {
         "Northern University Bangladesh, Main Campus, Dhaka - Drawing Hall",
       architecture_test_venue_khulna:
         "Northern University Bangladesh, Khulna Campus - Art Studio",
+      // Semester config (ids used by UI)
+      semester_system: 'tri',
+      semester_options_json: '["fall","summer","winter"]',
       // Program Limits Configuration
       program_limits: programLimits,
     };
