@@ -98,6 +98,13 @@ export function createServer() {
     console.warn("Failed to load reports routes:", e);
   });
 
+  // Server-side exports (large dataset CSV generation / queue)
+  import("./routes/exports.js").then((m) => {
+    app.use("/api/exports", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load exports routes:", e);
+  });
+
   // PDF generation (admit cards, reports) - development/mock implementation
   import("./routes/pdf.js").then((m) => {
     app.use("/api/pdf", m.default);
