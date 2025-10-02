@@ -182,7 +182,7 @@ export default function ApplicationSuccess() {
       step1: "আবেদনকারী পোর্টালে লগইন",
       step1Desc:
         "আবেদনকারী পোর্টাল অ���যাক্সেস করতে আপনার আবেদনকারী আইডি এবং অস্থায়ী পাসওয়ার্ড ব্যবহার করুন",
-      step2: "পেমেন্ট সম্পূর্ণ করুন",
+      step2: "প��মেন্ট সম্পূর্ণ করুন",
       step2Desc:
         "আপনার পেমেন্ট র���িদ আপলোড করুন এবং পেমেন্ট প্রক্রিয়া ���ম্পূর্ণ করুন",
       step3: "ডকুমেন্ট আপলোড করুন",
@@ -195,7 +195,7 @@ export default function ApplicationSuccess() {
       copyCredentials: "প��িচয়পত্র কপি করুন",
       saveInfo: "এই তথ্য সংরক্ষণ করুন",
       saveInfoDesc:
-        "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্ড সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
+        "অনুগ্রহ করে আপনার আবেদনকারী আইডি এবং পাসওয়ার্��� সংরক্ষণ করুন। আবেদনকারী পোর্টাল অ্যাক্সেস করতে আপনার এগুলি প্রয়োজন হবে।",
       adminReview: "প্রশাসনিক পর্যালোচনা প্রক্রিয়া",
       adminReviewDesc:
         "আপনার আবেদন আমাদের ভর্তি দল দ্বারা ���র্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
@@ -225,52 +225,40 @@ export default function ApplicationSuccess() {
     setShowPayment(false);
   };
 
-  const downloadAdmitCard = () => {
+  const downloadAdmitCard = async () => {
     if (!admissionTestPaid) {
       toast({
         title: "Payment Required",
-        description:
-          "Please pay the admission test fee to download your admit card.",
+        description: "Please pay the admission test fee to download your admit card.",
         variant: "destructive",
       });
       return;
     }
 
-    // Generate admit card PDF (in real implementation, this would generate a real PDF)
-    const admitCardData = {
-      studentInfo: {
-        name: `${applicationData?.firstName || "John"} ${applicationData?.lastName || "Doe"}`,
-        applicationId: applicantId,
-        phone: applicationData?.phone || "+880 1700-000000",
-        email: applicationData?.email || "student@example.com",
-      },
-      programInfo: {
-        name:
-          selectedDepartment === "law"
-            ? "Bachelor of Laws (LL.B)"
-            : "Bachelor of Architecture",
-        level: "undergraduate" as const,
-      },
-      testInfo: {
-        date: admissionTestDate,
-        time: admissionTestTime,
-        venue: testVenue,
-        instructions: [
-          "Bring your National ID card and admit card on the test day",
-          "Arrive at the venue 30 minutes before the test time",
-          "No electronic devices are allowed in the test room",
-          "Bring your own pen and pencil",
-          "Follow all COVID-19 safety protocols",
-        ],
-      },
-    };
+    try {
+      // Prefer application id/ref_no if available
+      const id = applicationData?.application_id || applicationData?.ref_no || trackingId || applicantId;
+      const url = `/api/pdf/admit-card/${encodeURIComponent(id)}`;
 
-    // Simulate PDF download
-    const fileName = `AdmitCard_${applicantId}_${selectedDepartment}.pdf`;
-    toast({
-      title: "Admit Card Downloaded",
-      description: `${fileName} has been downloaded successfully.`,
-    });
+      const resp = await fetch(url, { method: "GET" });
+      if (!resp.ok) throw new Error(`Server responded ${resp.status}`);
+
+      const blob = await resp.blob();
+      const fileName = resp.headers.get("content-disposition")?.match(/filename="?(.*)"?/)?.[1] || `AdmitCard_${id}.pdf`;
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(blobUrl);
+
+      toast({ title: "Admit Card Downloaded", description: `${fileName} has been downloaded.` });
+    } catch (err) {
+      console.error("Failed to download admit card:", err);
+      toast({ title: "Download Failed", description: "Unable to download admit card. Please try again later.", variant: "destructive" });
+    }
   };
 
   const copyToClipboard = (text: string, type: string) => {
