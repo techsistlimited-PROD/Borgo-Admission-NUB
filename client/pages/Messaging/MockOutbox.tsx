@@ -48,6 +48,9 @@ export default function MockOutbox() {
             <div className="w-64">
               <Input placeholder="Search emails by recipient, subject or body" value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>
+            <Button onClick={() => exportToCsv(`mock_emails_${Date.now()}.csv`, filtered, ["id","to_address","subject","application_id","created_at","sent_at","body"]) } disabled={loading || filtered.length===0}>
+              Export CSV
+            </Button>
             <Button onClick={load} disabled={loading}>
               Refresh
             </Button>
