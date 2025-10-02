@@ -119,6 +119,13 @@ export function createServer() {
     console.warn("Failed to load finance routes:", e);
   });
 
+  // Scholarships & assignments
+  import("./routes/scholarships.js").then((m) => {
+    app.use("/api/scholarships", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load scholarships routes:", e);
+  });
+
   // PDF generation (admit cards, reports) - development/mock implementation
   import("./routes/pdf.js").then((m) => {
     app.use("/api/pdf", m.default);
