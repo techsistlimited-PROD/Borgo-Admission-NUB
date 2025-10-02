@@ -122,7 +122,16 @@ router.get("/applications/:id", authenticateToken, requirePermission("applicatio
     const tests = await dbAll(`SELECT * FROM admission_tests WHERE application_id = ?`, [app.application_id]);
     const audits = await dbAll(`SELECT * FROM audit_trail WHERE entity = 'applications_v2' AND entity_id = ? ORDER BY changed_at DESC`, [String(app.application_id)]);
 
-    res.json({ success: true, data: { application: app, documents: docs, academic_history: history, waivers, admission_tests: tests, audit_trail: audits } });
+    // Referral visibility: only admission officers or users with 'referral:view' can see referral info
+    const referralVisible = req.user?.type === 'AdmissionOfficer' || (await userHasPermission(req.user?.id, 'referral:view'));
+    const applicationResponse = { ...app };
+    if (!referralVisible) {
+      delete applicationResponse.referrer_name;
+      delete applicationResponse.referrer_id;
+      delete applicationResponse.referral_employee_id;
+    }
+
+    res.json({ success: true, data: { application: applicationResponse, documents: docs, academic_history: history, waivers, admission_tests: tests, audit_trail: audits } });
   } catch (error) {
     console.error("Get admission error:", error);
     res.status(500).json({ error: "Internal server error" });
