@@ -255,6 +255,38 @@ export default function AdminMessaging() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        <CsvExportSelector
+          open={showEmailExportDialog}
+          onOpenChange={(open) => setShowEmailExportDialog(open)}
+          availableColumns={[
+            { key: 'id', label: 'ID' },
+            { key: 'to_address', label: 'To' },
+            { key: 'subject', label: 'Subject' },
+            { key: 'application_id', label: 'Application ID' },
+            { key: 'created_at', label: 'Created At' },
+            { key: 'sent_at', label: 'Sent At' },
+            { key: 'body', label: 'Body' },
+          ]}
+          defaultSelected={['id','to_address','subject','application_id','created_at']}
+          onExport={(cols) => exportToCsv(`mock_emails_${Date.now()}.csv`, filteredEmails, cols)}
+        />
+
+        <CsvExportSelector
+          open={showSmsExportDialog}
+          onOpenChange={(open) => setShowSmsExportDialog(open)}
+          availableColumns={[
+            { key: 'sms_id', label: 'ID' },
+            { key: 'to_number', label: 'To' },
+            { key: 'message', label: 'Message' },
+            { key: 'provider', label: 'Provider' },
+            { key: 'status', label: 'Status' },
+            { key: 'created_at', label: 'Created At' },
+            { key: 'processed_at', label: 'Processed At' },
+          ]}
+          defaultSelected={['sms_id','to_number','message','status','created_at']}
+          onExport={(cols) => exportToCsv(`sms_queue_${Date.now()}.csv`, filteredSms, cols)}
+        />
       </div>
     </div>
   );
