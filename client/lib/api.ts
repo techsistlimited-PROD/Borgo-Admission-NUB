@@ -305,13 +305,21 @@ class ApiClient {
           headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
         });
         const json = await res.json().catch(() => ({}));
-        if (res.ok)
+        if (res.ok) {
           return {
             success: true,
             data: { referrers: json.data || json },
           } as any;
+        }
+        // Non-ok response -> mark server unavailable and fall back
+        console.warn("getReferrers server returned non-ok", res.status);
+        this.serverAvailable = false;
+        return await mockApi.getReferrers();
       } catch (e) {
+        // Network or other fetch error
         console.warn("getReferrers server failed", e);
+        this.serverAvailable = false;
+        return await mockApi.getReferrers();
       }
     }
     return await mockApi.getReferrers();
