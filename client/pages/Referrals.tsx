@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, BarChart2 } from "lucide-react";
 import ReferralRequestsCard from "./ReferralRequestsCard";
