@@ -549,6 +549,132 @@ router.post('/applications/:id/waivers', authenticateToken, requirePermission('w
   }
 });
 
+// Waiver assignment management: lock/unlock/edit/delete
+router.post('/applications/:id/waivers/:wid/lock', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id, wid } = req.params;
+    await dbRun(`UPDATE waiver_assignments SET locked = 1, locked_by_user_id = ?, locked_at = datetime('now') WHERE waiver_assignment_id = ? AND application_id = ?`, [req.user?.id || null, wid, id]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Lock waiver error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/applications/:id/waivers/:wid/unlock', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id, wid } = req.params;
+    await dbRun(`UPDATE waiver_assignments SET locked = 0, locked_by_user_id = NULL, locked_at = NULL WHERE waiver_assignment_id = ? AND application_id = ?`, [wid, id]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Unlock waiver error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.patch('/applications/:id/waivers/:wid', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id, wid } = req.params;
+    const updates = req.body || {};
+    const allowed = ['waiver_code','percent','reason'];
+    const fields = Object.keys(updates).filter(k => allowed.includes(k));
+    if (fields.length === 0) return res.status(400).json({ error: 'NO_VALID_FIELDS' });
+    const set = fields.map(f => `${f} = ?`).join(', ');
+    const params = fields.map(f => updates[f]);
+    params.push(wid);
+    await dbRun(`UPDATE waiver_assignments SET ${set} WHERE waiver_assignment_id = ?`, params);
+    const row = await dbGet(`SELECT * FROM waiver_assignments WHERE waiver_assignment_id = ?`, [wid]);
+    res.json({ success: true, data: row });
+  } catch (error) {
+    console.error('Update waiver assignment error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.delete('/applications/:id/waivers/:wid', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id, wid } = req.params;
+    await dbRun(`DELETE FROM waiver_assignments WHERE waiver_assignment_id = ? AND application_id = ?`, [wid, id]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete waiver assignment error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Scholarships CRUD
+router.post('/scholarships', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { code, name, description, percentage, amount, criteria_json } = req.body || {};
+    if (!code || !name) return res.status(400).json({ error: 'MISSING_FIELDS' });
+    await dbRun(`INSERT INTO scholarships (code, name, description, percentage, amount, criteria_json, created_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?)`, [code, name, description || null, percentage || null, amount || null, criteria_json ? JSON.stringify(criteria_json) : null, req.user?.id || null]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Create scholarship error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/scholarships', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const rows = await dbAll(`SELECT * FROM scholarships ORDER BY created_at DESC`);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Fetch scholarships error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Assign scholarship to application
+router.post('/applications/:id/scholarships', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { scholarship_id, percent, amount } = req.body || {};
+    if (!scholarship_id) return res.status(400).json({ error: 'MISSING_FIELDS' });
+    await dbRun(`INSERT INTO scholarship_assignments (application_id, scholarship_id, percent, amount, assigned_by_user_id, assigned_at) VALUES (?, ?, ?, ?, ?, datetime('now'))`, [id, scholarship_id, percent || null, amount || null, req.user?.id || null]);
+    // Recalculate final amounts similar to waiver logic
+    const app = await dbGet(`SELECT * FROM applications_v2 WHERE application_id = ?`, [id]);
+    const fee = await dbGet(`SELECT * FROM fee_packages WHERE program_code = ? LIMIT 1`, [app.program_code]);
+    const subtotal = fee ? ((fee.admission_fee||0) + (fee.tuition_fee||0) + (fee.lab_fee||0) + (fee.other_fees||0)) : 0;
+    const waivers = await dbAll(`SELECT percent FROM waiver_assignments WHERE application_id = ?`, [id]);
+    const scholarshipsAssigned = await dbAll(`SELECT percent, amount FROM scholarship_assignments WHERE application_id = ?`, [id]);
+    const totalWaiverPct = waivers.reduce((s:any,w:any)=>s+(w.percent||0),0);
+    const totalScholarPct = scholarshipsAssigned.reduce((s:any,sf:any)=>s+(sf.percent||0),0);
+    const totalScholarAmt = scholarshipsAssigned.reduce((s:any,sf:any)=>s+(sf.amount||0),0);
+    const totalPct = Math.min(100, totalWaiverPct + totalScholarPct);
+    const waiverAmount = (subtotal * totalPct)/100;
+    const finalAmount = Math.max(0, subtotal - waiverAmount - totalScholarAmt);
+    await dbRun(`UPDATE applications_v2 SET waiver_amount = ?, final_amount = ? WHERE application_id = ?`, [waiverAmount, finalAmount, id]);
+    res.json({ success: true, data: { waiverAmount, finalAmount } });
+  } catch (error) {
+    console.error('Assign scholarship error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Scholarship assignment lock/unlock
+router.post('/applications/:id/scholarships/:sid/lock', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id, sid } = req.params;
+    await dbRun(`UPDATE scholarship_assignments SET locked = 1, locked_by_user_id = ?, locked_at = datetime('now') WHERE scholarship_assignment_id = ? AND application_id = ?`, [req.user?.id || null, sid, id]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Lock scholarship error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/applications/:id/scholarships/:sid/unlock', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id, sid } = req.params;
+    await dbRun(`UPDATE scholarship_assignments SET locked = 0, locked_by_user_id = NULL, locked_at = NULL WHERE scholarship_assignment_id = ? AND application_id = ?`, [sid, id]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Unlock scholarship error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Fee package CRUD
 router.post('/fee-packages', authenticateToken, requirePermission('settings:manage'), async (req: AuthRequest, res) => {
   try {
