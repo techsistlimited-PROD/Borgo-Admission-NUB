@@ -39,8 +39,14 @@ export function createServer() {
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "pong";
     const databaseType = process.env.DATABASE_TYPE || "sqlite";
-    const useNeonMock = databaseType === "neon-mock" || process.env.USE_NEON_MOCK === "1";
-    res.json({ message: ping, timestamp: new Date().toISOString(), databaseType, useNeonMock });
+    const useNeonMock =
+      databaseType === "neon-mock" || process.env.USE_NEON_MOCK === "1";
+    res.json({
+      message: ping,
+      timestamp: new Date().toISOString(),
+      databaseType,
+      useNeonMock,
+    });
   });
 
   app.get("/api/demo", handleDemo);
@@ -256,10 +262,12 @@ export async function initializeDatabase() {
 
     const databaseType = process.env.DATABASE_TYPE || "sqlite";
 
-  if (databaseType === "neon" || databaseType === "neon-mock") {
+    if (databaseType === "neon" || databaseType === "neon-mock") {
       console.log("🌐 Using Neon (mock) database for demo");
       // Load the neon mock helper which provides a lightweight client for demos
-      const { connectNeonMock, getNeonClient } = await import("./database/neonMock.js");
+      const { connectNeonMock, getNeonClient } = await import(
+        "./database/neonMock.js"
+      );
       await connectNeonMock();
       // attach a mock client for parts of the code that may expect a neon client
       (global as any).neonClient = getNeonClient();
@@ -270,7 +278,6 @@ export async function initializeDatabase() {
       await initializeSchema();
       await runMigration();
       await seedDatabase();
-
     } else if (databaseType === "supabase") {
       console.log("🌐 Using Supabase database");
 

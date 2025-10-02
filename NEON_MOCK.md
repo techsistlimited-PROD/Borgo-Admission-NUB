@@ -14,5 +14,6 @@ How to use (demo):
   - expose /api/ping which returns { message, timestamp, databaseType, useNeonMock }
 
 Notes:
+
 - This is strictly a demo convenience and does NOT provide a real Neon/Postgres connection.
 - To connect to a real Neon, follow your MCP connection workflow and set DATABASE_TYPE=neon and provide the required connection env variables.
