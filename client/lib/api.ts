@@ -154,6 +154,40 @@ class ApiClient {
     return { success: true, data: [] };
   }
 
+  // SMS queue management (admin)
+  async getSmsQueue(): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch("/api/sms", {
+          headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json };
+        return { success: false, error: json.error || "Failed to load sms queue" };
+      } catch (e) {
+        console.warn("getSmsQueue server failed", e);
+      }
+    }
+    return { success: true, data: [] };
+  }
+
+  async processSms(all = false): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const res = await fetch("/api/sms/process", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+        body: JSON.stringify({ all }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || "Failed to process sms" };
+    } catch (e) {
+      console.warn("processSms failed", e);
+      return { success: false, error: String(e) };
+    }
+  }
+
   // Programs and departments — prefer server when available
   async getPrograms(): Promise<ApiResponse> {
     if (this.serverAvailable) {
