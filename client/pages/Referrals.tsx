@@ -131,8 +131,8 @@ export default function Referrals() {
         const server = Array.isArray(res.data.referrers)
           ? res.data.referrers
           : Array.isArray(res.data)
-          ? res.data
-          : [];
+            ? res.data
+            : [];
         const enriched = (server || []).map((r: any) => ({
           total_referrals: r.total_referrals ?? Math.floor(Math.random() * 50),
           total_amount: r.total_amount ?? Math.floor(Math.random() * 200000),

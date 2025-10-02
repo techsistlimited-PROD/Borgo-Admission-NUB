@@ -862,9 +862,14 @@ export default function Reports() {
 
           // Load approved referrals from localStorage (frontend mock)
           try {
-            const rawApproved = (typeof localStorage !== 'undefined' && localStorage.getItem('nu_approved_referrals')) || '[]';
-            const approvedList = JSON.parse(rawApproved || '[]');
-            setApprovedReferrals(Array.isArray(approvedList) ? approvedList : []);
+            const rawApproved =
+              (typeof localStorage !== "undefined" &&
+                localStorage.getItem("nu_approved_referrals")) ||
+              "[]";
+            const approvedList = JSON.parse(rawApproved || "[]");
+            setApprovedReferrals(
+              Array.isArray(approvedList) ? approvedList : [],
+            );
           } catch (e) {
             // ignore errors
           }
@@ -920,15 +925,19 @@ export default function Reports() {
     return (approvedReferrals || []).filter((item: any) => {
       if (referralSearch) {
         const s = referralSearch.toLowerCase();
-        if (!(
-          (item.applicant_name || "").toLowerCase().includes(s) ||
-          (item.referrer_name || "").toLowerCase().includes(s) ||
-          (item.referrer_employee_id || "").toLowerCase().includes(s)
-        ))
+        if (
+          !(
+            (item.applicant_name || "").toLowerCase().includes(s) ||
+            (item.referrer_name || "").toLowerCase().includes(s) ||
+            (item.referrer_employee_id || "").toLowerCase().includes(s)
+          )
+        )
           return false;
       }
-      if (minPercent != null && Number(item.percentage) < Number(minPercent)) return false;
-      if (maxPercent != null && Number(item.percentage) > Number(maxPercent)) return false;
+      if (minPercent != null && Number(item.percentage) < Number(minPercent))
+        return false;
+      if (maxPercent != null && Number(item.percentage) > Number(maxPercent))
+        return false;
       return true;
     });
   }, [approvedReferrals, referralSearch, minPercent, maxPercent]);
@@ -2169,7 +2178,9 @@ export default function Reports() {
 
             <Card className="bg-white shadow-lg">
               <CardHeader>
-                <CardTitle className="text-lg font-poppins text-deep-plum">Approved Referrals</CardTitle>
+                <CardTitle className="text-lg font-poppins text-deep-plum">
+                  Approved Referrals
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2 mb-3">
@@ -2183,28 +2194,49 @@ export default function Reports() {
                     type="number"
                     placeholder="Min %"
                     value={minPercent ?? ""}
-                    onChange={(e) => setMinPercent(e.target.value ? Number(e.target.value) : null)}
+                    onChange={(e) =>
+                      setMinPercent(
+                        e.target.value ? Number(e.target.value) : null,
+                      )
+                    }
                     className="border rounded p-1 w-24"
                   />
                   <input
                     type="number"
                     placeholder="Max %"
                     value={maxPercent ?? ""}
-                    onChange={(e) => setMaxPercent(e.target.value ? Number(e.target.value) : null)}
+                    onChange={(e) =>
+                      setMaxPercent(
+                        e.target.value ? Number(e.target.value) : null,
+                      )
+                    }
                     className="border rounded p-1 w-24"
                   />
-                  <Button size="sm" variant="outline" onClick={() => { setReferralSearch(""); setMinPercent(null); setMaxPercent(null); }}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setReferralSearch("");
+                      setMinPercent(null);
+                      setMaxPercent(null);
+                    }}
+                  >
                     Clear
                   </Button>
-                  <Button size="sm" className="bg-deep-plum" onClick={() => {
-                    try {
-                      const raw = localStorage.getItem('nu_approved_referrals') || '[]';
-                      const list = JSON.parse(raw || '[]') || [];
-                      downloadCSV('approved_referrals.csv', list);
-                    } catch (e) {
-                      alert('No approved referrals to export');
-                    }
-                  }}>
+                  <Button
+                    size="sm"
+                    className="bg-deep-plum"
+                    onClick={() => {
+                      try {
+                        const raw =
+                          localStorage.getItem("nu_approved_referrals") || "[]";
+                        const list = JSON.parse(raw || "[]") || [];
+                        downloadCSV("approved_referrals.csv", list);
+                      } catch (e) {
+                        alert("No approved referrals to export");
+                      }
+                    }}
+                  >
                     <Download className="w-4 h-4 mr-2" /> Export
                   </Button>
                 </div>
@@ -2223,15 +2255,24 @@ export default function Reports() {
                       {filteredApprovedReferrals.map((ar) => (
                         <TableRow key={ar.application_id}>
                           <TableCell>{ar.applicant_name}</TableCell>
-                          <TableCell>{ar.referrer_name || ar.referrer_employee_id}</TableCell>
+                          <TableCell>
+                            {ar.referrer_name || ar.referrer_employee_id}
+                          </TableCell>
                           <TableCell>{ar.percentage}%</TableCell>
-                          <TableCell>৳{Number(ar.commission_amount || 0).toLocaleString()}</TableCell>
-                          <TableCell>{new Date(ar.approved_at).toLocaleString()}</TableCell>
+                          <TableCell>
+                            ৳
+                            {Number(ar.commission_amount || 0).toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            {new Date(ar.approved_at).toLocaleString()}
+                          </TableCell>
                         </TableRow>
                       ))}
                       {filteredApprovedReferrals.length === 0 && (
                         <TableRow>
-                          <TableCell colSpan={5}>No approved referrals</TableCell>
+                          <TableCell colSpan={5}>
+                            No approved referrals
+                          </TableCell>
                         </TableRow>
                       )}
                     </TableBody>

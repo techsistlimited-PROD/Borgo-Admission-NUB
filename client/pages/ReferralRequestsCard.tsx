@@ -90,15 +90,23 @@ export default function ReferralRequestsCard() {
     const percentage = selectedPercent[app.application_id] ?? 5;
     setApproving(app.application_id);
     try {
-      const res = await apiClient.approveReferralRequest(app.application_id, Number(percentage));
+      const res = await apiClient.approveReferralRequest(
+        app.application_id,
+        Number(percentage),
+      );
 
       // Calculate commission amount based on final_amount or total_cost
       const baseAmount = Number(app.final_amount ?? app.total_cost) || 0;
-      const commissionAmount = Math.round((Number(percentage) / 100) * baseAmount);
+      const commissionAmount = Math.round(
+        (Number(percentage) / 100) * baseAmount,
+      );
 
       // Persist approved referral to localStorage so Reports can show it (frontend mock)
       try {
-        const raw = (typeof localStorage !== "undefined" && localStorage.getItem("nu_approved_referrals")) || "[]";
+        const raw =
+          (typeof localStorage !== "undefined" &&
+            localStorage.getItem("nu_approved_referrals")) ||
+          "[]";
         let list: any[] = [];
         try {
           list = JSON.parse(raw || "[]");
@@ -126,18 +134,31 @@ export default function ReferralRequestsCard() {
       }
 
       if (res && res.success) {
-        toast({ title: "Approved", description: `Approved ${percentage}% for ${app.first_name} ${app.last_name}` });
+        toast({
+          title: "Approved",
+          description: `Approved ${percentage}% for ${app.first_name} ${app.last_name}`,
+        });
         load();
       } else {
         // If backend not available, simulate approval on frontend only
-        setRequests((prev) => prev.filter((p: any) => p.application_id !== app.application_id));
-        toast({ title: "Approved (mock)", description: `Approved ${percentage}% for ${app.first_name} ${app.last_name} (mock)` });
+        setRequests((prev) =>
+          prev.filter((p: any) => p.application_id !== app.application_id),
+        );
+        toast({
+          title: "Approved (mock)",
+          description: `Approved ${percentage}% for ${app.first_name} ${app.last_name} (mock)`,
+        });
       }
     } catch (e) {
       console.error(e);
       // Simulate approval in catch as well
-      setRequests((prev) => prev.filter((p: any) => p.application_id !== app.application_id));
-      toast({ title: "Approved (mock)", description: `Approved ${percentage}% for ${app.first_name} ${app.last_name} (mock)` });
+      setRequests((prev) =>
+        prev.filter((p: any) => p.application_id !== app.application_id),
+      );
+      toast({
+        title: "Approved (mock)",
+        description: `Approved ${percentage}% for ${app.first_name} ${app.last_name} (mock)`,
+      });
     } finally {
       setApproving(null);
     }
