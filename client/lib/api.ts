@@ -1531,10 +1531,6 @@ const apiClient = new ApiClient();
 
 export default apiClient;
 
-const apiClient = new ApiClient();
-
-export default apiClient;
-
 export const checkApiConnection = async (): Promise<boolean> => {
   try {
     const res = await fetch("/api/ping");
