@@ -151,8 +151,13 @@ export default function AdminMessaging() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2"><MessageCircle className="w-4 h-4"/> SMS Queue</CardTitle>
-                <div className="w-64">
-                  <Input placeholder="Search SMS by number, message or status" value={smsQuery} onChange={(e) => setSmsQuery(e.target.value)} />
+                <div className="flex items-center gap-2">
+                  <div className="w-64">
+                    <Input placeholder="Search SMS by number, message or status" value={smsQuery} onChange={(e) => setSmsQuery(e.target.value)} />
+                  </div>
+                  <Button size="sm" onClick={() => exportToCsv(`sms_queue_${Date.now()}.csv`, filteredSms, ["sms_id","to_number","message","provider","status","created_at","processed_at"]) } disabled={filteredSms.length===0}>
+                    Export CSV
+                  </Button>
                 </div>
               </div>
             </CardHeader>
