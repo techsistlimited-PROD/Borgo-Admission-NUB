@@ -91,6 +91,13 @@ export function createServer() {
     console.warn("Failed to load notifications routes:", e);
   });
 
+  // Reports & Exports
+  import("./routes/reports.js").then((m) => {
+    app.use("/api/reports", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load reports routes:", e);
+  });
+
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
   app.put("/api/admission-settings", updateAdmissionSettings);
