@@ -217,18 +217,51 @@ router.post("/applications/:id/approve", authenticateToken, requirePermission("a
     }
     const university_id = `NU${year}${programCode}${sequential.toString().padStart(3,'0')}`;
 
+    // Generate a UGC unique id (simple deterministic unique value)
+    let ugc_id;
+    const ugcBase = `UGC${new Date().getFullYear()}`;
+    const lastUgc = await dbGet(`SELECT ugc_id FROM id_generation WHERE ugc_id LIKE ? ORDER BY id DESC LIMIT 1`, [`${ugcBase}%`]);
+    if (lastUgc && lastUgc.ugc_id) {
+      const seq = parseInt(lastUgc.ugc_id.replace(/\D/g, ''), 10) || Date.now();
+      ugc_id = `${ugcBase}${(seq + 1).toString().slice(-6)}`;
+    } else {
+      ugc_id = `${ugcBase}${String(Date.now()).slice(-6)}`;
+    }
+
     const batch = `${app.semester_id || 'NA'} ${new Date().getFullYear()}`;
 
-    await dbRun(`INSERT INTO id_generation (application_id, university_id, batch, generated_by) VALUES (?, ?, ?, ?)`, [id, university_id, batch, req.user?.name || 'system']);
+    // Create student record
+    const studentInsert = await dbRun(`INSERT INTO students (application_id, university_id, ugc_id, program_code, campus_id, semester_id, full_name, email, mobile_number, batch, created_by)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [id, university_id, ugc_id, app.program_code, app.campus_id || null, app.semester_id || null, app.full_name || `${app.first_name} ${app.last_name}`, app.email || null, app.mobile_number || null, batch, req.user?.name || 'system']);
 
-    // Update application status
-    await dbRun(`UPDATE applications_v2 SET status = ?, payment_status = ?, converted_student_id = ?, updated_at = CURRENT_TIMESTAMP, updated_by_user_id = ? WHERE application_id = ?`, ['ADMITTED', app.payment_status === 'Paid' ? 'Paid' : app.payment_status, null, req.user?.id || null, id]);
+    // Retrieve the inserted student_id (SQLite last_insert_rowid is available via dbGet)
+    const studentRow = await dbGet(`SELECT student_id FROM students WHERE university_id = ?`, [university_id]);
+    const student_id = studentRow ? studentRow.student_id : null;
 
-    // Create initial student_payables and trigger events would happen in other services; log audit
+    await dbRun(`INSERT INTO id_generation (application_id, university_id, ugc_id, batch, generated_by) VALUES (?, ?, ?, ?, ?)`, [id, university_id, ugc_id, batch, req.user?.name || 'system']);
+
+    // Create initial admission bill using admission_settings.admission_fee
+    const settings = await dbGet(`SELECT * FROM admission_settings WHERE id = 1`);
+    const admissionFee = settings ? (settings.admission_fee || 0) : 0;
+
+    if (student_id) {
+      await dbRun(`INSERT INTO student_bills (student_id, application_id, description, amount, due_date, status, created_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [student_id, id, 'Admission Fee', admissionFee, null, (app.payment_status === 'Paid' ? 'Paid' : 'Unpaid'), req.user?.id || null]);
+    }
+
+    // Update application status and converted_student_id
+    await dbRun(`UPDATE applications_v2 SET status = ?, payment_status = ?, converted_student_id = ?, updated_at = CURRENT_TIMESTAMP, updated_by_user_id = ? WHERE application_id = ?`, ['ADMITTED', app.payment_status === 'Paid' ? 'Paid' : app.payment_status, university_id, req.user?.id || null, id]);
+
+    // Audit trail for approval
     await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`,
       ['applications_v2', String(id), 'status', app.status, 'ADMITTED', req.user?.id || null, reason || 'Approved via UI']);
 
-    res.json({ success: true, status: 'ADMITTED', university_id, student_id: null });
+    // Store a mock welcome email (development-only). Actual email service integration should be configured separately.
+    const welcomeSubject = `Welcome to Northern University Bangladesh - ${university_id}`;
+    const welcomeBody = `Dear ${app.full_name || app.first_name},\n\nCongratulations! Your admission has been confirmed. Your University ID is ${university_id} and UGC ID is ${ugc_id}.\n\nRegards,\nAdmissions Office`;
+    await dbRun(`INSERT INTO mock_emails (to_address, subject, body, application_id, created_at) VALUES (?, ?, ?, ?, datetime('now'))`, [app.email || null, welcomeSubject, welcomeBody, id]);
+
+    res.json({ success: true, status: 'ADMITTED', university_id, ugc_id, student_id });
   } catch (error) {
     console.error("Approve application error:", error);
     res.status(500).json({ error: 'Internal server error' });

@@ -159,6 +159,44 @@ export const initializeSchema = async (): Promise<void> => {
       )
     `);
 
+    // Students table - created when applications are converted to enrolled students
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS students (
+        student_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        application_id INTEGER,
+        university_id TEXT UNIQUE NOT NULL,
+        ugc_id TEXT UNIQUE,
+        program_code TEXT,
+        campus_id INTEGER,
+        semester_id INTEGER,
+        full_name TEXT,
+        email TEXT,
+        mobile_number TEXT,
+        batch TEXT,
+        enrolled_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by TEXT,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (application_id) REFERENCES applications_v2 (application_id)
+      )
+    `);
+
+    // Student bills (initial admission fee / tuition bills)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS student_bills (
+        bill_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER NOT NULL,
+        application_id INTEGER,
+        description TEXT NOT NULL,
+        amount REAL NOT NULL,
+        due_date DATE,
+        status TEXT NOT NULL DEFAULT 'Unpaid' CHECK (status IN ('Unpaid','Paid','Partial')),
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        paid_at DATETIME,
+        created_by_user_id INTEGER,
+        FOREIGN KEY (student_id) REFERENCES students(student_id)
+      )
+    `);
+
     // Admission settings table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS admission_settings (
