@@ -28,14 +28,14 @@ export default function AdminMessaging() {
   const { toast } = useToast();
 
   const filteredEmails = emails.filter((e) => {
-    if (!emailQuery) return true;
-    const q = emailQuery.toLowerCase();
+    if (!debouncedEmailQuery) return true;
+    const q = debouncedEmailQuery.toLowerCase();
     return [e.to_address, e.subject, e.body, String(e.application_id)].filter(Boolean).join(" ").toLowerCase().includes(q);
   });
 
   const filteredSms = sms.filter((s) => {
-    if (!smsQuery) return true;
-    const q = smsQuery.toLowerCase();
+    if (!debouncedSmsQuery) return true;
+    const q = debouncedSmsQuery.toLowerCase();
     return [s.to_number, s.message, s.provider, String(s.status)].filter(Boolean).join(" ").toLowerCase().includes(q);
   });
 
