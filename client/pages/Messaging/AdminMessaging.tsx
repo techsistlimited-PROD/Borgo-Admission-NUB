@@ -6,6 +6,7 @@ import apiClient from "../../lib/api";
 import { Mail, MessageCircle, RotateCw } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription, DialogTrigger, DialogClose } from "../../components/ui/dialog";
 import { useToast } from "../../hooks/use-toast";
+import { exportToCsv } from "../../lib/csv";
 
 export default function AdminMessaging() {
   const [emails, setEmails] = useState<any[]>([]);
