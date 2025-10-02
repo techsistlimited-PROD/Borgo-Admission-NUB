@@ -14,6 +14,8 @@ import FinancePanel from "../../pages/FinancePanel";
 import Reports from "../../pages/Reports";
 import EmailTemplates from "../../pages/EmailTemplates";
 import AdmissionConfiguration from "../../pages/AdmissionConfiguration";
+import MockOutbox from "../../pages/Messaging/MockOutbox";
+import SmsQueue from "../../pages/Messaging/SmsQueue";
 import AdminLogin from "../../pages/AdminLogin";
 import NotFound from "../../pages/NotFound";
 
