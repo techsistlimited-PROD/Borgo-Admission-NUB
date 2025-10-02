@@ -499,6 +499,245 @@ router.post('/applications/:id/credit-transfer/calculate', authenticateToken, re
   }
 });
 
+// ADMIN: Waiver policy CRUD
+router.post('/waiver-policies', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { code, name, description, percentage, criteria_json } = req.body || {};
+    if (!code || !name || percentage == null) return res.status(400).json({ error: 'MISSING_FIELDS' });
+    await dbRun(`INSERT INTO waiver_policies (code, name, description, percentage, criteria_json, created_by_user_id) VALUES (?, ?, ?, ?, ?, ?)`, [code, name, description || null, Number(percentage), criteria_json ? JSON.stringify(criteria_json) : null, req.user?.id || null]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Create waiver policy error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/waiver-policies', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const rows = await dbAll(`SELECT * FROM waiver_policies ORDER BY created_at DESC`);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Fetch waiver policies error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Assign waiver to application
+router.post('/applications/:id/waivers', authenticateToken, requirePermission('waivers:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { waiver_code, percentage, reason } = req.body || {};
+    if (!waiver_code && percentage == null) return res.status(400).json({ error: 'MISSING_FIELDS' });
+    // Insert into waiver_assignments
+    const pct = percentage != null ? Number(percentage) : null;
+    await dbRun(`INSERT INTO waiver_assignments (application_id, waiver_code, percent, assigned_by_user_id, assigned_at, locked) VALUES (?, ?, ?, ?, datetime('now'), 0)`, [id, waiver_code || null, pct, req.user?.id || null]);
+
+    // Recalculate application waiver amount if fee package exists
+    const app = await dbGet(`SELECT * FROM applications_v2 WHERE application_id = ?`, [id]);
+    const fee = await dbGet(`SELECT * FROM fee_packages WHERE program_code = ? LIMIT 1`, [app.program_code]);
+    const subtotal = fee ? ((fee.admission_fee||0) + (fee.tuition_fee||0) + (fee.lab_fee||0) + (fee.other_fees||0)) : 0;
+    const waivers = await dbAll(`SELECT percent FROM waiver_assignments WHERE application_id = ?`, [id]);
+    const totalPct = waivers.reduce((s:any, w:any) => s + (w.percent||0), 0);
+    const waiverAmount = (subtotal * totalPct) / 100;
+    const finalAmount = subtotal - waiverAmount;
+    await dbRun(`UPDATE applications_v2 SET waiver_amount = ?, final_amount = ? WHERE application_id = ?`, [waiverAmount, finalAmount, id]);
+
+    res.json({ success: true, data: { waiverAmount, finalAmount } });
+  } catch (error) {
+    console.error('Assign waiver error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Fee package CRUD
+router.post('/fee-packages', authenticateToken, requirePermission('settings:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { program_code, session_name, admission_fee, tuition_fee, lab_fee, other_fees } = req.body || {};
+    if (!program_code) return res.status(400).json({ error: 'MISSING_FIELDS' });
+    await dbRun(`INSERT INTO fee_packages (program_code, session_name, admission_fee, tuition_fee, lab_fee, other_fees, created_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?)`, [program_code, session_name || null, admission_fee || 0, tuition_fee || 0, lab_fee || 0, other_fees || 0, req.user?.id || null]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Create fee package error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/fee-packages', authenticateToken, requirePermission('settings:manage'), async (req: AuthRequest, res) => {
+  try {
+    const rows = await dbAll(`SELECT * FROM fee_packages ORDER BY created_at DESC`);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Fetch fee packages error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Offer courses to a single application/student (single-click auto offering for first semester)
+router.post('/applications/:id/offer-courses', authenticateToken, requirePermission('courses:offer'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    // find application and corresponding student
+    const app = await dbGet(`SELECT * FROM applications_v2 WHERE application_id = ?`, [id]);
+    if (!app) return res.status(404).json({ error: 'Application not found' });
+    const student = await dbGet(`SELECT * FROM students WHERE application_id = ?`, [id]);
+    if (!student) return res.status(400).json({ error: 'Student record not found. Convert application to student first.' });
+
+    // get program first semester courses
+    const courses = await dbAll(`SELECT * FROM program_courses WHERE program_code = ? AND semester = 1 AND is_mandatory = 1`, [app.program_code]);
+    for (const c of courses) {
+      await dbRun(`INSERT INTO student_course_offerings (student_id, application_id, program_course_id, offered_by_user_id, status) VALUES (?, ?, ?, ?, ?)`, [student.student_id, id, c.program_course_id, req.user?.id || null, 'Offered']);
+    }
+
+    await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, ['student_course_offerings', String(student.student_id), 'offered_courses', '', JSON.stringify(courses.map((x:any)=>x.course_code)), req.user?.id || null, 'Auto offered first semester courses']);
+
+    res.json({ success: true, offered: courses.length });
+  } catch (error) {
+    console.error('Offer courses error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Admission cancellation
+router.post('/applications/:id/cancel', authenticateToken, requirePermission('applications:edit'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body || {};
+    const app = await dbGet(`SELECT * FROM applications_v2 WHERE application_id = ?`, [id]);
+    if (!app) return res.status(404).json({ error: 'Application not found' });
+    await dbRun(`UPDATE applications_v2 SET status = ?, updated_at = CURRENT_TIMESTAMP, updated_by_user_id = ? WHERE application_id = ?`, ['CANCELLED', req.user?.id || null, id]);
+    await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, ['applications_v2', String(id), 'status', app.status, 'CANCELLED', req.user?.id || null, reason || 'Cancelled by user']);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Cancel application error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Account deactivation / lock / password reset endpoints
+router.post('/users/:id/deactivate', authenticateToken, requirePermission('users:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    await dbRun(`UPDATE users SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [id]);
+    await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, ['users', String(id), 'is_active', '1', '0', req.user?.id || null, 'Deactivated account']);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Deactivate user error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/users/:id/reactivate', authenticateToken, requirePermission('users:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    await dbRun(`UPDATE users SET is_active = 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [id]);
+    await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, ['users', String(id), 'is_active', '0', '1', req.user?.id || null, 'Reactivated account']);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Reactivate user error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/users/:id/reset-password', authenticateToken, requirePermission('users:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { new_password } = req.body || {};
+    if (!new_password) return res.status(400).json({ error: 'MISSING_PASSWORD' });
+    const bcrypt = await import('bcryptjs');
+    const hash = await bcrypt.hash(new_password, 10);
+    await dbRun(`UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [hash, id]);
+    await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, ['users', String(id), 'password_reset', '', '****', req.user?.id || null, 'Admin password reset']);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Department change and name correction (application-level)
+router.post('/applications/:id/change-department', authenticateToken, requirePermission('applications:edit'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { new_program_code, reason } = req.body || {};
+    if (!new_program_code) return res.status(400).json({ error: 'MISSING_NEW_PROGRAM' });
+    const app = await dbGet(`SELECT * FROM applications_v2 WHERE application_id = ?`, [id]);
+    if (!app) return res.status(404).json({ error: 'Application not found' });
+    await dbRun(`UPDATE applications_v2 SET program_code = ?, updated_at = CURRENT_TIMESTAMP, updated_by_user_id = ? WHERE application_id = ?`, [new_program_code, req.user?.id || null, id]);
+    await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, ['applications_v2', String(id), 'program_code', app.program_code, new_program_code, req.user?.id || null, reason || 'Department change']);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Change department error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/applications/:id/correct-name', authenticateToken, requirePermission('applications:edit'), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { first_name, middle_name, last_name, reason } = req.body || {};
+    const app = await dbGet(`SELECT * FROM applications_v2 WHERE application_id = ?`, [id]);
+    if (!app) return res.status(404).json({ error: 'Application not found' });
+    const updates: any = {};
+    if (first_name) updates.first_name = first_name;
+    if (middle_name) updates.middle_name = middle_name;
+    if (last_name) updates.last_name = last_name;
+    const fields = Object.keys(updates);
+    if (fields.length === 0) return res.status(400).json({ error: 'NO_NAME_PROVIDED' });
+    const set = fields.map(f => `${f} = ?`).join(', ');
+    const params = fields.map(f => updates[f]);
+    params.push(req.user?.id || null);
+    params.push(id);
+    await dbRun(`UPDATE applications_v2 SET ${set}, updated_at = CURRENT_TIMESTAMP, updated_by_user_id = ? WHERE application_id = ?`, params);
+    await dbRun(`INSERT INTO audit_trail (entity, entity_id, field_name, old_value, new_value, changed_by_user_id, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, ['applications_v2', String(id), 'name_correction', app.full_name || '', `${first_name || ''} ${middle_name || ''} ${last_name || ''}`, req.user?.id || null, reason || 'Name correction']);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Name correction error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Admission circulars CRUD
+router.post('/circulars', authenticateToken, requirePermission('settings:manage'), async (req: AuthRequest, res) => {
+  try {
+    const { title, body, start_date, end_date, is_active } = req.body || {};
+    if (!title || !body) return res.status(400).json({ error: 'MISSING_FIELDS' });
+    await dbRun(`INSERT INTO admission_circulars (title, body, start_date, end_date, is_active, created_by_user_id) VALUES (?, ?, ?, ?, ?, ?)`, [title, body, start_date || null, end_date || null, is_active != null ? (is_active ? 1 : 0) : 1, req.user?.id || null]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Create circular error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/circulars', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const rows = await dbAll(`SELECT * FROM admission_circulars WHERE is_active = 1 ORDER BY created_at DESC`);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Fetch circulars error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Change history report (audit trail query)
+router.get('/audit-trail', authenticateToken, requirePermission('reports:view'), async (req: AuthRequest, res) => {
+  try {
+    const { entity, entity_id, from, to } = req.query as any;
+    const where: string[] = [];
+    const params: any[] = [];
+    if (entity) { where.push('entity = ?'); params.push(entity); }
+    if (entity_id) { where.push('entity_id = ?'); params.push(String(entity_id)); }
+    if (from) { where.push("date(changed_at) >= date(?)"); params.push(from); }
+    if (to) { where.push("date(changed_at) <= date(?)"); params.push(to); }
+    const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
+    const rows = await dbAll(`SELECT * FROM audit_trail ${whereSql} ORDER BY changed_at DESC LIMIT 1000`, params);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Audit fetch error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Lock identifiers (permission: applications:lock_identifiers)
 router.post("/applications/:id/identifiers/lock", authenticateToken, requirePermission("applications:lock_identifiers"), async (req: AuthRequest, res) => {
   try {
