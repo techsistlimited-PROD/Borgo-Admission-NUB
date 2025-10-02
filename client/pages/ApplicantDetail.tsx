@@ -240,7 +240,12 @@ export default function ApplicantDetail() {
             ugcId: generatedIds.ugc_id,
             batch: generatedIds.batch,
             generatedDate: gid.data.generated_date || new Date().toISOString(),
+            universityEmail: gid.data.generated_email || undefined,
           });
+
+          if (gid.data.generated_email) {
+            toast({ title: "Welcome email (mock) sent", description: gid.data.generated_email });
+          }
         }
 
         // Create student record (mock)
@@ -300,8 +305,13 @@ export default function ApplicantDetail() {
           ugcId: gid.data.ugc_id || gid.data.ugc_id,
           batch: gid.data.batch || `${application.semester} ${new Date().getFullYear()}`,
           generatedDate: gid.data.generated_date || new Date().toISOString(),
+          universityEmail: gid.data.generated_email || undefined,
         });
-        toast({ title: t.idsGenerated });
+        if (gid.data.generated_email) {
+          toast({ title: "Welcome email (mock) sent", description: gid.data.generated_email });
+        } else {
+          toast({ title: t.idsGenerated });
+        }
       } else {
         toast({ title: "Error", description: gid.error || "Failed to generate IDs", variant: "destructive" });
       }
@@ -424,6 +434,9 @@ export default function ApplicantDetail() {
                       <Badge className="bg-green-600 text-white">{t.active}</Badge>
                     </div>
                     <div className="text-2xl font-bold text-blue-900 font-mono tracking-wider">{studentIDs.universityId}</div>
+                    {studentIDs.universityEmail && (
+                      <div className="text-sm text-gray-700 mt-1">Email: <span className="font-mono text-blue-700">{studentIDs.universityEmail}</span></div>
+                    )}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 text-sm text-gray-600">
                       <div><strong>{t.batch}:</strong> {studentIDs.batch}</div>
                       <div><strong>{t.generatedOn}:</strong> {new Date(studentIDs.generatedDate).toLocaleDateString()}</div>

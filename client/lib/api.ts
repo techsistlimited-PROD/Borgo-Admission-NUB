@@ -136,6 +136,24 @@ class ApiClient {
     return await mockApi.getApplicationStats();
   }
 
+  // Mock emails (admin)
+  async getMockEmails(): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch("/api/mock-emails", {
+          headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json };
+        return { success: false, error: json.error || "Failed to load mock emails" };
+      } catch (e) {
+        console.warn("getMockEmails server failed, falling back to mock (none)", e);
+      }
+    }
+    // No mock fallback available — return empty list
+    return { success: true, data: [] };
+  }
+
   // Programs and departments — prefer server when available
   async getPrograms(): Promise<ApiResponse> {
     if (this.serverAvailable) {

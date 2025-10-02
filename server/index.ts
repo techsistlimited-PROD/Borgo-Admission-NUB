@@ -49,6 +49,12 @@ export function createServer() {
   app.use("/api/programs", programRoutes);
   app.use("/api/referrers", referrerRoutes);
   app.use("/api/messaging", messagingRoutes);
+  // Mock emails (development-only)
+  import("./routes/mockEmails.js").then((m) => {
+    app.use("/api/mock-emails", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load mock emails routes:", e);
+  });
 
   // Public admissions endpoints (applicant-facing)
   import("./routes/publicAdmissions.js").then((m) => {

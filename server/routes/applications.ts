@@ -267,15 +267,49 @@ router.post(
         [id, university_id, ugc_id, batch, req.user!.name],
       );
 
-      res.json({
-        success: true,
-        data: {
-          university_id,
-          ugc_id,
-          batch,
-          generated_date: new Date().toISOString(),
-        },
-      });
+      // Mock email provisioning (development-only)
+      try {
+        const generatedEmail = `${university_id.toLowerCase()}@nu.edu.bd`;
+        const subject = `Welcome to Northern University - ${university_id}`;
+        const body = `Dear ${application.first_name} ${application.last_name},\n\n` +
+          `Congratulations! Your University ID is ${university_id}.\n` +
+          `Your UGC ID: ${ugc_id || 'N/A'}\n\n` +
+          `Please use ${generatedEmail} once your mailbox is provisioned. This is a mock email for development.`;
+
+        await dbRun(
+          `INSERT INTO mock_emails (to_address, subject, body, application_id, sent_at) VALUES (?, ?, ?, ?, datetime('now'))`,
+          [generatedEmail, subject, body, id],
+        );
+
+        // Mark as sent in id_generation for visibility
+        await dbRun(`UPDATE id_generation SET is_sent = 1 WHERE application_id = ?`, [id]);
+
+        // Return generated email in response
+        res.json({
+          success: true,
+          data: {
+            university_id,
+            ugc_id,
+            batch,
+            generated_date: new Date().toISOString(),
+            generated_email: generatedEmail,
+          },
+        });
+        return;
+      } catch (e) {
+        console.warn('Failed to create mock email:', e);
+        // Fallback response if email insertion fails
+        res.json({
+          success: true,
+          data: {
+            university_id,
+            ugc_id,
+            batch,
+            generated_date: new Date().toISOString(),
+          },
+        });
+        return;
+      }
     } catch (error) {
       console.error("Generate IDs error:", error);
       res.status(500).json({ error: "Internal server error" });
