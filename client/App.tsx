@@ -57,6 +57,11 @@ import SyllabusManagement from "./pages/SyllabusManagement";
 import WaiverManagement from "./pages/WaiverManagement";
 import OfferCourses from "./pages/OfferCourses";
 import StudentManagement from "./pages/StudentManagement";
+import StudentProfile from "./pages/StudentProfile";
+import AdminAcademic from "./pages/AdminAcademic";
+import AdminScholarships from "./pages/AdminScholarships";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminEmployees from "./pages/AdminEmployees";
 import AccountManagement from "./pages/AccountManagement";
 import AdmissionCircular from "./pages/AdmissionCircular";
 import ChangeHistory from "./pages/ChangeHistory";
@@ -382,6 +387,56 @@ function AppContent() {
               }
             />
             <Route
+              path="/admin/academic-management"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminAcademic />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/scholarships"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminScholarships />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/admission-dashboard"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminDashboard />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/employees"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdminEmployees />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/student-profile"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <StudentProfile />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
               path="/admin/account-management"
               element={
                 isAuthenticated && userType === "admin" ? (
@@ -447,7 +502,10 @@ function AppContent() {
             <Route
               path="/admin/referrals"
               element={
-                isAuthenticated && (userType === "admin" || roleLocal === "admission_officer" || roleLocal === "finance_officer") ? (
+                isAuthenticated &&
+                (userType === "admin" ||
+                  roleLocal === "admission_officer" ||
+                  roleLocal === "finance_officer") ? (
                   <Referrals />
                 ) : (
                   <Navigate to="/admin" replace />

@@ -14,6 +14,9 @@ import FinancePanel from "../../pages/FinancePanel";
 import Reports from "../../pages/Reports";
 import EmailTemplates from "../../pages/EmailTemplates";
 import AdmissionConfiguration from "../../pages/AdmissionConfiguration";
+import MockOutbox from "../../pages/Messaging/MockOutbox";
+import SmsQueue from "../../pages/Messaging/SmsQueue";
+import AdminMessaging from "../../pages/Messaging/AdminMessaging";
 import AdminLogin from "../../pages/AdminLogin";
 import NotFound from "../../pages/NotFound";
 
@@ -39,6 +42,9 @@ const ProtectedLayout = () => {
             <Route path="/finance" element={<FinancePanel />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/templates" element={<EmailTemplates />} />
+            <Route path="/mock-emails" element={<MockOutbox />} />
+            <Route path="/sms-queue" element={<SmsQueue />} />
+            <Route path="/messaging" element={<AdminMessaging />} />
             <Route path="/configuration" element={<AdmissionConfiguration />} />
             <Route path="/login" element={<AdminLogin />} />
             <Route path="*" element={<NotFound />} />
