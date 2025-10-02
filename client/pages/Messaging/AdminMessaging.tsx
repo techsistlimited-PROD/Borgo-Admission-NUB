@@ -181,8 +181,28 @@ export default function AdminMessaging() {
                   <div className="w-64">
                     <Input placeholder="Search SMS by number, message or status" value={smsQuery} onChange={(e) => setSmsQuery(e.target.value)} />
                   </div>
-                  <Button size="sm" onClick={() => exportToCsv(`sms_queue_${Date.now()}.csv`, filteredSms, ["sms_id","to_number","message","provider","status","created_at","processed_at"]) } disabled={filteredSms.length===0}>
+                  <Button size="sm" onClick={() => setShowSmsExportDialog(true)} disabled={filteredSms.length===0}>
                     Export CSV
+                  </Button>
+                  <Button size="sm" onClick={async () => {
+                    const res = await apiClient.serverExportSms({ search: debouncedSmsQuery, format: 'csv' });
+                    if (res.success && (res.data as any)?.isFile) {
+                      const { blob, filename } = (res.data as any);
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = filename;
+                      document.body.appendChild(a);
+                      a.click();
+                      a.remove();
+                      URL.revokeObjectURL(url);
+                    } else if (res.success && (res.data as any)?.async) {
+                      alert((res.data as any).message || 'Export queued');
+                    } else {
+                      alert(res.error || 'Export failed');
+                    }
+                  }}>
+                    Server Export
                   </Button>
                 </div>
               </div>
