@@ -59,6 +59,9 @@ export default function ApplicantDetail() {
   const [application, setApplication] = useState<any | null>(null);
   const [studentIDs, setStudentIDs] = useState<any | null>(null);
   const [isGeneratingIDs, setIsGeneratingIDs] = useState(false);
+  const [isMakingStudent, setIsMakingStudent] = useState(false);
+  const [studentModalOpen, setStudentModalOpen] = useState(false);
+  const [studentCreatedData, setStudentCreatedData] = useState<any | null>(null);
   const [sendingSMS, setSendingSMS] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
   const [approvalNote, setApprovalNote] = useState("");
@@ -154,7 +157,7 @@ export default function ApplicantDetail() {
     bn: {
       title: "আবেদনকারীর বিবরণ",
       backToList: "ভর্তি তালিকায় ফিরুন",
-      personalInfo: "ব্যক্তিগত তথ্য",
+      personalInfo: "ব্যক্তি��ত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
       documentsUploaded: "আপলোডকৃত কাগজপত্র",
