@@ -43,7 +43,10 @@ export default function MockOutbox() {
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <Mail className="w-5 h-5" /> Mock Email Outbox
           </h2>
-          <div>
+          <div className="flex items-center gap-2">
+            <div className="w-64">
+              <Input placeholder="Search emails by recipient, subject or body" value={query} onChange={(e) => setQuery(e.target.value)} />
+            </div>
             <Button onClick={load} disabled={loading}>
               Refresh
             </Button>
@@ -55,11 +58,11 @@ export default function MockOutbox() {
             <CardTitle>Sent Mock Emails</CardTitle>
           </CardHeader>
           <CardContent>
-            {emails.length === 0 ? (
+            {filtered.length === 0 ? (
               <div className="text-sm text-gray-500">No mock emails found.</div>
             ) : (
               <div className="space-y-3">
-                {emails.map((e) => (
+                {filtered.map((e) => (
                   <div key={e.id} className="border rounded p-3">
                     <div className="flex justify-between items-start">
                       <div>
