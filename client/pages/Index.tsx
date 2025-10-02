@@ -85,7 +85,7 @@ export default function Index() {
       uploadOffline: "অফ���াইন আবেদন আপলোড করুন",
       admissionProcess: "সহজ ৪-ধাপের ভর্তি প্রক্রিয়া",
       regularAdmission: "নিয়মিত ভর্তি",
-      creditTransfer: "ক্রেডিট ট্রা���্সফার",
+      creditTransfer: "ক্রেডিট ট্রান্সফার",
       regularAdmissionDesc:
         "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করু��",
       creditTransferDesc: "অন্��� প্রতিষ্ঠান থেকে আপনার ক্রেডিট স্থানান্তর করুন",
@@ -348,7 +348,7 @@ export default function Index() {
 
                           <div className="mt-4 md:mt-0 flex items-center gap-4">
                             <Link to={`/program-selection?program=${encodeURIComponent(code)}&department=${encodeURIComponent(dept)}`}>
-                              <Button size="sm">Apply</Button>
+                              <Button size="sm" aria-label={`Apply to ${program.name || program.program_name}`}>Apply</Button>
                             </Link>
                           </div>
                         </CardContent>
