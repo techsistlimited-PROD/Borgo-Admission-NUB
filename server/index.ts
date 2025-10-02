@@ -38,7 +38,9 @@ export function createServer() {
   // Health check endpoint
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "pong";
-    res.json({ message: ping, timestamp: new Date().toISOString() });
+    const databaseType = process.env.DATABASE_TYPE || "sqlite";
+    const useNeonMock = databaseType === "neon-mock" || process.env.USE_NEON_MOCK === "1";
+    res.json({ message: ping, timestamp: new Date().toISOString(), databaseType, useNeonMock });
   });
 
   app.get("/api/demo", handleDemo);
