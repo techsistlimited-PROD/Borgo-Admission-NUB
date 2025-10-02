@@ -1,105 +1,135 @@
 import express from "express";
-import PDFDocument from "pdfkit";
-import { dbGet } from "../database/config.js";
-import { authenticateToken, AuthRequest } from "../middleware/auth.js";
+import puppeteer from "puppeteer";
+import path from "path";
+import { authenticateToken, requirePermission, AuthRequest } from "../middleware/auth.js";
+import { dbGet, dbAll } from "../database/config.js";
 
 const router = express.Router();
 
-// Generate Admit Card PDF for an application (public or authenticated)
-router.get("/admit-card/:id", async (req: express.Request, res: express.Response) => {
-  try {
-    const { id } = req.params;
+// Helper to ensure PDF directory exists
+async function ensurePdfDir() {
+  const dir = path.join(process.cwd(), "tmp", "pdfs");
+  await fs.promises.mkdir(dir, { recursive: true });
+  return dir;
+}
 
-    // Try numeric id first, otherwise treat as ref_no
-    let app;
-    if (/^\d+$/.test(id)) {
-      app = await dbGet(`SELECT * FROM applications_v2 WHERE application_id = ?`, [id]);
-    } else {
-      app = await dbGet(`SELECT * FROM applications_v2 WHERE ref_no = ?`, [id]);
+// GET /api/pdf/money-receipt?application_id=...
+router.get("/money-receipt", authenticateToken, requirePermission("applications:view"), async (req: AuthRequest, res) => {
+  const { application_id } = req.query as any;
+  if (!application_id) {
+    return res.status(400).json({ success: false, error: "application_id is required" });
+  }
+
+  try {
+    const application = await dbGet(`SELECT * FROM applications WHERE id = ?`, [application_id]);
+    if (!application) {
+      return res.status(404).json({ success: false, error: "Application not found" });
     }
 
-    if (!app) return res.status(404).json({ error: "Application not found" });
+    // Fetch fee details (assuming a fee structure or bill exists)
+    // For demo purposes, we'll use mock data or simplified structure
+    const feeDetails = await dbGet(`SELECT * FROM student_bills WHERE application_id = ? AND status = 'Paid' ORDER BY paid_at DESC LIMIT 1`, [application_id]);
+    if (!feeDetails) {
+      return res.status(404).json({ success: false, error: "No paid fee details found for this application" });
+    }
 
-    // Basic admit card fields
-    const fullName = app.full_name || `${app.first_name || ""} ${app.last_name || ""}`.trim();
-    const refNo = app.ref_no || "";
-    const program = app.program_code || app.program || "N/A";
-    const universityId = app.university_id || app.converted_student_id || "";
-    const examDate = app.admission_test_date || app.exam_date || "TBD";
-    const venue = app.admission_test_venue || "To be announced";
-
-    // Create PDF document
-    const doc = new PDFDocument({ size: "A4", margin: 50 });
-
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="AdmitCard_${refNo || id}.pdf"`,
-    );
-
-    doc.pipe(res);
-
-    // Header
-    doc.fontSize(16).font("Helvetica-Bold").text("Northern University Bangladesh", {
-      align: "center",
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
-    doc.moveDown(0.2);
-    doc.fontSize(12).font("Helvetica").text("Admission Test Admit Card", { align: "center" });
-    doc.moveDown(1);
+    const page = await browser.newPage();
 
-    // Applicant info box
-    const startX = doc.x;
-    const startY = doc.y;
-    const boxWidth = 500;
+    // Construct HTML content for the receipt
+    // This is a simplified HTML structure for demo purposes
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Money Receipt</title>
+        <style>
+          body { font-family: 'Arial', sans-serif; margin: 40px; }
+          .receipt { border: 1px solid #ccc; padding: 30px; border-radius: 8px; max-width: 700px; margin: auto; }
+          .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+          .header h1 { margin: 0; color: #333; }
+          .header p { margin: 5px 0; color: #555; font-size: 0.9em; }
+          .details { display: flex; justify-content: space-between; margin-bottom: 30px; }
+          .details div { width: 48%; }
+          .details label { font-weight: bold; color: #444; display: block; margin-bottom: 5px; }
+          .details span { color: #666; }
+          .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+          .items-table th, .items-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+          .items-table th { background-color: #f8f8f8; color: #333; }
+          .items-table td.amount { text-align: right; }
+          .footer { text-align: center; margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px; font-size: 0.8em; color: #777; }
+        </style>
+      </head>
+      <body>
+        <div class="receipt">
+          <div class="header">
+            <h1>Northern University Bangladesh</h1>
+            <p>Receipt for Admission Fee Payment</p>
+            <p>Plot: 10, Road: 12, Sector: 06, Uttara, Dhaka-1230</p>
+          </div>
+          <div class="details">
+            <div>
+              <label>Application ID:</label> <span>${application.tracking_id || application.id}</span>
+            </div>
+            <div>
+              <label>Payment Date:</label> <span>${new Date(feeDetails.paid_at || feeDetails.due_date).toLocaleDateString()}</span>
+            </div>
+          </div>
+          <div class="details">
+            <div>
+              <label>Student Name:</label> <span>${application.first_name} ${application.last_name}</span>
+            </div>
+            <div>
+              <label>Program:</label> <span>${application.program || 'N/A'}</span>
+            </div>
+          </div>
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="amount">Admission Fee</td>
+                <td class="amount">${feeDetails.amount.toFixed(2)}</td>
+              </tr>
+              <!-- Add more fee items if available -->
+            </tbody>
+          </table>
+          <div class="details">
+            <div>
+              <label>Total Amount Paid:</label> <span style="font-size: 1.2em; font-weight: bold;">BDT ${feeDetails.amount.toFixed(2)}</span>
+            </div>
+            <div>
+              <label>Payment Status:</label> <span style="font-weight: bold; color: green;">Paid</span>
+            </div>
+          </div>
+          <div class="footer">
+            <p>This is a computer-generated receipt and requires no signature.</p>
+            <p>Thank you for choosing Northern University Bangladesh.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
 
-    doc.rect(startX - 10, startY - 10, boxWidth, 160).stroke();
+    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
 
-    doc.fontSize(11).font("Helvetica-Bold").text("Applicant Name:", startX, startY + 6);
-    doc.font("Helvetica").text(fullName || "-", startX + 120, startY + 6);
+    await browser.close();
 
-    doc.moveDown(0.5);
-    doc.font("Helvetica-Bold").text("Reference No:", { continued: true });
-    doc.font("Helvetica").text(` ${refNo || "-"}`);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="money_receipt_${application.tracking_id || application.id}.pdf"`);
+    res.send(pdfBuffer);
 
-    doc.moveDown(0.2);
-    doc.font("Helvetica-Bold").text("Program:", { continued: true });
-    doc.font("Helvetica").text(` ${program}`);
-
-    doc.moveDown(0.2);
-    doc.font("Helvetica-Bold").text("University ID:", { continued: true });
-    doc.font("Helvetica").text(` ${universityId || "-"}`);
-
-    doc.moveDown(0.2);
-    doc.font("Helvetica-Bold").text("Exam Date:", { continued: true });
-    doc.font("Helvetica").text(` ${examDate}`);
-
-    doc.moveDown(0.2);
-    doc.font("Helvetica-Bold").text("Venue:", { continued: true });
-    doc.font("Helvetica").text(` ${venue}`);
-
-    // Instructions
-    doc.moveDown(1);
-    doc.fontSize(10).font("Helvetica-Bold").text("Instructions:");
-    doc.fontSize(9).font("Helvetica");
-    const instructions = [
-      "Bring this admit card and a valid photo ID on the test day.",
-      "Arrive at least 30 minutes before the scheduled time.",
-      "Mobile phones and electronic devices are not allowed in the examination hall.",
-      "Follow the invigilator's instructions at all times.",
-    ];
-
-    instructions.forEach((ins) => {
-      doc.list([ins], { bulletRadius: 2 });
-    });
-
-    // Footer / Generated at
-    doc.moveDown(2);
-    doc.fontSize(8).fillColor("gray").text(`Generated: ${new Date().toLocaleString()}`);
-
-    doc.end();
-  } catch (err) {
-    console.error("Admit card PDF error:", err);
-    res.status(500).json({ error: "Failed to generate PDF" });
+  } catch (error) {
+    console.error("Money receipt PDF generation failed:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
