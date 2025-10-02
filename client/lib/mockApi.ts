@@ -484,6 +484,7 @@ class MockApiService {
     const password = `temp${Math.random().toString().slice(-6)}`;
     const ugcId = `UGC${String(Date.now()).slice(-5)}`;
     const batch = `Spring ${new Date().getFullYear()}`;
+    const generatedEmail = `${universityId.toLowerCase()}@nu.edu.bd`;
 
     return {
       success: true,
@@ -492,6 +493,7 @@ class MockApiService {
         password: password,
         ugc_id: ugcId,
         batch,
+        generated_email: generatedEmail,
       },
     };
   }
