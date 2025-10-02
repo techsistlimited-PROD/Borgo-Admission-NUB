@@ -299,16 +299,79 @@ class ApiClient {
 
   // Referrers and visitors remain mock-backed
   async getReferrers(): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch('/api/referrers', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: { referrers: json.data || json } } as any;
+      } catch (e) {
+        console.warn('getReferrers server failed', e);
+      }
+    }
     return await mockApi.getReferrers();
   }
   async validateReferrer(employee_id: string): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch('/api/referrers/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+          body: JSON.stringify({ employee_id }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json } as any;
+        return { success: false, error: json.error || 'Failed to validate referrer' };
+      } catch (e) {
+        console.warn('validateReferrer server failed', e);
+      }
+    }
     return await mockApi.validateReferrer(employee_id);
   }
   async getReferrerStats(employee_id: string): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch(`/api/referrers/${encodeURIComponent(employee_id)}/stats`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json } as any;
+      } catch (e) {
+        console.warn('getReferrerStats server failed', e);
+      }
+    }
     return await mockApi.getReferrerStats(employee_id);
   }
   async getVisitors(params?: any): Promise<ApiResponse> {
     return await mockApi.getVisitors(params);
+  }
+
+  // Referral requests (finance)
+  async getReferralRequests(): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: true, data: [] };
+    try {
+      const res = await fetch('/api/referrals/requests', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json } as any;
+      return { success: false, error: json.error || 'Failed to load referral requests' };
+    } catch (e) {
+      console.warn('getReferralRequests failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async approveReferralRequest(applicationId: number, percentage: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/referrals/requests/${applicationId}/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+        body: JSON.stringify({ percentage }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json } as any;
+      return { success: false, error: json.error || 'Failed to approve referral' };
+    } catch (e) {
+      console.warn('approveReferralRequest failed', e);
+      return { success: false, error: String(e) };
+    }
   }
   async createVisitor(record: any): Promise<ApiResponse> {
     return await mockApi.createVisitor(record);
