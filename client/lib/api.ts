@@ -884,6 +884,49 @@ class ApiClient {
     }
     return await mockApi.generateStudentForApplicant(applicantId);
   }
+
+  async getCourses(code?: string): Promise<ApiResponse<any[]>> {
+    if (this.serverAvailable) {
+      try {
+        const qs = code ? `?code=${encodeURIComponent(code)}` : "";
+        const res = await fetch(`/api/courses${qs}`, {
+          headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json } as any;
+        console.warn('getCourses server returned non-ok', res.status);
+        this.serverAvailable = false;
+        return await mockApi.getCourses(code);
+      } catch (e) {
+        console.warn('getCourses server failed', e);
+        this.serverAvailable = false;
+        return await mockApi.getCourses(code);
+      }
+    }
+    return await mockApi.getCourses(code);
+  }
+
+  async saveTransferCourses(payload: { applicant_id: string; courses: any[] }): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch(`/api/transfer-courses`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json } as any;
+        console.warn('saveTransferCourses server returned non-ok', res.status);
+        this.serverAvailable = false;
+        return await mockApi.saveTransferCourses(payload);
+      } catch (e) {
+        console.warn('saveTransferCourses server failed', e);
+        this.serverAvailable = false;
+        return await mockApi.saveTransferCourses(payload);
+      }
+    }
+    return await mockApi.saveTransferCourses(payload);
+  }
   async generateMoneyReceipt(
     applicationId: string,
     amount: number,
