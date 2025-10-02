@@ -305,8 +305,13 @@ export default function ApplicantDetail() {
           ugcId: gid.data.ugc_id || gid.data.ugc_id,
           batch: gid.data.batch || `${application.semester} ${new Date().getFullYear()}`,
           generatedDate: gid.data.generated_date || new Date().toISOString(),
+          universityEmail: gid.data.generated_email || undefined,
         });
-        toast({ title: t.idsGenerated });
+        if (gid.data.generated_email) {
+          toast({ title: "Welcome email (mock) sent", description: gid.data.generated_email });
+        } else {
+          toast({ title: t.idsGenerated });
+        }
       } else {
         toast({ title: "Error", description: gid.error || "Failed to generate IDs", variant: "destructive" });
       }
