@@ -212,6 +212,7 @@ export default function Sidebar({ userType }: SidebarProps) {
             <Link
               key={page.path}
               to={page.path}
+              aria-current={isActive(page.path) ? 'page' : undefined}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                 isActive(page.path)
                   ? "bg-deep-plum text-white"
