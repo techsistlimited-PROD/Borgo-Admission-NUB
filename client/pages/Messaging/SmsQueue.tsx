@@ -72,6 +72,9 @@ export default function SmsQueue() {
             <div className="w-64">
               <Input placeholder="Search SMS by number, message or status" value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>
+            <Button onClick={() => exportToCsv(`sms_queue_${Date.now()}.csv`, filtered, ["sms_id","to_number","message","provider","status","created_at","processed_at"]) } disabled={loading || filtered.length===0}>
+              Export CSV
+            </Button>
             <Button onClick={load} disabled={loading}>
               Refresh
             </Button>
