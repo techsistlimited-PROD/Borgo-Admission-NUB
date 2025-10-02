@@ -61,6 +61,7 @@ import StudentProfile from "./pages/StudentProfile";
 import AdminAcademic from "./pages/AdminAcademic";
 import AdminScholarships from "./pages/AdminScholarships";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminEmployees from "./pages/AdminEmployees";
 import AccountManagement from "./pages/AccountManagement";
 import AdmissionCircular from "./pages/AdmissionCircular";
 import ChangeHistory from "./pages/ChangeHistory";
