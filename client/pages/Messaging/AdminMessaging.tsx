@@ -25,6 +25,54 @@ export default function AdminMessaging() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<null | { type: 'resend' | 'send', id: number }>(null);
 
+  // Export jobs UI
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [jobsOpen, setJobsOpen] = useState(false);
+  const loadJobs = async () => {
+    try {
+      const res = await apiClient.listExportJobs();
+      if (res.success && Array.isArray(res.data)) setJobs(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const processJob = async (jobId: number) => {
+    try {
+      const r = await apiClient.processExportJob(jobId);
+      if (r.success) {
+        toast({ title: 'Job processed', description: 'Export job processed successfully.' });
+      } else {
+        toast({ title: 'Processing failed', description: String(r.error), variant: 'destructive' });
+      }
+      await loadJobs();
+    } catch (e) {
+      console.error(e);
+      toast({ title: 'Error', description: 'Failed to process job', variant: 'destructive' });
+    }
+  };
+  const downloadJob = async (jobId: number) => {
+    try {
+      const r = await apiClient.downloadExportJob(jobId);
+      if (r.success && (r.data as any)?.isFile) {
+        const { blob, filename } = (r.data as any);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } else {
+        toast({ title: 'Download failed', description: r.error || 'File not available', variant: 'destructive' });
+      }
+      await loadJobs();
+    } catch (e) {
+      console.error(e);
+      toast({ title: 'Error', description: 'Failed to download file', variant: 'destructive' });
+    }
+  };
+
   const { toast } = useToast();
 
   const filteredEmails = emails.filter((e) => {
