@@ -10,6 +10,8 @@ export default function SmsQueue() {
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebouncedValue(query, 300);
+  const [showExportDialog, setShowExportDialog] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -24,8 +26,8 @@ export default function SmsQueue() {
   };
 
   const filtered = sms.filter((s) => {
-    if (!query) return true;
-    const q = query.toLowerCase();
+    if (!debouncedQuery) return true;
+    const q = debouncedQuery.toLowerCase();
     return [s.to_number, s.message, s.provider, String(s.status)].filter(Boolean).join(" ").toLowerCase().includes(q);
   });
 
