@@ -57,6 +57,7 @@ import SyllabusManagement from "./pages/SyllabusManagement";
 import WaiverManagement from "./pages/WaiverManagement";
 import OfferCourses from "./pages/OfferCourses";
 import StudentManagement from "./pages/StudentManagement";
+import StudentProfile from "./pages/StudentProfile";
 import AccountManagement from "./pages/AccountManagement";
 import AdmissionCircular from "./pages/AdmissionCircular";
 import ChangeHistory from "./pages/ChangeHistory";
