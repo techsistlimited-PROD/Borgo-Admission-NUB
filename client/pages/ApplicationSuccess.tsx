@@ -190,7 +190,7 @@ export default function ApplicationSuccess() {
       step4: "আবেদনের স্থিতি ট্র্যাক করুন",
       step4Desc:
         "আপনার আবেদনের অগ্রগতি এবং প্রশাসনিক সিদ্ধান্ত পর্যবেক্ষণ করুন",
-      loginPortal: "আবেদনকারী পোর্টালে লগইন",
+      loginPortal: "আবেদনকারী ���োর্টালে লগইন",
       downloadInfo: "আবেদনের তথ্য ডাউনলোড করুন",
       copyCredentials: "প��িচয়পত্র কপি করুন",
       saveInfo: "এই তথ্য সংরক্ষণ করুন",
@@ -201,7 +201,7 @@ export default function ApplicationSuccess() {
         "আপনার আবেদন আমাদের ভর্তি দল দ্বারা ���র্যালোচনা কর�� হবে। যেকোনো আপডেটের জন্য আপনাকে ইমেইল এবং এসএমএসের মাধ্যমে অবহিত করা হবে।",
       supportInfo: "সাহায্য প্রয়োজন?",
       supportDesc:
-        "যদি আপনার কোন প্রশ��ন থাকে, অনুগ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
+        "যদি আপনার কোন প্রশ��ন থাকে, অন���গ্রহ করে আমাদের ভর্তি অফিসের সাথে যোগাযোগ করুন।",
       contactEmail: "ইমেইল: admission@nu.edu.bd",
       contactPhone: "ফোন: +৮৮০ ১৭০০-০০০০০০",
       credentialsCopied: "পরিচয়পত্র ক্লিপবোর্ডে কপি করা হয়েছে!",
@@ -257,6 +257,21 @@ export default function ApplicationSuccess() {
       toast({ title: "Admit Card Downloaded", description: `${fileName} has been downloaded.` });
     } catch (err) {
       console.error("Failed to download admit card:", err);
+      // Fallback: open a demo admit card in a new tab so user can print/save as PDF
+      try {
+        const id = applicationData?.application_id || applicationData?.ref_no || trackingId || applicantId;
+        const studentName = applicationData?.first_name ? `${applicationData.first_name} ${applicationData.last_name || ''}`.trim() : applicationData?.applicant_name || 'Applicant Name';
+        const program = applicationData?.program || applicationData?.program_code || 'Program';
+        const html = `<!doctype html><html><head><meta charset="utf-8"><title>Admit Card - ${id}</title><style>body{font-family:Arial, sans-serif;padding:24px;color:#222} .card{max-width:800px;margin:auto;border:1px solid #ddd;padding:20px;border-radius:8px} .header{text-align:center;margin-bottom:20px} .header h1{margin:0;color:#3b0764} .grid{display:flex;justify-content:space-between;margin-top:16px} .grid div{width:48%} table{width:100%;border-collapse:collapse;margin-top:12px} td,th{padding:8px;border:1px solid #eee;text-align:left} .footer{text-align:center;margin-top:24px;color:#666;font-size:0.9rem}</style></head><body><div class="card"><div class="header"><h1>Northern University Bangladesh</h1><p>Admission Test Admit Card (Demo)</p></div><div><strong>Applicant ID:</strong> ${id}<br/><strong>Name:</strong> ${studentName}<br/><strong>Program:</strong> ${program}</div><div class="grid"><div><strong>Test Date:</strong><div>${admissionTestDate}</div></div><div><strong>Test Time:</strong><div>${admissionTestTime}</div></div></div><div style="margin-top:12px"><strong>Venue:</strong><div>${testVenue}</div></div><table><thead><tr><th>Instruction</th><th>Note</th></tr></thead><tbody><tr><td>Bring original NID / Birth certificate</td><td>Arrive 30 minutes early</td></tr><tr><td>No electronic devices allowed</td><td>Carry admit card printout</td></tr></tbody></table><div class="footer">This is a demo admit card. For official admit card please contact admissions@nu.edu.bd</div></div></body></html>`;
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        toast({ title: 'Demo Admit Card', description: 'Server admit-card not available — opened a demo admit card in a new tab. You can print/save as PDF from the browser.' });
+        return;
+      } catch (e) {
+        console.error('Fallback admit card generation failed', e);
+      }
+
       toast({ title: "Download Failed", description: "Unable to download admit card. Please try again later.", variant: "destructive" });
     }
   };
