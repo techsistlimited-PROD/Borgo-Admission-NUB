@@ -1,6 +1,7 @@
 import express from "express";
 import puppeteer from "puppeteer";
 import path from "path";
+import fs from "fs";
 import { authenticateToken, requirePermission, AuthRequest } from "../middleware/auth.js";
 import { dbGet, dbAll } from "../database/config.js";
 
