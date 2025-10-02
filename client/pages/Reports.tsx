@@ -1606,20 +1606,30 @@ export default function Reports() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {Array.isArray(referrersList) && referrersList.length > 0 ? referrersList.map((r) => (
-                      <TableRow key={r.employee_id}>
-                        <TableCell className="font-mono">
-                          {r.employee_id}
-                        </TableCell>
-                        <TableCell className="font-medium">{r.name}</TableCell>
-                        <TableCell>{r.department}</TableCell>
-                        <TableCell>{r.designation}</TableCell>
-                        <TableCell>{r.email}</TableCell>
-                        <TableCell>{r.phone}</TableCell>
-                      </TableRow>
-                    )) : (
+                    {Array.isArray(referrersList) &&
+                    referrersList.length > 0 ? (
+                      referrersList.map((r) => (
+                        <TableRow key={r.employee_id}>
+                          <TableCell className="font-mono">
+                            {r.employee_id}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {r.name}
+                          </TableCell>
+                          <TableCell>{r.department}</TableCell>
+                          <TableCell>{r.designation}</TableCell>
+                          <TableCell>{r.email}</TableCell>
+                          <TableCell>{r.phone}</TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-sm text-gray-500">No referrers found</TableCell>
+                        <TableCell
+                          colSpan={6}
+                          className="text-sm text-gray-500"
+                        >
+                          No referrers found
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
