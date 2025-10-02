@@ -84,6 +84,13 @@ export function createServer() {
     console.warn("Failed to load visitors routes:", e);
   });
 
+  // Notifications & Notices
+  import("./routes/notifications.js").then((m) => {
+    app.use("/api/notifications", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load notifications routes:", e);
+  });
+
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
   app.put("/api/admission-settings", updateAdmissionSettings);
