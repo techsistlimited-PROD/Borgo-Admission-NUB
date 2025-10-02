@@ -470,6 +470,52 @@ class ApiClient {
     }
   }
 
+  // Admin: list export jobs
+  async listExportJobs(): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const res = await fetch('/api/exports/jobs', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to list export jobs' };
+    } catch (e) {
+      console.warn('listExportJobs failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async processExportJob(jobId: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const res = await fetch(`/api/exports/jobs/process/${jobId}`, { method: 'POST', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to process job' };
+    } catch (e) {
+      console.warn('processExportJob failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async downloadExportJob(jobId: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const res = await fetch(`/api/exports/jobs/download/${jobId}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('text/csv')) {
+        const blob = await res.blob();
+        const disposition = res.headers.get('content-disposition') || '';
+        const filename = disposition.match(/filename="?(.*)"?/)?.[1] || `export_${jobId}_${Date.now()}.csv`;
+        return { success: true, data: { blob, filename, isFile: true } } as any;
+      }
+      const json = await res.json().catch(() => ({}));
+      return { success: res.ok, data: json } as any;
+    } catch (e) {
+      console.warn('downloadExportJob failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
   async createDocumentRequirement(requirement: any): Promise<ApiResponse> {
     if (this.serverAvailable) {
       try {
