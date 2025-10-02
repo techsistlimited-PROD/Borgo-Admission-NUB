@@ -184,6 +184,10 @@ export const initializeSchema = async (): Promise<void> => {
         auto_approve_applications BOOLEAN DEFAULT 0,
         send_sms_notifications BOOLEAN DEFAULT 1,
         send_email_notifications BOOLEAN DEFAULT 1,
+        -- Semester system: 'tri' or 'bi'
+        semester_system TEXT NOT NULL DEFAULT 'tri',
+        -- JSON array of semester names in order
+        semester_options_json TEXT DEFAULT '["Spring","Summer","Fall"]',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
