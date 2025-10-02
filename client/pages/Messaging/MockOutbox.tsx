@@ -5,11 +5,15 @@ import { Input } from "../../components/ui/input";
 import apiClient from "../../lib/api";
 import { Copy, Mail, Trash } from "lucide-react";
 import { exportToCsv } from "../../lib/csv";
+import useDebouncedValue from "../../hooks/use-debounce";
+import CsvExportSelector from "../../components/CsvExportSelector";
 
 export default function MockOutbox() {
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebouncedValue(query, 300);
+  const [showExportDialog, setShowExportDialog] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -32,8 +36,8 @@ export default function MockOutbox() {
   };
 
   const filtered = emails.filter((e) => {
-    if (!query) return true;
-    const q = query.toLowerCase();
+    if (!debouncedQuery) return true;
+    const q = debouncedQuery.toLowerCase();
     return [e.to_address, e.subject, e.body, String(e.application_id)].filter(Boolean).join(" ").toLowerCase().includes(q);
   });
 
