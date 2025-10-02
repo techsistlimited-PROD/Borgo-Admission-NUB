@@ -91,6 +91,40 @@ export default function ReferralRequestsCard() {
     setApproving(app.application_id);
     try {
       const res = await apiClient.approveReferralRequest(app.application_id, Number(percentage));
+
+      // Calculate commission amount based on final_amount or total_cost
+      const baseAmount = Number(app.final_amount ?? app.total_cost) || 0;
+      const commissionAmount = Math.round((Number(percentage) / 100) * baseAmount);
+
+      // Persist approved referral to localStorage so Reports can show it (frontend mock)
+      try {
+        const raw = (typeof localStorage !== "undefined" && localStorage.getItem("nu_approved_referrals")) || "[]";
+        let list: any[] = [];
+        try {
+          list = JSON.parse(raw || "[]");
+          if (!Array.isArray(list)) list = [];
+        } catch {
+          list = [];
+        }
+        const entry = {
+          application_id: app.application_id,
+          uuid: app.uuid,
+          tracking_id: app.tracking_id,
+          applicant_name: `${app.first_name} ${app.last_name}`,
+          referrer_employee_id: app.referrer_employee_id,
+          referrer_name: app.referrer_name,
+          percentage: Number(percentage),
+          commission_amount: commissionAmount,
+          final_amount: baseAmount,
+          approved_at: new Date().toISOString(),
+        };
+        list.unshift(entry);
+        localStorage.setItem("nu_approved_referrals", JSON.stringify(list));
+      } catch (e) {
+        // ignore localStorage errors
+        console.warn("Failed to persist approved referral locally", e);
+      }
+
       if (res && res.success) {
         toast({ title: "Approved", description: `Approved ${percentage}% for ${app.first_name} ${app.last_name}` });
         load();
