@@ -312,7 +312,52 @@ export default function AdmissionConfiguration() {
         initializeProgramConfigurations(settingsResponse.data);
       } else {
         // Initialize with defaults if settings failed to load
+        const defaultSettings: AdmissionSettings = {
+          application_start_date: new Date().toISOString().slice(0,10),
+          application_deadline: new Date().toISOString().slice(0,10),
+          late_fee_deadline: new Date().toISOString().slice(0,10),
+          session_name: "",
+          admission_fee: 0,
+          late_fee: 0,
+          max_waiver_percentage: 0,
+          is_admission_open: false,
+          allow_application_editing: true,
+          waiver_enabled: false,
+          auto_approve_applications: false,
+          require_payment_for_review: false,
+          enable_sms_notifications: false,
+          enable_email_notifications: false,
+          contact_email: "",
+          contact_phone: "",
+          help_desk_hours: "",
+          eligibility_check_enabled: false,
+          strict_eligibility_enforcement: false,
+          allow_eligibility_override: false,
+          minimum_ssc_gpa: 0,
+          minimum_hsc_gpa: 0,
+          minimum_bachelor_gpa: 0,
+          minimum_master_gpa: 0,
+          allow_alternative_qualifications: false,
+          show_suggested_programs: false,
+          max_combined_waiver: 0,
+          require_document_verification_for_waiver: false,
+          auto_calculate_result_waiver: false,
+          allow_manual_waiver_override: false,
+          law_admission_test_date: "",
+          architecture_admission_test_date: "",
+          admission_test_fee: 0,
+          law_test_time: "",
+          architecture_test_time: "",
+          law_test_venue_main: "",
+          law_test_venue_khulna: "",
+          architecture_test_venue_main: "",
+          architecture_test_venue_khulna: "",
+          referral_enabled: false,
+          default_referral_commission: 0,
+        };
+        setSettings(defaultSettings);
         initializeProgramConfigurations();
+        toast({ title: "Warning", description: "Failed to load admission settings. Using defaults.", variant: "destructive" });
       }
 
       // Load payment methods
