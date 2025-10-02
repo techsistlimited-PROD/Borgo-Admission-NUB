@@ -497,6 +497,20 @@ export const initializeSchema = async (): Promise<void> => {
       )
     `);
 
+    // Mock emails table (development-only, stores generated mock outgoing emails)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS mock_emails (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        to_address TEXT,
+        subject TEXT,
+        body TEXT,
+        application_id INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        sent_at DATETIME,
+        FOREIGN KEY (application_id) REFERENCES applications(id)
+      )
+    `);
+
     // Payment webhook events
     await dbRun(`
       CREATE TABLE IF NOT EXISTS payment_webhook_events (
