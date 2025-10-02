@@ -133,6 +133,13 @@ export function createServer() {
     console.warn("Failed to load dashboard routes:", e);
   });
 
+  // Employees management (roles)
+  import("./routes/employees.js").then((m) => {
+    app.use("/api/employees", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load employees routes:", e);
+  });
+
   // PDF generation (admit cards, reports) - development/mock implementation
   import("./routes/pdf.js").then((m) => {
     app.use("/api/pdf", m.default);
