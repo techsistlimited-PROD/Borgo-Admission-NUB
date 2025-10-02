@@ -111,6 +111,22 @@ export default function MockOutbox() {
             )}
           </CardContent>
         </Card>
+
+        <CsvExportSelector
+          open={showExportDialog}
+          onOpenChange={(open) => setShowExportDialog(open)}
+          availableColumns={[
+            { key: 'id', label: 'ID' },
+            { key: 'to_address', label: 'To' },
+            { key: 'subject', label: 'Subject' },
+            { key: 'application_id', label: 'Application ID' },
+            { key: 'created_at', label: 'Created At' },
+            { key: 'sent_at', label: 'Sent At' },
+            { key: 'body', label: 'Body' },
+          ]}
+          defaultSelected={['id','to_address','subject','application_id','created_at']}
+          onExport={(cols) => exportToCsv(`mock_emails_${Date.now()}.csv`, filtered, cols)}
+        />
       </div>
     </div>
   );
