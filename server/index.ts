@@ -70,6 +70,20 @@ export function createServer() {
     console.warn("Failed to load staff admissions routes:", e);
   });
 
+  // Students endpoints
+  import("./routes/students.js").then((m) => {
+    app.use("/api/students", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load students routes:", e);
+  });
+
+  // Visitors endpoints
+  import("./routes/visitors.js").then((m) => {
+    app.use("/api/visitors", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load visitors routes:", e);
+  });
+
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
   app.put("/api/admission-settings", updateAdmissionSettings);
