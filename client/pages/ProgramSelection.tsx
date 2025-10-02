@@ -150,19 +150,29 @@ export default function ProgramSelection() {
       try {
         const res = await apiClient.getAdmissionSettings();
         if (res.success && res.data) {
-          const sys = res.data.semester_system || res.data.semesterSystem || "tri";
+          // Normalize semester system to internal ids used by UI
+          let sysRaw = (res.data.semester_system || res.data.semesterSystem || "tri").toString().toLowerCase();
+          const sys = sysRaw.includes("tri") ? "tri-semester" : "bi-semester";
+
           const optsRaw = res.data.semester_options_json || res.data.semester_options || res.data.semesterOptions || null;
           let opts: string[] = [];
           if (optsRaw) {
             try {
-              opts = typeof optsRaw === "string" ? JSON.parse(optsRaw) : optsRaw;
+              const parsed = typeof optsRaw === "string" ? JSON.parse(optsRaw) : optsRaw;
+              opts = (parsed || []).map((s: string) => {
+                const n = String(s).toLowerCase();
+                if (n === "spring") return "winter"; // map legacy Spring -> winter id
+                if (n === "autumn") return "fall";
+                return n;
+              });
             } catch (e) {
-              opts = optsRaw as string[];
+              opts = (optsRaw as string[]).map((s) => String(s).toLowerCase());
             }
           }
-          // Fallback defaults
+
+          // Fallback defaults using UI ids
           if (!opts || opts.length === 0) {
-            opts = sys === "bi" ? ["Spring", "Fall"] : ["Spring", "Summer", "Fall"];
+            opts = sys === "bi-semester" ? ["fall", "winter"] : ["fall", "summer", "winter"];
           }
 
           if (mounted) {
@@ -171,21 +181,22 @@ export default function ProgramSelection() {
             if (!selectedSemester) {
               const now = new Date();
               const month = now.getMonth() + 1; // 1-12
-              let chosen = opts[0] || "Spring";
+              let chosen = opts[0] || "winter";
               if (opts.length === 3) {
-                // tri-semester mapping: Spring Jan-Apr, Summer May-Aug, Fall Sep-Dec
-                if (month >= 1 && month <= 4) chosen = "Spring";
-                else if (month >= 5 && month <= 8) chosen = "Summer";
-                else chosen = "Fall";
+                // tri-semester mapping: winter Jan-Apr, summer May-Aug, fall Sep-Dec
+                if (month >= 1 && month <= 4) chosen = "winter";
+                else if (month >= 5 && month <= 8) chosen = "summer";
+                else chosen = "fall";
               } else {
-                // bi-semester: Spring Jan-Jun, Fall Jul-Dec
-                if (month >= 1 && month <= 6) chosen = "Spring";
-                else chosen = "Fall";
+                // bi-semester: winter Jan-Jun, fall Jul-Dec
+                if (month >= 1 && month <= 6) chosen = "winter";
+                else chosen = "fall";
               }
+
               setSelectedSemester(chosen);
               setSelectedSemesterType(sys);
 
-              // Persist to application context
+              // Persist to application context (store human-readable maybe id)
               updateApplicationData({ semester: chosen, semesterType: sys });
             }
           }
@@ -399,7 +410,7 @@ export default function ProgramSelection() {
       waiverCalculator: "���ওক��ফ ক্যালকুলেটর",
       academicInfo: "একাডেমিক তথ্য",
       sscGPA: "এসএসসি জিপিএ",
-      hscGPA: "����ই���এসসি জিপিএ",
+      hscGPA: "����ই����এসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ���র্থ ব��ষয় ছিল",
       calculateWaiver: "য���গ্য মওকুফ গণনা কর��ন",
       availableWaivers: "���পল��্ধ মওকুফ",
@@ -419,7 +430,7 @@ export default function ProgramSelection() {
       faculty: "অনুষদ",
       description: "বিবরণ",
       waiverApplied: "মওকুফ প্রয়োগ করা হয়েছে",
-      noWaiverEligible: "������পিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
+      noWaiverEligible: "��������পিএর ভিত্তি���ে কোনো মওকু��� যোগ্য ���য়",
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চ�� করুন",
       selectDepartmentFirst: "প্রথ���ে একটি ��িভাগ নির্বাচন করুন",
       enterGPAValues:
