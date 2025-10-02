@@ -145,9 +145,15 @@ class ApiClient {
         });
         const json = await res.json().catch(() => ({}));
         if (res.ok) return { success: true, data: json.data || json };
-        return { success: false, error: json.error || "Failed to load mock emails" };
+        return {
+          success: false,
+          error: json.error || "Failed to load mock emails",
+        };
       } catch (e) {
-        console.warn("getMockEmails server failed, falling back to mock (none)", e);
+        console.warn(
+          "getMockEmails server failed, falling back to mock (none)",
+          e,
+        );
       }
     }
     // No mock fallback available — return empty list
@@ -163,7 +169,10 @@ class ApiClient {
         });
         const json = await res.json().catch(() => ({}));
         if (res.ok) return { success: true, data: json.data || json };
-        return { success: false, error: json.error || "Failed to load sms queue" };
+        return {
+          success: false,
+          error: json.error || "Failed to load sms queue",
+        };
       } catch (e) {
         console.warn("getSmsQueue server failed", e);
       }
@@ -172,11 +181,15 @@ class ApiClient {
   }
 
   async processSms(all = false): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
       const res = await fetch("/api/sms/process", {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
         body: JSON.stringify({ all }),
       });
       const json = await res.json().catch(() => ({}));
@@ -189,11 +202,15 @@ class ApiClient {
   }
 
   async sendSmsById(sms_id: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
       const res = await fetch("/api/sms/send", {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
         body: JSON.stringify({ sms_id }),
       });
       const json = await res.json().catch(() => ({}));
@@ -206,11 +223,15 @@ class ApiClient {
   }
 
   async resendMockEmail(emailId: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
       const res = await fetch("/api/mock-emails/resend", {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+        },
         body: JSON.stringify({ id: emailId }),
       });
       const json = await res.json().catch(() => ({}));
@@ -431,87 +452,112 @@ class ApiClient {
 
   // Server-side export for mock emails. Returns { success, async } or a Blob download
   async serverExportMockEmails(filters: any = {}): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
       const qs = new URLSearchParams(filters).toString();
-      const res = await fetch(`/api/exports/mock-emails?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
-      const contentType = res.headers.get('content-type') || '';
-      if (res.ok && contentType.includes('text/csv')) {
+      const res = await fetch(`/api/exports/mock-emails?${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
+      const contentType = res.headers.get("content-type") || "";
+      if (res.ok && contentType.includes("text/csv")) {
         const blob = await res.blob();
-        const disposition = res.headers.get('content-disposition') || '';
-        const filename = disposition.match(/filename="?(.*)"?/)?.[1] || `mock_emails_${Date.now()}.csv`;
+        const disposition = res.headers.get("content-disposition") || "";
+        const filename =
+          disposition.match(/filename="?(.*)"?/)?.[1] ||
+          `mock_emails_${Date.now()}.csv`;
         return { success: true, data: { blob, filename, isFile: true } } as any;
       }
       const json = await res.json().catch(() => ({}));
       return { success: res.ok, data: json } as any;
     } catch (e) {
-      console.warn('serverExportMockEmails failed', e);
+      console.warn("serverExportMockEmails failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async serverExportSms(filters: any = {}): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
       const qs = new URLSearchParams(filters).toString();
-      const res = await fetch(`/api/exports/sms-queue?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
-      const contentType = res.headers.get('content-type') || '';
-      if (res.ok && contentType.includes('text/csv')) {
+      const res = await fetch(`/api/exports/sms-queue?${qs}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
+      const contentType = res.headers.get("content-type") || "";
+      if (res.ok && contentType.includes("text/csv")) {
         const blob = await res.blob();
-        const disposition = res.headers.get('content-disposition') || '';
-        const filename = disposition.match(/filename="?(.*)"?/)?.[1] || `sms_queue_${Date.now()}.csv`;
+        const disposition = res.headers.get("content-disposition") || "";
+        const filename =
+          disposition.match(/filename="?(.*)"?/)?.[1] ||
+          `sms_queue_${Date.now()}.csv`;
         return { success: true, data: { blob, filename, isFile: true } } as any;
       }
       const json = await res.json().catch(() => ({}));
       return { success: res.ok, data: json } as any;
     } catch (e) {
-      console.warn('serverExportSms failed', e);
+      console.warn("serverExportSms failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   // Admin: list export jobs
   async listExportJobs(): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch('/api/exports/jobs', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch("/api/exports/jobs", {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to list export jobs' };
+      return {
+        success: false,
+        error: json.error || "Failed to list export jobs",
+      };
     } catch (e) {
-      console.warn('listExportJobs failed', e);
+      console.warn("listExportJobs failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async processExportJob(jobId: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/exports/jobs/process/${jobId}`, { method: 'POST', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const res = await fetch(`/api/exports/jobs/process/${jobId}`, {
+        method: "POST",
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return { success: true, data: json.data || json };
-      return { success: false, error: json.error || 'Failed to process job' };
+      return { success: false, error: json.error || "Failed to process job" };
     } catch (e) {
-      console.warn('processExportJob failed', e);
+      console.warn("processExportJob failed", e);
       return { success: false, error: String(e) };
     }
   }
 
   async downloadExportJob(jobId: number): Promise<ApiResponse> {
-    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    if (!this.serverAvailable)
+      return { success: false, error: "Server unavailable" };
     try {
-      const res = await fetch(`/api/exports/jobs/download/${jobId}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
-      const contentType = res.headers.get('content-type') || '';
-      if (res.ok && contentType.includes('text/csv')) {
+      const res = await fetch(`/api/exports/jobs/download/${jobId}`, {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+      });
+      const contentType = res.headers.get("content-type") || "";
+      if (res.ok && contentType.includes("text/csv")) {
         const blob = await res.blob();
-        const disposition = res.headers.get('content-disposition') || '';
-        const filename = disposition.match(/filename="?(.*)"?/)?.[1] || `export_${jobId}_${Date.now()}.csv`;
+        const disposition = res.headers.get("content-disposition") || "";
+        const filename =
+          disposition.match(/filename="?(.*)"?/)?.[1] ||
+          `export_${jobId}_${Date.now()}.csv`;
         return { success: true, data: { blob, filename, isFile: true } } as any;
       }
       const json = await res.json().catch(() => ({}));
       return { success: res.ok, data: json } as any;
     } catch (e) {
-      console.warn('downloadExportJob failed', e);
+      console.warn("downloadExportJob failed", e);
       return { success: false, error: String(e) };
     }
   }
