@@ -98,6 +98,20 @@ export function createServer() {
     console.warn("Failed to load reports routes:", e);
   });
 
+  // PDF generation (admit cards, reports) - development/mock implementation
+  import("./routes/pdf.js").then((m) => {
+    app.use("/api/pdf", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load PDF generation route:", e);
+  });
+
+  // Mock SMS queue management (development-only)
+  import("./routes/sms.js").then((m) => {
+    app.use("/api/sms", m.default);
+  }).catch((e) => {
+    console.warn("Failed to load SMS routes:", e);
+  });
+
   // Admission settings routes
   app.get("/api/admission-settings", getAdmissionSettings);
   app.put("/api/admission-settings", updateAdmissionSettings);
