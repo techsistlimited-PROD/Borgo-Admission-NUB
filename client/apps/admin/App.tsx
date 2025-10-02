@@ -16,6 +16,7 @@ import EmailTemplates from "../../pages/EmailTemplates";
 import AdmissionConfiguration from "../../pages/AdmissionConfiguration";
 import MockOutbox from "../../pages/Messaging/MockOutbox";
 import SmsQueue from "../../pages/Messaging/SmsQueue";
+import AdminMessaging from "../../pages/Messaging/AdminMessaging";
 import AdminLogin from "../../pages/AdminLogin";
 import NotFound from "../../pages/NotFound";
 
