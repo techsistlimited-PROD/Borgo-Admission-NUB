@@ -244,6 +244,80 @@ export const initializeSchema = async (): Promise<void> => {
       )
     `);
 
+    // Fee packages (structured fee components per program/session)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS fee_packages (
+        fee_package_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        program_code TEXT NOT NULL,
+        session_name TEXT,
+        admission_fee REAL DEFAULT 0,
+        tuition_fee REAL DEFAULT 0,
+        lab_fee REAL DEFAULT 0,
+        other_fees REAL DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by_user_id INTEGER
+      )
+    `);
+
+    // Waiver policies (admin-managed)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS waiver_policies (
+        waiver_policy_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL,
+        description TEXT,
+        percentage REAL NOT NULL,
+        active INTEGER DEFAULT 1,
+        criteria_json TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by_user_id INTEGER
+      )
+    `);
+
+    // Program courses (canonical first semester mapping)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS program_courses (
+        program_course_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        program_code TEXT NOT NULL,
+        course_code TEXT NOT NULL,
+        course_name TEXT NOT NULL,
+        semester INTEGER NOT NULL,
+        credits REAL NOT NULL,
+        is_mandatory INTEGER DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Student course offerings (created when offering courses)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS student_course_offerings (
+        offering_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER NOT NULL,
+        application_id INTEGER,
+        program_course_id INTEGER NOT NULL,
+        offered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        offered_by_user_id INTEGER,
+        status TEXT DEFAULT 'Offered' CHECK (status IN ('Offered','Accepted','Declined')),
+        notes TEXT,
+        FOREIGN KEY (student_id) REFERENCES students(student_id),
+        FOREIGN KEY (program_course_id) REFERENCES program_courses(program_course_id)
+      )
+    `);
+
+    // Admission circulars management
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS admission_circulars (
+        circular_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        body TEXT NOT NULL,
+        start_date DATE,
+        end_date DATE,
+        is_active INTEGER DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by_user_id INTEGER
+      )
+    `);
+
     // Document requirements table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS document_requirements (
