@@ -458,7 +458,10 @@ function AppContent() {
             <Route
               path="/admin/referrals"
               element={
-                isAuthenticated && (userType === "admin" || roleLocal === "admission_officer" || roleLocal === "finance_officer") ? (
+                isAuthenticated &&
+                (userType === "admin" ||
+                  roleLocal === "admission_officer" ||
+                  roleLocal === "finance_officer") ? (
                   <Referrals />
                 ) : (
                   <Navigate to="/admin" replace />
