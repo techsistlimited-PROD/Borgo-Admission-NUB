@@ -240,7 +240,12 @@ export default function ApplicantDetail() {
             ugcId: generatedIds.ugc_id,
             batch: generatedIds.batch,
             generatedDate: gid.data.generated_date || new Date().toISOString(),
+            universityEmail: gid.data.generated_email || undefined,
           });
+
+          if (gid.data.generated_email) {
+            toast({ title: "Welcome email (mock) sent", description: gid.data.generated_email });
+          }
         }
 
         // Create student record (mock)
