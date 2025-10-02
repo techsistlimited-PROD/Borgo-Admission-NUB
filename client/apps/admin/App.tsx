@@ -41,6 +41,8 @@ const ProtectedLayout = () => {
             <Route path="/finance" element={<FinancePanel />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/templates" element={<EmailTemplates />} />
+            <Route path="/mock-emails" element={<MockOutbox />} />
+            <Route path="/sms-queue" element={<SmsQueue />} />
             <Route path="/configuration" element={<AdmissionConfiguration />} />
             <Route path="/login" element={<AdminLogin />} />
             <Route path="*" element={<NotFound />} />
