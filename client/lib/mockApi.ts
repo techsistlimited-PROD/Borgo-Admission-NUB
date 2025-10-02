@@ -1091,6 +1091,31 @@ class MockApiService {
     return { success: true, data: { student_id, ugc_id } };
   }
 
+  // Courses search
+  async getCourses(code?: string): Promise<ApiResponse<any[]>> {
+    await this.delay(150);
+    try {
+      const { getAllCourses } = await import('./syllabusData');
+      let courses = getAllCourses();
+      if (code) {
+        const q = code.toLowerCase();
+        courses = courses.filter((c: any) => c.id.toLowerCase().includes(q) || c.code?.toLowerCase().includes(q) || c.title?.toLowerCase().includes(q));
+      }
+      return { success: true, data: courses };
+    } catch (e) {
+      return { success: true, data: [] };
+    }
+  }
+
+  async saveTransferCourses(payload: { applicant_id: string; courses: any[] }): Promise<ApiResponse> {
+    await this.delay(150);
+    const appIndex = this.applications.findIndex((a) => a.id === payload.applicant_id || a.uuid === payload.applicant_id);
+    if (appIndex === -1) return { success: false, error: 'Application not found' };
+    // Attach transfer courses to application record
+    this.applications[appIndex].transfer_courses = payload.courses;
+    return { success: true, data: { saved: true } };
+  }
+
   async generateMoneyReceipt(applicationId: string, amount: number): Promise<ApiResponse<{ mr_number: string; receipt_url: string }>> {
     await this.delay(300);
 
