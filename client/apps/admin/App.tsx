@@ -10,6 +10,8 @@ import Sidebar from "../../components/Sidebar";
 import { AuthProvider, useAuth } from "../../contexts/AuthContext";
 import AdminAdmissionList from "../../pages/AdminAdmissionList";
 import ApplicantDetail from "../../pages/ApplicantDetail";
+import CreditTransferList from "../../pages/CreditTransferList";
+import CreditTransferReview from "../../pages/CreditTransferReview";
 import FinancePanel from "../../pages/FinancePanel";
 import Reports from "../../pages/Reports";
 import EmailTemplates from "../../pages/EmailTemplates";
@@ -38,6 +40,8 @@ const ProtectedLayout = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/admissions" replace />} />
             <Route path="/admissions" element={<AdminAdmissionList />} />
+            <Route path="/admin/credit-transfers" element={<CreditTransferList />} />
+            <Route path="/admin/credit-transfer/:id" element={<CreditTransferReview />} />
             <Route path="/applicant/:id" element={<ApplicantDetail />} />
             <Route path="/finance" element={<FinancePanel />} />
             <Route path="/reports" element={<Reports />} />
