@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { Input } from "../../components/ui/input";
 import apiClient from "../../lib/api";
 import { Copy, Mail, Trash } from "lucide-react";
+import { exportToCsv } from "../../lib/csv";
 
 export default function MockOutbox() {
   const [emails, setEmails] = useState<any[]>([]);
