@@ -74,8 +74,28 @@ export default function SmsQueue() {
             <div className="w-64">
               <Input placeholder="Search SMS by number, message or status" value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>
-            <Button onClick={() => exportToCsv(`sms_queue_${Date.now()}.csv`, filtered, ["sms_id","to_number","message","provider","status","created_at","processed_at"]) } disabled={loading || filtered.length===0}>
+            <Button onClick={() => setShowExportDialog(true)} disabled={loading || filtered.length===0}>
               Export CSV
+            </Button>
+            <Button onClick={async () => {
+              const res = await apiClient.serverExportSms({ search: debouncedQuery, format: 'csv' });
+              if (res.success && (res.data as any)?.isFile) {
+                const { blob, filename } = (res.data as any);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+              } else if (res.success && (res.data as any)?.async) {
+                alert((res.data as any).message || 'Export queued');
+              } else {
+                alert(res.error || 'Export failed');
+              }
+            }} disabled={loading}>
+              Server Export
             </Button>
             <Button onClick={load} disabled={loading}>
               Refresh
