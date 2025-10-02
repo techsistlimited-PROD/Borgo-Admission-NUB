@@ -126,7 +126,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3" aria-label="Northern University Bangladesh Home">
-            <div className="w-10 h-10 bg-deep-plum rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-deep-plum rounded-lg flex items-center justify-center" role="img" aria-label="NU logo">
               <span className="text-white font-bold text-lg">NU</span>
             </div>
             <div className="font-poppins font-semibold text-deep-plum text-lg">
