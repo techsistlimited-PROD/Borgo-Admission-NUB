@@ -862,6 +862,28 @@ class ApiClient {
   ): Promise<ApiResponse> {
     return await mockApi.createStudentRecord(applicationId, ids);
   }
+
+  async generateStudentForApplicant(applicantId: string): Promise<ApiResponse<{ student_id: string; ugc_id: string }>> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch(`/api/id/generate-student`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) },
+          body: JSON.stringify({ applicant_id: applicantId }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json } as any;
+        console.warn('generateStudentForApplicant server returned non-ok', res.status);
+        this.serverAvailable = false;
+        return await mockApi.generateStudentForApplicant(applicantId);
+      } catch (e) {
+        console.warn('generateStudentForApplicant server failed', e);
+        this.serverAvailable = false;
+        return await mockApi.generateStudentForApplicant(applicantId);
+      }
+    }
+    return await mockApi.generateStudentForApplicant(applicantId);
+  }
   async generateMoneyReceipt(
     applicationId: string,
     amount: number,
