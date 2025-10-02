@@ -85,7 +85,7 @@ export default function Index() {
       uploadOffline: "অফ���াইন আবেদন আপলোড করুন",
       admissionProcess: "সহজ ৪-ধাপের ভর্তি প্রক্রিয়া",
       regularAdmission: "নিয়মিত ভর্তি",
-      creditTransfer: "ক্রেডিট ট্রান্সফার",
+      creditTransfer: "ক্রেডিট ট্রা���্সফার",
       regularAdmissionDesc:
         "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করু��",
       creditTransferDesc: "অন্��� প্রতিষ্ঠান থেকে আপনার ক্রেডিট স্থানান্তর করুন",
@@ -225,10 +225,8 @@ export default function Index() {
       <section className="relative overflow-hidden py-20 lg:py-32 bg-gradient-to-br from-deep-plum via-accent-purple to-pink-accent">
         {/* Background Image */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://cdn.builder.io/api/v1/image/assets%2F9dbc4a4b9eb644b2b362ca2494d596c9%2Fefcd82a2ea5142d2bf6c77bf87aafdb7?format=webp&width=1200')`,
-          }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat hero-bg"
+          aria-hidden="true"
         ></div>
 
         {/* Gradient Overlay for better text readability */}
