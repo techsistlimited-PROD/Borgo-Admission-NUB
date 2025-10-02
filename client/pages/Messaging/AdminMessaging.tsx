@@ -143,14 +143,19 @@ export default function AdminMessaging() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><MessageCircle className="w-4 h-4"/> SMS Queue</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2"><MessageCircle className="w-4 h-4"/> SMS Queue</CardTitle>
+                <div className="w-64">
+                  <Input placeholder="Search SMS by number, message or status" value={smsQuery} onChange={(e) => setSmsQuery(e.target.value)} />
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              {sms.length === 0 ? (
+              {filteredSms.length === 0 ? (
                 <div className="text-sm text-gray-500">No SMS in queue.</div>
               ) : (
                 <div className="space-y-3">
-                  {sms.map((s) => (
+                  {filteredSms.map((s) => (
                     <div key={s.sms_id} className="border rounded p-3">
                       <div className="flex justify-between items-start">
                         <div>
