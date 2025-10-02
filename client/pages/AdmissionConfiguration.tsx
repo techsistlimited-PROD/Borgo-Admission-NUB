@@ -2249,12 +2249,12 @@ export default function AdmissionConfiguration() {
                     (managed in Referrals page).
                   </p>
                   <div className="space-y-2 max-h-48 overflow-auto">
-                    {referrersList.length === 0 ? (
+                    {!Array.isArray(referrersList) || referrersList.length === 0 ? (
                       <div className="text-sm text-gray-500">
                         No referrers found.
                       </div>
                     ) : (
-                      referrersList.map((r) => (
+                      (referrersList as any[]).map((r) => (
                         <div
                           key={r.employee_id}
                           className="flex items-center justify-between p-2 border rounded"
