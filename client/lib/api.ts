@@ -866,7 +866,160 @@ class ApiClient {
       return { success: false, error: String(e) };
     }
   }
+
+  // Finance / Waivers / Bills
+  async getWaiverPolicies(): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/finance/waiver-policies', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load waiver policies' };
+    } catch (e) {
+      console.warn('getWaiverPolicies failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async listWaiverAssignments(applicationId?: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const qs = applicationId ? `?application_id=${encodeURIComponent(String(applicationId))}` : '';
+      const res = await fetch(`/api/finance/waiver-assignments${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load waiver assignments' };
+    } catch (e) {
+      console.warn('listWaiverAssignments failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async assignWaiver(payload: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/finance/waiver-assignments', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to assign waiver' };
+    } catch (e) {
+      console.warn('assignWaiver failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async updateWaiverAssignment(id: number, updates: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/finance/waiver-assignments/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(updates) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to update waiver assignment' };
+    } catch (e) {
+      console.warn('updateWaiverAssignment failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  // Fee packages
+  async getFeePackages(): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/finance/fee-packages', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load fee packages' };
+    } catch (e) {
+      console.warn('getFeePackages failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async createFeePackage(payload: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/finance/fee-packages', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to create fee package' };
+    } catch (e) {
+      console.warn('createFeePackage failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async updateFeePackage(id: number, updates: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/finance/fee-packages/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(updates) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to update fee package' };
+    } catch (e) {
+      console.warn('updateFeePackage failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async deleteFeePackage(id: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/finance/fee-packages/${id}`, { method: 'DELETE', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true };
+      return { success: false, error: json.error || 'Failed to delete fee package' };
+    } catch (e) {
+      console.warn('deleteFeePackage failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  // Bills
+  async getStudentBills(query: { student_id?: number; application_id?: number } = {}): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const qs = new URLSearchParams(query as any).toString();
+      const res = await fetch(`/api/finance/bills?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load bills' };
+    } catch (e) {
+      console.warn('getStudentBills failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async createStudentBill(payload: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/finance/bills', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to create bill' };
+    } catch (e) {
+      console.warn('createStudentBill failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async markBillPaid(billId: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/finance/bills/${billId}/pay`, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify({}) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to mark bill paid' };
+    } catch (e) {
+      console.warn('markBillPaid failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
 }
+
+const apiClient = new ApiClient();
+
+export default apiClient;
 
 const apiClient = new ApiClient();
 
