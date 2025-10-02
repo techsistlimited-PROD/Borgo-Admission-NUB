@@ -150,7 +150,7 @@ router.patch("/applications/:id", authenticateToken, requirePermission("applicat
     }
 
     // Build update
-    const allowed = ['first_name','middle_name','last_name','full_name','date_of_birth','gender','mobile_number','email','permanent_address','present_address','photo_url','admission_type','previous_university','credits_earned','status','payment_status','admission_test_required','admission_test_status','notes','nid_no','passport_no','birth_certificate_no'];
+    const allowed = ['first_name','middle_name','last_name','full_name','date_of_birth','gender','mobile_number','email','permanent_address','present_address','photo_url','father_name','father_phone','mother_name','mother_phone','guardian_name','guardian_phone','guardian_address','quota','religion','disability_status','blood_group','required_credits','grading_system','remarks','admission_type','previous_university','credits_earned','status','payment_status','admission_test_required','admission_test_status','notes','nid_no','passport_no','birth_certificate_no'];
     const fields = Object.keys(updates).filter(k => allowed.includes(k));
     if (fields.length === 0) return res.status(400).json({ error: 'NO_VALID_FIELDS' });
 
