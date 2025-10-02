@@ -1095,6 +1095,35 @@ class ApiClient {
     }
   }
 
+  // Students listing (wraps server /api/students)
+  async getStudents(params: { search?: string; program_code?: string; semester_id?: number; page?: number; limit?: number } = {}): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const qs = new URLSearchParams(params as any).toString();
+      const res = await fetch(`/api/students?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load students' };
+    } catch (e) {
+      console.warn('getStudents failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  // Dashboard
+  async getDashboardSummary(): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/dashboard/summary', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load dashboard' };
+    } catch (e) {
+      console.warn('getDashboardSummary failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
 }
 
 const apiClient = new ApiClient();
