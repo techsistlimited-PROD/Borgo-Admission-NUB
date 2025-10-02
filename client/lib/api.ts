@@ -1124,6 +1124,73 @@ class ApiClient {
     }
   }
 
+  // Notifications / Notices
+  async createNotice(payload: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/notifications/notices', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to create notice' };
+    } catch (e) {
+      console.warn('createNotice failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async listNotices(onlyActive = true): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/notifications/notices?onlyActive=${onlyActive ? '1' : '0'}`);
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load notices' };
+    } catch (e) {
+      console.warn('listNotices failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async getNoticeAttachments(noticeId: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/notifications/notices/${noticeId}/attachments`);
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load attachments' };
+    } catch (e) {
+      console.warn('getNoticeAttachments failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async getUserNotifications(page = 1, limit = 50, unreadOnly = false): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const qs = new URLSearchParams({ page: String(page), limit: String(limit), unreadOnly: unreadOnly ? '1' : '0' }).toString();
+      const res = await fetch(`/api/notifications/me?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load notifications' };
+    } catch (e) {
+      console.warn('getUserNotifications failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async markNotificationRead(notificationId: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/notifications/${notificationId}/read`, { method: 'POST', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true };
+      return { success: false, error: json.error || 'Failed to mark read' };
+    } catch (e) {
+      console.warn('markNotificationRead failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
 }
 
 const apiClient = new ApiClient();
