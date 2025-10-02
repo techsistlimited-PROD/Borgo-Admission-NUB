@@ -151,7 +151,9 @@ export default function Sidebar({ userType }: SidebarProps) {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div
+    <nav
+      role="navigation"
+      aria-label="Main Navigation"
       className={`${isCollapsed ? "w-16" : "w-64"} transition-all duration-300 bg-white border-r border-gray-200 min-h-screen flex flex-col`}
     >
       {/* Header */}
@@ -231,6 +233,6 @@ export default function Sidebar({ userType }: SidebarProps) {
           </div>
         </div>
       )}
-    </div>
+    </nav>
   );
 }
