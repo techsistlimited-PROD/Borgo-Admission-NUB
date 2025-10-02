@@ -133,6 +133,22 @@ export default function SmsQueue() {
             )}
           </CardContent>
         </Card>
+
+        <CsvExportSelector
+          open={showExportDialog}
+          onOpenChange={(open) => setShowExportDialog(open)}
+          availableColumns={[
+            { key: 'sms_id', label: 'ID' },
+            { key: 'to_number', label: 'To' },
+            { key: 'message', label: 'Message' },
+            { key: 'provider', label: 'Provider' },
+            { key: 'status', label: 'Status' },
+            { key: 'created_at', label: 'Created At' },
+            { key: 'processed_at', label: 'Processed At' },
+          ]}
+          defaultSelected={['sms_id','to_number','message','status','created_at']}
+          onExport={(cols) => exportToCsv(`sms_queue_${Date.now()}.csv`, filtered, cols)}
+        />
       </div>
     </div>
   );
