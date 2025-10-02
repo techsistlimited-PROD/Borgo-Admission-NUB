@@ -152,7 +152,7 @@ export default function ApplicantDetail() {
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
-      documentsUploaded: "আপলোডকৃত কাগজপত���র",
+      documentsUploaded: "আপলোডক��ত কাগজপত্র",
       waiverInfo: "মওকুফ তথ্য",
       actions: "কর্ম",
       approve: "আবেদন অনুমোদন",
@@ -483,7 +483,7 @@ export default function ApplicantDetail() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Button onClick={handleSendSMS} disabled={sendingSMS} className="bg-green-600 hover:bg-green-700"><Phone className="w-4 h-4 mr-2" />{sendingSMS ? "Sending..." : t.sendSMSId}</Button>
                     <Button onClick={handleSendEmail} disabled={sendingEmail} variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"><Mail className="w-4 h-4 mr-2" />{sendingEmail ? "Sending..." : t.sendEmailId}</Button>
-                    {mrNumber && <Button variant="outline" className="ml-auto" onClick={() => { /* download MR */ }}><Download className="w-4 h-4 mr-2" />Download MR</Button>}
+                    {mrNumber && <Button variant="outline" className="ml-auto" onClick={handleDownloadReceipt} disabled={isDownloadingReceipt}>{isDownloadingReceipt ? (<><Clock className="w-4 h-4 mr-2 animate-spin" />Downloading...</>) : (<><Download className="w-4 h-4 mr-2" />Download MR</>)}</Button>}
                   </div>
                 </div>
               ) : (
