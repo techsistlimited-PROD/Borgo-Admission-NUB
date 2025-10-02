@@ -528,17 +528,54 @@ export const initializeSchema = async (): Promise<void> => {
       CREATE TABLE IF NOT EXISTS waiver_assignments (
         waiver_assignment_id INTEGER PRIMARY KEY AUTOINCREMENT,
         application_id INTEGER NOT NULL,
-        waiver_code TEXT NOT NULL,
-        percent REAL NOT NULL,
+        waiver_code TEXT,
+        percent REAL,
         assigned_by_user_id INTEGER,
         assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         locked INTEGER DEFAULT 0,
         locked_by_user_id INTEGER,
         locked_at DATETIME,
+        reason TEXT,
         FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
       )
     `);
     await dbRun(`CREATE INDEX IF NOT EXISTS ix_waiver_assignments_app ON waiver_assignments(application_id)`);
+
+    // Scholarships (program-level definitions)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS scholarships (
+        scholarship_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL,
+        description TEXT,
+        percentage REAL,
+        amount REAL,
+        active INTEGER DEFAULT 1,
+        criteria_json TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_by_user_id INTEGER
+      )
+    `);
+
+    // Scholarship assignments to applications
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS scholarship_assignments (
+        scholarship_assignment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        application_id INTEGER NOT NULL,
+        scholarship_id INTEGER NOT NULL,
+        percent REAL,
+        amount REAL,
+        assigned_by_user_id INTEGER,
+        assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        locked INTEGER DEFAULT 0,
+        locked_by_user_id INTEGER,
+        locked_at DATETIME,
+        FOREIGN KEY (application_id) REFERENCES applications_v2(application_id),
+        FOREIGN KEY (scholarship_id) REFERENCES scholarships(scholarship_id)
+      )
+    `);
+
+    await dbRun(`CREATE INDEX IF NOT EXISTS ix_scholarship_assign_app ON scholarship_assignments(application_id)`);
 
     // Admission tests
     await dbRun(`
