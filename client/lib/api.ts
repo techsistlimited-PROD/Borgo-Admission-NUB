@@ -797,6 +797,75 @@ class ApiClient {
       return { success: false, error: String(e) };
     }
   }
+
+  // Academic history
+  async getAcademicHistory(applicationId: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const qs = new URLSearchParams({ application_id: String(applicationId) }).toString();
+      const res = await fetch(`/api/academic/history?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || "Failed to load academic history" };
+    } catch (e) {
+      console.warn("getAcademicHistory failed", e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async addAcademicHistory(entry: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const res = await fetch('/api/academic/history', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(entry) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to add academic history' };
+    } catch (e) {
+      console.warn('addAcademicHistory failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  // Credit transfers
+  async getCreditTransfers(applicationId: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const qs = new URLSearchParams({ application_id: String(applicationId) }).toString();
+      const res = await fetch(`/api/academic/credit-transfers?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || "Failed to load credit transfers" };
+    } catch (e) {
+      console.warn('getCreditTransfers failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async addCreditTransfer(payload: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const res = await fetch('/api/academic/credit-transfers', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to create credit transfer' };
+    } catch (e) {
+      console.warn('addCreditTransfer failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async calculateCreditEquivalency(items: any[]): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const res = await fetch('/api/academic/credit-transfers/calc', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify({ items }) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to calculate equivalency' };
+    } catch (e) {
+      console.warn('calculateCreditEquivalency failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
 }
 
 const apiClient = new ApiClient();
