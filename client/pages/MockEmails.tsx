@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import apiClient from "../lib/api";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "../components/ui/table";
 import { Button } from "../components/ui/button";
-import { Download, Mail } from "lucide-react";
+import { Download, Mail, Search } from "lucide-react";
 import { useToast } from "../hooks/use-toast";
+import { Input } from "../components/ui/input";
 
 export default function MockEmails() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [emails, setEmails] = useState<any[]>([]);
+
+  // Filters
+  const [q, setQ] = useState("");
+  const [applicationFilter, setApplicationFilter] = useState("");
+  const [dateFrom, setDateFrom] = useState<string | undefined>(undefined);
+  const [dateTo, setDateTo] = useState<string | undefined>(undefined);
 
   const load = async () => {
     setLoading(true);
@@ -32,6 +40,30 @@ export default function MockEmails() {
     load();
   }, []);
 
+  const filtered = useMemo(() => {
+    return emails.filter((e) => {
+      // text search over to_address and subject
+      if (q) {
+        const qq = q.toLowerCase();
+        if (!((e.to_address || "").toLowerCase().includes(qq) || (e.subject || "").toLowerCase().includes(qq) || (e.body || "").toLowerCase().includes(qq))) return false;
+      }
+      if (applicationFilter) {
+        if (!String(e.application_id || "").includes(applicationFilter)) return false;
+      }
+      if (dateFrom) {
+        const from = new Date(dateFrom);
+        if (new Date(e.created_at) < from) return false;
+      }
+      if (dateTo) {
+        const to = new Date(dateTo);
+        // include whole day
+        to.setHours(23, 59, 59, 999);
+        if (new Date(e.created_at) > to) return false;
+      }
+      return true;
+    });
+  }, [emails, q, applicationFilter, dateFrom, dateTo]);
+
   const downloadEmail = (email: any) => {
     const blob = new Blob([email.body || ""], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -43,6 +75,13 @@ export default function MockEmails() {
     a.remove();
     URL.revokeObjectURL(url);
     toast({ title: "Email downloaded" });
+  };
+
+  const clearFilters = () => {
+    setQ("");
+    setApplicationFilter("");
+    setDateFrom(undefined);
+    setDateTo(undefined);
   };
 
   return (
@@ -57,8 +96,19 @@ export default function MockEmails() {
           <CardTitle className="flex items-center gap-2"><Mail className="w-5 h-5" /> Mock Emails</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="mb-4">
-            <Button onClick={load} className="bg-deep-plum hover:bg-accent-purple">Refresh</Button>
+          <div className="mb-4 flex flex-col md:flex-row gap-3 items-start">
+            <div className="flex items-center gap-2 flex-1">
+              <Search className="w-4 h-4 text-gray-400" />
+              <Input placeholder="Search by recipient, subject or content" value={q} onChange={(e:any)=>setQ(e.target.value)} className="flex-1" />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Input placeholder="Application ID" value={applicationFilter} onChange={(e:any)=>setApplicationFilter(e.target.value)} className="w-40" />
+              <input type="date" value={dateFrom||""} onChange={(e)=>setDateFrom(e.target.value||undefined)} className="border rounded p-2" />
+              <input type="date" value={dateTo||""} onChange={(e)=>setDateTo(e.target.value||undefined)} className="border rounded p-2" />
+              <Button onClick={clearFilters} className="bg-gray-200 text-gray-800">Clear</Button>
+              <Button onClick={load} className="bg-deep-plum hover:bg-accent-purple">Refresh</Button>
+            </div>
           </div>
 
           {loading ? (
@@ -76,7 +126,7 @@ export default function MockEmails() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {emails.map((e: any) => (
+                  {filtered.map((e: any) => (
                     <TableRow key={e.id}>
                       <TableCell className="font-mono text-sm">{e.to_address}</TableCell>
                       <TableCell className="text-sm">{e.subject}</TableCell>
