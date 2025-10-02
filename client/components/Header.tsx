@@ -177,6 +177,7 @@ export default function Header({ showLogin = false }: HeaderProps) {
               variant="outline"
               size="sm"
               className="border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
+              aria-label="Start a new application"
             >
               <Plus className="w-4 h-4 mr-2" />
               {t.newApplication}
