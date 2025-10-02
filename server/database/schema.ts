@@ -751,6 +751,23 @@ export const initializeSchema = async (): Promise<void> => {
       )
     `);
 
+    // Export jobs table to track queued export processing and generated files
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS export_jobs (
+        job_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        export_id INTEGER,
+        export_type TEXT,
+        params_json TEXT,
+        status TEXT DEFAULT 'queued' CHECK (status IN ('queued','processing','done','failed')),
+        file_path TEXT,
+        file_name TEXT,
+        error TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        completed_at DATETIME,
+        FOREIGN KEY (export_id) REFERENCES audit_dashboard_export(export_id)
+      )
+    `);
+
     // Mock emails table (development-only, stores generated mock outgoing emails)
     await dbRun(`
       CREATE TABLE IF NOT EXISTS mock_emails (
