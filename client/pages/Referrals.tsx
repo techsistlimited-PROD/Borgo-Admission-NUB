@@ -128,8 +128,12 @@ export default function Referrals() {
       const res = await apiClient.getReferrers();
       if (res.success && res.data) {
         // enhance with sample stats if missing
-        const server = res.data.referrers || [];
-        const enriched = server.map((r: any) => ({
+        const server = Array.isArray(res.data.referrers)
+          ? res.data.referrers
+          : Array.isArray(res.data)
+          ? res.data
+          : [];
+        const enriched = (server || []).map((r: any) => ({
           total_referrals: r.total_referrals ?? Math.floor(Math.random() * 50),
           total_amount: r.total_amount ?? Math.floor(Math.random() * 200000),
           last_activity: r.last_activity ?? null,
