@@ -256,7 +256,22 @@ export async function initializeDatabase() {
 
     const databaseType = process.env.DATABASE_TYPE || "sqlite";
 
-    if (databaseType === "supabase") {
+  if (databaseType === "neon" || databaseType === "neon-mock") {
+      console.log("🌐 Using Neon (mock) database for demo");
+      // Load the neon mock helper which provides a lightweight client for demos
+      const { connectNeonMock, getNeonClient } = await import("./database/neonMock.js");
+      await connectNeonMock();
+      // attach a mock client for parts of the code that may expect a neon client
+      (global as any).neonClient = getNeonClient();
+
+      // For demo purposes we still keep SQLite as the primary storage so the rest of
+      // the application functions without needing a real Neon/Postgres instance.
+      await connectDB();
+      await initializeSchema();
+      await runMigration();
+      await seedDatabase();
+
+    } else if (databaseType === "supabase") {
       console.log("🌐 Using Supabase database");
 
       // Dynamically import Supabase only when needed
