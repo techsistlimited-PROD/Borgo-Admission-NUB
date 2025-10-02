@@ -22,8 +22,15 @@ export default function MockEmails() {
     setLoading(true);
     try {
       const res = await apiClient.getMockEmails();
-      if (res.success && res.data) {
-        setEmails(res.data);
+      if (res.success) {
+        const data = res.data;
+        if (Array.isArray(data)) {
+          setEmails(data);
+        } else if (data && Array.isArray((data as any).emails)) {
+          setEmails((data as any).emails);
+        } else {
+          setEmails([]);
+        }
       } else {
         toast({ title: "Failed to load mock emails", variant: "destructive" });
       }
