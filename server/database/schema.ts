@@ -668,6 +668,63 @@ export const initializeSchema = async (): Promise<void> => {
         active INTEGER DEFAULT 1
       )
     `);
+
+    // Notices and user notifications
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS notices (
+        notice_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        body TEXT NOT NULL,
+        start_date DATE,
+        end_date DATE,
+        is_active INTEGER DEFAULT 1,
+        target_roles TEXT, -- JSON array of role_key strings or null for all
+        created_by_user_id INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS notice_attachments (
+        attachment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        notice_id INTEGER NOT NULL,
+        file_url TEXT NOT NULL,
+        file_name TEXT,
+        mime_type TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (notice_id) REFERENCES notices(notice_id)
+      )
+    `);
+
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS user_notifications (
+        notification_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        notice_id INTEGER,
+        title TEXT,
+        message TEXT,
+        type TEXT DEFAULT 'info',
+        read INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        read_at DATETIME,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (notice_id) REFERENCES notices(notice_id)
+      )
+    `);
+
+    // SMS queue for async delivery
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS sms_queue (
+        sms_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        to_number TEXT NOT NULL,
+        message TEXT NOT NULL,
+        provider TEXT,
+        status TEXT DEFAULT 'queued',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        processed_at DATETIME,
+        error TEXT
+      )
+    `);
     await dbRun(`
       CREATE TABLE IF NOT EXISTS admission_dashboard_cache (
         cache_id INTEGER PRIMARY KEY AUTOINCREMENT,
