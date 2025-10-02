@@ -775,7 +775,7 @@ export default function Reports() {
       studentReports: "শিক্ষার্��ী রিপোর্ট",
       financialReports: "আর্থিক রিপোর্ট",
       waiverReports: "মওকুফ রিপোর্ট",
-      idCardReports: "আইডি কার্ড রিপোর্ট",
+      idCardReports: "আইডি কার��ড রিপোর্ট",
       targetReports: "লক্ষ্য র��পোর্ট",
 
       totalApplications: "মোট আবেদন",
@@ -792,7 +792,7 @@ export default function Reports() {
       programWiseAdmissions:
         "প্রোগ্রাম অনুযায়ী সেমিস্টার প্রতি ভর্তিকৃত শিক্ষার্��ীর সংখ্যা",
       employeeWiseCollection: "কর্মচারী অনুযায়ী ভর্তি ফি সংগ্রহ",
-      dailyCollectionReport: "ভর্তি কর্মকর্তাদের দ���নিক সংগ্র�� রিপোর্ট",
+      dailyCollectionReport: "ভর্তি কর্মকর���তাদের দ���নিক সংগ্র�� রিপোর্ট",
 
       departmentColumn: "বিভাগ",
       rate: "হার",
@@ -1606,7 +1606,7 @@ export default function Reports() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {referrersList.map((r) => (
+                    {Array.isArray(referrersList) && referrersList.length > 0 ? referrersList.map((r) => (
                       <TableRow key={r.employee_id}>
                         <TableCell className="font-mono">
                           {r.employee_id}
@@ -1617,7 +1617,11 @@ export default function Reports() {
                         <TableCell>{r.email}</TableCell>
                         <TableCell>{r.phone}</TableCell>
                       </TableRow>
-                    ))}
+                    )) : (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-sm text-gray-500">No referrers found</TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
