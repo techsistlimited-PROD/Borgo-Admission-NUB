@@ -156,6 +156,9 @@ export default function AdminMessaging() {
             <Button onClick={load} disabled={loading}>
               Refresh
             </Button>
+            <Button className="ml-2" onClick={async () => { setJobsOpen(true); await loadJobs(); }} disabled={loading}>
+              Queued Exports
+            </Button>
           </div>
         </div>
 
