@@ -211,6 +211,9 @@ export default function Header({ showLogin = false }: HeaderProps) {
               </button>
             </div>
 
+            {/* Minimal DB indicator (demo mode) */}
+            <DbIndicator />
+
             {/* User Info or Login */}
             {user ? (
               <div className="flex items-center gap-3">
