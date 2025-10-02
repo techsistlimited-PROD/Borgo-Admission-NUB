@@ -172,6 +172,8 @@ export default function Sidebar({ userType }: SidebarProps) {
             size="sm"
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="text-gray-500 hover:text-deep-plum"
+            aria-label={isCollapsed ? 'Expand navigation' : 'Collapse navigation'}
+            aria-expanded={!isCollapsed}
           >
             {isCollapsed ? (
               <ChevronRight className="w-4 h-4" />
