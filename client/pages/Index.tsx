@@ -80,7 +80,7 @@ export default function Index() {
       heroSubtitle:
         "নর্দার্ন ইউনিভার্সিটি বাংলাদেশে যোগ দিন - যেখানে উৎকর্ষতা সুযোগের সাথে মিলিত হয়",
       heroDescription:
-        "মাত্র ৫টি সহজ ধাপে আপনার অনলাইন ভর্তি প্রক্রিয়া শুরু করুন। আমাদের সুবিধাজনক স��স্টেম ���পনার স্বপ্নের প্রোগ্রামে আবেদন করা সহজ করে তোলে।",
+        "মাত্র ৫টি সহজ ধাপে আপনার ���নলাইন ভর্তি প্রক্রিয়া শুরু করুন। আমাদের সুবিধাজনক স��স্টেম ���পনার স্বপ্নের প্রোগ্রামে আবেদন করা সহজ করে তোলে।",
       startJourney: "আপনার যাত্রা শুরু করুন",
       uploadOffline: "অফ���াইন আবেদন আপলোড করুন",
       admissionProcess: "সহজ ৪-ধাপের ভর্তি প্রক্রিয়া",
@@ -90,7 +90,7 @@ export default function Index() {
         "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করু��",
       creditTransferDesc: "অন্��� প্রতিষ্ঠান থেকে আপনার ক্রেডিট স্থানান্তর করুন",
       step1: "প্রোগ্রাম নির্বাচন ও খরচ গণনা",
-      step1Desc: "প্রোগ্রাম, বিভাগ নির্বাচন এবং উপলব্ধ মওকুফ দেখুন",
+      step1Desc: "প্রোগ্রাম, বিভাগ নির্বাচন এবং উপলব্ধ মওকুফ ���েখুন",
       step2: "ব্যক্তিগত তথ্য",
       step2Desc: "আপনার ব্যক্তিগত তথ্য পূরণ করুন",
       step3: "শিক্ষাগত ইতিহাস",
@@ -104,7 +104,7 @@ export default function Index() {
       modernFacilities: "আধুনিক সুবিধা",
       modernFacilitiesDesc: "অত্যাধুনিক ল্যাব এবং শিক্ষার পরিবেশ",
       careerSupport: "ক্যারিয়ার সাপোর্ট",
-      careerSupportDesc: "নিবেদিত চাকরির সহায়তা এবং ক্যারিয়ার গাইডেন্স",
+      careerSupportDesc: "নিবেদিত চাকরির সহায়তা এ��ং ক্যারিয়ার গাইডেন্স",
       affordableEducation: "সাশ্রয়ী শিক্ষা",
       affordableEducationDesc: "বিভিন্ন বৃত্তির সুযোগ সহ মানসম্পন্ন শিক্ষা",
       waiverHighlights: "বৃত্তি ও মওকুফের সুযোগ",
@@ -308,6 +308,7 @@ export default function Index() {
                       variant="outline"
                       size="lg"
                       className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-deep-plum text-lg px-8 py-4"
+                      aria-label="Upload offline admission application"
                     >
                       <Upload className="w-5 h-5 mr-2" />
                       Offline Admission
