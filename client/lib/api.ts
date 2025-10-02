@@ -429,6 +429,47 @@ class ApiClient {
     return await mockApi.getDocumentRequirements();
   }
 
+  // Server-side export for mock emails. Returns { success, async } or a Blob download
+  async serverExportMockEmails(filters: any = {}): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const qs = new URLSearchParams(filters).toString();
+      const res = await fetch(`/api/exports/mock-emails?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('text/csv')) {
+        const blob = await res.blob();
+        const disposition = res.headers.get('content-disposition') || '';
+        const filename = disposition.match(/filename="?(.*)"?/)?.[1] || `mock_emails_${Date.now()}.csv`;
+        return { success: true, data: { blob, filename, isFile: true } } as any;
+      }
+      const json = await res.json().catch(() => ({}));
+      return { success: res.ok, data: json } as any;
+    } catch (e) {
+      console.warn('serverExportMockEmails failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async serverExportSms(filters: any = {}): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: "Server unavailable" };
+    try {
+      const qs = new URLSearchParams(filters).toString();
+      const res = await fetch(`/api/exports/sms-queue?${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('text/csv')) {
+        const blob = await res.blob();
+        const disposition = res.headers.get('content-disposition') || '';
+        const filename = disposition.match(/filename="?(.*)"?/)?.[1] || `sms_queue_${Date.now()}.csv`;
+        return { success: true, data: { blob, filename, isFile: true } } as any;
+      }
+      const json = await res.json().catch(() => ({}));
+      return { success: res.ok, data: json } as any;
+    } catch (e) {
+      console.warn('serverExportSms failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
   async createDocumentRequirement(requirement: any): Promise<ApiResponse> {
     if (this.serverAvailable) {
       try {
