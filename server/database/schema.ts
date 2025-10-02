@@ -187,7 +187,7 @@ export const initializeSchema = async (): Promise<void> => {
         -- Semester system: 'tri' or 'bi'
         semester_system TEXT NOT NULL DEFAULT 'tri',
         -- JSON array of semester names in order
-        semester_options_json TEXT DEFAULT '["Spring","Summer","Fall"]',
+        semester_options_json TEXT DEFAULT '["fall","summer","winter"]',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
