@@ -1,0 +1,235 @@
+import { useEffect, useMemo, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, FileText, Trash, Plus, Check, Clock } from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
+import { useToast } from "../hooks/use-toast";
+import apiClient from "../lib/api";
+
+export default function CreditTransferReview(){
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [application, setApplication] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [coursesCatalog, setCoursesCatalog] = useState<any[]>([]);
+  const [searchCode, setSearchCode] = useState("");
+  const [pickedCourse, setPickedCourse] = useState<any | null>(null);
+  const [transferCourses, setTransferCourses] = useState<any[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [makingStudent, setMakingStudent] = useState(false);
+  const [studentModalOpen, setStudentModalOpen] = useState(false);
+  const [studentCreated, setStudentCreated] = useState<any>(null);
+
+  const load = async ()=>{
+    if (!id) return;
+    setLoading(true);
+    try{
+      const res = await apiClient.getApplication(id);
+      if (res.success && res.data){
+        setApplication(res.data.application || res.data);
+        const existing = (res.data.application && res.data.application.transfer_courses) || res.data.transfer_courses || [];
+        setTransferCourses(Array.isArray(existing)? existing : []);
+      }
+    }catch(e){ console.error(e); toast({ title: 'Error', description: 'Failed to load applicant' , variant: 'destructive'}); }
+    finally{ setLoading(false); }
+  }
+
+  useEffect(()=>{ load(); }, [id]);
+
+  const searchCourses = async (q: string)=>{
+    try{
+      const res = await apiClient.getCourses(q);
+      if (res.success && res.data) setCoursesCatalog(Array.isArray(res.data)? res.data : []);
+    }catch(e){ console.error(e); }
+  }
+
+  useEffect(()=>{
+    const t = setTimeout(()=>{ if (searchCode && searchCode.length>=2) searchCourses(searchCode); }, 300);
+    return ()=>clearTimeout(t);
+  }, [searchCode]);
+
+  const addPickedCourse = ()=>{
+    if (!pickedCourse) return;
+    if (transferCourses.find((c)=>c.code === pickedCourse.id || c.id === pickedCourse.id)){
+      toast({ title: 'Already added', description: 'Course already in list' });
+      return;
+    }
+    setTransferCourses(prev=>[...prev, { code: pickedCourse.id, title: pickedCourse.title, credits: pickedCourse.credits, grade: '', gpa: '' }]);
+    setPickedCourse(null);
+    setSearchCode('');
+    setCoursesCatalog([]);
+  }
+
+  const removeCourse = (code: string)=>{
+    setTransferCourses(prev=>prev.filter(c=>c.code !== code));
+  }
+
+  const updateCourseField = (code: string, field: string, value: any)=>{
+    setTransferCourses(prev=> prev.map(c=> c.code===code ? { ...c, [field]: value } : c));
+  }
+
+  const canMakeStudent = useMemo(()=>{
+    if (!application) return false;
+    if (!application.documents || !application.documents.transcript) return false;
+    if (transferCourses.length === 0) return false;
+    // all courses must have grade and gpa
+    if (transferCourses.some(c=> !c.grade || c.grade.toString().trim()==='' || c.gpa===undefined || c.gpa==='' )) return false;
+    return true;
+  }, [application, transferCourses]);
+
+  const handleSave = async ()=>{
+    if (!application) return;
+    if (transferCourses.length===0){ toast({ title:'Error', description:'Add at least one course', variant:'destructive'}); return; }
+    // validate fields
+    for (const c of transferCourses){ if (!c.grade || c.gpa==='' ) { toast({ title:'Validation', description:'Please fill grade and GPA for all courses', variant:'destructive'}); return; } }
+    setSaving(true);
+    try{
+      const res = await apiClient.saveTransferCourses({ applicant_id: application.id, courses: transferCourses });
+      if (res.success) { toast({ title:'Saved', description:'Transfer courses saved' }); await load(); }
+      else toast({ title:'Error', description: res.error || 'Failed to save', variant:'destructive' });
+    }catch(e){ console.error(e); toast({ title:'Error', description:'Failed to save', variant:'destructive' }); }
+    finally{ setSaving(false); }
+  }
+
+  const handleMakeStudent = async ()=>{
+    if (!application) return;
+    if (!canMakeStudent) { toast({ title:'Cannot proceed', description:'Ensure transcript and transfer courses with grades are present', variant:'destructive'}); return; }
+    setMakingStudent(true);
+    try{
+      // ensure transfer courses saved first
+      await apiClient.saveTransferCourses({ applicant_id: application.id, courses: transferCourses });
+      const res = await apiClient.generateStudentForApplicant(application.id);
+      if (res.success && res.data){
+        setStudentCreated(res.data);
+        setStudentModalOpen(true);
+        try{ await apiClient.updateApplicationStatus(application.id, 'converted_to_student'); } catch(e){ console.warn(e); }
+        try{ await apiClient.createStudentRecord(application.id, { university_id: res.data.student_id, ugc_id: res.data.ugc_id }); } catch(e){ console.warn(e); }
+        await load();
+      } else { toast({ title:'Error', description: res.error || 'Failed to generate student', variant:'destructive' }); }
+    }catch(e){ console.error(e); toast({ title:'Error', description:'Failed to make student', variant:'destructive' }); }
+    finally{ setMakingStudent(false); }
+  }
+
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-4">
+        <Link to="/admin/credit-transfers" className="text-sm text-accent-purple hover:text-deep-plum">&larr; Back to Credit Transfer List</Link>
+      </div>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Applicant: {application?.applicant_name || application?.id}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Program</Label>
+              <div>{application?.program_name || application?.program_code}</div>
+            </div>
+            <div>
+              <Label>Campus</Label>
+              <div>{application?.campus || '-'}</div>
+            </div>
+            <div className="md:col-span-2">
+              <Label>Transcript</Label>
+              {application?.documents?.transcript ? (
+                <div className="border p-2 rounded">
+                  <a href={application.documents.transcript} target="_blank" rel="noreferrer" className="text-blue-600">View Transcript (PDF)</a>
+                </div>
+              ) : (
+                <div className="text-sm text-red-600">No transcript uploaded</div>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Transfer Courses</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <Input placeholder="Search course code or title" value={searchCode} onChange={(e:any)=>setSearchCode(e.target.value)} />
+            <div className="flex-1">
+              {coursesCatalog.slice(0,6).map(c=> (
+                <div key={c.id} className={`p-2 border rounded mb-1 cursor-pointer ${pickedCourse?.id===c.id? 'bg-gray-100':''}`} onClick={()=>setPickedCourse(c)}>
+                  <div className="font-medium">{c.id} - {c.title}</div>
+                  <div className="text-sm text-gray-600">Credits: {c.credits}</div>
+                </div>
+              ))}
+            </div>
+            <div>
+              <Button onClick={addPickedCourse} disabled={!pickedCourse}><Plus className="w-4 h-4 mr-2"/> Add Course</Button>
+            </div>
+          </div>
+
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Course Code</TableHead>
+                <TableHead>Course Title</TableHead>
+                <TableHead>Credits</TableHead>
+                <TableHead>Grade</TableHead>
+                <TableHead>GPA</TableHead>
+                <TableHead>Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {transferCourses.map((c:any)=> (
+                <TableRow key={c.code}>
+                  <TableCell>{c.code}</TableCell>
+                  <TableCell>{c.title}</TableCell>
+                  <TableCell>{c.credits}</TableCell>
+                  <TableCell>
+                    <Input value={c.grade || ''} onChange={(e:any)=>updateCourseField(c.code,'grade',e.target.value)} />
+                  </TableCell>
+                  <TableCell>
+                    <Input value={c.gpa || ''} onChange={(e:any)=>updateCourseField(c.code,'gpa',e.target.value)} />
+                  </TableCell>
+                  <TableCell>
+                    <Button variant="ghost" onClick={()=>removeCourse(c.code)}><Trash className="w-4 h-4"/></Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {transferCourses.length===0 && (
+                <TableRow><TableCell colSpan={6}>No transfer courses added</TableCell></TableRow>
+              )}
+            </TableBody>
+          </Table>
+
+          <div className="flex items-center gap-2 mt-4">
+            <Button onClick={handleSave} disabled={saving}><Check className="w-4 h-4 mr-2"/> Save Transfer Courses</Button>
+            <Button className="bg-deep-plum" onClick={handleMakeStudent} disabled={!canMakeStudent || makingStudent}>
+              {makingStudent? (<><Clock className="w-4 h-4 mr-2 animate-spin"/> Creating...</>) : ('Make Student')}
+            </Button>
+            <div className="text-sm text-gray-600 ml-4">Make Student is enabled when transcript present and all courses have grade & GPA.</div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Success Modal */}
+      {studentModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h3 className="text-xl font-semibold mb-2">✅ Student Created with Credit Transfer</h3>
+            <div className="mb-2">{studentCreated?.name || application?.applicant_name}</div>
+            <div className="text-3xl font-mono font-bold mb-2">{studentCreated?.student_id}</div>
+            <div className="text-sm text-gray-600 mb-4">UGC ID stored internally for reporting.</div>
+            <div className="flex gap-2 justify-end">
+              <Button onClick={()=>{ navigator.clipboard.writeText(studentCreated?.student_id || ''); toast({ title: 'Copied' }); }}>Copy Student ID</Button>
+              <Button variant="outline" onClick={()=>setStudentModalOpen(false)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
