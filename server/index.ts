@@ -57,6 +57,15 @@ export function createServer() {
   app.use("/api/programs", programRoutes);
   app.use("/api/referrers", referrerRoutes);
   app.use("/api/messaging", messagingRoutes);
+
+  // Referral approval requests (finance)
+  import("./routes/referralsRequests.js")
+    .then((m) => {
+      app.use("/api/referrals", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load referrals routes:", e);
+    });
   // Mock emails (development-only)
   import("./routes/mockEmails.js")
     .then((m) => {
