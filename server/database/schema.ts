@@ -132,6 +132,23 @@ export const initializeSchema = async (): Promise<void> => {
       )
     `);
 
+    // Referral requests table (finance approvals)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS referral_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        application_id INTEGER NOT NULL,
+        referrer_employee_id TEXT,
+        admission_fee REAL DEFAULT 0,
+        percentage REAL DEFAULT 0,
+        amount REAL DEFAULT 0,
+        status TEXT DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+        processed_by TEXT,
+        notes TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        processed_at DATETIME
+      )
+    `);
+
     // Sessions table
     await dbRun(`
       CREATE TABLE IF NOT EXISTS sessions (
