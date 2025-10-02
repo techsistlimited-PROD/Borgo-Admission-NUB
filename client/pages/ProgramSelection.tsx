@@ -151,14 +151,25 @@ export default function ProgramSelection() {
         const res = await apiClient.getAdmissionSettings();
         if (res.success && res.data) {
           // Normalize semester system to internal ids used by UI
-          let sysRaw = (res.data.semester_system || res.data.semesterSystem || "tri").toString().toLowerCase();
+          let sysRaw = (
+            res.data.semester_system ||
+            res.data.semesterSystem ||
+            "tri"
+          )
+            .toString()
+            .toLowerCase();
           const sys = sysRaw.includes("tri") ? "tri-semester" : "bi-semester";
 
-          const optsRaw = res.data.semester_options_json || res.data.semester_options || res.data.semesterOptions || null;
+          const optsRaw =
+            res.data.semester_options_json ||
+            res.data.semester_options ||
+            res.data.semesterOptions ||
+            null;
           let opts: string[] = [];
           if (optsRaw) {
             try {
-              const parsed = typeof optsRaw === "string" ? JSON.parse(optsRaw) : optsRaw;
+              const parsed =
+                typeof optsRaw === "string" ? JSON.parse(optsRaw) : optsRaw;
               opts = (parsed || []).map((s: string) => {
                 const n = String(s).toLowerCase();
                 if (n === "spring") return "winter"; // map legacy Spring -> winter id
@@ -172,7 +183,10 @@ export default function ProgramSelection() {
 
           // Fallback defaults using UI ids
           if (!opts || opts.length === 0) {
-            opts = sys === "bi-semester" ? ["fall", "winter"] : ["fall", "summer", "winter"];
+            opts =
+              sys === "bi-semester"
+                ? ["fall", "winter"]
+                : ["fall", "summer", "winter"];
           }
 
           if (mounted) {
@@ -202,7 +216,10 @@ export default function ProgramSelection() {
           }
         }
       } catch (e) {
-        console.warn("Failed to load admission settings for semester options", e);
+        console.warn(
+          "Failed to load admission settings for semester options",
+          e,
+        );
       }
     };
     loadSettings();

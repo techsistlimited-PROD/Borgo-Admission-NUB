@@ -299,7 +299,9 @@ class MockApiService {
     }
 
     if (params?.semester) {
-      filteredApps = filteredApps.filter((app) => app.semester === params.semester);
+      filteredApps = filteredApps.filter(
+        (app) => app.semester === params.semester,
+      );
     }
 
     if (params?.admission_type) {
@@ -316,12 +318,16 @@ class MockApiService {
 
     if (params?.dateFrom) {
       const from = new Date(params.dateFrom);
-      filteredApps = filteredApps.filter((app) => new Date(app.created_at) >= from);
+      filteredApps = filteredApps.filter(
+        (app) => new Date(app.created_at) >= from,
+      );
     }
 
     if (params?.dateTo) {
       const to = new Date(params.dateTo);
-      filteredApps = filteredApps.filter((app) => new Date(app.created_at) <= to);
+      filteredApps = filteredApps.filter(
+        (app) => new Date(app.created_at) <= to,
+      );
     }
 
     if (params?.search) {
@@ -477,7 +483,14 @@ class MockApiService {
 
   async generateApplicationIds(
     id: string,
-  ): Promise<ApiResponse<{ university_id: string; password: string; ugc_id?: string; batch?: string }>> {
+  ): Promise<
+    ApiResponse<{
+      university_id: string;
+      password: string;
+      ugc_id?: string;
+      batch?: string;
+    }>
+  > {
     await this.delay();
 
     const universityId = `APP${String(Date.now()).slice(-6)}`;
@@ -787,7 +800,7 @@ class MockApiService {
       architecture_test_venue_khulna:
         "Northern University Bangladesh, Khulna Campus - Art Studio",
       // Semester config (ids used by UI)
-      semester_system: 'tri',
+      semester_system: "tri",
       semester_options_json: '["fall","summer","winter"]',
       // Program Limits Configuration
       program_limits: programLimits,
@@ -895,31 +908,48 @@ class MockApiService {
     return { success: true, data: requirements };
   }
 
-  async createDocumentRequirement(requirement: any): Promise<ApiResponse<{ requirement: any }>> {
+  async createDocumentRequirement(
+    requirement: any,
+  ): Promise<ApiResponse<{ requirement: any }>> {
     await this.delay();
-    const id = (Math.max(0, ...this.documentRequirements.map((d:any)=>d.id)) + 1) || 1;
+    const id =
+      Math.max(0, ...this.documentRequirements.map((d: any) => d.id)) + 1 || 1;
     const rec = { id, ...requirement };
     // ensure array exists
-    (this as any).documentRequirements = (this as any).documentRequirements || [];
+    (this as any).documentRequirements =
+      (this as any).documentRequirements || [];
     (this as any).documentRequirements.push(rec);
     return { success: true, data: { requirement: rec } };
   }
 
-  async updateDocumentRequirement(id: string, requirement: any): Promise<ApiResponse<{ requirement: any }>> {
+  async updateDocumentRequirement(
+    id: string,
+    requirement: any,
+  ): Promise<ApiResponse<{ requirement: any }>> {
     await this.delay();
-    const idx = ((this as any).documentRequirements || []).findIndex((d:any)=>String(d.id)===String(id));
-    if (idx === -1) return { success: false, error: 'Document requirement not found' };
-    (this as any).documentRequirements[idx] = { ...((this as any).documentRequirements[idx]||{}), ...requirement };
-    return { success: true, data: { requirement: (this as any).documentRequirements[idx] } };
+    const idx = ((this as any).documentRequirements || []).findIndex(
+      (d: any) => String(d.id) === String(id),
+    );
+    if (idx === -1)
+      return { success: false, error: "Document requirement not found" };
+    (this as any).documentRequirements[idx] = {
+      ...((this as any).documentRequirements[idx] || {}),
+      ...requirement,
+    };
+    return {
+      success: true,
+      data: { requirement: (this as any).documentRequirements[idx] },
+    };
   }
 
   async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
     await this.delay();
     const arr = (this as any).documentRequirements || [];
-    const idx = arr.findIndex((d:any)=>String(d.id)===String(id));
-    if (idx === -1) return { success: false, error: 'Document requirement not found' };
-    arr.splice(idx,1);
-    return { success: true, message: 'Deleted' };
+    const idx = arr.findIndex((d: any) => String(d.id) === String(id));
+    if (idx === -1)
+      return { success: false, error: "Document requirement not found" };
+    arr.splice(idx, 1);
+    return { success: true, message: "Deleted" };
   }
   // Visitors log (offline entries by admission officers)
   private visitors: any[] = [
@@ -938,21 +968,33 @@ class MockApiService {
     },
   ];
 
-  async getVisitors(params?: { page?: number; limit?: number; campus?: string; dateFrom?: string; dateTo?: string; search?: string; }): Promise<ApiResponse<{ visitors: any[]; total: number }>> {
+  async getVisitors(params?: {
+    page?: number;
+    limit?: number;
+    campus?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    search?: string;
+  }): Promise<ApiResponse<{ visitors: any[]; total: number }>> {
     await this.delay();
     let list = [...this.visitors];
-    if (params?.campus) list = list.filter(v => v.campus === params.campus);
+    if (params?.campus) list = list.filter((v) => v.campus === params.campus);
     if (params?.search) {
       const s = params.search.toLowerCase();
-      list = list.filter(v => v.visitor_name.toLowerCase().includes(s) || (v.contact_number || "").includes(s) || (v.district || "").toLowerCase().includes(s));
+      list = list.filter(
+        (v) =>
+          v.visitor_name.toLowerCase().includes(s) ||
+          (v.contact_number || "").includes(s) ||
+          (v.district || "").toLowerCase().includes(s),
+      );
     }
     if (params?.dateFrom) {
       const from = new Date(params.dateFrom);
-      list = list.filter(v => new Date(v.visit_date) >= from);
+      list = list.filter((v) => new Date(v.visit_date) >= from);
     }
     if (params?.dateTo) {
       const to = new Date(params.dateTo);
-      list = list.filter(v => new Date(v.visit_date) <= to);
+      list = list.filter((v) => new Date(v.visit_date) <= to);
     }
     const page = params?.page || 1;
     const limit = params?.limit || 20;
@@ -963,7 +1005,7 @@ class MockApiService {
 
   async createVisitor(record: any): Promise<ApiResponse<{ visitor: any }>> {
     await this.delay();
-    const id = `vis-${String(this.visitors.length + 1).padStart(3, '0')}`;
+    const id = `vis-${String(this.visitors.length + 1).padStart(3, "0")}`;
     const rec = { id, created_at: new Date().toISOString(), ...record };
     this.visitors.push(rec);
     return { success: true, data: { visitor: rec } };
@@ -971,34 +1013,44 @@ class MockApiService {
 
   async updateVisitor(id: string, updates: any): Promise<ApiResponse> {
     await this.delay();
-    const idx = this.visitors.findIndex(v => v.id === id);
-    if (idx === -1) return { success: false, error: 'Visitor not found' };
-    this.visitors[idx] = { ...this.visitors[idx], ...updates, updated_at: new Date().toISOString() };
+    const idx = this.visitors.findIndex((v) => v.id === id);
+    if (idx === -1) return { success: false, error: "Visitor not found" };
+    this.visitors[idx] = {
+      ...this.visitors[idx],
+      ...updates,
+      updated_at: new Date().toISOString(),
+    };
     return { success: true, data: { visitor: this.visitors[idx] } };
   }
 
   async deleteVisitor(id: string): Promise<ApiResponse> {
     await this.delay();
-    const idx = this.visitors.findIndex(v => v.id === id);
-    if (idx === -1) return { success: false, error: 'Visitor not found' };
+    const idx = this.visitors.findIndex((v) => v.id === id);
+    if (idx === -1) return { success: false, error: "Visitor not found" };
     this.visitors.splice(idx, 1);
-    return { success: true, message: 'Deleted' };
+    return { success: true, message: "Deleted" };
   }
 
   async exportVisitors(params?: any): Promise<ApiResponse<any[]>> {
     await this.delay();
     // For simplicity, return all matching visitors without pagination
     const res = await this.getVisitors({ page: 1, limit: 10000, ...params });
-    if (res.success && res.data) return { success: true, data: res.data.visitors };
-    return { success: false, error: 'Failed to export' };
+    if (res.success && res.data)
+      return { success: true, data: res.data.visitors };
+    return { success: false, error: "Failed to export" };
   }
 
   // Students (created after approval)
   private students: any[] = [];
 
-  async createStudentRecord(applicationId: string, ids: { university_id: string; ugc_id?: string; batch?: string }): Promise<ApiResponse<{ student: any }>> {
+  async createStudentRecord(
+    applicationId: string,
+    ids: { university_id: string; ugc_id?: string; batch?: string },
+  ): Promise<ApiResponse<{ student: any }>> {
     await this.delay();
-    const app = this.applications.find((a) => a.id === applicationId || a.uuid === applicationId);
+    const app = this.applications.find(
+      (a) => a.id === applicationId || a.uuid === applicationId,
+    );
     if (!app) return { success: false, error: "Application not found" };
 
     const student = {
@@ -1018,7 +1070,9 @@ class MockApiService {
     this.students.push(student);
 
     // Link student_id back to application
-    const appIndex = this.applications.findIndex((a) => a.id === applicationId || a.uuid === applicationId);
+    const appIndex = this.applications.findIndex(
+      (a) => a.id === applicationId || a.uuid === applicationId,
+    );
     if (appIndex !== -1) {
       this.applications[appIndex].student_id = student.student_id;
     }
@@ -1026,10 +1080,15 @@ class MockApiService {
     return { success: true, data: { student } };
   }
 
-  async generateMoneyReceipt(applicationId: string, amount: number): Promise<ApiResponse<{ mr_number: string; receipt_url: string }>> {
+  async generateMoneyReceipt(
+    applicationId: string,
+    amount: number,
+  ): Promise<ApiResponse<{ mr_number: string; receipt_url: string }>> {
     await this.delay(300);
 
-    const app = this.applications.find((a) => a.id === applicationId || a.uuid === applicationId);
+    const app = this.applications.find(
+      (a) => a.id === applicationId || a.uuid === applicationId,
+    );
     if (!app) return { success: false, error: "Application not found" };
 
     const mr_number = `MR-${Date.now()}`;

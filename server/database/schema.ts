@@ -322,9 +322,15 @@ export const initializeSchema = async (): Promise<void> => {
     `);
 
     // Unique constraints (partial uniqueness emulation via triggers is heavy; store simple indexes)
-    await dbRun(`CREATE UNIQUE INDEX IF NOT EXISTS ix_app_v2_ref_no ON applications_v2(ref_no)`);
-    await dbRun(`CREATE INDEX IF NOT EXISTS ix_app_v2_semester_status ON applications_v2(semester_id, status)`);
-    await dbRun(`CREATE INDEX IF NOT EXISTS ix_app_v2_program_created ON applications_v2(program_code, created_at)`);
+    await dbRun(
+      `CREATE UNIQUE INDEX IF NOT EXISTS ix_app_v2_ref_no ON applications_v2(ref_no)`,
+    );
+    await dbRun(
+      `CREATE INDEX IF NOT EXISTS ix_app_v2_semester_status ON applications_v2(semester_id, status)`,
+    );
+    await dbRun(
+      `CREATE INDEX IF NOT EXISTS ix_app_v2_program_created ON applications_v2(program_code, created_at)`,
+    );
 
     // Academic history
     await dbRun(`
@@ -346,7 +352,9 @@ export const initializeSchema = async (): Promise<void> => {
         FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
       )
     `);
-    await dbRun(`CREATE INDEX IF NOT EXISTS ix_academic_history_app ON academic_history(application_id)`);
+    await dbRun(
+      `CREATE INDEX IF NOT EXISTS ix_academic_history_app ON academic_history(application_id)`,
+    );
 
     // Documents
     await dbRun(`
@@ -369,7 +377,9 @@ export const initializeSchema = async (): Promise<void> => {
         FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
       )
     `);
-    await dbRun(`CREATE INDEX IF NOT EXISTS ix_documents_app ON documents(application_id)`);
+    await dbRun(
+      `CREATE INDEX IF NOT EXISTS ix_documents_app ON documents(application_id)`,
+    );
 
     // Waiver assignments
     await dbRun(`
@@ -386,7 +396,9 @@ export const initializeSchema = async (): Promise<void> => {
         FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
       )
     `);
-    await dbRun(`CREATE INDEX IF NOT EXISTS ix_waiver_assignments_app ON waiver_assignments(application_id)`);
+    await dbRun(
+      `CREATE INDEX IF NOT EXISTS ix_waiver_assignments_app ON waiver_assignments(application_id)`,
+    );
 
     // Admission tests
     await dbRun(`
@@ -404,7 +416,9 @@ export const initializeSchema = async (): Promise<void> => {
         FOREIGN KEY (application_id) REFERENCES applications_v2(application_id)
       )
     `);
-    await dbRun(`CREATE INDEX IF NOT EXISTS ix_admission_tests_app ON admission_tests(application_id)`);
+    await dbRun(
+      `CREATE INDEX IF NOT EXISTS ix_admission_tests_app ON admission_tests(application_id)`,
+    );
 
     // Audit trail (append-only)
     await dbRun(`
@@ -420,7 +434,9 @@ export const initializeSchema = async (): Promise<void> => {
         reason TEXT
       )
     `);
-    await dbRun(`CREATE INDEX IF NOT EXISTS ix_audit_entity ON audit_trail(entity, entity_id, changed_at)`);
+    await dbRun(
+      `CREATE INDEX IF NOT EXISTS ix_audit_entity ON audit_trail(entity, entity_id, changed_at)`,
+    );
 
     // Visitors/Leads
     await dbRun(`
@@ -534,7 +550,9 @@ export const initializeSchema = async (): Promise<void> => {
         error TEXT
       )
     `);
-    await dbRun(`CREATE INDEX IF NOT EXISTS ix_webhook_idempotency ON payment_webhook_events(idempotency_key)`);
+    await dbRun(
+      `CREATE INDEX IF NOT EXISTS ix_webhook_idempotency ON payment_webhook_events(idempotency_key)`,
+    );
 
     // RBAC core tables (roles & permissions)
     await dbRun(`
@@ -569,7 +587,9 @@ export const initializeSchema = async (): Promise<void> => {
     `);
 
     // Seed basic roles and permissions if empty
-    await dbRun(`INSERT OR IGNORE INTO roles (role_id, role_key) VALUES (1,'Applicant'),(2,'AdmissionOfficer'),(3,'FinanceOfficer'),(4,'Registrar'),(5,'FraudAnalyst'),(6,'Admin')`);
+    await dbRun(
+      `INSERT OR IGNORE INTO roles (role_id, role_key) VALUES (1,'Applicant'),(2,'AdmissionOfficer'),(3,'FinanceOfficer'),(4,'Registrar'),(5,'FraudAnalyst'),(6,'Admin')`,
+    );
 
     // Import jobs
     await dbRun(`
