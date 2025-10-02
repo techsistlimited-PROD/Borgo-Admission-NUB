@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
 import apiClient from "../../lib/api";
 import { MessageCircle, Play } from "lucide-react";
 
@@ -8,6 +9,7 @@ export default function SmsQueue() {
   const [sms, setSms] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [query, setQuery] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -20,6 +22,12 @@ export default function SmsQueue() {
       setLoading(false);
     }
   };
+
+  const filtered = sms.filter((s) => {
+    if (!query) return true;
+    const q = query.toLowerCase();
+    return [s.to_number, s.message, s.provider, String(s.status)].filter(Boolean).join(" ").toLowerCase().includes(q);
+  });
 
   useEffect(() => {
     load();
