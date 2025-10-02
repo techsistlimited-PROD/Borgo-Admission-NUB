@@ -235,7 +235,9 @@ export const initializeSchema = async (): Promise<void> => {
         admission_notice,
         payment_instructions,
         contact_email,
-        contact_phone
+        contact_phone,
+        semester_system,
+        semester_options_json
       ) VALUES (
         1,
         '2024-12-31 23:59:59',
@@ -247,7 +249,9 @@ export const initializeSchema = async (): Promise<void> => {
         'Welcome to Northern University Bangladesh Online Admission Portal. Please complete all required fields and submit your application before the deadline.',
         'Please make payment to the designated bank account and upload the payment slip. For any payment related queries, contact our finance department.',
         'admission@nu.edu.bd',
-        '+8801700000000'
+        '+8801700000000',
+        'tri',
+        '["Spring","Summer","Fall"]'
       )
     `);
 
