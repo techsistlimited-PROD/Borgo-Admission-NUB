@@ -124,6 +124,7 @@ export default function Sidebar({ userType }: SidebarProps) {
         },
         { name: "Visitors Log", path: "/admin/visitors-log", icon: Users },
         { name: "Referrals", path: "/admin/referrals", icon: Users },
+        { name: "Credit Transfer List", path: "/admin/credit-transfers", icon: BookOpen },
         { name: "Reports", path: "/admin/reports?scope=admission", icon: PieChart },
       ];
 
