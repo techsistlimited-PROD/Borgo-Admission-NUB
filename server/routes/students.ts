@@ -50,4 +50,40 @@ router.get("/:id", authenticateToken, requirePermission("students:view"), async 
   }
 });
 
+// Update student profile (admin)
+router.put("/:id", authenticateToken, requirePermission("students:edit"), async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body || {};
+
+    const allowed = [
+      'full_name','email','mobile_number','batch','program_code','semester_id',
+      'father_name','father_phone','mother_name','mother_phone','guardian_name','guardian_phone','guardian_address',
+      'quota','religion','disability_status','blood_group','passport_no','nid_no','birth_certificate_no',
+      'required_credits','grading_system','remarks','present_address','permanent_address','photo_url'
+    ];
+
+    const setClauses: string[] = [];
+    const params: any[] = [];
+    allowed.forEach((k) => {
+      if (Object.prototype.hasOwnProperty.call(updates, k)) {
+        setClauses.push(`${k} = ?`);
+        params.push(updates[k]);
+      }
+    });
+
+    if (setClauses.length === 0) return res.status(400).json({ success: false, error: 'No valid fields to update' });
+
+    params.push(id);
+    const sql = `UPDATE students SET ${setClauses.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE student_id = ?`;
+    await dbRun(sql, params as any[]);
+
+    const updated = await dbGet(`SELECT * FROM students WHERE student_id = ?`, [id]);
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    console.error('Update student error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 export default router;
