@@ -120,8 +120,28 @@ export default function AdminMessaging() {
                   <div className="w-64">
                     <Input placeholder="Search emails by recipient, subject or body" value={emailQuery} onChange={(e) => setEmailQuery(e.target.value)} />
                   </div>
-                  <Button size="sm" onClick={() => exportToCsv(`mock_emails_${Date.now()}.csv`, filteredEmails, ["id","to_address","subject","application_id","created_at","sent_at","body"]) } disabled={filteredEmails.length===0}>
+                  <Button size="sm" onClick={() => setShowEmailExportDialog(true)} disabled={filteredEmails.length===0}>
                     Export CSV
+                  </Button>
+                  <Button size="sm" onClick={async () => {
+                    const res = await apiClient.serverExportMockEmails({ search: debouncedEmailQuery, format: 'csv' });
+                    if (res.success && (res.data as any)?.isFile) {
+                      const { blob, filename } = (res.data as any);
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = filename;
+                      document.body.appendChild(a);
+                      a.click();
+                      a.remove();
+                      URL.revokeObjectURL(url);
+                    } else if (res.success && (res.data as any)?.async) {
+                      alert((res.data as any).message || 'Export queued');
+                    } else {
+                      alert(res.error || 'Export failed');
+                    }
+                  }}>
+                    Server Export
                   </Button>
                 </div>
               </div>
