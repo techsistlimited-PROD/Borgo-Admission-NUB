@@ -157,7 +157,7 @@ export default function ApplicantDetail() {
     bn: {
       title: "আবেদনকারীর বিবরণ",
       backToList: "ভর্তি তালিকায় ফিরুন",
-      personalInfo: "ব্যক্তি��ত তথ্য",
+      personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
       documentsUploaded: "আপলোডকৃত কাগজপত্র",
@@ -580,6 +580,52 @@ export default function ApplicantDetail() {
                 application?.payment_status || "pending",
                 "payment",
               )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Make Student action - appears after review verification */}
+        <div className="mb-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-poppins text-deep-plum">Admission Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-3">
+                <Button
+                  className="bg-deep-plum"
+                  onClick={async () => {
+                    if (!application) return;
+                    const academicOk = !!(academic && ((academic.sscGPA || academic.ssc_gpa || academic.hscGPA || academic.hsc_gpa) || (application.academic_history && application.academic_history.sscGPA)));
+                    const paymentOk = application.payment_status === 'verified' || application.payment_status === 'paid';
+                    if (!academicOk || !paymentOk) {
+                      toast({ title: 'Review incomplete', description: 'Please ensure academic qualifications and payment are verified before converting to student', variant: 'destructive' });
+                      return;
+                    }
+                    setIsMakingStudent(true);
+                    try {
+                      const res = await apiClient.generateStudentForApplicant(application.id);
+                      if (res.success && res.data) {
+                        setStudentCreatedData(res.data);
+                        setStudentModalOpen(true);
+                        toast({ title: 'Student Created', description: res.data.student_id });
+                        try { await apiClient.updateApplicationStatus(application.id, 'converted_to_student'); } catch (e) { console.warn('Failed to update status', e); }
+                        try { await apiClient.createStudentRecord(application.id, { university_id: res.data.student_id, ugc_id: res.data.ugc_id }); } catch (e) { console.warn('Failed to create student', e); }
+                        await loadApplication();
+                      } else {
+                        toast({ title: 'Error', description: res.error || 'Failed to generate student ID', variant: 'destructive' });
+                      }
+                    } catch (e) {
+                      console.error('Generate student failed', e);
+                      toast({ title: 'Error', description: 'Failed to generate student ID', variant: 'destructive' });
+                    } finally { setIsMakingStudent(false); }
+                  }}
+                  disabled={isMakingStudent || !(application && ((academic && (academic.sscGPA || academic.ssc_gpa || academic.hscGPA || academic.hsc_gpa)) && (application.payment_status === 'verified' || application.payment_status === 'paid')))}
+                >
+                  {isMakingStudent ? (<><Clock className="w-4 h-4 mr-2 animate-spin" /> Creating...</>) : ('Make Student')}
+                </Button>
+                <div className="text-sm text-gray-600">The "Make Student" action creates student & UGC IDs and converts the applicant to student.</div>
+              </div>
             </CardContent>
           </Card>
         </div>
