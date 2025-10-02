@@ -152,7 +152,7 @@ export default function ApplicantDetail() {
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
-      documentsUploaded: "আপলোডকৃত কাগজপত্র",
+      documentsUploaded: "আপলোডকৃত কাগজপত���র",
       waiverInfo: "মওকুফ তথ্য",
       actions: "কর্ম",
       approve: "আবেদন অনুমোদন",
@@ -350,6 +350,32 @@ export default function ApplicantDetail() {
       toast({ title: "Error", description: "Failed to send Email", variant: "destructive" });
     } finally {
       setSendingEmail(false);
+    }
+  };
+
+  const [isDownloadingReceipt, setIsDownloadingReceipt] = useState(false);
+  const handleDownloadReceipt = async () => {
+    if (!application) return;
+    setIsDownloadingReceipt(true);
+    try {
+      const res = await apiClient.generateMoneyReceiptPdf(application.id);
+      if (res.success && res.data?.isFile && res.data.blob) {
+        const url = URL.createObjectURL(res.data.blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = res.data.filename || `money_receipt_${application.id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } else {
+        toast({ title: 'No receipt', description: res.error || 'Failed to generate receipt' });
+      }
+    } catch (e) {
+      console.error('Download MR failed', e);
+      toast({ title: 'Error', description: 'Failed to download receipt', variant: 'destructive' });
+    } finally {
+      setIsDownloadingReceipt(false);
     }
   };
 
