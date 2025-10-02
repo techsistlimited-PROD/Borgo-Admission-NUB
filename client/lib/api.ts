@@ -1015,6 +1015,86 @@ class ApiClient {
     }
   }
 
+  // Scholarships
+  async getScholarships(): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/scholarships', { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load scholarships' };
+    } catch (e) {
+      console.warn('getScholarships failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async createScholarship(payload: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/scholarships', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to create scholarship' };
+    } catch (e) {
+      console.warn('createScholarship failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async listScholarshipAssignments(applicationId?: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const qs = applicationId ? `?application_id=${encodeURIComponent(String(applicationId))}` : '';
+      const res = await fetch(`/api/scholarships/assignments${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load scholarship assignments' };
+    } catch (e) {
+      console.warn('listScholarshipAssignments failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async assignScholarship(payload: any): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch('/api/scholarships/assignments', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify(payload) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to assign scholarship' };
+    } catch (e) {
+      console.warn('assignScholarship failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async lockScholarshipAssignment(id: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/scholarships/assignments/${id}/lock`, { method: 'PUT', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to lock assignment' };
+    } catch (e) {
+      console.warn('lockScholarshipAssignment failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async unlockScholarshipAssignment(id: number): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/scholarships/assignments/${id}/unlock`, { method: 'PUT', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to unlock assignment' };
+    } catch (e) {
+      console.warn('unlockScholarshipAssignment failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
 }
 
 const apiClient = new ApiClient();
