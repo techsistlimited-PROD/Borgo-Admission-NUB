@@ -323,7 +323,7 @@ class ApiClient {
     return await mockApi.exportVisitors(params);
   }
 
-  // Configuration methods — prefer server
+  // Configuration methods ��� prefer server
   async getAdmissionSettings(): Promise<ApiResponse> {
     if (this.serverAvailable) {
       try {
@@ -1187,6 +1187,47 @@ class ApiClient {
       return { success: false, error: json.error || 'Failed to mark read' };
     } catch (e) {
       console.warn('markNotificationRead failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  // Employees (roles)
+  async listEmployees(role?: string): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const qs = role ? `?role=${encodeURIComponent(role)}` : '';
+      const res = await fetch(`/api/employees${qs}`, { headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to load employees' };
+    } catch (e) {
+      console.warn('listEmployees failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async assignUserRole(userId: number, roleKey: string): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/employees/${userId}/roles`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}) }, body: JSON.stringify({ role_key: roleKey }) });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true, data: json.data || json };
+      return { success: false, error: json.error || 'Failed to assign role' };
+    } catch (e) {
+      console.warn('assignUserRole failed', e);
+      return { success: false, error: String(e) };
+    }
+  }
+
+  async removeUserRole(userId: number, roleKey: string): Promise<ApiResponse> {
+    if (!this.serverAvailable) return { success: false, error: 'Server unavailable' };
+    try {
+      const res = await fetch(`/api/employees/${userId}/roles/${encodeURIComponent(roleKey)}`, { method: 'DELETE', headers: this.token ? { Authorization: `Bearer ${this.token}` } : {} });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) return { success: true };
+      return { success: false, error: json.error || 'Failed to remove role' };
+    } catch (e) {
+      console.warn('removeUserRole failed', e);
       return { success: false, error: String(e) };
     }
   }
