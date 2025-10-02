@@ -1,0 +1,130 @@
+import React, { useEffect, useState } from "react";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import apiClient from "../../lib/api";
+import { Mail, MessageCircle, RotateCw } from "lucide-react";
+
+export default function AdminMessaging() {
+  const [emails, setEmails] = useState<any[]>([]);
+  const [sms, setSms] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const [eRes, sRes] = await Promise.all([apiClient.getMockEmails(), apiClient.getSmsQueue()]);
+      if (eRes.success && Array.isArray(eRes.data)) setEmails(eRes.data);
+      if (sRes.success && Array.isArray(sRes.data)) setSms(sRes.data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const handleResendEmail = async (id: number) => {
+    try {
+      const res = await apiClient.resendMockEmail(id);
+      if (res.success) {
+        await load();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleSendSms = async (sms_id: number) => {
+    try {
+      const res = await apiClient.sendSmsById(sms_id);
+      if (res.success) {
+        await load();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return (
+    <div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <RotateCw className="w-5 h-5" /> Messaging Admin (Mock)
+          </h2>
+          <div>
+            <Button onClick={load} disabled={loading}>
+              Refresh
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Mail className="w-4 h-4"/> Mock Emails</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {emails.length === 0 ? (
+                <div className="text-sm text-gray-500">No mock emails found.</div>
+              ) : (
+                <div className="space-y-3">
+                  {emails.map((e) => (
+                    <div key={e.id} className="border rounded p-3">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="text-sm text-gray-600">To: {e.to_address || "-"}</div>
+                          <div className="font-semibold">{e.subject || "(no subject)"}</div>
+                          <div className="text-xs text-gray-500">Application: {e.application_id || "-"} — {new Date(e.created_at).toLocaleString()}</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button size="sm" variant="ghost" onClick={() => handleResendEmail(e.id)}>
+                            <RotateCw className="w-4 h-4 mr-1"/> Resend
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-sm whitespace-pre-wrap text-gray-700">{e.body}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><MessageCircle className="w-4 h-4"/> SMS Queue</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {sms.length === 0 ? (
+                <div className="text-sm text-gray-500">No SMS in queue.</div>
+              ) : (
+                <div className="space-y-3">
+                  {sms.map((s) => (
+                    <div key={s.sms_id} className="border rounded p-3">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="text-sm text-gray-600">To: {s.to_number}</div>
+                          <div className="font-semibold">{s.message}</div>
+                          <div className="text-xs text-gray-500">Provider: {s.provider || "-"} — {s.status} — {new Date(s.created_at).toLocaleString()}</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button size="sm" variant="ghost" onClick={() => handleSendSms(s.sms_id)}>
+                            Send
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
