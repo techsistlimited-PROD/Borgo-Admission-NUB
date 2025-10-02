@@ -423,6 +423,17 @@ function AppContent() {
             />
 
             <Route
+              path="/admin/mock-emails"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <MockEmails />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+
+            <Route
               path="/admin/visitors-log"
               element={
                 isAuthenticated && userType === "admin" ? (
