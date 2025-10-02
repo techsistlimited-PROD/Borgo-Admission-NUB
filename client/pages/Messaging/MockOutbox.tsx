@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
 import apiClient from "../../lib/api";
 import { Copy, Mail, Trash } from "lucide-react";
 
 export default function MockOutbox() {
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -27,6 +29,12 @@ export default function MockOutbox() {
   const copyBody = (body: string) => {
     navigator.clipboard.writeText(body || "");
   };
+
+  const filtered = emails.filter((e) => {
+    if (!query) return true;
+    const q = query.toLowerCase();
+    return [e.to_address, e.subject, e.body, String(e.application_id)].filter(Boolean).join(" ").toLowerCase().includes(q);
+  });
 
   return (
     <div>
