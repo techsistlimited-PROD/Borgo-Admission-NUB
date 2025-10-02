@@ -56,6 +56,8 @@ import PermissionConfig from "./pages/PermissionConfig";
 import SyllabusManagement from "./pages/SyllabusManagement";
 import WaiverManagement from "./pages/WaiverManagement";
 import OfferCourses from "./pages/OfferCourses";
+import CreditTransferList from "./pages/CreditTransferList";
+import CreditTransferReview from "./pages/CreditTransferReview";
 import StudentManagement from "./pages/StudentManagement";
 import StudentProfile from "./pages/StudentProfile";
 import AdminAcademic from "./pages/AdminAcademic";
