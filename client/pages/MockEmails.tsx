@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import apiClient from "../lib/api";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableRow } from "../components/ui/table";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "../components/ui/table";
 import { Button } from "../components/ui/button";
 import { Download, Mail, Search } from "lucide-react";
 import { useToast } from "../hooks/use-toast";
