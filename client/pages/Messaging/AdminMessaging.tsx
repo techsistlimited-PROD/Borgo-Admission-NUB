@@ -3,11 +3,18 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import apiClient from "../../lib/api";
 import { Mail, MessageCircle, RotateCw } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription, DialogTrigger, DialogClose } from "../../components/ui/dialog";
+import { useToast } from "../../hooks/use-toast";
 
 export default function AdminMessaging() {
   const [emails, setEmails] = useState<any[]>([]);
   const [sms, setSms] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<null | { type: 'resend' | 'send', id: number }>(null);
+
+  const { toast } = useToast();
 
   const load = async () => {
     setLoading(true);
@@ -26,27 +33,46 @@ export default function AdminMessaging() {
     load();
   }, []);
 
-  const handleResendEmail = async (id: number) => {
+  const openResendConfirm = (id: number) => {
+    setConfirmAction({ type: 'resend', id });
+    setConfirmOpen(true);
+  };
+
+  const openSendConfirm = (id: number) => {
+    setConfirmAction({ type: 'send', id });
+    setConfirmOpen(true);
+  };
+
+  const performConfirmAction = async () => {
+    if (!confirmAction) return;
     try {
-      const res = await apiClient.resendMockEmail(id);
-      if (res.success) {
-        await load();
+      if (confirmAction.type === 'resend') {
+        const res = await apiClient.resendMockEmail(confirmAction.id);
+        if (res.success) {
+          toast({ title: 'Email resent', description: 'Mock email has been duplicated and marked as sent.' });
+        } else {
+          toast({ title: 'Resend failed', description: String(res.error), variant: 'destructive' });
+        }
+      } else if (confirmAction.type === 'send') {
+        const res = await apiClient.sendSmsById(confirmAction.id);
+        if (res.success) {
+          toast({ title: 'SMS sent', description: 'Queued SMS has been marked as sent.' });
+        } else {
+          toast({ title: 'Send failed', description: String(res.error), variant: 'destructive' });
+        }
       }
     } catch (e) {
       console.error(e);
+      toast({ title: 'Action failed', description: 'Unexpected error occurred', variant: 'destructive' });
+    } finally {
+      setConfirmOpen(false);
+      setConfirmAction(null);
+      await load();
     }
   };
 
-  const handleSendSms = async (sms_id: number) => {
-    try {
-      const res = await apiClient.sendSmsById(sms_id);
-      if (res.success) {
-        await load();
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const handleResendEmail = (id: number) => openResendConfirm(id);
+  const handleSendSms = (sms_id: number) => openSendConfirm(sms_id);
 
   return (
     <div>
