@@ -307,6 +307,40 @@ export default function AdminMessaging() {
           </DialogContent>
         </Dialog>
 
+        {/* Jobs Dialog */}
+        <Dialog open={jobsOpen} onOpenChange={(open) => { setJobsOpen(open); if (!open) setJobs([]); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Queued Exports</DialogTitle>
+              <DialogDescription>Manage queued exports and download generated files (demo).</DialogDescription>
+            </DialogHeader>
+            <div className="mt-4 space-y-3 max-h-96 overflow-auto">
+              {jobs.length === 0 ? (
+                <div className="text-sm text-gray-500">No queued exports found.</div>
+              ) : (
+                jobs.map((j) => (
+                  <div key={j.job_id} className="border rounded p-3 flex items-center justify-between">
+                    <div>
+                      <div className="font-medium">{j.export_type || 'export'} — {j.file_name || ''}</div>
+                      <div className="text-xs text-gray-500">Status: {j.status} — Requested: {new Date(j.created_at).toLocaleString()}</div>
+                      {j.error ? <div className="text-xs text-red-600">Error: {String(j.error)}</div> : null}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" onClick={() => processJob(j.job_id)} disabled={j.status === 'processing'}>Process</Button>
+                      <Button size="sm" onClick={() => downloadJob(j.job_id)} disabled={!j.file_path}>Download</Button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            <DialogFooter>
+              <div className="flex justify-end">
+                <Button variant="outline" onClick={() => { setJobsOpen(false); setJobs([]); }}>Close</Button>
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         <CsvExportSelector
           open={showEmailExportDialog}
           onOpenChange={(open) => setShowEmailExportDialog(open)}
