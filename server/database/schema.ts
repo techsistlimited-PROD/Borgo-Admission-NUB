@@ -255,7 +255,7 @@ export const initializeSchema = async (): Promise<void> => {
         'admission@nu.edu.bd',
         '+8801700000000',
         'tri',
-        '["Spring","Summer","Fall"]'
+        '["fall","summer","winter"]'
       )
     `);
 
