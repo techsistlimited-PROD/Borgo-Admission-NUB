@@ -25,6 +25,9 @@ export default function AdminRegistrationPackages() {
   const [search, setSearch] = useState("");
   const [termFilter, setTermFilter] = useState<string | null>(null);
   const [modeFilter, setModeFilter] = useState<string | null>(null);
+  const [editingPackage, setEditingPackage] = useState<any | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const load = async () => {
     setLoading(true);
