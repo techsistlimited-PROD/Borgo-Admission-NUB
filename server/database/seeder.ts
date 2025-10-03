@@ -378,6 +378,29 @@ const seedDatabase = async () => {
       ],
     );
 
+    // Seed registration packages (if not present)
+    console.log("📦 Seeding registration packages...");
+    const existingPkgs = await dbGet(`SELECT COUNT(*) as count FROM registration_packages`);
+    if (existingPkgs && existingPkgs.count === 0) {
+      const packages = [
+        { id: 'pkg-001', program: "LLB (Hon's) Program Fall 2025 (Tri-Semester)", term: 'Fall 2025', mode: 'Trimester', credits: 137, admission_fee: 13000, per_credit: 3800, fixed_fees: 30000, total_estimated: 610000 },
+        { id: 'pkg-002', program: 'MAE Fall 2025', term: 'Fall 2025', mode: 'Masters / Evening', credits: 36, admission_fee: 11200, per_credit: 4000, fixed_fees: 15000, total_estimated: 170000 },
+        { id: 'pkg-003', program: 'Textile Engineering Fall 2025', term: 'Fall 2025', mode: 'Bachelor / Day', credits: 164, admission_fee: 13000, per_credit: 2600, fixed_fees: 35000, total_estimated: 500000 },
+        { id: 'pkg-004', program: 'ELL Fall 2025', term: 'Fall 2025', mode: 'Bachelor / Day', credits: 132, admission_fee: 13000, per_credit: 1500, fixed_fees: 20000, total_estimated: 220000 },
+        { id: 'pkg-005', program: "Bangla (Hon's) Fall 2025", term: 'Fall 2025', mode: 'Bachelor / Day', credits: 120, admission_fee: 13000, per_credit: 1000, fixed_fees: 15000, total_estimated: 160000 },
+        { id: 'pkg-006', program: 'CSE Fall 2025', term: 'Fall 2025', mode: 'Bachelor / Day', credits: 152, admission_fee: 13000, per_credit: 3500, fixed_fees: 35000, total_estimated: 565000 },
+        { id: 'pkg-007', program: 'EEE Fall 2025', term: 'Fall 2025', mode: 'Bachelor / Day', credits: 160, admission_fee: 13000, per_credit: 2800, fixed_fees: 40000, total_estimated: 530000 },
+        { id: 'pkg-008', program: 'BBA Fall 2025', term: 'Fall 2025', mode: 'Bachelor / Day', credits: 129, admission_fee: 13000, per_credit: 3400, fixed_fees: 25000, total_estimated: 510000 },
+        { id: 'pkg-009', program: 'MPH Fall 2025', term: 'Fall 2025', mode: 'Masters / Day', credits: 36, admission_fee: 11200, per_credit: 4000, fixed_fees: 10000, total_estimated: 160000 },
+        { id: 'pkg-010', program: 'LLM Fall 2025', term: 'Fall 2025', mode: 'Masters', credits: 36, admission_fee: 11200, per_credit: 4200, fixed_fees: 10000, total_estimated: 162000 },
+        // ... (rest omitted for brevity in seeder)
+      ];
+
+      for (const p of packages) {
+        await dbRun(`INSERT OR IGNORE INTO registration_packages (id, program, term, mode, credits, admission_fee, per_credit, fixed_fees, total_estimated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [p.id, p.program, p.term, p.mode, p.credits, p.admission_fee, p.per_credit, p.fixed_fees, p.total_estimated]);
+      }
+    }
+
     console.log("✅ Database seeding completed successfully!");
     console.log("\n📋 Sample Credentials:");
     console.log("🔐 Admin Login:");
