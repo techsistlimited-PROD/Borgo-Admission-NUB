@@ -105,7 +105,7 @@ export default function Index() {
       modernFacilitiesDesc: "অত্যাধুনিক ল্যাব এবং শিক্ষার পরিবেশ",
       careerSupport: "ক্যারিয়ার সাপোর্ট",
       careerSupportDesc: "নিবেদিত চাকরির সহায়তা এ��ং ক্যারিয়ার গাইডেন্স",
-      affordableEducation: "সাশ্রয়ী শিক্ষা",
+      affordableEducation: "সাশ���রয়ী শিক্ষা",
       affordableEducationDesc: "বিভিন্ন বৃত্তির সুযোগ সহ মানসম্পন্ন শিক্ষা",
       waiverHighlights: "বৃত্তি ও মওকুফের সুযোগ",
       meritBased: "মেধাভিত্তিক বৃত্তি",
@@ -130,6 +130,7 @@ export default function Index() {
   const t = texts[language];
 
   const [programs, setPrograms] = useState<any[]>([]);
+  const [registrationPkgs, setRegistrationPkgs] = useState<any[]>([]);
   const [programsLoading, setProgramsLoading] = useState(false);
   const [programsError, setProgramsError] = useState<string | null>(null);
 
