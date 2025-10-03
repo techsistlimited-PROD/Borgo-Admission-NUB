@@ -347,7 +347,7 @@ export default function ProgramSelection() {
       programInfo: "প্রোগ���রামের ��থ্য",
       costBreakdown: "খরচের বিভাজন",
       waiverCalculator: "���ওক��ফ ক্যালকুলেটর",
-      academicInfo: "একাডেমিক তথ্য",
+      academicInfo: "একাডেমিক তথ্���",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ই���এসসি জিপিএ",
       fourthSubject: "এসএস����ি ও এই��এসসি উভয়েই ���র্থ ব��ষয় ছিল",
@@ -2827,126 +2827,82 @@ export default function ProgramSelection() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
-                    <div className="flex items-center gap-2 flex-1">
-                      <Input
-                        placeholder="Search packages"
-                        value={pkgSearch}
-                        onChange={(e: any) => setPkgSearch(e.target.value)}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <select
-                        value={pkgTerm ?? ""}
-                        onChange={(e) => setPkgTerm(e.target.value || null)}
-                        className="border rounded p-2"
-                      >
-                        <option value="">All Terms</option>
-                        {Array.from(
-                          new Set(registrationPackages.map((p) => p.term)),
-                        ).map((t) => (
-                          <option key={t} value={t}>
-                            {t}
-                          </option>
-                        ))}
-                      </select>
-                      <select
-                        value={pkgMode ?? ""}
-                        onChange={(e) => setPkgMode(e.target.value || null)}
-                        className="border rounded p-2"
-                      >
-                        <option value="">All Modes</option>
-                        {Array.from(
-                          new Set(registrationPackages.map((p) => p.mode)),
-                        ).map((m) => (
-                          <option key={m} value={m}>
-                            {m}
-                          </option>
-                        ))}
-                      </select>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowAllPackages((prev) => !prev)}
-                      >
-                        {showAllPackages ? "Show Less" : "Show All"}
-                      </Button>
-                    </div>
-                  </div>
+                  {/* Show a single selected package or a blank placeholder to avoid overwhelming applicants */}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {registrationPackages
-                      .filter((pkg) => {
-                        if (
-                          pkgSearch &&
-                          !pkg.program
-                            .toLowerCase()
-                            .includes(pkgSearch.toLowerCase())
-                        )
-                          return false;
-                        if (pkgTerm && pkg.term !== pkgTerm) return false;
-                        if (pkgMode && pkg.mode !== pkgMode) return false;
-                        return true;
-                      })
-                      .slice(
-                        0,
-                        showAllPackages ? registrationPackages.length : 6,
-                      )
-                      .map((pkg) => (
-                        <div
-                          key={pkg.id}
-                          className="p-3 border rounded flex flex-col"
-                        >
+                  {appliedPackageId ? (
+                    (() => {
+                      const pkg = registrationPackages.find((p) => p.id === appliedPackageId);
+                      if (!pkg) return (
+                        <div className="p-6 text-center text-gray-500">
+                          Selected package not found.
+                        </div>
+                      );
+
+                      return (
+                        <div className="p-4 border rounded flex flex-col">
                           <div className="flex-1">
                             <div className="font-medium">{pkg.program}</div>
                             <div className="text-sm text-gray-500">
                               {pkg.term} • {pkg.mode}
                             </div>
                             <div className="text-sm mt-2">
-                              Credits: {pkg.credits} • Per Credit: ৳
-                              {pkg.perCredit.toLocaleString()}
+                              Credits: {pkg.credits} • Per Credit: ৳{pkg.perCredit.toLocaleString()}
                             </div>
                             <div className="text-sm">
-                              Admission Fee: ৳
-                              {pkg.admissionFee.toLocaleString()} • Fixed: ৳
-                              {pkg.fixedFees.toLocaleString()}
+                              Admission Fee: ৳{pkg.admissionFee.toLocaleString()} • Fixed: ৳{pkg.fixedFees.toLocaleString()}
                             </div>
                           </div>
+
                           <div className="mt-3 flex items-center justify-between">
-                            <div className="text-deep-plum font-semibold">
-                              Est: ৳{pkg.totalEstimated.toLocaleString()}
+                            <div className="text-deep-plum font-semibold">Est: ৳{pkg.totalEstimated.toLocaleString()}</div>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  // re-apply (idempotent)
+                                  const visibleSelected = selectedWaivers.filter((id) => getWaiverById(id)?.type === 'result');
+                                  const calculation = calculateWaiverAmount(pkg.totalEstimated, visibleSelected);
+                                  updateApplicationData({ program: pkg.id, totalCost: pkg.totalEstimated, registrationPackageId: pkg.id });
+                                  setCostCalculation({ originalAmount: pkg.totalEstimated, ...calculation });
+                                  toast({ title: 'Package applied', description: `${pkg.program} applied to your application.` });
+                                }}
+                              >
+                                Apply
+                              </Button>
+
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  // clear applied package and revert to program cost
+                                  setAppliedPackageId(null);
+                                  updateApplicationData({ registrationPackageId: null });
+                                  const program = selectedProgram ? getProgramById(selectedProgram) : null;
+                                  if (program) {
+                                    const visibleSelected = selectedWaivers.filter((id) => getWaiverById(id)?.type === 'result');
+                                    const calculation = calculateWaiverAmount(program.costStructure.total, visibleSelected);
+                                    setCostCalculation({ originalAmount: program.costStructure.total, ...calculation });
+                                  } else {
+                                    setCostCalculation({ originalAmount: 0, waiverAmount: 0, waiverPercentage: 0, finalAmount: 0 });
+                                  }
+                                }}
+                              >
+                                Clear
+                              </Button>
                             </div>
-                            <Button
-                              size="sm"
-                              onClick={() => {
-                                // apply package
-                                updateApplicationData({
-                                  program: pkg.id,
-                                  totalCost: pkg.totalEstimated,
-                                });
-                                setCostCalculation((prev) => ({
-                                  ...prev,
-                                  originalAmount: pkg.totalEstimated,
-                                  finalAmount:
-                                    pkg.totalEstimated -
-                                    (prev.waiverAmount || 0),
-                                }));
-                                toast({
-                                  title: "Package applied",
-                                  description: `${pkg.program} applied to your application.`,
-                                });
-                              }}
-                            >
-                              Apply
-                            </Button>
                           </div>
                         </div>
-                      ))}
-                  </div>
+                      );
+                    })()
+                  ) : (
+                    <div className="p-8 text-center text-gray-600">
+                      <div className="text-lg font-medium mb-2">No package selected</div>
+                      <div className="text-sm">Please select campus, semester type, semester, program and department on the left to see the recommended registration package.</div>
+                    </div>
+                  )}
 
                   <div className="mt-3 text-sm text-gray-500">
-                    Select a package to prefill costs. You can still edit
-                    waivers and final amounts below.
+                    The system will suggest one package based on your selections. You may clear it to choose another.
                   </div>
                 </CardContent>
               </Card>
