@@ -147,6 +147,15 @@ export function createServer() {
       console.warn("Failed to load academic routes:", e);
     });
 
+  // Registration packages (fee offerings)
+  import("./routes/registration-packages.js")
+    .then((m) => {
+      app.use("/api/registration-packages", m.default);
+    })
+    .catch((e) => {
+      console.warn("Failed to load registration-packages routes:", e);
+    });
+
   // Finance routes (waivers, fee packages, bills)
   import("./routes/finance.js")
     .then((m) => {
