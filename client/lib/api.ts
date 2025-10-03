@@ -266,6 +266,24 @@ class ApiClient {
     return await mockApi.getPrograms();
   }
 
+  async getRegistrationPackages(): Promise<ApiResponse> {
+    if (this.serverAvailable) {
+      try {
+        const res = await fetch('/api/registration-packages');
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) return { success: true, data: json.data || json } as any;
+        console.warn('getRegistrationPackages server returned non-ok', res.status);
+        this.serverAvailable = false;
+        return await mockApi.getRegistrationPackages();
+      } catch (e) {
+        console.warn('getRegistrationPackages server failed', e);
+        this.serverAvailable = false;
+        return await mockApi.getRegistrationPackages();
+      }
+    }
+    return await mockApi.getRegistrationPackages();
+  }
+
   async getDepartments(): Promise<ApiResponse> {
     if (this.serverAvailable) {
       try {
