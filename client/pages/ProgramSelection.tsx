@@ -345,7 +345,7 @@ export default function ProgramSelection() {
       selectProgram: "আপনার প্র���গ্রাম বেছে নি���",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের ��থ্য",
-      costBreakdown: "খরচের বিভাজন",
+      costBreakdown: "খরচ���র বিভাজন",
       waiverCalculator: "���ওক��ফ ক���যালকুলেটর",
       academicInfo: "একাডেমিক তথ্���",
       sscGPA: "এসএসসি জিপিএ",
@@ -451,76 +451,54 @@ export default function ProgramSelection() {
       const semesterToken = selectedSemester.toLowerCase();
       const semesterType = selectedSemesterType;
 
-      // Helper to check if package matches department/program/semester/type
-      const matches = (pkg: any) => {
-        const pkgText = `${pkg.program} ${pkg.mode}`.toLowerCase();
-
-        // Match semester (term contains 'fall'/'summer'/'spring' etc)
-        if (semesterToken && !pkg.term.toLowerCase().includes(semesterToken))
-          return false;
-
-        // Match semester type if possible (tri-semester => 'trimester', bi-semester => 'bi')
-        if (semesterType) {
-          const s = semesterType === "tri-semester" ? "trimester" : "bi";
-          if (s === "trimester") {
-            if (
-              !pkg.mode.toLowerCase().includes("trimester") &&
-              !pkg.program.toLowerCase().includes("trimester")
-            )
-              return false;
-          } else if (s === "bi") {
-            // allow both 'bi' or absence; don't strictly require
-            // skip strict check for bi to increase matches
-          }
-        }
-
-        // Match program level via pkg.mode or pkg.program keywords
-        if (programLevel) {
-          const levelToken =
-            programLevel === "bachelor"
-              ? "bachelor"
-              : programLevel === "masters"
-                ? "master"
-                : programLevel;
-          if (
-            levelToken &&
-            !pkg.mode.toLowerCase().includes(levelToken) &&
-            !pkg.program.toLowerCase().includes(levelToken)
-          ) {
-            // allow mismatch for some masters packages, so don't strictly fail
-            // but keep as soft check
-          }
-        }
-
-        // Match department by id (uppercase) or by name tokens
-        if (dept) {
-          const deptIdToken = selectedDepartment.toLowerCase();
-          const deptNameToken = dept.name.toLowerCase();
-
-          if (
-            pkgText.includes(deptIdToken) ||
-            pkgText.includes(deptNameToken) ||
-            pkgText.includes(deptIdToken.toUpperCase())
-          )
-            return true;
-
-          // Check common abbreviations (e.g., 'cse' vs 'computer science') - check first word of dept name
-          const firstWord = deptNameToken.split(" ")[0];
-          if (pkgText.includes(firstWord)) return true;
-
-          return false;
-        }
-
-        return true;
-      };
-
-      // Filter packages that match
-      const candidates = registrationPackages.filter(matches);
+      // Narrow by term first (must include semester token)
+      const candidates = registrationPackages.filter((pkg) => {
+        return pkg.term && pkg.term.toLowerCase().includes(semesterToken);
+      });
 
       if (candidates.length === 0) return null;
 
-      // Prefer exact term + mode + department matches; otherwise first candidate
-      return candidates[0];
+      // Scoring function to pick best match
+      const scoreCandidate = (pkg: any) => {
+        let score = 0;
+        const pkgText = `${pkg.program} ${pkg.mode}`.toLowerCase();
+
+        // Exact term (including year) is valuable
+        if (pkg.term && pkg.term.toLowerCase().includes(selectedSemester.toLowerCase())) score += 50;
+
+        // Department strong match
+        const deptIdToken = selectedDepartment.toLowerCase();
+        const deptNameToken = dept ? dept.name.toLowerCase() : '';
+        if (pkgText.includes(deptIdToken)) score += 100;
+        if (deptNameToken && pkgText.includes(deptNameToken)) score += 90;
+
+        // First word of department
+        const firstWord = deptNameToken.split(' ')[0];
+        if (firstWord && pkgText.includes(firstWord)) score += 40;
+
+        // Program level (bachelor/master)
+        const levelToken = programLevel === 'bachelor' ? 'bachelor' : programLevel === 'masters' ? 'master' : programLevel;
+        if (levelToken && (pkg.mode.toLowerCase().includes(levelToken) || pkg.program.toLowerCase().includes(levelToken))) score += 30;
+
+        // Semester type bonus
+        if (semesterType === 'tri-semester') {
+          if (pkg.mode.toLowerCase().includes('trimester') || pkg.program.toLowerCase().includes('trimester')) score += 20;
+        }
+
+        return score;
+      };
+
+      let best: any = null;
+      let bestScore = -1;
+      for (const c of candidates) {
+        const s = scoreCandidate(c);
+        if (s > bestScore) {
+          bestScore = s;
+          best = c;
+        }
+      }
+
+      return best;
     };
 
     try {
@@ -3133,7 +3111,7 @@ export default function ProgramSelection() {
                   <p>📝 Please complete your academic information</p>
                 ) : !eligibilityChecked ? (
                   <p>
-                    🔍 Please click "Check Eligibility" button to verify
+                    ���� Please click "Check Eligibility" button to verify
                     requirements
                   </p>
                 ) : eligibilityResult && !eligibilityResult.isEligible ? (
