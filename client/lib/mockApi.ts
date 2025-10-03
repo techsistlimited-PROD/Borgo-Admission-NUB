@@ -536,6 +536,11 @@ class MockApiService {
     return { success: true, data: { programs: this.programs } };
   }
 
+  async getRegistrationPackages(): Promise<ApiResponse> {
+    await this.delay();
+    return { success: true, data: this.registrationPackages };
+  }
+
   async getDepartments(): Promise<ApiResponse> {
     await this.delay();
     return { success: true, data: { departments: this.departments } };
