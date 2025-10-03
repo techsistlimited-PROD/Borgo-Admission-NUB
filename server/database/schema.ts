@@ -276,6 +276,23 @@ export const initializeSchema = async (): Promise<void> => {
       )
     `);
 
+    // Registration packages (admin-managed list of full registration package offerings)
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS registration_packages (
+        id TEXT PRIMARY KEY,
+        program TEXT NOT NULL,
+        term TEXT,
+        mode TEXT,
+        credits INTEGER,
+        admission_fee REAL DEFAULT 0,
+        per_credit REAL DEFAULT 0,
+        fixed_fees REAL DEFAULT 0,
+        total_estimated REAL DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Waiver policies (admin-managed)
     await dbRun(`
       CREATE TABLE IF NOT EXISTS waiver_policies (
