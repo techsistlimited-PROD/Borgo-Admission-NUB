@@ -78,7 +78,22 @@ export default function AdminRegistrationPackages() {
           <Button variant="outline" onClick={() => load()}>
             Refresh
           </Button>
-          <Button onClick={() => { setEditingPackage({ id: `pkg-${Date.now()}`, program: '', term: '', mode: '', credits: 0, admission_fee: 0, per_credit: 0, fixed_fees: 0, total_estimated: 0 }); setEditModalOpen(true); }}>
+          <Button
+            onClick={() => {
+              setEditingPackage({
+                id: `pkg-${Date.now()}`,
+                program: "",
+                term: "",
+                mode: "",
+                credits: 0,
+                admission_fee: 0,
+                per_credit: 0,
+                fixed_fees: 0,
+                total_estimated: 0,
+              });
+              setEditModalOpen(true);
+            }}
+          >
             New Package
           </Button>
         </div>
@@ -152,17 +167,44 @@ export default function AdminRegistrationPackages() {
                     >
                       Use
                     </Button>
-                    <Button size="sm" variant="outline" onClick={()=>{ setEditingPackage(p); setEditModalOpen(true); }}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setEditingPackage(p);
+                        setEditModalOpen(true);
+                      }}
+                    >
                       Edit
                     </Button>
-                    <Button size="sm" variant="destructive" onClick={async ()=>{
-                      if (!confirm('Delete this package?')) return;
-                      try{
-                        const res = await apiClient.deleteRegistrationPackage(p.id);
-                        if (res.success) { toast({ title:'Deleted' }); load(); }
-                        else toast({ title:'Error', description: res.error || 'Failed to delete', variant:'destructive' });
-                      }catch(e){ console.error(e); toast({ title:'Error', description:'Failed to delete', variant:'destructive' }); }
-                    }}>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={async () => {
+                        if (!confirm("Delete this package?")) return;
+                        try {
+                          const res = await apiClient.deleteRegistrationPackage(
+                            p.id,
+                          );
+                          if (res.success) {
+                            toast({ title: "Deleted" });
+                            load();
+                          } else
+                            toast({
+                              title: "Error",
+                              description: res.error || "Failed to delete",
+                              variant: "destructive",
+                            });
+                        } catch (e) {
+                          console.error(e);
+                          toast({
+                            title: "Error",
+                            description: "Failed to delete",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                    >
                       Delete
                     </Button>
                   </TableCell>
@@ -177,44 +219,146 @@ export default function AdminRegistrationPackages() {
       {editModalOpen && editingPackage && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white w-full max-w-2xl p-6 rounded shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Edit Package: {editingPackage.program}</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              Edit Package: {editingPackage.program}
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <Input value={editingPackage.program} onChange={(e:any)=> setEditingPackage({...editingPackage, program: e.target.value})} placeholder="Program name" />
-              <Input value={editingPackage.term} onChange={(e:any)=> setEditingPackage({...editingPackage, term: e.target.value})} placeholder="Term" />
-              <Input value={editingPackage.mode} onChange={(e:any)=> setEditingPackage({...editingPackage, mode: e.target.value})} placeholder="Mode" />
-              <Input value={editingPackage.credits} onChange={(e:any)=> setEditingPackage({...editingPackage, credits: Number(e.target.value)})} placeholder="Credits" />
-              <Input value={editingPackage.admissionFee} onChange={(e:any)=> setEditingPackage({...editingPackage, admissionFee: Number(e.target.value)})} placeholder="Admission Fee" />
-              <Input value={editingPackage.perCredit} onChange={(e:any)=> setEditingPackage({...editingPackage, perCredit: Number(e.target.value)})} placeholder="Per Credit" />
-              <Input value={editingPackage.fixedFees} onChange={(e:any)=> setEditingPackage({...editingPackage, fixedFees: Number(e.target.value)})} placeholder="Fixed Fees" />
-              <Input value={editingPackage.totalEstimated} onChange={(e:any)=> setEditingPackage({...editingPackage, totalEstimated: Number(e.target.value)})} placeholder="Total Estimated" />
+              <Input
+                value={editingPackage.program}
+                onChange={(e: any) =>
+                  setEditingPackage({
+                    ...editingPackage,
+                    program: e.target.value,
+                  })
+                }
+                placeholder="Program name"
+              />
+              <Input
+                value={editingPackage.term}
+                onChange={(e: any) =>
+                  setEditingPackage({ ...editingPackage, term: e.target.value })
+                }
+                placeholder="Term"
+              />
+              <Input
+                value={editingPackage.mode}
+                onChange={(e: any) =>
+                  setEditingPackage({ ...editingPackage, mode: e.target.value })
+                }
+                placeholder="Mode"
+              />
+              <Input
+                value={editingPackage.credits}
+                onChange={(e: any) =>
+                  setEditingPackage({
+                    ...editingPackage,
+                    credits: Number(e.target.value),
+                  })
+                }
+                placeholder="Credits"
+              />
+              <Input
+                value={editingPackage.admissionFee}
+                onChange={(e: any) =>
+                  setEditingPackage({
+                    ...editingPackage,
+                    admissionFee: Number(e.target.value),
+                  })
+                }
+                placeholder="Admission Fee"
+              />
+              <Input
+                value={editingPackage.perCredit}
+                onChange={(e: any) =>
+                  setEditingPackage({
+                    ...editingPackage,
+                    perCredit: Number(e.target.value),
+                  })
+                }
+                placeholder="Per Credit"
+              />
+              <Input
+                value={editingPackage.fixedFees}
+                onChange={(e: any) =>
+                  setEditingPackage({
+                    ...editingPackage,
+                    fixedFees: Number(e.target.value),
+                  })
+                }
+                placeholder="Fixed Fees"
+              />
+              <Input
+                value={editingPackage.totalEstimated}
+                onChange={(e: any) =>
+                  setEditingPackage({
+                    ...editingPackage,
+                    totalEstimated: Number(e.target.value),
+                  })
+                }
+                placeholder="Total Estimated"
+              />
             </div>
 
             <div className="mt-4 flex justify-end gap-2">
-              <Button variant="outline" onClick={()=>{ setEditModalOpen(false); setEditingPackage(null); }}>Cancel</Button>
-              <Button onClick={async ()=>{
-                setSaving(true);
-                try{
-                  const payload = { ...editingPackage };
-                  let res;
-                  // if id exists in DB treat as update, else create
-                  const exists = await apiClient.getRegistrationPackages();
-                  const found = exists.success && Array.isArray(exists.data) && exists.data.find((x:any)=>x.id===editingPackage.id);
-                  if (found) {
-                    res = await apiClient.updateRegistrationPackage(editingPackage.id, payload);
-                  } else {
-                    res = await apiClient.createRegistrationPackage(payload);
-                  }
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setEditModalOpen(false);
+                  setEditingPackage(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={async () => {
+                  setSaving(true);
+                  try {
+                    const payload = { ...editingPackage };
+                    let res;
+                    // if id exists in DB treat as update, else create
+                    const exists = await apiClient.getRegistrationPackages();
+                    const found =
+                      exists.success &&
+                      Array.isArray(exists.data) &&
+                      exists.data.find((x: any) => x.id === editingPackage.id);
+                    if (found) {
+                      res = await apiClient.updateRegistrationPackage(
+                        editingPackage.id,
+                        payload,
+                      );
+                    } else {
+                      res = await apiClient.createRegistrationPackage(payload);
+                    }
 
-                  if (res.success) { toast({ title: 'Saved' }); setEditModalOpen(false); setEditingPackage(null); load(); }
-                  else toast({ title:'Error', description: res.error || 'Failed to save', variant:'destructive' });
-                }catch(e){ console.error(e); toast({ title:'Error', description:'Failed to save', variant:'destructive' }); }
-                finally{ setSaving(false); }
-              }}>{saving? 'Saving...' : 'Save'}</Button>
+                    if (res.success) {
+                      toast({ title: "Saved" });
+                      setEditModalOpen(false);
+                      setEditingPackage(null);
+                      load();
+                    } else
+                      toast({
+                        title: "Error",
+                        description: res.error || "Failed to save",
+                        variant: "destructive",
+                      });
+                  } catch (e) {
+                    console.error(e);
+                    toast({
+                      title: "Error",
+                      description: "Failed to save",
+                      variant: "destructive",
+                    });
+                  } finally {
+                    setSaving(false);
+                  }
+                }}
+              >
+                {saving ? "Saving..." : "Save"}
+              </Button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 

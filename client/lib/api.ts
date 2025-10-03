@@ -294,14 +294,24 @@ class ApiClient {
   async createRegistrationPackage(payload: any): Promise<ApiResponse> {
     if (this.serverAvailable) {
       try {
-        const res = await fetch('/api/registration-packages', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.token?{ Authorization: `Bearer ${this.token}` }: {}) }, body: JSON.stringify(payload) });
-        const json = await res.json().catch(()=>({}));
+        const res = await fetch("/api/registration-packages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+          },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json().catch(() => ({}));
         if (res.ok) return { success: true, data: json.data || json } as any;
-        console.warn('createRegistrationPackage server returned non-ok', res.status);
+        console.warn(
+          "createRegistrationPackage server returned non-ok",
+          res.status,
+        );
         this.serverAvailable = false;
         return await mockApi.createRegistrationPackage(payload);
       } catch (e) {
-        console.warn('createRegistrationPackage server failed', e);
+        console.warn("createRegistrationPackage server failed", e);
         this.serverAvailable = false;
         return await mockApi.createRegistrationPackage(payload);
       }
@@ -309,17 +319,33 @@ class ApiClient {
     return await mockApi.createRegistrationPackage(payload);
   }
 
-  async updateRegistrationPackage(id: string, updates: any): Promise<ApiResponse> {
+  async updateRegistrationPackage(
+    id: string,
+    updates: any,
+  ): Promise<ApiResponse> {
     if (this.serverAvailable) {
       try {
-        const res = await fetch(`/api/registration-packages/${encodeURIComponent(id)}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(this.token?{ Authorization: `Bearer ${this.token}` }: {}) }, body: JSON.stringify(updates) });
-        const json = await res.json().catch(()=>({}));
+        const res = await fetch(
+          `/api/registration-packages/${encodeURIComponent(id)}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+            },
+            body: JSON.stringify(updates),
+          },
+        );
+        const json = await res.json().catch(() => ({}));
         if (res.ok) return { success: true, data: json.data || json } as any;
-        console.warn('updateRegistrationPackage server returned non-ok', res.status);
+        console.warn(
+          "updateRegistrationPackage server returned non-ok",
+          res.status,
+        );
         this.serverAvailable = false;
         return await mockApi.updateRegistrationPackage(id, updates);
       } catch (e) {
-        console.warn('updateRegistrationPackage server failed', e);
+        console.warn("updateRegistrationPackage server failed", e);
         this.serverAvailable = false;
         return await mockApi.updateRegistrationPackage(id, updates);
       }
@@ -330,14 +356,25 @@ class ApiClient {
   async deleteRegistrationPackage(id: string): Promise<ApiResponse> {
     if (this.serverAvailable) {
       try {
-        const res = await fetch(`/api/registration-packages/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { ...(this.token?{ Authorization: `Bearer ${this.token}` }: {}) } });
-        const json = await res.json().catch(()=>({}));
+        const res = await fetch(
+          `/api/registration-packages/${encodeURIComponent(id)}`,
+          {
+            method: "DELETE",
+            headers: {
+              ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
+            },
+          },
+        );
+        const json = await res.json().catch(() => ({}));
         if (res.ok) return { success: true, data: json.data || json } as any;
-        console.warn('deleteRegistrationPackage server returned non-ok', res.status);
+        console.warn(
+          "deleteRegistrationPackage server returned non-ok",
+          res.status,
+        );
         this.serverAvailable = false;
         return await mockApi.deleteRegistrationPackage(id);
       } catch (e) {
-        console.warn('deleteRegistrationPackage server failed', e);
+        console.warn("deleteRegistrationPackage server failed", e);
         this.serverAvailable = false;
         return await mockApi.deleteRegistrationPackage(id);
       }

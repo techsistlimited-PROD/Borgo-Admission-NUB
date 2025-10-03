@@ -485,9 +485,7 @@ class MockApiService {
     };
   }
 
-  async generateApplicationIds(
-    id: string,
-  ): Promise<
+  async generateApplicationIds(id: string): Promise<
     ApiResponse<{
       university_id: string;
       password: string;
@@ -556,25 +554,31 @@ class MockApiService {
 
   async createRegistrationPackage(payload: any): Promise<ApiResponse> {
     await this.delay(150);
-    const id = `pkg-${String(this.registrationPackages.length + 1).padStart(3, '0')}`;
+    const id = `pkg-${String(this.registrationPackages.length + 1).padStart(3, "0")}`;
     const pkg = { id, ...payload };
     this.registrationPackages.push(pkg);
     return { success: true, data: pkg };
   }
 
-  async updateRegistrationPackage(id: string, updates: any): Promise<ApiResponse> {
+  async updateRegistrationPackage(
+    id: string,
+    updates: any,
+  ): Promise<ApiResponse> {
     await this.delay(150);
-    const idx = this.registrationPackages.findIndex((p:any)=>p.id===id);
-    if (idx === -1) return { success: false, error: 'Package not found' };
-    this.registrationPackages[idx] = { ...this.registrationPackages[idx], ...updates };
+    const idx = this.registrationPackages.findIndex((p: any) => p.id === id);
+    if (idx === -1) return { success: false, error: "Package not found" };
+    this.registrationPackages[idx] = {
+      ...this.registrationPackages[idx],
+      ...updates,
+    };
     return { success: true, data: this.registrationPackages[idx] };
   }
 
   async deleteRegistrationPackage(id: string): Promise<ApiResponse> {
     await this.delay(150);
-    const idx = this.registrationPackages.findIndex((p:any)=>p.id===id);
-    if (idx === -1) return { success: false, error: 'Package not found' };
-    this.registrationPackages.splice(idx,1);
+    const idx = this.registrationPackages.findIndex((p: any) => p.id === id);
+    if (idx === -1) return { success: false, error: "Package not found" };
+    this.registrationPackages.splice(idx, 1);
     return { success: true, data: { deleted: true } };
   }
 
