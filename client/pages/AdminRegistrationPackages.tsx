@@ -139,7 +139,7 @@ export default function AdminRegistrationPackages() {
                   <TableCell>৳{p.perCredit.toLocaleString()}</TableCell>
                   <TableCell>৳{p.fixedFees.toLocaleString()}</TableCell>
                   <TableCell>৳{p.totalEstimated.toLocaleString()}</TableCell>
-                  <TableCell>
+                  <TableCell className="flex gap-2">
                     <Button
                       size="sm"
                       onClick={() => {
@@ -147,6 +147,19 @@ export default function AdminRegistrationPackages() {
                       }}
                     >
                       Use
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={()=>{ setEditingPackage(p); setEditModalOpen(true); }}>
+                      Edit
+                    </Button>
+                    <Button size="sm" variant="destructive" onClick={async ()=>{
+                      if (!confirm('Delete this package?')) return;
+                      try{
+                        const res = await apiClient.deleteRegistrationPackage(p.id);
+                        if (res.success) { toast({ title:'Deleted' }); load(); }
+                        else toast({ title:'Error', description: res.error || 'Failed to delete', variant:'destructive' });
+                      }catch(e){ console.error(e); toast({ title:'Error', description:'Failed to delete', variant:'destructive' }); }
+                    }}>
+                      Delete
                     </Button>
                   </TableCell>
                 </TableRow>
