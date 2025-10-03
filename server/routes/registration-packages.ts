@@ -72,13 +72,25 @@ router.use(authenticateToken);
 
 router.post('/', requirePermission('registration_packages:manage'), async (req: AuthRequest, res) => {
   try {
-    const { id, program, term, mode, credits, admission_fee, per_credit, fixed_fees, total_estimated } = req.body;
-    if (!id || !program) return res.status(400).json({ success: false, error: 'id and program required' });
+    const payload = req.body || {};
+    const { valid, errors, sanitized } = validatePackageInput(payload, false);
+    if (!valid) return res.status(400).json({ success: false, error: 'Validation failed', details: errors });
+
     await dbRun(
       `INSERT OR REPLACE INTO registration_packages (id, program, term, mode, credits, admission_fee, per_credit, fixed_fees, total_estimated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, program, term || null, mode || null, credits || 0, admission_fee || 0, per_credit || 0, fixed_fees || 0, total_estimated || 0]
+      [
+        sanitized.id,
+        sanitized.program,
+        sanitized.term ?? null,
+        sanitized.mode ?? null,
+        sanitized.credits ?? 0,
+        sanitized.admission_fee ?? 0,
+        sanitized.per_credit ?? 0,
+        sanitized.fixed_fees ?? 0,
+        sanitized.total_estimated ?? 0,
+      ]
     );
-    const row = await dbGet('SELECT * FROM registration_packages WHERE id = ?', [id]);
+    const row = await dbGet('SELECT * FROM registration_packages WHERE id = ?', [sanitized.id]);
     res.json({ success: true, data: row });
   } catch (err) {
     console.error('Create registration package error:', err);
@@ -89,18 +101,21 @@ router.post('/', requirePermission('registration_packages:manage'), async (req: 
 router.put('/:id', requirePermission('registration_packages:manage'), async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
+    const updates = req.body || {};
     const existing = await dbGet('SELECT * FROM registration_packages WHERE id = ?', [id]);
     if (!existing) return res.status(404).json({ success: false, error: 'Package not found' });
 
-    const program = updates.program ?? existing.program;
-    const term = updates.term ?? existing.term;
-    const mode = updates.mode ?? existing.mode;
-    const credits = updates.credits ?? existing.credits;
-    const admission_fee = updates.admission_fee ?? existing.admission_fee;
-    const per_credit = updates.per_credit ?? existing.per_credit;
-    const fixed_fees = updates.fixed_fees ?? existing.fixed_fees;
-    const total_estimated = updates.total_estimated ?? existing.total_estimated;
+    const { valid, errors, sanitized } = validatePackageInput(updates, true);
+    if (!valid) return res.status(400).json({ success: false, error: 'Validation failed', details: errors });
+
+    const program = sanitized.program ?? existing.program;
+    const term = sanitized.term ?? existing.term;
+    const mode = sanitized.mode ?? existing.mode;
+    const credits = sanitized.credits ?? existing.credits;
+    const admission_fee = sanitized.admission_fee ?? existing.admission_fee;
+    const per_credit = sanitized.per_credit ?? existing.per_credit;
+    const fixed_fees = sanitized.fixed_fees ?? existing.fixed_fees;
+    const total_estimated = sanitized.total_estimated ?? existing.total_estimated;
 
     await dbRun(
       `UPDATE registration_packages SET program = ?, term = ?, mode = ?, credits = ?, admission_fee = ?, per_credit = ?, fixed_fees = ?, total_estimated = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
