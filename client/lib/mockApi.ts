@@ -9,6 +9,8 @@ export interface User {
   designation?: string;
 }
 
+import { registrationPackages } from "./registrationPackages";
+
 export interface Application {
   id: string;
   uuid: string;
@@ -142,6 +144,8 @@ class MockApiService {
       campus: ["Main Campus", "Uttara Campus"],
     },
   ];
+
+  private registrationPackages = registrationPackages;
 
   private departments = [
     { code: "CSE", name: "Computer Science & Engineering" },
