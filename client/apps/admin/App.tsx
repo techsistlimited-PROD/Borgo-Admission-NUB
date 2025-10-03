@@ -12,6 +12,7 @@ import AdminAdmissionList from "../../pages/AdminAdmissionList";
 import ApplicantDetail from "../../pages/ApplicantDetail";
 import CreditTransferList from "../../pages/CreditTransferList";
 import CreditTransferReview from "../../pages/CreditTransferReview";
+import AdminRegistrationPackages from "../../pages/AdminRegistrationPackages";
 import FinancePanel from "../../pages/FinancePanel";
 import Reports from "../../pages/Reports";
 import EmailTemplates from "../../pages/EmailTemplates";
