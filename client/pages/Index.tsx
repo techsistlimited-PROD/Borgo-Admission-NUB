@@ -107,12 +107,12 @@ export default function Index() {
       careerSupportDesc: "নিবেদিত চাকরির সহায়তা এ��ং ক্যারিয়ার গাইডেন্স",
       affordableEducation: "সাশ্রয়ী শিক্ষা",
       affordableEducationDesc: "বিভিন্ন বৃত্তির সুযোগ সহ মানসম্পন্ন শিক্ষা",
-      waiverHighlights: "বৃত্তি ও মওকুফের সুযোগ",
+      waiverHighlights: "বৃত্তি ও মওকুফের সুযো���",
       meritBased: "মেধাভিত্তিক বৃত্তি",
       meritBasedDesc: "এসএসসি ও এইচএসসি ফলাফলের ভিত্তিতে ১০০% পর্যন্ত মওকুফ",
       specialWaivers: "বিশেষ মওকুফ উপলব্ধ",
       specialWaiversDesc:
-        "নারী, ���া����বোন এবং মুক্তিযোদ্ধাদের জন্য অতিরিক্ত সহায��তা",
+        "নারী, ���া���বোন এবং মুক্তিযোদ্ধাদের জন্য অতিরিক্ত সহায��তা",
       quickStats: "দ্রুত পরিসংখ্যান",
       totalApplicants: "মোট আবেদন���ারী",
       programs: "উপলব্ধ প্রোগ্রাম",
@@ -343,7 +343,7 @@ export default function Index() {
 
               {!programsLoading && !programsError && programs.length > 0 && (
                 <div className="grid grid-cols-1 gap-4">
-                  {programs.slice(0, 4).map((program: any) => {
+                  {programs.slice(0, 3).map((program: any) => {
                     const code = program.code || program.program_code;
                     const dept = program.department_code || program.department?.code || "";
                     const shortDesc = program.short_description || program.description || program.department_name || "A leading program with strong industry ties.";
@@ -365,6 +365,25 @@ export default function Index() {
                       </Card>
                     );
                   })}
+
+                  {/* Registration packages preview */}
+                  {registrationPkgs.slice(0, 2).map((pkg:any)=> (
+                    <Card key={pkg.id} className="bg-white/10 backdrop-blur-lg border-white/20 text-white">
+                      <CardContent className="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between">
+                        <div>
+                          <div className="font-bold text-lg">{pkg.program}</div>
+                          <div className="text-sm text-white/80">{pkg.term} • {pkg.mode}</div>
+                          <div className="text-sm text-white/80">Credits: {pkg.credits} • Per Credit: ৳{pkg.perCredit.toLocaleString()}</div>
+                        </div>
+                        <div className="mt-4 md:mt-0 flex items-center gap-4">
+                          <Link to="/program-selection">
+                            <Button size="sm">View Packages</Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+
                 </div>
               )}
             </div>
