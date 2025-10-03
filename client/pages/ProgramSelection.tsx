@@ -329,7 +329,7 @@ export default function ProgramSelection() {
         "Step 1 of 4 - Program Selection & Previous Academic Information",
     },
     bn: {
-      title: "প্রোগ্রাম ও বিভ���গ নির্বা��ন",
+      title: "প্রোগ্রাম ও ব���ভ���গ নির্বা��ন",
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
@@ -346,7 +346,7 @@ export default function ProgramSelection() {
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের ��থ্য",
       costBreakdown: "খরচের বিভাজন",
-      waiverCalculator: "���ওক��ফ ক্যালকুলেটর",
+      waiverCalculator: "���ওক��ফ ক���যালকুলেটর",
       academicInfo: "একাডেমিক তথ্���",
       sscGPA: "এসএসসি জিপিএ",
       hscGPA: "����ই���এসসি জিপিএ",
@@ -436,7 +436,8 @@ export default function ProgramSelection() {
   // Auto-select and apply a registration package when user chooses campus/semester/program/department
   useEffect(() => {
     const findBestPackage = () => {
-      if (!selectedProgram || !selectedDepartment || !selectedSemester)
+      // Require all five fields: campus, semester type, semester, program and department
+      if (!selectedCampus || !selectedSemesterType || !selectedSemester || !selectedProgram || !selectedDepartment)
         return null;
 
       const dept = getDepartmentById(selectedDepartment);
@@ -2622,7 +2623,7 @@ export default function ProgramSelection() {
                           >
                             {isCheckingEligibility
                               ? "⏳ Checking..."
-                              : "🔍 Check Eligibility"}
+                              : "���� Check Eligibility"}
                           </Button>
                           <p className="text-sm text-gray-600 mt-2">
                             Verify if you meet the requirements for this program
@@ -2730,7 +2731,7 @@ export default function ProgramSelection() {
                             }
                           >
                             {isCheckingEligibility
-                              ? "⏳ Checking..."
+                              ? "�� Checking..."
                               : "🔍 Check Eligibility"}
                           </Button>
                           <p className="text-sm text-gray-600 mt-2">
