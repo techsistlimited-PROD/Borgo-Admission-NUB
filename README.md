@@ -44,6 +44,7 @@ This project is currently frontend-first with mock services. The backend team sh
 ## Project layout (important files for backend)
 
 client/
+
 - apps/admin — admin entry (client/apps/admin/App.tsx)
 - apps/applicant — public applicant entry
 - components — shared components and UI primitives (Radix/Tailwind wrappers)
@@ -51,13 +52,15 @@ client/
 - lib/api.ts — client-side API wrapper (currently falls back to mock if server unavailable)
 - lib/mockApi.ts — in-memory mock implementations of endpoints (useful reference and test data)
 - lib/programData.ts — program, waiver and policy definitions used by frontend
-- pages/* — all route pages, see specific files below
+- pages/\* — all route pages, see specific files below
 
 server/ (reference)
+
 - server/routes — existing server-side routes and examples (if your team will replace frontend mocks, mirror these route patterns)
 - server/database — DB adapter files, seeders, schema examples (supabase/neon helpers exist)
 
 Important frontend pages to review for contract and UI expectations:
+
 - `code/client/pages/AdminAdmissionList.tsx` — admin list, filters and stats
 - `code/client/pages/ApplicantDetail.tsx` — full applicant review and the existing "Make Student" flow
 - `code/client/pages/CreditTransferList.tsx` — list view for credit transfer applicants
@@ -71,6 +74,7 @@ Important frontend pages to review for contract and UI expectations:
 Below are the primary endpoints the frontend expects. Implementations should return JSON with { success: boolean, data?: any, error?: string } for compatibility with `client/lib/api.ts`.
 
 Authentication
+
 - POST /api/auth/login
   - Body: { email, password }
   - Response: { token, user: User }
@@ -79,6 +83,7 @@ Authentication
   - Response: { user: User }
 
 Applications
+
 - GET /api/applications
   - Query: status, page, limit, search, program_code, campus, admission_type, dateFrom, dateTo
   - Response: { applications: Application[], total: number }
@@ -88,20 +93,22 @@ Applications
   - Response: { application: Application }
 - PATCH /api/applications/:id/status
   - Body: { status: string }
-- POST /api/applications/:id/generate-ids  (alias for student id generation)
+- POST /api/applications/:id/generate-ids (alias for student id generation)
   - Body: { applicant_id }
   - Response: { student_id, ugc_id }
 - GET /api/applications/stats/dashboard
   - Response: { total, pending, approved, payment_pending, credit_transfer, ... }
 
 Credit Transfer
-- GET /api/courses?code=...  — search courses catalog
+
+- GET /api/courses?code=... — search courses catalog
   - Response: [{ id, code, title, credits, department, program_id }]
 - POST /api/transfer-courses
   - Body: { applicant_id, courses: [{ code, title, credits, grade, gpa }] }
   - Response: { saved: true }
 
 Student & ID Generation
+
 - POST /api/id/generate-student
   - Body: { applicant_id }
   - Response: { student_id, ugc_id }
@@ -109,6 +116,7 @@ Student & ID Generation
   - Body: { application_id, student_id, ugc_id, profile: {...} }
 
 Finance & Waivers
+
 - GET /api/finance/waiver-policies
   - Response: { policies: WaiverPolicy[] }
 - POST /api/finance/waiver-assignments
@@ -116,15 +124,18 @@ Finance & Waivers
   - Response: assignment record
 
 Files & Uploads
+
 - POST /api/uploads
   - Multipart/form-data: file, meta
   - Response: { url }
 
 Notifications / Messaging (optional)
+
 - POST /api/notifications/email
 - POST /api/notifications/sms
 
 Notes about responses
+
 - `client/lib/api.ts` expects res.ok and JSON. For compatibility, return HTTP 200 with { success: true, data: ... } or non-200 with { success: false, error: '...' }.
 
 ---
@@ -132,33 +143,40 @@ Notes about responses
 ## Data models (suggested shapes)
 
 User
+
 ```ts
 interface User {
   id: number;
   uuid: string;
   name: string;
   email: string;
-  type: 'applicant' | 'admin' | 'admission_officer';
+  type: "applicant" | "admin" | "admission_officer";
   role?: string;
 }
 ```
 
 Application
+
 ```ts
 interface Application {
   id: string; // tracking id
   uuid?: string;
-  status: 'pending' | 'approved' | 'rejected' | 'payment_pending' | 'converted_to_student';
+  status:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "payment_pending"
+    | "converted_to_student";
   applicant_name: string;
   email: string;
   phone?: string;
-  admission_type: 'regular' | 'credit_transfer';
+  admission_type: "regular" | "credit_transfer";
   program_code: string;
   program_name?: string;
   department_code?: string;
   campus?: string;
   semester?: string;
-  documents?: { transcript?: string; [key:string]: any };
+  documents?: { transcript?: string; [key: string]: any };
   transfer_courses?: TransferCourse[];
   student_id?: string;
   id_generation?: { student_id: string; ugc_id: string };
@@ -167,17 +185,19 @@ interface Application {
 ```
 
 TransferCourse
+
 ```ts
 interface TransferCourse {
   code: string;
   title: string;
   credits: number;
   grade?: string; // A, A-, B+
-  gpa?: number;   // numeric GPA
+  gpa?: number; // numeric GPA
 }
 ```
 
 Student (after conversion)
+
 ```ts
 interface Student {
   id: string;
@@ -191,11 +211,12 @@ interface Student {
 ```
 
 WaiverPolicy
+
 ```ts
 interface WaiverPolicy {
   id: string;
   name: string;
-  type: 'result' | 'special' | 'additional';
+  type: "result" | "special" | "additional";
   percentage: number; // numeric percent
   criteria?: string;
 }
@@ -215,6 +236,7 @@ interface WaiverPolicy {
 ## Storage & file uploads
 
 Recommendations:
+
 - Use Supabase Storage or S3-compatible storage for uploaded documents (transcripts, photos). Store URL in application.documents.
 - Keep uploads behind authentication; return signed URLs when necessary.
 
@@ -276,6 +298,7 @@ Follow conventional git workflow and open PRs for features. For integration ques
 ---
 
 This README augments the existing project README with backend-focused instructions. If you want, I can also:
+
 - generate an OpenAPI spec
 - add Postman/Insomnia collection
 - add SQL schema examples or Prisma schema
