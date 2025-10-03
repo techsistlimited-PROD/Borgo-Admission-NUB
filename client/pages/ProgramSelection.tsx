@@ -245,7 +245,7 @@ export default function ProgramSelection() {
 
   const semesterTypeOptions = [
     { id: "bi-semester", name: "Bi-Semester", namebn: "দ্বি-সেমিস্টার" },
-    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমিস্টার" },
+    { id: "tri-semester", name: "Tri-Semester", namebn: "ত���রি-সেমিস্টার" },
   ];
 
   const getSemesterOptionsForType = (type: string) => {
@@ -327,7 +327,7 @@ export default function ProgramSelection() {
       semesterSelection: "সেমিস���টার ন���র্বাচন করুন",
       semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
-      departmentSelection: "বিভাগ নির্বাচন করুন",
+      departmentSelection: "বিভাগ নির��বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস��টার বেছে নিন",
       selectSemesterType: "সেমিস্টার ���রন বেছ�� ন��ন",
@@ -363,7 +363,7 @@ export default function ProgramSelection() {
       selectDepartmentFirst: "প্রথ���ে একটি ��িভাগ নির্বাচন করুন",
       enterGPAValues:
         "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
-      waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
+      waiverPolicyNote: "মওক��ফ নীতি বিশ্বব��দ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
         "অতিরি����্��� ফি ���বং বিশ্ববিদ্যালয়ের ���ীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
       saving: "সেভ করা হচ্ছে...",
@@ -2675,6 +2675,43 @@ export default function ProgramSelection() {
 
             {/* Right Column - Cost Breakdown */}
             <div className="space-y-6">
+
+              {/* Registration Packages Preview */}
+              <Card className="bg-white shadow-lg">
+                <CardHeader className="bg-indigo-50">
+                  <CardTitle className="font-poppins">Registration Packages</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {registrationPackages.slice(0,6).map((pkg) => (
+                      <div key={pkg.id} className="p-3 border rounded flex flex-col">
+                        <div className="flex-1">
+                          <div className="font-medium">{pkg.program}</div>
+                          <div className="text-sm text-gray-500">{pkg.term} • {pkg.mode}</div>
+                          <div className="text-sm mt-2">Credits: {pkg.credits} • Per Credit: ৳{pkg.perCredit.toLocaleString()}</div>
+                          <div className="text-sm">Admission Fee: ৳{pkg.admissionFee.toLocaleString()} • Fixed: ৳{pkg.fixedFees.toLocaleString()}</div>
+                        </div>
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="text-deep-plum font-semibold">Est: ৳{pkg.totalEstimated.toLocaleString()}</div>
+                          <Button size="sm" onClick={() => {
+                            // apply package
+                            updateApplicationData({ program: pkg.id, totalCost: pkg.totalEstimated });
+                            setCostCalculation((prev) => ({
+                              ...prev,
+                              originalAmount: pkg.totalEstimated,
+                              finalAmount: pkg.totalEstimated - (prev.waiverAmount || 0),
+                            }));
+                            toast({ title: 'Package applied', description: `${pkg.program} applied to your application.` });
+                          }}>
+                            Apply
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 text-sm text-gray-500">Select a package to prefill costs. You can still edit waivers and final amounts below.</div>
+                </CardContent>
+              </Card>
               {/* Cost Breakdown */}
               <Card className="bg-white shadow-lg">
                 <CardHeader className="bg-deep-plum text-white">
