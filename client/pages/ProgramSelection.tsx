@@ -153,6 +153,11 @@ export default function ProgramSelection() {
   const [pkgMode, setPkgMode] = useState<string | null>(null);
   const [showAllPackages, setShowAllPackages] = useState(false);
 
+  // Currently applied registration package (by id)
+  const [appliedPackageId, setAppliedPackageId] = useState<string | null>(
+    applicationData.registrationPackageId || null,
+  );
+
   // Loading state
   const [isSaving, setIsSaving] = useState(false);
 
@@ -368,7 +373,7 @@ export default function ProgramSelection() {
       selectProgramFirst: "প্রথমে একটি প্রো�����রাম নির্ব��চ�� করুন",
       selectDepartmentFirst: "প্রথ���ে একটি ��িভাগ নির্বাচন করুন",
       enterGPAValues:
-        "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
+        "যোগ্য মওকুফ ���েখতে আপনা��� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
       waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
         "অতিরি����্��� ফি ���বং বিশ্ববি���্যালয়ের ���ীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
@@ -427,6 +432,101 @@ export default function ProgramSelection() {
       }
     }
   }, [selectedProgram, selectedWaivers]);
+
+  // Auto-select and apply a registration package when user chooses campus/semester/program/department
+  useEffect(() => {
+    const findBestPackage = () => {
+      if (!selectedProgram || !selectedDepartment || !selectedSemester) return null;
+
+      const dept = getDepartmentById(selectedDepartment);
+      const programLevel = selectedProgram; // e.g., 'bachelor' or 'masters'
+      const semesterToken = selectedSemester.toLowerCase();
+      const semesterType = selectedSemesterType;
+
+      // Helper to check if package matches department/program/semester/type
+      const matches = (pkg: any) => {
+        const pkgText = `${pkg.program} ${pkg.mode}`.toLowerCase();
+
+        // Match semester (term contains 'fall'/'summer'/'spring' etc)
+        if (semesterToken && !pkg.term.toLowerCase().includes(semesterToken)) return false;
+
+        // Match semester type if possible (tri-semester => 'trimester', bi-semester => 'bi')
+        if (semesterType) {
+          const s = semesterType === 'tri-semester' ? 'trimester' : 'bi';
+          if (s === 'trimester') {
+            if (!pkg.mode.toLowerCase().includes('trimester') && !pkg.program.toLowerCase().includes('trimester')) return false;
+          } else if (s === 'bi') {
+            // allow both 'bi' or absence; don't strictly require
+            // skip strict check for bi to increase matches
+          }
+        }
+
+        // Match program level via pkg.mode or pkg.program keywords
+        if (programLevel) {
+          const levelToken = programLevel === 'bachelor' ? 'bachelor' : programLevel === 'masters' ? 'master' : programLevel;
+          if (levelToken && !pkg.mode.toLowerCase().includes(levelToken) && !pkg.program.toLowerCase().includes(levelToken)) {
+            // allow mismatch for some masters packages, so don't strictly fail
+            // but keep as soft check
+          }
+        }
+
+        // Match department by id (uppercase) or by name tokens
+        if (dept) {
+          const deptIdToken = selectedDepartment.toLowerCase();
+          const deptNameToken = dept.name.toLowerCase();
+
+          if (pkgText.includes(deptIdToken) || pkgText.includes(deptNameToken) || pkgText.includes(deptIdToken.toUpperCase())) return true;
+
+          // Check common abbreviations (e.g., 'cse' vs 'computer science') - check first word of dept name
+          const firstWord = deptNameToken.split(' ')[0];
+          if (pkgText.includes(firstWord)) return true;
+
+          return false;
+        }
+
+        return true;
+      };
+
+      // Filter packages that match
+      const candidates = registrationPackages.filter(matches);
+
+      if (candidates.length === 0) return null;
+
+      // Prefer exact term + mode + department matches; otherwise first candidate
+      return candidates[0];
+    };
+
+    try {
+      const pkg = findBestPackage();
+      if (pkg) {
+        if (appliedPackageId !== pkg.id) {
+          // auto-apply
+          const visibleSelected = selectedWaivers.filter((id) => getWaiverById(id)?.type === 'result');
+          const calculation = calculateWaiverAmount(pkg.totalEstimated, visibleSelected);
+
+          updateApplicationData({
+            program: pkg.id,
+            totalCost: pkg.totalEstimated,
+            registrationPackageId: pkg.id,
+          });
+
+          setAppliedPackageId(pkg.id);
+          setCostCalculation({ originalAmount: pkg.totalEstimated, ...calculation });
+
+          toast({ title: 'Package selected', description: `${pkg.program} has been preselected based on your choices.` });
+        }
+      } else {
+        // If no package matches, clear appliedPackageId and let program cost govern
+        if (appliedPackageId) {
+          setAppliedPackageId(null);
+          updateApplicationData({ registrationPackageId: null });
+        }
+      }
+    } catch (e) {
+      console.error('Auto-package selection error', e);
+    }
+  // Intentionally include selectedWaivers so waiver recalculation occurs when waivers change
+  }, [selectedCampus, selectedSemester, selectedSemesterType, selectedProgram, selectedDepartment, selectedWaivers]);
 
   // Calculate result-based waiver when GPA changes
   useEffect(() => {
