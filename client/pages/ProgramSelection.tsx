@@ -147,6 +147,12 @@ export default function ProgramSelection() {
     finalAmount: applicationData.finalAmount || 0,
   });
 
+  // Package UI filters
+  const [pkgSearch, setPkgSearch] = useState("");
+  const [pkgTerm, setPkgTerm] = useState<string | null>(null);
+  const [pkgMode, setPkgMode] = useState<string | null>(null);
+  const [showAllPackages, setShowAllPackages] = useState(false);
+
   // Loading state
   const [isSaving, setIsSaving] = useState(false);
 
@@ -245,7 +251,7 @@ export default function ProgramSelection() {
 
   const semesterTypeOptions = [
     { id: "bi-semester", name: "Bi-Semester", namebn: "দ্বি-সেমিস্টার" },
-    { id: "tri-semester", name: "Tri-Semester", namebn: "ত���রি-সেমিস্টার" },
+    { id: "tri-semester", name: "Tri-Semester", namebn: "ত্রি-সেমিস্টার" },
   ];
 
   const getSemesterOptionsForType = (type: string) => {
@@ -327,11 +333,11 @@ export default function ProgramSelection() {
       semesterSelection: "সেমিস���টার ন���র্বাচন করুন",
       semesterTypeSelection: "স��মিস্টার ধরন নির্বাচন করুন",
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
-      departmentSelection: "বিভাগ নির��বাচন করুন",
+      departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
       selectSemester: "সেমিস��টার বেছে নিন",
       selectSemesterType: "সেমিস্টার ���রন বেছ�� ন��ন",
-      selectProgram: "আপনার প্র���গ্রাম বেছে নিন",
+      selectProgram: "আপনার প্র���গ্রাম বেছে নি���",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
       programInfo: "প্রোগ���রামের ��থ্য",
       costBreakdown: "খরচের বিভাজন",
@@ -363,9 +369,9 @@ export default function ProgramSelection() {
       selectDepartmentFirst: "প্রথ���ে একটি ��িভাগ নির্বাচন করুন",
       enterGPAValues:
         "যোগ্য মওকুফ ���েখতে আপনা�� এসএসসি এবং এইচএসসি জিপিএ লিখুন",
-      waiverPolicyNote: "মওক��ফ নীতি বিশ্বব��দ্যালয়ের অনুমোদন সাপে��্ষে",
+      waiverPolicyNote: "মওক��ফ নীতি বিশ্ববিদ্যালয়ের অনুমোদন সাপে��্ষে",
       costNote:
-        "অতিরি����্��� ফি ���বং বিশ্ববিদ্যালয়ের ���ীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
+        "অতিরি����্��� ফি ���বং বিশ্ববি���্যালয়ের ���ীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
       saving: "সেভ করা হচ্ছে...",
       saved: "ড���টা সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
