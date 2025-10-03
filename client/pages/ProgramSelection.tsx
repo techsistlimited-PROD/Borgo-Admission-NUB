@@ -329,7 +329,7 @@ export default function ProgramSelection() {
         "Step 1 of 4 - Program Selection & Previous Academic Information",
     },
     bn: {
-      title: "প্রোগ্রাম ও ব���ভ���গ নির্বা��ন",
+      title: "প্রোগ্রাম ও ব���ভ����গ নির্বা��ন",
       subtitle:
         "৪টি ধাপের ১ম ধাপ - আপনার একাডে���িক পথ বেছে নিন ও খরচ গণ��া করুন",
       backToHome: "হোমে ফিরুন",
@@ -378,7 +378,7 @@ export default function ProgramSelection() {
       costNote:
         "অতিরি����্��� ফি ���বং বিশ্ববি���্যালয়ের ���ীতির ভিত্তিত�� চূড়ান্ত খরচ পরিবর্তিত �����ে প���রে",
       saving: "সেভ করা হচ্ছে...",
-      saved: "ড���টা সফল��াবে সেভ হয়েছে!",
+      saved: "ড�����া সফল��াবে সেভ হয়েছে!",
       saveError: "ডে���া সেভ করতে ব্যর্থ। আবার চেষ��টা করুন।",
 
       // Credit Transfer specific
@@ -412,26 +412,26 @@ export default function ProgramSelection() {
     }
   }, [selectedProgram, selectedDepartment]);
 
-  // Update cost calculation when program changes
+  // Update cost calculation when program or package or selected waivers change
   useEffect(() => {
-    if (selectedProgram) {
-      const program = getProgramById(selectedProgram);
-      if (program) {
-        // Only consider result-based (merit) waivers for applicant-facing cost calculation
-        const visibleSelected = selectedWaivers.filter(
-          (id) => getWaiverById(id)?.type === "result",
-        );
-        const calculation = calculateWaiverAmount(
-          program.costStructure.total,
-          visibleSelected,
-        );
-        setCostCalculation({
-          originalAmount: program.costStructure.total,
-          ...calculation,
-        });
+    // Determine base amount: prefer applied package total if available
+    const baseAmount = (() => {
+      if (appliedPackageId) {
+        const pkg = registrationPackages.find((p) => p.id === appliedPackageId);
+        if (pkg) return pkg.totalEstimated;
       }
-    }
-  }, [selectedProgram, selectedWaivers]);
+      if (selectedProgram) {
+        const program = getProgramById(selectedProgram);
+        if (program) return program.costStructure.total;
+      }
+      return 0;
+    })();
+
+    // Only consider result-based (merit) waivers for applicant-facing cost calculation
+    const visibleSelected = selectedWaivers.filter((id) => getWaiverById(id)?.type === "result");
+    const calculation = calculateWaiverAmount(baseAmount, visibleSelected);
+    setCostCalculation({ originalAmount: baseAmount, ...calculation });
+  }, [selectedProgram, selectedWaivers, appliedPackageId]);
 
   // Auto-select and apply a registration package when user chooses campus/semester/program/department
   useEffect(() => {
