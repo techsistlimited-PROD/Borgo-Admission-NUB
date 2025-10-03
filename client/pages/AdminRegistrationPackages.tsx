@@ -195,7 +195,16 @@ export default function AdminRegistrationPackages() {
                 setSaving(true);
                 try{
                   const payload = { ...editingPackage };
-                  const res = await apiClient.updateRegistrationPackage(editingPackage.id, payload);
+                  let res;
+                  // if id exists in DB treat as update, else create
+                  const exists = await apiClient.getRegistrationPackages();
+                  const found = exists.success && Array.isArray(exists.data) && exists.data.find((x:any)=>x.id===editingPackage.id);
+                  if (found) {
+                    res = await apiClient.updateRegistrationPackage(editingPackage.id, payload);
+                  } else {
+                    res = await apiClient.createRegistrationPackage(payload);
+                  }
+
                   if (res.success) { toast({ title: 'Saved' }); setEditModalOpen(false); setEditingPackage(null); load(); }
                   else toast({ title:'Error', description: res.error || 'Failed to save', variant:'destructive' });
                 }catch(e){ console.error(e); toast({ title:'Error', description:'Failed to save', variant:'destructive' }); }
