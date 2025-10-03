@@ -78,6 +78,9 @@ export default function AdminRegistrationPackages() {
           <Button variant="outline" onClick={() => load()}>
             Refresh
           </Button>
+          <Button onClick={() => { setEditingPackage({ id: `pkg-${Date.now()}`, program: '', term: '', mode: '', credits: 0, admission_fee: 0, per_credit: 0, fixed_fees: 0, total_estimated: 0 }); setEditModalOpen(true); }}>
+            New Package
+          </Button>
         </div>
       </div>
 
