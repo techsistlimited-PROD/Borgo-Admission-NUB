@@ -50,6 +50,7 @@ import {
   type Department,
   type WaiverPolicy,
 } from "../lib/programData";
+import { registrationPackages } from "../lib/registrationPackages";
 import {
   checkProgramEligibility,
   PROGRAM_ELIGIBILITY_RULES,
@@ -348,7 +349,7 @@ export default function ProgramSelection() {
       originalAmount: "মূল পরিমাণ",
       waiverAmount: "���ওকুফ পর��মাণ",
       finalAmount: "চূড়��ন্ত পরিম��ণ",
-      admissionFee: "ভর্তি ফি",
+      admissionFee: "ভ��্তি ফি",
       courseFee: "কোর্স ফি",
       labFee: "ল্যাব ফি",
       others: "অন্যান���য",
