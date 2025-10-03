@@ -41,7 +41,7 @@ export const registrationPackages: RegistrationPackage[] = [
   { id: 'pkg-027', program: 'BPharm Spring 2025', term: 'Spring 2025', mode: 'Bachelor / Day', credits: 160, admissionFee: 13000, perCredit: 3600, fixedFees: 35000, totalEstimated: 615000 },
   { id: 'pkg-028', program: 'LLM Spring 2025', term: 'Spring 2025', mode: 'Masters', credits: 36, admissionFee: 11200, perCredit: 4200, fixedFees: 10000, totalEstimated: 162000 },
   { id: 'pkg-029', program: 'EEE Spring 2025 (Part-2)', term: 'Spring 2025', mode: 'Bachelor / Day', credits: 160, admissionFee: 13000, perCredit: 2800, fixedFees: 40000, totalEstimated: 530000 },
-  { id: 'pkg-030\', program: \'Bangla (Hon\'s) Spring 2025\', term: \'Spring 2025\', mode: \'Bachelor / Day', credits: 120, admissionFee: 13000, perCredit: 1000, fixedFees: 15000, totalEstimated: 160000 },
+  { id: 'pkg-030', program: "Bangla (Hon's) Spring 2025", term: 'Spring 2025', mode: 'Bachelor / Day', credits: 120, admissionFee: 13000, perCredit: 1000, fixedFees: 15000, totalEstimated: 160000 },
   { id: 'pkg-031', program: 'LLB (Hons) Spring 2025 (Bi-Semester)', term: 'Spring 2025', mode: 'Bi-Semester', credits: 137, admissionFee: 13000, perCredit: 3800, fixedFees: 28000, totalEstimated: 600000 },
   { id: 'pkg-032', program: 'LLB (Hons) Spring 2025 (Trimester)', term: 'Spring 2025', mode: 'Trimester', credits: 137, admissionFee: 13000, perCredit: 3800, fixedFees: 30000, totalEstimated: 610000 },
   { id: 'pkg-033', program: 'MAE Spring 2025', term: 'Spring 2025', mode: 'Masters / Eve', credits: 36, admissionFee: 11200, perCredit: 4000, fixedFees: 15000, totalEstimated: 170000 },
