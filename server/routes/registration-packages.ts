@@ -1,8 +1,60 @@
 import express from 'express';
 import { dbAll, dbGet, dbRun } from '../database/config.js';
-import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth.js';
+import { authenticateToken, requirePermission, AuthRequest } from '../middleware/auth.js';
 
 const router = express.Router();
+
+// Input validation helper for registration package payloads
+const validatePackageInput = (payload: any, partial = false) => {
+  const errors: string[] = [];
+  const sanitized: any = {};
+
+  if (!partial || payload.id !== undefined) {
+    if (typeof payload.id !== 'string' || !payload.id.trim()) {
+      errors.push('id is required and must be a non-empty string');
+    } else if (payload.id.length > 100) {
+      errors.push('id must be at most 100 characters');
+    } else {
+      sanitized.id = payload.id.trim();
+    }
+  }
+
+  if (!partial || payload.program !== undefined) {
+    if (typeof payload.program !== 'string' || !payload.program.trim()) {
+      errors.push('program is required and must be a non-empty string');
+    } else if (payload.program.length > 500) {
+      errors.push('program must be at most 500 characters');
+    } else {
+      sanitized.program = payload.program.trim();
+    }
+  }
+
+  if (payload.term !== undefined) {
+    sanitized.term = payload.term === null ? null : String(payload.term).trim();
+    if (sanitized.term && sanitized.term.length > 200) errors.push('term must be at most 200 characters');
+  }
+
+  if (payload.mode !== undefined) {
+    sanitized.mode = payload.mode === null ? null : String(payload.mode).trim();
+    if (sanitized.mode && sanitized.mode.length > 200) errors.push('mode must be at most 200 characters');
+  }
+
+  const numericFields = ['credits', 'admission_fee', 'per_credit', 'fixed_fees', 'total_estimated'];
+  for (const field of numericFields) {
+    if (payload[field] !== undefined) {
+      const v = payload[field];
+      const num = Number(v);
+      if (Number.isNaN(num) || !Number.isFinite(num) || num < 0) {
+        errors.push(`${field} must be a non-negative number`);
+      } else {
+        // credits should be integer
+        sanitized[field] = field === 'credits' ? Math.trunc(num) : num;
+      }
+    }
+  }
+
+  return { valid: errors.length === 0, errors, sanitized };
+};
 
 // Public: list registration packages
 router.get('/', async (req, res) => {
@@ -15,10 +67,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Admin CRUD
-router.use(authenticateToken, requireAdmin);
+// Admin CRUD — require authenticated user; specific permissions enforced per-route
+router.use(authenticateToken);
 
-router.post('/', async (req: AuthRequest, res) => {
+router.post('/', requirePermission('registration_packages:manage'), async (req: AuthRequest, res) => {
   try {
     const { id, program, term, mode, credits, admission_fee, per_credit, fixed_fees, total_estimated } = req.body;
     if (!id || !program) return res.status(400).json({ success: false, error: 'id and program required' });
@@ -34,7 +86,7 @@ router.post('/', async (req: AuthRequest, res) => {
   }
 });
 
-router.put('/:id', async (req: AuthRequest, res) => {
+router.put('/:id', requirePermission('registration_packages:manage'), async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -63,7 +115,7 @@ router.put('/:id', async (req: AuthRequest, res) => {
   }
 });
 
-router.delete('/:id', async (req: AuthRequest, res) => {
+router.delete('/:id', requirePermission('registration_packages:manage'), async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
     await dbRun('DELETE FROM registration_packages WHERE id = ?', [id]);
