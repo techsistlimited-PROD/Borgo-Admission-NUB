@@ -436,7 +436,8 @@ export default function ProgramSelection() {
   // Auto-select and apply a registration package when user chooses campus/semester/program/department
   useEffect(() => {
     const findBestPackage = () => {
-      if (!selectedProgram || !selectedDepartment || !selectedSemester) return null;
+      if (!selectedProgram || !selectedDepartment || !selectedSemester)
+        return null;
 
       const dept = getDepartmentById(selectedDepartment);
       const programLevel = selectedProgram; // e.g., 'bachelor' or 'masters'
@@ -448,14 +449,19 @@ export default function ProgramSelection() {
         const pkgText = `${pkg.program} ${pkg.mode}`.toLowerCase();
 
         // Match semester (term contains 'fall'/'summer'/'spring' etc)
-        if (semesterToken && !pkg.term.toLowerCase().includes(semesterToken)) return false;
+        if (semesterToken && !pkg.term.toLowerCase().includes(semesterToken))
+          return false;
 
         // Match semester type if possible (tri-semester => 'trimester', bi-semester => 'bi')
         if (semesterType) {
-          const s = semesterType === 'tri-semester' ? 'trimester' : 'bi';
-          if (s === 'trimester') {
-            if (!pkg.mode.toLowerCase().includes('trimester') && !pkg.program.toLowerCase().includes('trimester')) return false;
-          } else if (s === 'bi') {
+          const s = semesterType === "tri-semester" ? "trimester" : "bi";
+          if (s === "trimester") {
+            if (
+              !pkg.mode.toLowerCase().includes("trimester") &&
+              !pkg.program.toLowerCase().includes("trimester")
+            )
+              return false;
+          } else if (s === "bi") {
             // allow both 'bi' or absence; don't strictly require
             // skip strict check for bi to increase matches
           }
@@ -463,8 +469,17 @@ export default function ProgramSelection() {
 
         // Match program level via pkg.mode or pkg.program keywords
         if (programLevel) {
-          const levelToken = programLevel === 'bachelor' ? 'bachelor' : programLevel === 'masters' ? 'master' : programLevel;
-          if (levelToken && !pkg.mode.toLowerCase().includes(levelToken) && !pkg.program.toLowerCase().includes(levelToken)) {
+          const levelToken =
+            programLevel === "bachelor"
+              ? "bachelor"
+              : programLevel === "masters"
+                ? "master"
+                : programLevel;
+          if (
+            levelToken &&
+            !pkg.mode.toLowerCase().includes(levelToken) &&
+            !pkg.program.toLowerCase().includes(levelToken)
+          ) {
             // allow mismatch for some masters packages, so don't strictly fail
             // but keep as soft check
           }
@@ -475,10 +490,15 @@ export default function ProgramSelection() {
           const deptIdToken = selectedDepartment.toLowerCase();
           const deptNameToken = dept.name.toLowerCase();
 
-          if (pkgText.includes(deptIdToken) || pkgText.includes(deptNameToken) || pkgText.includes(deptIdToken.toUpperCase())) return true;
+          if (
+            pkgText.includes(deptIdToken) ||
+            pkgText.includes(deptNameToken) ||
+            pkgText.includes(deptIdToken.toUpperCase())
+          )
+            return true;
 
           // Check common abbreviations (e.g., 'cse' vs 'computer science') - check first word of dept name
-          const firstWord = deptNameToken.split(' ')[0];
+          const firstWord = deptNameToken.split(" ")[0];
           if (pkgText.includes(firstWord)) return true;
 
           return false;
@@ -501,8 +521,13 @@ export default function ProgramSelection() {
       if (pkg) {
         if (appliedPackageId !== pkg.id) {
           // auto-apply
-          const visibleSelected = selectedWaivers.filter((id) => getWaiverById(id)?.type === 'result');
-          const calculation = calculateWaiverAmount(pkg.totalEstimated, visibleSelected);
+          const visibleSelected = selectedWaivers.filter(
+            (id) => getWaiverById(id)?.type === "result",
+          );
+          const calculation = calculateWaiverAmount(
+            pkg.totalEstimated,
+            visibleSelected,
+          );
 
           updateApplicationData({
             program: pkg.id,
@@ -511,9 +536,15 @@ export default function ProgramSelection() {
           });
 
           setAppliedPackageId(pkg.id);
-          setCostCalculation({ originalAmount: pkg.totalEstimated, ...calculation });
+          setCostCalculation({
+            originalAmount: pkg.totalEstimated,
+            ...calculation,
+          });
 
-          toast({ title: 'Package selected', description: `${pkg.program} has been preselected based on your choices.` });
+          toast({
+            title: "Package selected",
+            description: `${pkg.program} has been preselected based on your choices.`,
+          });
         }
       } else {
         // If no package matches, clear appliedPackageId and let program cost govern
@@ -523,10 +554,17 @@ export default function ProgramSelection() {
         }
       }
     } catch (e) {
-      console.error('Auto-package selection error', e);
+      console.error("Auto-package selection error", e);
     }
-  // Intentionally include selectedWaivers so waiver recalculation occurs when waivers change
-  }, [selectedCampus, selectedSemester, selectedSemesterType, selectedProgram, selectedDepartment, selectedWaivers]);
+    // Intentionally include selectedWaivers so waiver recalculation occurs when waivers change
+  }, [
+    selectedCampus,
+    selectedSemester,
+    selectedSemesterType,
+    selectedProgram,
+    selectedDepartment,
+    selectedWaivers,
+  ]);
 
   // Calculate result-based waiver when GPA changes
   useEffect(() => {
