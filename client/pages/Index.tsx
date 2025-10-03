@@ -105,14 +105,14 @@ export default function Index() {
       modernFacilitiesDesc: "অত্যাধুনিক ল্যাব এবং শিক্ষার পরিবেশ",
       careerSupport: "ক্যারিয়ার সাপোর্ট",
       careerSupportDesc: "নিবেদিত চাকরির সহায়তা এ��ং ক্যারিয়ার গাইডেন্স",
-      affordableEducation: "সাশ���রয়ী শিক্ষা",
+      affordableEducation: "সাশ্রয়ী শিক্ষা",
       affordableEducationDesc: "বিভিন্ন বৃত্তির সুযোগ সহ মানসম্পন্ন শিক্ষা",
       waiverHighlights: "বৃত্তি ও মওকুফের সুযোগ",
       meritBased: "মেধাভিত্তিক বৃত্তি",
       meritBasedDesc: "এসএসসি ও এইচএসসি ফলাফলের ভিত্তিতে ১০০% পর্যন্ত মওকুফ",
       specialWaivers: "বিশেষ মওকুফ উপলব্ধ",
       specialWaiversDesc:
-        "নারী, ���া���বোন এবং মুক্তিযোদ্ধাদের জন্য অতিরিক্ত সহায��তা",
+        "নারী, ���া����বোন এবং মুক্তিযোদ্ধাদের জন্য অতিরিক্ত সহায��তা",
       quickStats: "দ্রুত পরিসংখ্যান",
       totalApplicants: "মোট আবেদন���ারী",
       programs: "উপলব্ধ প্রোগ্রাম",
@@ -149,6 +149,14 @@ export default function Index() {
         if (mounted) setProgramsError("Failed to load programs");
       } finally {
         if (mounted) setProgramsLoading(false);
+      }
+
+      // load registration packages
+      try {
+        const rp = await apiClient.getRegistrationPackages();
+        if (rp.success && rp.data) setRegistrationPkgs(Array.isArray(rp.data) ? rp.data : []);
+      } catch (e) {
+        console.warn('Failed to load registration packages', e);
       }
     };
     fetchPrograms();
