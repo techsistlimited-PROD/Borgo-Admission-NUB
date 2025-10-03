@@ -428,7 +428,9 @@ export default function ProgramSelection() {
     })();
 
     // Only consider result-based (merit) waivers for applicant-facing cost calculation
-    const visibleSelected = selectedWaivers.filter((id) => getWaiverById(id)?.type === "result");
+    const visibleSelected = selectedWaivers.filter(
+      (id) => getWaiverById(id)?.type === "result",
+    );
     const calculation = calculateWaiverAmount(baseAmount, visibleSelected);
     setCostCalculation({ originalAmount: baseAmount, ...calculation });
   }, [selectedProgram, selectedWaivers, appliedPackageId]);
@@ -464,25 +466,43 @@ export default function ProgramSelection() {
         const pkgText = `${pkg.program} ${pkg.mode}`.toLowerCase();
 
         // Exact term (including year) is valuable
-        if (pkg.term && pkg.term.toLowerCase().includes(selectedSemester.toLowerCase())) score += 50;
+        if (
+          pkg.term &&
+          pkg.term.toLowerCase().includes(selectedSemester.toLowerCase())
+        )
+          score += 50;
 
         // Department strong match
         const deptIdToken = selectedDepartment.toLowerCase();
-        const deptNameToken = dept ? dept.name.toLowerCase() : '';
+        const deptNameToken = dept ? dept.name.toLowerCase() : "";
         if (pkgText.includes(deptIdToken)) score += 100;
         if (deptNameToken && pkgText.includes(deptNameToken)) score += 90;
 
         // First word of department
-        const firstWord = deptNameToken.split(' ')[0];
+        const firstWord = deptNameToken.split(" ")[0];
         if (firstWord && pkgText.includes(firstWord)) score += 40;
 
         // Program level (bachelor/master)
-        const levelToken = programLevel === 'bachelor' ? 'bachelor' : programLevel === 'masters' ? 'master' : programLevel;
-        if (levelToken && (pkg.mode.toLowerCase().includes(levelToken) || pkg.program.toLowerCase().includes(levelToken))) score += 30;
+        const levelToken =
+          programLevel === "bachelor"
+            ? "bachelor"
+            : programLevel === "masters"
+              ? "master"
+              : programLevel;
+        if (
+          levelToken &&
+          (pkg.mode.toLowerCase().includes(levelToken) ||
+            pkg.program.toLowerCase().includes(levelToken))
+        )
+          score += 30;
 
         // Semester type bonus
-        if (semesterType === 'tri-semester') {
-          if (pkg.mode.toLowerCase().includes('trimester') || pkg.program.toLowerCase().includes('trimester')) score += 20;
+        if (semesterType === "tri-semester") {
+          if (
+            pkg.mode.toLowerCase().includes("trimester") ||
+            pkg.program.toLowerCase().includes("trimester")
+          )
+            score += 20;
         }
 
         return score;
