@@ -2681,67 +2681,135 @@ export default function ProgramSelection() {
 
             {/* Right Column - Cost Breakdown */}
             <div className="space-y-6">
-
               {/* Registration Packages Preview */}
               <Card className="bg-white shadow-lg">
                 <CardHeader className="bg-indigo-50">
-                  <CardTitle className="font-poppins">Registration Packages</CardTitle>
+                  <CardTitle className="font-poppins">
+                    Registration Packages
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
                     <div className="flex items-center gap-2 flex-1">
-                      <Input placeholder="Search packages" value={pkgSearch} onChange={(e:any)=>setPkgSearch(e.target.value)} />
+                      <Input
+                        placeholder="Search packages"
+                        value={pkgSearch}
+                        onChange={(e: any) => setPkgSearch(e.target.value)}
+                      />
                     </div>
                     <div className="flex items-center gap-2">
-                      <select value={pkgTerm ?? ""} onChange={(e)=>setPkgTerm(e.target.value||null)} className="border rounded p-2">
+                      <select
+                        value={pkgTerm ?? ""}
+                        onChange={(e) => setPkgTerm(e.target.value || null)}
+                        className="border rounded p-2"
+                      >
                         <option value="">All Terms</option>
-                        {Array.from(new Set(registrationPackages.map((p)=>p.term))).map((t)=> (<option key={t} value={t}>{t}</option>))}
+                        {Array.from(
+                          new Set(registrationPackages.map((p) => p.term)),
+                        ).map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
                       </select>
-                      <select value={pkgMode ?? ""} onChange={(e)=>setPkgMode(e.target.value||null)} className="border rounded p-2">
+                      <select
+                        value={pkgMode ?? ""}
+                        onChange={(e) => setPkgMode(e.target.value || null)}
+                        className="border rounded p-2"
+                      >
                         <option value="">All Modes</option>
-                        {Array.from(new Set(registrationPackages.map((p)=>p.mode))).map((m)=> (<option key={m} value={m}>{m}</option>))}
+                        {Array.from(
+                          new Set(registrationPackages.map((p) => p.mode)),
+                        ).map((m) => (
+                          <option key={m} value={m}>
+                            {m}
+                          </option>
+                        ))}
                       </select>
-                      <Button variant="outline" size="sm" onClick={()=>setShowAllPackages(prev=>!prev)}>{showAllPackages ? 'Show Less' : 'Show All'}</Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowAllPackages((prev) => !prev)}
+                      >
+                        {showAllPackages ? "Show Less" : "Show All"}
+                      </Button>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {registrationPackages
-                      .filter((pkg)=>{
-                        if (pkgSearch && !pkg.program.toLowerCase().includes(pkgSearch.toLowerCase())) return false;
+                      .filter((pkg) => {
+                        if (
+                          pkgSearch &&
+                          !pkg.program
+                            .toLowerCase()
+                            .includes(pkgSearch.toLowerCase())
+                        )
+                          return false;
                         if (pkgTerm && pkg.term !== pkgTerm) return false;
                         if (pkgMode && pkg.mode !== pkgMode) return false;
                         return true;
                       })
-                      .slice(0, showAllPackages ? registrationPackages.length : 6)
+                      .slice(
+                        0,
+                        showAllPackages ? registrationPackages.length : 6,
+                      )
                       .map((pkg) => (
-                      <div key={pkg.id} className="p-3 border rounded flex flex-col">
-                        <div className="flex-1">
-                          <div className="font-medium">{pkg.program}</div>
-                          <div className="text-sm text-gray-500">{pkg.term} • {pkg.mode}</div>
-                          <div className="text-sm mt-2">Credits: {pkg.credits} • Per Credit: ৳{pkg.perCredit.toLocaleString()}</div>
-                          <div className="text-sm">Admission Fee: ৳{pkg.admissionFee.toLocaleString()} • Fixed: ৳{pkg.fixedFees.toLocaleString()}</div>
+                        <div
+                          key={pkg.id}
+                          className="p-3 border rounded flex flex-col"
+                        >
+                          <div className="flex-1">
+                            <div className="font-medium">{pkg.program}</div>
+                            <div className="text-sm text-gray-500">
+                              {pkg.term} • {pkg.mode}
+                            </div>
+                            <div className="text-sm mt-2">
+                              Credits: {pkg.credits} • Per Credit: ৳
+                              {pkg.perCredit.toLocaleString()}
+                            </div>
+                            <div className="text-sm">
+                              Admission Fee: ৳
+                              {pkg.admissionFee.toLocaleString()} • Fixed: ৳
+                              {pkg.fixedFees.toLocaleString()}
+                            </div>
+                          </div>
+                          <div className="mt-3 flex items-center justify-between">
+                            <div className="text-deep-plum font-semibold">
+                              Est: ৳{pkg.totalEstimated.toLocaleString()}
+                            </div>
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                // apply package
+                                updateApplicationData({
+                                  program: pkg.id,
+                                  totalCost: pkg.totalEstimated,
+                                });
+                                setCostCalculation((prev) => ({
+                                  ...prev,
+                                  originalAmount: pkg.totalEstimated,
+                                  finalAmount:
+                                    pkg.totalEstimated -
+                                    (prev.waiverAmount || 0),
+                                }));
+                                toast({
+                                  title: "Package applied",
+                                  description: `${pkg.program} applied to your application.`,
+                                });
+                              }}
+                            >
+                              Apply
+                            </Button>
+                          </div>
                         </div>
-                        <div className="mt-3 flex items-center justify-between">
-                          <div className="text-deep-plum font-semibold">Est: ৳{pkg.totalEstimated.toLocaleString()}</div>
-                          <Button size="sm" onClick={() => {
-                            // apply package
-                            updateApplicationData({ program: pkg.id, totalCost: pkg.totalEstimated });
-                            setCostCalculation((prev) => ({
-                              ...prev,
-                              originalAmount: pkg.totalEstimated,
-                              finalAmount: pkg.totalEstimated - (prev.waiverAmount || 0),
-                            }));
-                            toast({ title: 'Package applied', description: `${pkg.program} applied to your application.` });
-                          }}>
-                            Apply
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
 
-                  <div className="mt-3 text-sm text-gray-500">Select a package to prefill costs. You can still edit waivers and final amounts below.</div>
+                  <div className="mt-3 text-sm text-gray-500">
+                    Select a package to prefill costs. You can still edit
+                    waivers and final amounts below.
+                  </div>
                 </CardContent>
               </Card>
               {/* Cost Breakdown */}

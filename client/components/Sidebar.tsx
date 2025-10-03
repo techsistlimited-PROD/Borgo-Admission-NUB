@@ -124,9 +124,21 @@ export default function Sidebar({ userType }: SidebarProps) {
         },
         { name: "Visitors Log", path: "/admin/visitors-log", icon: Users },
         { name: "Referrals", path: "/admin/referrals", icon: Users },
-        { name: "Credit Transfer List", path: "/admin/credit-transfers", icon: BookOpen },
-        { name: "Registration Packages", path: "/admin/registration-packages", icon: BookOpen },
-        { name: "Reports", path: "/admin/reports?scope=admission", icon: PieChart },
+        {
+          name: "Credit Transfer List",
+          path: "/admin/credit-transfers",
+          icon: BookOpen,
+        },
+        {
+          name: "Registration Packages",
+          path: "/admin/registration-packages",
+          icon: BookOpen,
+        },
+        {
+          name: "Reports",
+          path: "/admin/reports?scope=admission",
+          icon: PieChart,
+        },
       ];
 
     // Offline admission staff should see only public application pages (form entry) — not admin menus
@@ -136,7 +148,11 @@ export default function Sidebar({ userType }: SidebarProps) {
       return [
         { name: "Finance", path: "/admin/finance", icon: CreditCard },
         // Finance officers shouldn't see ID Card Generation
-        { name: "Reports", path: "/admin/reports?scope=finance", icon: PieChart },
+        {
+          name: "Reports",
+          path: "/admin/reports?scope=finance",
+          icon: PieChart,
+        },
         { name: "Referrals", path: "/admin/referrals", icon: Users },
       ];
 
@@ -174,7 +190,9 @@ export default function Sidebar({ userType }: SidebarProps) {
             size="sm"
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="text-gray-500 hover:text-deep-plum"
-            aria-label={isCollapsed ? 'Expand navigation' : 'Collapse navigation'}
+            aria-label={
+              isCollapsed ? "Expand navigation" : "Collapse navigation"
+            }
             aria-expanded={!isCollapsed}
           >
             {isCollapsed ? (
@@ -214,7 +232,7 @@ export default function Sidebar({ userType }: SidebarProps) {
             <Link
               key={page.path}
               to={page.path}
-              aria-current={isActive(page.path) ? 'page' : undefined}
+              aria-current={isActive(page.path) ? "page" : undefined}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                 isActive(page.path)
                   ? "bg-deep-plum text-white"

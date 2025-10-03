@@ -49,7 +49,10 @@ const ProtectedLayout = () => {
               path="/admin/credit-transfer/:id"
               element={<CreditTransferReview />}
             />
-            <Route path="/admin/registration-packages" element={<AdminRegistrationPackages />} />
+            <Route
+              path="/admin/registration-packages"
+              element={<AdminRegistrationPackages />}
+            />
             <Route path="/applicant/:id" element={<ApplicantDetail />} />
             <Route path="/finance" element={<FinancePanel />} />
             <Route path="/reports" element={<Reports />} />

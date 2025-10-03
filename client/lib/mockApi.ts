@@ -303,7 +303,9 @@ class MockApiService {
     }
 
     if (params?.semester) {
-      filteredApps = filteredApps.filter((app) => app.semester === params.semester);
+      filteredApps = filteredApps.filter(
+        (app) => app.semester === params.semester,
+      );
     }
 
     if (params?.admission_type) {
@@ -320,12 +322,16 @@ class MockApiService {
 
     if (params?.dateFrom) {
       const from = new Date(params.dateFrom);
-      filteredApps = filteredApps.filter((app) => new Date(app.created_at) >= from);
+      filteredApps = filteredApps.filter(
+        (app) => new Date(app.created_at) >= from,
+      );
     }
 
     if (params?.dateTo) {
       const to = new Date(params.dateTo);
-      filteredApps = filteredApps.filter((app) => new Date(app.created_at) <= to);
+      filteredApps = filteredApps.filter(
+        (app) => new Date(app.created_at) <= to,
+      );
     }
 
     if (params?.search) {
@@ -481,7 +487,14 @@ class MockApiService {
 
   async generateApplicationIds(
     id: string,
-  ): Promise<ApiResponse<{ university_id: string; password: string; ugc_id?: string; batch?: string }>> {
+  ): Promise<
+    ApiResponse<{
+      university_id: string;
+      password: string;
+      ugc_id?: string;
+      batch?: string;
+    }>
+  > {
     await this.delay();
 
     const universityId = `APP${String(Date.now()).slice(-6)}`;
@@ -901,31 +914,48 @@ class MockApiService {
     return { success: true, data: requirements };
   }
 
-  async createDocumentRequirement(requirement: any): Promise<ApiResponse<{ requirement: any }>> {
+  async createDocumentRequirement(
+    requirement: any,
+  ): Promise<ApiResponse<{ requirement: any }>> {
     await this.delay();
-    const id = (Math.max(0, ...this.documentRequirements.map((d:any)=>d.id)) + 1) || 1;
+    const id =
+      Math.max(0, ...this.documentRequirements.map((d: any) => d.id)) + 1 || 1;
     const rec = { id, ...requirement };
     // ensure array exists
-    (this as any).documentRequirements = (this as any).documentRequirements || [];
+    (this as any).documentRequirements =
+      (this as any).documentRequirements || [];
     (this as any).documentRequirements.push(rec);
     return { success: true, data: { requirement: rec } };
   }
 
-  async updateDocumentRequirement(id: string, requirement: any): Promise<ApiResponse<{ requirement: any }>> {
+  async updateDocumentRequirement(
+    id: string,
+    requirement: any,
+  ): Promise<ApiResponse<{ requirement: any }>> {
     await this.delay();
-    const idx = ((this as any).documentRequirements || []).findIndex((d:any)=>String(d.id)===String(id));
-    if (idx === -1) return { success: false, error: 'Document requirement not found' };
-    (this as any).documentRequirements[idx] = { ...((this as any).documentRequirements[idx]||{}), ...requirement };
-    return { success: true, data: { requirement: (this as any).documentRequirements[idx] } };
+    const idx = ((this as any).documentRequirements || []).findIndex(
+      (d: any) => String(d.id) === String(id),
+    );
+    if (idx === -1)
+      return { success: false, error: "Document requirement not found" };
+    (this as any).documentRequirements[idx] = {
+      ...((this as any).documentRequirements[idx] || {}),
+      ...requirement,
+    };
+    return {
+      success: true,
+      data: { requirement: (this as any).documentRequirements[idx] },
+    };
   }
 
   async deleteDocumentRequirement(id: string): Promise<ApiResponse> {
     await this.delay();
     const arr = (this as any).documentRequirements || [];
-    const idx = arr.findIndex((d:any)=>String(d.id)===String(id));
-    if (idx === -1) return { success: false, error: 'Document requirement not found' };
-    arr.splice(idx,1);
-    return { success: true, message: 'Deleted' };
+    const idx = arr.findIndex((d: any) => String(d.id) === String(id));
+    if (idx === -1)
+      return { success: false, error: "Document requirement not found" };
+    arr.splice(idx, 1);
+    return { success: true, message: "Deleted" };
   }
   // Visitors log (offline entries by admission officers)
   private visitors: any[] = [
@@ -944,21 +974,33 @@ class MockApiService {
     },
   ];
 
-  async getVisitors(params?: { page?: number; limit?: number; campus?: string; dateFrom?: string; dateTo?: string; search?: string; }): Promise<ApiResponse<{ visitors: any[]; total: number }>> {
+  async getVisitors(params?: {
+    page?: number;
+    limit?: number;
+    campus?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    search?: string;
+  }): Promise<ApiResponse<{ visitors: any[]; total: number }>> {
     await this.delay();
     let list = [...this.visitors];
-    if (params?.campus) list = list.filter(v => v.campus === params.campus);
+    if (params?.campus) list = list.filter((v) => v.campus === params.campus);
     if (params?.search) {
       const s = params.search.toLowerCase();
-      list = list.filter(v => v.visitor_name.toLowerCase().includes(s) || (v.contact_number || "").includes(s) || (v.district || "").toLowerCase().includes(s));
+      list = list.filter(
+        (v) =>
+          v.visitor_name.toLowerCase().includes(s) ||
+          (v.contact_number || "").includes(s) ||
+          (v.district || "").toLowerCase().includes(s),
+      );
     }
     if (params?.dateFrom) {
       const from = new Date(params.dateFrom);
-      list = list.filter(v => new Date(v.visit_date) >= from);
+      list = list.filter((v) => new Date(v.visit_date) >= from);
     }
     if (params?.dateTo) {
       const to = new Date(params.dateTo);
-      list = list.filter(v => new Date(v.visit_date) <= to);
+      list = list.filter((v) => new Date(v.visit_date) <= to);
     }
     const page = params?.page || 1;
     const limit = params?.limit || 20;
@@ -969,7 +1011,7 @@ class MockApiService {
 
   async createVisitor(record: any): Promise<ApiResponse<{ visitor: any }>> {
     await this.delay();
-    const id = `vis-${String(this.visitors.length + 1).padStart(3, '0')}`;
+    const id = `vis-${String(this.visitors.length + 1).padStart(3, "0")}`;
     const rec = { id, created_at: new Date().toISOString(), ...record };
     this.visitors.push(rec);
     return { success: true, data: { visitor: rec } };
@@ -977,34 +1019,44 @@ class MockApiService {
 
   async updateVisitor(id: string, updates: any): Promise<ApiResponse> {
     await this.delay();
-    const idx = this.visitors.findIndex(v => v.id === id);
-    if (idx === -1) return { success: false, error: 'Visitor not found' };
-    this.visitors[idx] = { ...this.visitors[idx], ...updates, updated_at: new Date().toISOString() };
+    const idx = this.visitors.findIndex((v) => v.id === id);
+    if (idx === -1) return { success: false, error: "Visitor not found" };
+    this.visitors[idx] = {
+      ...this.visitors[idx],
+      ...updates,
+      updated_at: new Date().toISOString(),
+    };
     return { success: true, data: { visitor: this.visitors[idx] } };
   }
 
   async deleteVisitor(id: string): Promise<ApiResponse> {
     await this.delay();
-    const idx = this.visitors.findIndex(v => v.id === id);
-    if (idx === -1) return { success: false, error: 'Visitor not found' };
+    const idx = this.visitors.findIndex((v) => v.id === id);
+    if (idx === -1) return { success: false, error: "Visitor not found" };
     this.visitors.splice(idx, 1);
-    return { success: true, message: 'Deleted' };
+    return { success: true, message: "Deleted" };
   }
 
   async exportVisitors(params?: any): Promise<ApiResponse<any[]>> {
     await this.delay();
     // For simplicity, return all matching visitors without pagination
     const res = await this.getVisitors({ page: 1, limit: 10000, ...params });
-    if (res.success && res.data) return { success: true, data: res.data.visitors };
-    return { success: false, error: 'Failed to export' };
+    if (res.success && res.data)
+      return { success: true, data: res.data.visitors };
+    return { success: false, error: "Failed to export" };
   }
 
   // Students (created after approval)
   private students: any[] = [];
 
-  async createStudentRecord(applicationId: string, ids: { university_id: string; ugc_id?: string; batch?: string }): Promise<ApiResponse<{ student: any }>> {
+  async createStudentRecord(
+    applicationId: string,
+    ids: { university_id: string; ugc_id?: string; batch?: string },
+  ): Promise<ApiResponse<{ student: any }>> {
     await this.delay();
-    const app = this.applications.find((a) => a.id === applicationId || a.uuid === applicationId);
+    const app = this.applications.find(
+      (a) => a.id === applicationId || a.uuid === applicationId,
+    );
     if (!app) return { success: false, error: "Application not found" };
 
     const student = {
@@ -1024,7 +1076,9 @@ class MockApiService {
     this.students.push(student);
 
     // Link student_id back to application
-    const appIndex = this.applications.findIndex((a) => a.id === applicationId || a.uuid === applicationId);
+    const appIndex = this.applications.findIndex(
+      (a) => a.id === applicationId || a.uuid === applicationId,
+    );
     if (appIndex !== -1) {
       this.applications[appIndex].student_id = student.student_id;
     }
@@ -1033,48 +1087,79 @@ class MockApiService {
   }
 
   // Generate Student ID (backend-like mock)
-  async generateStudentForApplicant(applicantId: string): Promise<ApiResponse<{ student_id: string; ugc_id: string }>> {
+  async generateStudentForApplicant(
+    applicantId: string,
+  ): Promise<ApiResponse<{ student_id: string; ugc_id: string }>> {
     await this.delay(200);
-    const appIndex = this.applications.findIndex((a) => a.id === applicantId || a.uuid === applicantId);
-    if (appIndex === -1) return { success: false, error: 'Application not found' };
+    const appIndex = this.applications.findIndex(
+      (a) => a.id === applicantId || a.uuid === applicantId,
+    );
+    if (appIndex === -1)
+      return { success: false, error: "Application not found" };
 
     const app = this.applications[appIndex];
 
     // Program abbreviation
-    const programAbbr = (app.program_code || app.program_name || 'GEN').toString().toUpperCase().replace(/[^A-Z]/g, '').slice(0,5) || 'GEN';
+    const programAbbr =
+      (app.program_code || app.program_name || "GEN")
+        .toString()
+        .toUpperCase()
+        .replace(/[^A-Z]/g, "")
+        .slice(0, 5) || "GEN";
 
     // Campus code (ensure two digits)
-    const campusRaw = (app.campus || '01').toString();
-    const campusCode = (campusRaw + '00').slice(0,2);
+    const campusRaw = (app.campus || "01").toString();
+    const campusCode = (campusRaw + "00").slice(0, 2);
 
     // Year (last two digits)
     const year = new Date().getFullYear().toString().slice(-2);
 
     // Department code: try to derive from department_code or department_name
-    const deptRaw = (app.department_code || app.department_name || '').toString().toLowerCase();
-    const deptMap: Record<string,string> = { 'bba':'01','business':'01','cse':'02','computer':'02','eee':'03','civil':'04','architecture':'05','law':'06' };
-    let deptCode = '00';
+    const deptRaw = (app.department_code || app.department_name || "")
+      .toString()
+      .toLowerCase();
+    const deptMap: Record<string, string> = {
+      bba: "01",
+      business: "01",
+      cse: "02",
+      computer: "02",
+      eee: "03",
+      civil: "04",
+      architecture: "05",
+      law: "06",
+    };
+    let deptCode = "00";
     for (const k of Object.keys(deptMap)) {
-      if (deptRaw.includes(k)) { deptCode = deptMap[k]; break; }
+      if (deptRaw.includes(k)) {
+        deptCode = deptMap[k];
+        break;
+      }
     }
-    if (deptCode === '00') {
+    if (deptCode === "00") {
       // fallback: hash first two letters
-      const chars = deptRaw.slice(0,2).padEnd(2,'x');
-      deptCode = ( (chars.charCodeAt(0) + chars.charCodeAt(1)) % 99 ).toString().padStart(2,'0');
+      const chars = deptRaw.slice(0, 2).padEnd(2, "x");
+      deptCode = ((chars.charCodeAt(0) + chars.charCodeAt(1)) % 99)
+        .toString()
+        .padStart(2, "0");
     }
 
     // Serial: count existing students with same campus+year+dept and increment
-    const serialBase = this.students.filter(s => s.student_id && s.student_id.includes(`${campusCode}${year}${deptCode}`)).length + 1;
-    const serial = String(serialBase).padStart(5,'0');
+    const serialBase =
+      this.students.filter(
+        (s) =>
+          s.student_id &&
+          s.student_id.includes(`${campusCode}${year}${deptCode}`),
+      ).length + 1;
+    const serial = String(serialBase).padStart(5, "0");
 
     const student_id = `${programAbbr}-${campusCode}${year}${deptCode}${serial}`;
 
     // UGC ID: UNIV(029) FAC(04) DISC(08) PROGRAM_LEVEL(01) YEAR SERIAL
-    const univ = '029';
-    const faculty = '04';
-    const discipline = '08';
-    const programLevel = '01';
-    const ugcSerial = String(this.students.length + 1).padStart(5,'0');
+    const univ = "029";
+    const faculty = "04";
+    const discipline = "08";
+    const programLevel = "01";
+    const ugcSerial = String(this.students.length + 1).padStart(5, "0");
     const ugc_id = `${univ}${faculty}${discipline}${programLevel}${year}${ugcSerial}`;
 
     // Save student record
@@ -1104,11 +1189,16 @@ class MockApiService {
   async getCourses(code?: string): Promise<ApiResponse<any[]>> {
     await this.delay(150);
     try {
-      const { getAllCourses } = await import('./syllabusData');
+      const { getAllCourses } = await import("./syllabusData");
       let courses = getAllCourses();
       if (code) {
         const q = code.toLowerCase();
-        courses = courses.filter((c: any) => c.id.toLowerCase().includes(q) || c.code?.toLowerCase().includes(q) || c.title?.toLowerCase().includes(q));
+        courses = courses.filter(
+          (c: any) =>
+            c.id.toLowerCase().includes(q) ||
+            c.code?.toLowerCase().includes(q) ||
+            c.title?.toLowerCase().includes(q),
+        );
       }
       return { success: true, data: courses };
     } catch (e) {
@@ -1116,19 +1206,30 @@ class MockApiService {
     }
   }
 
-  async saveTransferCourses(payload: { applicant_id: string; courses: any[] }): Promise<ApiResponse> {
+  async saveTransferCourses(payload: {
+    applicant_id: string;
+    courses: any[];
+  }): Promise<ApiResponse> {
     await this.delay(150);
-    const appIndex = this.applications.findIndex((a) => a.id === payload.applicant_id || a.uuid === payload.applicant_id);
-    if (appIndex === -1) return { success: false, error: 'Application not found' };
+    const appIndex = this.applications.findIndex(
+      (a) => a.id === payload.applicant_id || a.uuid === payload.applicant_id,
+    );
+    if (appIndex === -1)
+      return { success: false, error: "Application not found" };
     // Attach transfer courses to application record
     this.applications[appIndex].transfer_courses = payload.courses;
     return { success: true, data: { saved: true } };
   }
 
-  async generateMoneyReceipt(applicationId: string, amount: number): Promise<ApiResponse<{ mr_number: string; receipt_url: string }>> {
+  async generateMoneyReceipt(
+    applicationId: string,
+    amount: number,
+  ): Promise<ApiResponse<{ mr_number: string; receipt_url: string }>> {
     await this.delay(300);
 
-    const app = this.applications.find((a) => a.id === applicationId || a.uuid === applicationId);
+    const app = this.applications.find(
+      (a) => a.id === applicationId || a.uuid === applicationId,
+    );
     if (!app) return { success: false, error: "Application not found" };
 
     const mr_number = `MR-${Date.now()}`;

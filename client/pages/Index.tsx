@@ -88,7 +88,8 @@ export default function Index() {
       creditTransfer: "ক্রেডিট ট্রান্সফার",
       regularAdmissionDesc:
         "স্নাতক এবং স্নাতকোত্তর প্রোগ্রামের জন্য আবেদন করু��",
-      creditTransferDesc: "অন্��� প্রতিষ্ঠান থেকে আপনার ক্রেডিট স্থানান্তর করুন",
+      creditTransferDesc:
+        "অন্��� প্রতিষ্ঠান থেকে আপনার ক্রেডিট স্থানান্তর করুন",
       step1: "প্রোগ্রাম নির্বাচন ও খরচ গণনা",
       step1Desc: "প্রোগ্রাম, বিভাগ নির্বাচন এবং উপলব্ধ মওকুফ ���েখুন",
       step2: "ব্যক্তিগত তথ্য",
@@ -154,13 +155,16 @@ export default function Index() {
       // load registration packages
       try {
         const rp = await apiClient.getRegistrationPackages();
-        if (rp.success && rp.data) setRegistrationPkgs(Array.isArray(rp.data) ? rp.data : []);
+        if (rp.success && rp.data)
+          setRegistrationPkgs(Array.isArray(rp.data) ? rp.data : []);
       } catch (e) {
-        console.warn('Failed to load registration packages', e);
+        console.warn("Failed to load registration packages", e);
       }
     };
     fetchPrograms();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const admissionSteps = [
@@ -330,7 +334,9 @@ export default function Index() {
             {/* Programs Preview - fetched from API */}
             <div className="w-full">
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-white/90">Popular Programs</h3>
+                <h3 className="text-lg font-semibold text-white/90">
+                  Popular Programs
+                </h3>
               </div>
 
               {programsLoading && (
@@ -345,20 +351,42 @@ export default function Index() {
                 <div className="grid grid-cols-1 gap-4">
                   {programs.slice(0, 3).map((program: any) => {
                     const code = program.code || program.program_code;
-                    const dept = program.department_code || program.department?.code || "";
-                    const shortDesc = program.short_description || program.description || program.department_name || "A leading program with strong industry ties.";
+                    const dept =
+                      program.department_code || program.department?.code || "";
+                    const shortDesc =
+                      program.short_description ||
+                      program.description ||
+                      program.department_name ||
+                      "A leading program with strong industry ties.";
                     return (
-                      <Card key={code} className="bg-white/10 backdrop-blur-lg border-white/20 text-white">
+                      <Card
+                        key={code}
+                        className="bg-white/10 backdrop-blur-lg border-white/20 text-white"
+                      >
                         <CardContent className="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between">
                           <div>
-                            <div className="font-bold text-lg">{program.name || program.program_name}</div>
-                            <div className="text-sm text-white/80">Code: {code} • {program.duration ?? program.duration_years}</div>
-                            <div className="text-sm text-white/80">{shortDesc}</div>
+                            <div className="font-bold text-lg">
+                              {program.name || program.program_name}
+                            </div>
+                            <div className="text-sm text-white/80">
+                              Code: {code} •{" "}
+                              {program.duration ?? program.duration_years}
+                            </div>
+                            <div className="text-sm text-white/80">
+                              {shortDesc}
+                            </div>
                           </div>
 
                           <div className="mt-4 md:mt-0 flex items-center gap-4">
-                            <Link to={`/program-selection?program=${encodeURIComponent(code)}&department=${encodeURIComponent(dept)}`}>
-                              <Button size="sm" aria-label={`Apply to ${program.name || program.program_name}`}>Apply</Button>
+                            <Link
+                              to={`/program-selection?program=${encodeURIComponent(code)}&department=${encodeURIComponent(dept)}`}
+                            >
+                              <Button
+                                size="sm"
+                                aria-label={`Apply to ${program.name || program.program_name}`}
+                              >
+                                Apply
+                              </Button>
                             </Link>
                           </div>
                         </CardContent>
@@ -367,13 +395,21 @@ export default function Index() {
                   })}
 
                   {/* Registration packages preview */}
-                  {registrationPkgs.slice(0, 2).map((pkg:any)=> (
-                    <Card key={pkg.id} className="bg-white/10 backdrop-blur-lg border-white/20 text-white">
+                  {registrationPkgs.slice(0, 2).map((pkg: any) => (
+                    <Card
+                      key={pkg.id}
+                      className="bg-white/10 backdrop-blur-lg border-white/20 text-white"
+                    >
                       <CardContent className="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between">
                         <div>
                           <div className="font-bold text-lg">{pkg.program}</div>
-                          <div className="text-sm text-white/80">{pkg.term} • {pkg.mode}</div>
-                          <div className="text-sm text-white/80">Credits: {pkg.credits} • Per Credit: ৳{pkg.perCredit.toLocaleString()}</div>
+                          <div className="text-sm text-white/80">
+                            {pkg.term} • {pkg.mode}
+                          </div>
+                          <div className="text-sm text-white/80">
+                            Credits: {pkg.credits} • Per Credit: ৳
+                            {pkg.perCredit.toLocaleString()}
+                          </div>
                         </div>
                         <div className="mt-4 md:mt-0 flex items-center gap-4">
                           <Link to="/program-selection">
@@ -383,7 +419,6 @@ export default function Index() {
                       </CardContent>
                     </Card>
                   ))}
-
                 </div>
               )}
             </div>
