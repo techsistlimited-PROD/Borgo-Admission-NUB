@@ -284,6 +284,88 @@ function AppContent() {
                 )
               }
             />
+
+            {/* New admin feature routes */}
+            <Route
+              path="/admin/new-student-profile"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <NewStudentProfile />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/credit-transfer-management"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <CreditTransferManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/fee-structure"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <FeeStructurePackageManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/department-reports"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdmissionDepartmentalReports />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/student-search"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <StudentSearch />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/student-dashboard-summary"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <StudentDashboardSummary />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/scholarships"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <ScholarshipWaiverManagement />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/report-centre"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <ReportCentre />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
             <Route
               path="/admin/templates"
               element={
