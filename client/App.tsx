@@ -72,6 +72,16 @@ import VisitorsLog from "./pages/VisitorsLog";
 import Referrals from "./pages/Referrals";
 import MockEmails from "./pages/MockEmails";
 
+// New admin feature pages
+import NewStudentProfile from "./admin/NewStudentProfile";
+import CreditTransferManagement from "./admin/CreditTransferManagement";
+import FeeStructurePackageManagement from "./admin/FeeStructurePackageManagement";
+import AdmissionDepartmentalReports from "./admin/AdmissionDepartmentalReports";
+import StudentSearch from "./admin/StudentSearch";
+import StudentDashboardSummary from "./admin/StudentDashboardSummary";
+import ScholarshipWaiverManagement from "./admin/ScholarshipWaiverManagement";
+import ReportCentre from "./admin/ReportCentre";
+
 const queryClient = new QueryClient();
 
 function AppContent() {
