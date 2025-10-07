@@ -340,7 +340,7 @@ export default function ProgramSelection() {
       programSelection: "প্রোগ্রাম নির্বাচন করুন",
       departmentSelection: "বিভাগ নির্বাচন করুন",
       selectCampus: "আপনার ক্যাম্পাস বেছে নিন",
-      selectSemester: "সেমিস��টার বেছে নিন",
+      selectSemester: "সেমিস��টার ��েছে নিন",
       selectSemesterType: "সেমিস্টার ���রন বেছ�� ন��ন",
       selectProgram: "আপনার প্র���গ্রাম বেছে নি���",
       selectDepartment: "আপনার বিভাগ বেছে নিন",
@@ -2241,7 +2241,7 @@ export default function ProgramSelection() {
                           eligibilityResult.requiresAdmissionTest && (
                             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                               <h5 className="font-semibold text-blue-800 mb-3">
-                                �� Admit Card Generation
+                                ���� Admit Card Generation
                               </h5>
                               <p className="text-sm text-blue-700 mb-4">
                                 After completing your application, you'll need
@@ -2972,90 +2972,121 @@ export default function ProgramSelection() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  {selectedProgramData ? (
+                  {(selectedProgramData || appliedPackageId) ? (
                     <div className="space-y-4">
-                      {/* Original Cost Breakdown */}
+                      {/* Package-aware Cost Breakdown */}
                       <div className="space-y-3">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">
-                            {t.admissionFee}
-                          </span>
-                          <span className="font-medium">
-                            ৳
-                            {selectedProgramData.costStructure.admissionFee.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">{t.courseFee}</span>
-                          <span className="font-medium">
-                            ৳
-                            {selectedProgramData.costStructure.courseFee.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">{t.labFee}</span>
-                          <span className="font-medium">
-                            ৳
-                            {selectedProgramData.costStructure.labFee.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">{t.others}</span>
-                          <span className="font-medium">
-                            ৳
-                            {selectedProgramData.costStructure.others.toLocaleString()}
-                          </span>
-                        </div>
+                        {(() => {
+                          if (appliedPackageId) {
+                            const pkg = registrationPackages.find((p) => p.id === appliedPackageId);
+                            if (pkg) {
+                              const admissionFee = pkg.admissionFee || 0;
+                              const courseFee = (pkg.perCredit || 0) * (pkg.credits || 0);
+                              const others = pkg.fixedFees || 0;
+                              const original = pkg.totalEstimated ?? (admissionFee + courseFee + others);
+                              return (
+                                <>
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">{t.admissionFee}</span>
+                                    <span className="font-medium">৳{admissionFee.toLocaleString()}</span>
+                                  </div>
 
-                        <Separator />
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">{t.courseFee}</span>
+                                    <span className="font-medium">৳{courseFee.toLocaleString()}</span>
+                                  </div>
 
-                        <div className="flex justify-between font-semibold">
-                          <span className="text-deep-plum">
-                            {t.originalAmount}
-                          </span>
-                          <span className="text-deep-plum">
-                            ৳{costCalculation.originalAmount.toLocaleString()}
-                          </span>
-                        </div>
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">{t.others}</span>
+                                    <span className="font-medium">৳{others.toLocaleString()}</span>
+                                  </div>
 
-                        {/* Waiver Amount */}
-                        {costCalculation.waiverAmount > 0 && (
-                          <>
-                            <div className="flex justify-between text-green-600 font-medium">
-                              <span>
-                                {t.waiverAmount} (
-                                {costCalculation.waiverPercentage}%)
-                              </span>
-                              <span>
-                                -৳
-                                {costCalculation.waiverAmount.toLocaleString()}
-                              </span>
-                            </div>
+                                  <Separator />
 
-                            <Separator />
-                          </>
-                        )}
+                                  <div className="flex justify-between font-semibold">
+                                    <span className="text-deep-plum">{t.originalAmount}</span>
+                                    <span className="text-deep-plum">৳{original.toLocaleString()}</span>
+                                  </div>
 
-                        {/* Final Amount */}
-                        <div className="flex justify-between text-xl font-bold">
-                          <span className="text-deep-plum">
-                            {t.finalAmount}
-                          </span>
-                          <span className="text-accent-purple">
-                            ৳{costCalculation.finalAmount.toLocaleString()}
-                          </span>
-                        </div>
+                                  {costCalculation.waiverAmount > 0 && (
+                                    <>
+                                      <div className="flex justify-between text-green-600 font-medium">
+                                        <span>{t.waiverAmount} ({costCalculation.waiverPercentage}%)</span>
+                                        <span>-৳{costCalculation.waiverAmount.toLocaleString()}</span>
+                                      </div>
+
+                                      <Separator />
+                                    </>
+                                  )}
+
+                                  <div className="flex justify-between text-xl font-bold">
+                                    <span className="text-deep-plum">{t.finalAmount}</span>
+                                    <span className="text-accent-purple">৳{costCalculation.finalAmount.toLocaleString()}</span>
+                                  </div>
+                                </>
+                              );
+                            }
+                          }
+
+                          if (selectedProgramData) {
+                            const cs = selectedProgramData.costStructure;
+                            return (
+                              <>
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-600">{t.admissionFee}</span>
+                                  <span className="font-medium">৳{cs.admissionFee.toLocaleString()}</span>
+                                </div>
+
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-600">{t.courseFee}</span>
+                                  <span className="font-medium">৳{cs.courseFee.toLocaleString()}</span>
+                                </div>
+
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-600">{t.labFee}</span>
+                                  <span className="font-medium">৳{cs.labFee.toLocaleString()}</span>
+                                </div>
+
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-600">{t.others}</span>
+                                  <span className="font-medium">৳{cs.others.toLocaleString()}</span>
+                                </div>
+
+                                <Separator />
+
+                                <div className="flex justify-between font-semibold">
+                                  <span className="text-deep-plum">{t.originalAmount}</span>
+                                  <span className="text-deep-plum">৳{costCalculation.originalAmount.toLocaleString()}</span>
+                                </div>
+
+                                {costCalculation.waiverAmount > 0 && (
+                                  <>
+                                    <div className="flex justify-between text-green-600 font-medium">
+                                      <span>{t.waiverAmount} ({costCalculation.waiverPercentage}%)</span>
+                                      <span>-৳{costCalculation.waiverAmount.toLocaleString()}</span>
+                                    </div>
+
+                                    <Separator />
+                                  </>
+                                )}
+
+                                <div className="flex justify-between text-xl font-bold">
+                                  <span className="text-deep-plum">{t.finalAmount}</span>
+                                  <span className="text-accent-purple">৳{costCalculation.finalAmount.toLocaleString()}</span>
+                                </div>
+                              </>
+                            );
+                          }
+
+                          return null;
+                        })()}
                       </div>
 
-                      {/* Savings Display */}
                       {costCalculation.waiverAmount > 0 && (
                         <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
                           <div className="flex items-center gap-2 text-green-800">
                             <Award className="w-4 h-4" />
-                            <span className="font-medium">
-                              You Save: ৳
-                              {costCalculation.waiverAmount.toLocaleString()}
-                            </span>
+                            <span className="font-medium">You Save: ৳{costCalculation.waiverAmount.toLocaleString()}</span>
                           </div>
                         </div>
                       )}
