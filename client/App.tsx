@@ -73,14 +73,14 @@ import Referrals from "./pages/Referrals";
 import MockEmails from "./pages/MockEmails";
 
 // New admin feature pages
-import NewStudentProfile from "./admin/NewStudentProfile";
-import CreditTransferManagement from "./admin/CreditTransferManagement";
-import FeeStructurePackageManagement from "./admin/FeeStructurePackageManagement";
-import AdmissionDepartmentalReports from "./admin/AdmissionDepartmentalReports";
-import StudentSearch from "./admin/StudentSearch";
-import StudentDashboardSummary from "./admin/StudentDashboardSummary";
-import ScholarshipWaiverManagement from "./admin/ScholarshipWaiverManagement";
-import ReportCentre from "./admin/ReportCentre";
+import NewStudentProfile from "./pages/admin/NewStudentProfile";
+import CreditTransferManagement from "./pages/admin/CreditTransferManagement";
+import FeeStructurePackageManagement from "./pages/admin/FeeStructurePackageManagement";
+import AdmissionDepartmentalReports from "./pages/admin/AdmissionDepartmentalReports";
+import StudentSearch from "./pages/admin/StudentSearch";
+import StudentDashboardSummary from "./pages/admin/StudentDashboardSummary";
+import ScholarshipWaiverManagement from "./pages/admin/ScholarshipWaiverManagement";
+import ReportCentre from "./pages/admin/ReportCentre";
 
 const queryClient = new QueryClient();
 
