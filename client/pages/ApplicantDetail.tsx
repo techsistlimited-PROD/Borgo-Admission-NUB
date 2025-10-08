@@ -1335,12 +1335,8 @@ export default function ApplicantDetail() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-sm text-gray-600">
-                        Fee Payment Status
-                      </div>
-                      <div className="font-medium">
-                        {application?.payment_status || "pending"}
-                      </div>
+                      <div className="text-sm text-gray-600">Admission Test Fee</div>
+                      <div className="font-medium">{application?.payment_status === 'paid' ? 'Paid' : application?.payment_status || 'Pending'}</div>
                     </div>
                     <div>
                       <Button variant="outline">Admit Card (PDF)</Button>
@@ -1348,11 +1344,9 @@ export default function ApplicantDetail() {
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Result
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Result</Label>
                     <div className="mt-2">
-                      {application?.admission_test_status || "Not Available"}
+                      {application?.admission_test_status === 'pending' ? 'Pending' : application?.admission_test_status === 'selected' ? 'Selected' : application?.admission_test_status === 'fail' ? 'Fail' : (application?.admission_test_status || 'Not Available')}
                     </div>
                   </div>
                 </div>
