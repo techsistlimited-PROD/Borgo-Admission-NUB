@@ -157,7 +157,7 @@ export default function ApplicantDetail() {
     bn: {
       title: "আবেদনকারীর বিবর��",
       backToList: "ভর্তি তালিকায় ফিরুন",
-      personalInfo: "ব্যক্তিগত তথ্য",
+      personalInfo: "ব্যক্তিগ�� তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
       documentsUploaded: "আপলোডকৃত কাগজপত্র",
@@ -691,11 +691,16 @@ export default function ApplicantDetail() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <div className="text-sm font-medium text-gray-700 mb-2">Automations Performed</div>
-                <ul className="list-disc list-inside text-sm text-gray-700">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {(studentCreatedData?.automations || []).map((a: string, i: number) => (
-                    <li key={i}>{a}</li>
+                    <div key={i} className="p-3 border rounded flex items-start gap-3 bg-white">
+                      <div className="text-green-600 mt-0.5">
+                        <CheckCircle className="w-5 h-5" />
+                      </div>
+                      <div className="text-sm text-gray-700">{a}</div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
 
               <div>
