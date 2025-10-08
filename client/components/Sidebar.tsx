@@ -56,7 +56,7 @@ export default function Sidebar({ userType }: SidebarProps) {
   ];
 
   const adminPages = [
-    { name: "Admissions", path: "/admin/admissions", icon: Users },
+    { name: "Admissions", path: "/admin/admission-dashboard", icon: Users },
     { name: "New Student Profile", path: "/admin/new-student-profile", icon: User },
     { name: "Academic History", path: "/admin/academic-history", icon: FileText },
     { name: "Credit Transfer", path: "/admin/credit-transfer-management", icon: BookOpen },
@@ -92,7 +92,7 @@ export default function Sidebar({ userType }: SidebarProps) {
     // Role overrides userType when present
     if (role === "admission_officer")
       return [
-        { name: "Admissions", path: "/admin/admissions", icon: Users },
+        { name: "Admissions", path: "/admin/admission-dashboard", icon: Users },
         { name: "Waiver Management", path: "/admin/waivers", icon: Award },
         { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
         {
