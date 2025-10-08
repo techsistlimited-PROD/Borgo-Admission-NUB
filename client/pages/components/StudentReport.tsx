@@ -115,33 +115,29 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
 
                     </div>
 
-                    <div className="flex flex-col gap-2 text-sm">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <div>
-                          <div className="text-xs text-gray-500">Father</div>
-                          <div className="font-medium">{personalWithDefaults.father_name}</div>
-                          <div className="text-sm text-gray-600">{personalWithDefaults.father_contact}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500">Mother</div>
-                          <div className="font-medium">{personalWithDefaults.mother_name}</div>
-                          <div className="text-sm text-gray-600">{personalWithDefaults.mother_contact}</div>
-                        </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
+                      <div>
+                        <div className="text-xs text-gray-500">Father</div>
+                        <div className="font-medium">{personalWithDefaults.father_name}</div>
+                        <div className="text-sm text-gray-600">{personalWithDefaults.father_contact}</div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <div className="sm:col-span-1">
-                          <div className="text-xs text-gray-500">Local Guardian</div>
-                          <div className="font-medium">{personalWithDefaults.local_guardian?.name}</div>
-                          <div className="text-sm text-gray-600">{personalWithDefaults.local_guardian?.contact}</div>
-                        </div>
-
-
-                        <div className="sm:col-span-1">
-                          <div className="text-xs text-gray-500">Required Credits / Grading System</div>
-                          <div className="text-sm">{personalWithDefaults.required_credits} / {personalWithDefaults.grading_system}</div>
-                        </div>
+                      <div>
+                        <div className="text-xs text-gray-500">Mother</div>
+                        <div className="font-medium">{personalWithDefaults.mother_name}</div>
+                        <div className="text-sm text-gray-600">{personalWithDefaults.mother_contact}</div>
                       </div>
+
+                      <div>
+                        <div className="text-xs text-gray-500">Local Guardian</div>
+                        <div className="font-medium">{personalWithDefaults.local_guardian?.name}</div>
+                        <div className="text-sm text-gray-600">{personalWithDefaults.local_guardian?.contact}</div>
+                      </div>
+                    </div>
+
+                    <div className="mt-2 text-sm">
+                      <div className="text-xs text-gray-500">Required Credits / Grading System</div>
+                      <div className="text-sm">{personalWithDefaults.required_credits} / {personalWithDefaults.grading_system}</div>
                     </div>
 
                   </div>
