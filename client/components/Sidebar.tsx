@@ -56,7 +56,7 @@ export default function Sidebar({ userType }: SidebarProps) {
   ];
 
   const adminPages = [
-    { name: "Admissions", path: "/admin/admission-dashboard", icon: Users },
+    { name: "Admissions", path: "/admin/admissions", icon: Users },
     { name: "New Student Profile", path: "/admin/new-student-profile", icon: User },
     { name: "Academic History", path: "/admin/academic-history", icon: FileText },
     { name: "Credit Transfer", path: "/admin/credit-transfer-management", icon: BookOpen },
@@ -67,7 +67,6 @@ export default function Sidebar({ userType }: SidebarProps) {
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
     { name: "Student Management", path: "/admin/student-management", icon: UserCog },
     { name: "Student Search", path: "/admin/student-search", icon: Users },
-    { name: "Admission Dashboard", path: "/admin/admission-dashboard", icon: LayoutDashboard },
     { name: "Account Management", path: "/admin/account-management", icon: Lock },
     { name: "Admission Circular", path: "/admin/admission-circular", icon: Mail },
     { name: "Departmental Reports", path: "/admin/department-reports", icon: PieChart },
