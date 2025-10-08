@@ -162,7 +162,7 @@ export default function ApplicantDetail() {
       academicHistory: "শিক্ষাগত ইতিহাস",
       documentsUploaded: "আপলোডকৃত কাগজপত্র",
       waiverInfo: "মওকুফ তথ্য",
-      actions: "কর্ম",
+      actions: "���র্ম",
       approve: "আবেদন অনুমোদন",
       reject: "আবেদন প্রত্যাখ্যান",
       generateIDs: "ছাত্র আইডি তৈরি করুন",
@@ -538,7 +538,7 @@ export default function ApplicantDetail() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <Link
-            to="/admin/admission-dashboard"
+            to="/admin/admissions"
             className="inline-flex items-center text-accent-purple hover:text-deep-plum mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> {t.backToList}
