@@ -164,7 +164,7 @@ export default function ApplicantDetail() {
       waiverInfo: "মওকুফ তথ্য",
       actions: "���র্ম",
       approve: "আবেদন অনুমোদন",
-      reject: "আবেদন প্রত্যাখ্��ান",
+      reject: "আবেদন ���্রত্যাখ্��ান",
       generateIDs: "ছাত্র আইডি তৈরি করুন",
       changeLog: "পরিবর্তন লগ",
     },
@@ -607,6 +607,21 @@ export default function ApplicantDetail() {
     permanent_address: personal.permanent_address || personal.address || "Village 8, Mirpur, Dhaka",
     local_guardian: personal.local_guardian || { name: "Sabbir Ahmed", contact: "01622334455", address: "Mirpur, Dhaka" },
   };
+
+  // Fees & Waiver calculations: waiver applies only to tuition (Total Course Fee / Tuition)
+  const fees = application?.fees || [];
+  const totalFees = fees.reduce((s: number, it: any) => s + Number(it.cost_amount || 0), 0);
+  function isTuitionFee(item: any) {
+    const h = (item?.cost_head || "").toString().toLowerCase();
+    if (h.includes("tuition")) return true;
+    if (h.includes("total") && h.includes("course")) return true;
+    if (h.includes("course fee") && !h.includes("retake")) return true;
+    return false;
+  }
+  const tuitionTotal = fees.reduce((s: number, it: any) => s + (isTuitionFee(it) ? Number(it.cost_amount || 0) : 0), 0);
+  const waiverPercent = application?.waiver?.percentage || 0;
+  const waiverAmountOnTuition = (waiverPercent / 100) * tuitionTotal;
+  const finalAmount = totalFees - waiverAmountOnTuition;
 
   return (
     <div>
