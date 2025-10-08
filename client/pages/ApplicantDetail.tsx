@@ -967,7 +967,7 @@ export default function ApplicantDetail() {
                   <div>
                     <Label className="text-sm font-medium text-gray-600">{t.photograph}</Label>
                     <div className="flex items-center gap-4">
-                      <img src={application?.documents?.photograph?.file_url || '/placeholder.svg'} alt="photo" className="w-24 h-24 object-cover rounded" />
+                      <img src={application?.documents?.photograph?.file_url || '/placeholder.svg'} alt="photo" className="w-24 h-24 object-cover rounded" onError={(e: any) => { e.currentTarget.src = '/placeholder.svg'; }} />
                       <div>
                         <input
                           id="photoUpload"
