@@ -156,7 +156,7 @@ export default function ApplicantDetail() {
       changeLog: "Change Log",
     },
     bn: {
-      title: "আবেদনকারীর বিবর��",
+      title: "আবেদনকা���ীর বিবর��",
       backToList: "ভর্তি তালিকায় ফিরুন",
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
@@ -1160,7 +1160,7 @@ export default function ApplicantDetail() {
                             if (!file || !application) return;
                             const reader = new FileReader();
                             reader.onload = async () => {
-                              const fileUrl = `https://cdn.example.com/uploads/${Date.now()}-${file.name}`;
+                              const fileUrl = `/uploads/${Date.now()}-${file.name}`;
                               const res = await apiClient.updateApplicationDocument(application.id, 'photograph', { file_name: file.name, file_url: fileUrl });
                               if (res.success && res.data?.document) {
                                 setApplication((prev: any) => ({ ...prev, documents: { ...(prev?.documents || {}), photograph: res.data.document } }));
