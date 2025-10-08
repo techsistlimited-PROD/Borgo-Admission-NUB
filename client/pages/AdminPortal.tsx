@@ -56,7 +56,7 @@ export default function AdminPortal() {
               management.
             </p>
             <div className="mt-4 flex gap-2">
-              <Link to="/admin/admissions">
+              <Link to="/admin/admission-dashboard">
                 <Button>Applications</Button>
               </Link>
               <Link to="/admin/waivers">
