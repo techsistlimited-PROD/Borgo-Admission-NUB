@@ -193,6 +193,13 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
               </div>
             </CardHeader>
             <CardContent>
+              <div className="flex justify-end mb-2 print:hidden">
+                {inlineReport.first_semester_courses_download_url && (
+                  <a href={inlineReport.first_semester_courses_download_url} target="_blank" rel="noreferrer">
+                    <Button variant="outline" className="h-7 w-7 p-1"><Download className="w-4 h-4" /></Button>
+                  </a>
+                )}
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full table-auto text-sm">
                   <thead>
