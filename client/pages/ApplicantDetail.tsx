@@ -164,7 +164,7 @@ export default function ApplicantDetail() {
       waiverInfo: "মওকুফ তথ্য",
       actions: "���র্ম",
       approve: "আবেদন অনুমোদন",
-      reject: "আবেদন ���্রত্যাখ্��ান",
+      reject: "আবেদন ����্রত্যাখ্��ান",
       generateIDs: "ছাত্র আইডি তৈরি করুন",
       changeLog: "পরিবর্তন লগ",
     },
@@ -967,7 +967,9 @@ export default function ApplicantDetail() {
                   <div>
                     <Label className="text-sm font-medium text-gray-600">{t.photograph}</Label>
                     <div className="flex items-center gap-4">
-                      <img src={application?.documents?.photograph?.file_url || '/placeholder.svg'} alt="photo" className="w-24 h-24 object-cover rounded" onError={(e: any) => { e.currentTarget.src = '/placeholder.svg'; }} />
+                      <div className="w-28 h-28 rounded border overflow-hidden bg-white flex items-center justify-center">
+                      <img src={application?.documents?.photograph?.file_url || '/placeholder.svg'} alt="photo" className="w-full h-full object-cover" onError={(e: any) => { e.currentTarget.src = '/placeholder.svg'; }} />
+                    </div>
                       <div>
                         <input
                           id="photoUpload"

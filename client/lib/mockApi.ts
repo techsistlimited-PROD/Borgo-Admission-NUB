@@ -134,7 +134,7 @@ class MockApiService {
       ],
       waiver: { type: 'Merit', percentage: 30, status: 'active', note: 'Applied based on HSC GPA' },
       payment_status: 'paid',
-      admission_test_status: 'pending',
+      admission_test_status: 'selected',
     },
     {
       id: "app-002",
