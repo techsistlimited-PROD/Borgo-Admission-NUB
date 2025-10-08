@@ -1158,7 +1158,7 @@ export default function ApplicantDetail() {
                     <Label className="text-sm font-medium text-gray-600">{t.photograph}</Label>
                     <div className="flex items-center gap-4">
                       <div className="w-28 h-28 rounded border overflow-hidden bg-white flex items-center justify-center">
-                      <img src={application?.documents?.photograph?.file_url || '/placeholder.svg'} alt="photo" className="w-full h-full object-cover" onError={(e: any) => { e.currentTarget.src = '/placeholder.svg'; }} />
+                      <img src={application?.documents?.photograph?.file_url || '/placeholder.svg'} alt="photo" className="w-full h-full object-cover" onError={(e: any) => { try { e.currentTarget.onerror = null; } catch (err) {} e.currentTarget.src = '/placeholder.svg'; }} />
                     </div>
                       <div>
                         <input
