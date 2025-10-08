@@ -196,7 +196,8 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                   </thead>
                   <tbody>
                     {(inlineReport.first_semester_courses || []).map((c: any, i: number) => {
-                      const section = c.section || String.fromCharCode(65 + (i % 26));
+                      const sequence = ['A', 'B', 'A', 'F', 'C'];
+                      const section = c.section || (sequence[i] || String.fromCharCode(65 + (i % 26)));
                       return (
                         <tr key={i} className="odd:bg-white even:bg-gray-50">
                           <td className="px-2 py-1 text-left">{c.code}</td>
