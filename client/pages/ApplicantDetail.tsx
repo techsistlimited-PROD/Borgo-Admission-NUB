@@ -63,6 +63,8 @@ export default function ApplicantDetail() {
   const [isGeneratingIDs, setIsGeneratingIDs] = useState(false);
   // Manage photo src to prevent infinite reload loops
   const [photoSrc, setPhotoSrc] = useState<string>('/placeholder.svg');
+  // Inline report state to render generated student report inside this page
+  const [inlineReport, setInlineReport] = useState<any | null>(null);
   const [isMakingStudent, setIsMakingStudent] = useState(false);
   const [studentModalOpen, setStudentModalOpen] = useState(false);
   const [studentCreatedData, setStudentCreatedData] = useState<any | null>(null);
@@ -168,7 +170,7 @@ export default function ApplicantDetail() {
       waiverInfo: "মওকুফ ���থ্য",
       actions: "���র্ম",
       approve: "আবেদন অনুমোদন",
-      reject: "আবেদন ����্রত্যাখ্��ান",
+      reject: "আবেদন ����্রত্যাখ্�����ন",
       generateIDs: "ছাত্র আইডি তৈরি করুন",
       changeLog: "পরিব��্তন লগ",
     },
