@@ -120,6 +120,11 @@ class MockApiService {
           obtained_class: "First Division",
         },
       ],
+      documents: {
+        ssc_transcript: { file_name: 'ssc_transcript.pdf', file_url: '/placeholder.svg' },
+        hsc_transcript: { file_name: 'hsc_transcript.pdf', file_url: '/placeholder.svg' },
+        nid_card: { file_name: 'nid_card.jpg', file_url: '/placeholder.svg' },
+      },
     },
     {
       id: "app-002",
