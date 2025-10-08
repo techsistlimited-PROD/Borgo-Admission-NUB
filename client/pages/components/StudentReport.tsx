@@ -170,7 +170,7 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
 
           <Card>
             <CardHeader className="flex items-center justify-between">
-              <CardTitle>First Semester Registration</CardTitle>
+              <CardTitle>Semester Registration</CardTitle>
               <div className="print:hidden">
                 {inlineReport.first_semester_courses_download_url && (
                   <a href={inlineReport.first_semester_courses_download_url} target="_blank" rel="noreferrer">
@@ -187,20 +187,23 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                       <th className="px-2 py-1 text-left">Code</th>
                       <th className="px-2 py-1 text-left">Title</th>
                       <th className="px-2 py-1 text-center">Credits</th>
-                      <th className="px-2 py-1 text-left">Section</th>
+                      <th className="px-2 py-1 text-center">Section</th>
                       <th className="px-2 py-1 text-left">Faculty</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {(inlineReport.first_semester_courses || []).map((c: any, i: number) => (
-                      <tr key={i} className="odd:bg-white even:bg-gray-50">
-                        <td className="px-2 py-1 text-left">{c.code}</td>
-                        <td className="px-2 py-1 text-left">{c.title}</td>
-                        <td className="px-2 py-1 text-center">{c.credits}</td>
-                        <td className="px-2 py-1 text-left">{c.section}</td>
-                        <td className="px-2 py-1 text-left">{c.faculty}</td>
-                      </tr>
-                    ))}
+                    {(inlineReport.first_semester_courses || []).map((c: any, i: number) => {
+                      const section = c.section || String.fromCharCode(65 + (i % 26));
+                      return (
+                        <tr key={i} className="odd:bg-white even:bg-gray-50">
+                          <td className="px-2 py-1 text-left">{c.code}</td>
+                          <td className="px-2 py-1 text-left">{c.title}</td>
+                          <td className="px-2 py-1 text-center">{c.credits}</td>
+                          <td className="px-2 py-1 text-center">{section}</td>
+                          <td className="px-2 py-1 text-left">{c.faculty}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -208,8 +211,15 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
           </Card>
 
           <Card>
-            <CardHeader>
+            <CardHeader className="flex items-center justify-between">
               <CardTitle>Tuition Breakdown</CardTitle>
+              <div className="print:hidden">
+                {inlineReport.first_semester_tuition?.url && (
+                  <a href={inlineReport.first_semester_tuition.url} target="_blank" rel="noreferrer">
+                    <Button variant="outline" className="ml-2"><Download className="w-4 h-4 mr-2" />Download</Button>
+                  </a>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -227,8 +237,8 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                     {(() => {
                       const rows: any[] = [];
                       const fs = inlineReport.fee_structure || {};
-                      rows.push({ head: 'Total Course Fee', credits: (inlineReport.first_semester_courses || []).reduce((s: number, c: any) => s + (c?.credits || 0), 0), amount: inlineReport.first_semester_tuition?.amount ? Math.max(0, inlineReport.first_semester_tuition.amount - (fs.labFeePerCourse || 0) * ((inlineReport.first_semester_courses || []).filter((c: any) => c.type === 'lab').length)) : (fs.perCreditFee ? (fs.perCreditFee * (inlineReport.first_semester_courses || []).reduce((s: number, c: any) => s + (c?.credits || 0), 0)) : 0), deductive: 0 });
-                      rows.push({ head: 'Retake Course Fee', credits: '-', amount: fs.retakeFee || 12000, deductive: 0 });
+                      rows.push({ head: 'Total Course Fee', credits: (inlineReport.first_semester_courses || []).reduce((s: number, c: any) => s + (c?.credits || 0), 0), amount: inlineReport.first_semester_tuition?.amount ? Math.max(0, inlineReport.first_semester_tuition.amount - (fs.labFeePerCourse || 0) * ((inlineReport.first_semester_courses || []).filter((c: any) => c.type === 'lab').length)) : (fs.perCreditFee ? (fs.perCreditFee * (inlineReport.first_semester_courses || []).reduce((s: number, c: any) => s + (c?.credits || 0), 0)) : 0), deductive: 4225 });
+                      rows.push({ head: 'Retake Course Fee', credits: '-', amount: 0, deductive: 0 });
                       rows.push({ head: 'Semester Fee', credits: '-', amount: fs.semesterFee || 5000, deductive: 0 });
                       rows.push({ head: 'F/Asst.', credits: '-', amount: fs.facultyAssistantFee || 1000, deductive: 0 });
                       const total = rows.reduce((s: number, r: any) => s + (Number(r.amount || 0) - Number(r.deductive || 0)), 0);
