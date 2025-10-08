@@ -49,10 +49,10 @@ export default function AdmissionOfficerLogin() {
           const decoded = decodeURIComponent(next);
           navigate(decoded);
         } catch {
-          navigate("/admin/admission-dashboard");
+          navigate("/admin/admissions");
         }
       } else {
-        navigate("/admin/admission-dashboard");
+        navigate("/admin/admissions");
       }
     } else {
       setError("Invalid email or password. Please try again.");
