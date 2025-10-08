@@ -1227,31 +1227,72 @@ export default function ApplicantDetail() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  <div className="overflow-x-auto">
+                    <table className="w-full table-auto text-left">
+                      <thead>
+                        <tr className="text-sm text-gray-600 border-b">
+                          <th className="px-3 py-2">#</th>
+                          <th className="px-3 py-2">Cost Head</th>
+                          <th className="px-3 py-2">Credit Taken</th>
+                          <th className="px-3 py-2">Cost Amount</th>
+                          <th className="px-3 py-2">Deductive Amount</th>
+                          <th className="px-3 py-2">Remarks</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(application?.fees || []).map((f: any, i: number) => (
+                          <tr key={f.id || i} className="odd:bg-white even:bg-gray-50">
+                            <td className="px-3 py-2 align-top">{i + 1}</td>
+                            <td className="px-3 py-2 align-top">{f.cost_head}</td>
+                            <td className="px-3 py-2 align-top">{f.credits_taken || '-'}</td>
+                            <td className="px-3 py-2 align-top">BDT {Number(f.cost_amount || 0).toLocaleString()}</td>
+                            <td className="px-3 py-2 align-top">BDT {Number(f.deductive_amount || 0).toLocaleString()}</td>
+                            <td className="px-3 py-2 align-top">{f.remarks || '-'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t.originalAmount}
-                      </Label>
-                      <p className="text-gray-900">
-                        BDT {(waiver?.originalAmount || 0).toLocaleString()}
-                      </p>
+                      <Label className="text-sm font-medium text-gray-600">{t.originalAmount}</Label>
+                      <p className="text-gray-900">BDT {(application?.fees || []).reduce((s: number, it: any) => s + Number(it.cost_amount || 0), 0).toLocaleString()}</p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t.waiverAmount}
-                      </Label>
-                      <p className="text-green-600 font-semibold">
-                        -BDT {(waiver?.waiverAmount || 0).toLocaleString()}
-                      </p>
+                      <Label className="text-sm font-medium text-gray-600">{t.waiverAmount}</Label>
+                      <p className="text-green-600 font-semibold">-BDT {((application?.waiver?.percentage || 0) / 100 * ((application?.fees || []).reduce((s: number, it: any) => s + Number(it.cost_amount || 0), 0))).toLocaleString()}</p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t.finalAmount}
-                      </Label>
-                      <p className="text-xl font-bold text-accent-purple">
-                        BDT {(waiver?.finalAmount || 0).toLocaleString()}
-                      </p>
+                      <Label className="text-sm font-medium text-gray-600">{t.finalAmount}</Label>
+                      <p className="text-xl font-bold text-accent-purple">BDT {(((application?.fees || []).reduce((s: number, it: any) => s + Number(it.cost_amount || 0), 0)) - ((application?.waiver?.percentage || 0) / 100 * ((application?.fees || []).reduce((s: number, it: any) => s + Number(it.cost_amount || 0), 0)))).toLocaleString()}</p>
                     </div>
+                  </div>
+
+                  <div className="border-t pt-4">
+                    <div className="text-sm font-medium text-gray-700 mb-2">Waiver Details</div>
+                    {application?.waiver ? (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label className="text-xs text-gray-500">Type</Label>
+                          <div className="text-gray-900">{application.waiver.type || '-'}</div>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-gray-500">Waiver Percentage</Label>
+                          <div className="text-gray-900">{application.waiver.percentage ? `${application.waiver.percentage}%` : '-'}</div>
+                        </div>
+                        <div>
+                          <Label className="text-xs text-gray-500">Status</Label>
+                          <div className={`text-sm font-medium ${application.waiver.status === 'active' ? 'text-green-700' : 'text-gray-700'}`}>{application.waiver.status || '-'}</div>
+                        </div>
+                        <div className="md:col-span-3">
+                          <Label className="text-xs text-gray-500">Note</Label>
+                          <div className="text-gray-900">{application.waiver.note || '-'}</div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-gray-600">No waiver information</div>
+                    )}
                   </div>
                 </div>
               </CardContent>
