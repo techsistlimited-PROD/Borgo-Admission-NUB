@@ -199,11 +199,7 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
               </div>
 
               <div className="absolute right-3 top-3 print:hidden">
-                {inlineReport.first_semester_courses_download_url && (
-                  <a href={inlineReport.first_semester_courses_download_url} target="_blank" rel="noreferrer">
-                    <Button variant="outline" className="h-8 px-2 text-sm"><Download className="w-4 h-4 mr-2" />Download</Button>
-                  </a>
-                )}
+                <Button variant="outline" className="h-8 px-2 text-sm" onClick={downloadCourses}><Download className="w-4 h-4 mr-2" />Download</Button>
               </div>
             </CardHeader>
             <CardContent>
