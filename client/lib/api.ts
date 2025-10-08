@@ -144,6 +144,16 @@ class ApiClient {
     return await mockApi.generateApplicationIds(id);
   }
 
+  async setAcademicVerification(id: string, verified: boolean): Promise<ApiResponse> {
+    // @ts-ignore
+    return await mockApi.setAcademicVerification(id, verified);
+  }
+
+  async setPaymentVerification(id: string, verified: boolean): Promise<ApiResponse> {
+    // @ts-ignore
+    return await mockApi.setPaymentVerification(id, verified);
+  }
+
   async getApplicationStats(): Promise<ApiResponse> {
     return await mockApi.getApplicationStats();
   }
