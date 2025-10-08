@@ -99,6 +99,10 @@ class ApiClient {
     return await mockApi.getApplication(id);
   }
 
+  async updateApplicationDocument(id: string, key: string, fileMeta: any): Promise<ApiResponse> {
+    return await mockApi.updateApplicationDocument(id, key, fileMeta as any);
+  }
+
   async createApplication(data: any): Promise<ApiResponse> {
     if (this.serverAvailable) {
       try {
