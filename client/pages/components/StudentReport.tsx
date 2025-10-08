@@ -17,6 +17,16 @@ type Props = {
 export default function StudentReport({ inlineReport, personalWithDefaults, onClose }: Props) {
   if (!inlineReport) return null;
 
+  const sampleCourses = [
+    { code: 'CSE 101', title: 'Introduction to Computer Science', credits: 3, section: 'A', faculty: 'Computer Science & Engineering' },
+    { code: 'CSE 101L', title: 'Introduction to Computer Science Lab', credits: 1, section: 'A', faculty: 'Computer Science & Engineering' },
+    { code: 'MATH 101', title: 'Calculus and Analytical Geometry', credits: 3, section: 'A', faculty: 'Computer Science & Engineering' },
+    { code: 'ENG 101', title: 'English Composition', credits: 3, section: 'A', faculty: 'Computer Science & Engineering' },
+    { code: 'PHY 101', title: 'Physics I', credits: 3, section: 'A', faculty: 'Computer Science & Engineering' },
+  ];
+
+  const coursesToShow = (inlineReport.first_semester_courses && inlineReport.first_semester_courses.length) ? inlineReport.first_semester_courses : sampleCourses;
+
 
   return (
     <div className="p-6 print:bg-white">
