@@ -46,7 +46,7 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                 <CardContent>
                   <div className="grid grid-cols-1 gap-4">
                     <div className="flex items-start">
-                      <div className="w-28 h-28 rounded border overflow-hidden bg-gray-50 flex items-center justify-center mr-4">
+                      <div className="w-36 h-36 rounded border overflow-hidden bg-gray-50 flex items-center justify-center mr-4">
                         {inlineReport.personal_info?.picture?.file_url ? (
                           <img src={inlineReport.personal_info.picture.file_url} alt="photo" className="w-full h-full object-cover" onError={(e: any) => { try { e.currentTarget.onerror = null; } catch (err) {} e.currentTarget.src = '/placeholder.svg'; }} />
                         ) : (
@@ -54,16 +54,16 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                         )}
                       </div>
                       <div className="flex-1 text-sm">
-                        <div className="mb-2"><div className="text-xs text-gray-500">Full name</div><div className="font-medium">{personalWithDefaults.name}</div></div>
-                        <div className="mb-2"><div className="text-xs text-gray-500">Date of Birth</div><div>{personalWithDefaults.date_of_birth}</div></div>
-                        <div className="mb-2"><div className="text-xs text-gray-500">Gender</div><div>{personalWithDefaults.gender}</div></div>
-                        <div className="mb-2"><div className="text-xs text-gray-500">Quota</div><div>{personalWithDefaults.quota}</div></div>
-                        <div className="mb-2"><div className="text-xs text-gray-500">Religion</div><div>{personalWithDefaults.religion}</div></div>
-                        <div className="mb-2"><div className="text-xs text-gray-500">Disability / Blood Group</div><div>{personalWithDefaults.disability_status} / {personalWithDefaults.blood_group}</div></div>
-                        <div className="mb-2"><div className="text-xs text-gray-500">Student Mobile</div><div>{personalWithDefaults.student_mobile}</div></div>
-                        <div className="mb-2"><div className="text-xs text-gray-500">Student Email</div><div>{personalWithDefaults.student_email}</div></div>
-                        <div className="mb-2"><div className="text-xs text-gray-500">Present Address</div><div className="text-sm">{personalWithDefaults.present_address}</div></div>
-                        <div className="mb-2"><div className="text-xs text-gray-500">Permanent Address</div><div className="text-sm">{personalWithDefaults.permanent_address}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Full name</div><div className="font-semibold text-base">{personalWithDefaults.name}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Date of Birth</div><div className="font-medium">{personalWithDefaults.date_of_birth}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Gender</div><div className="font-medium">{personalWithDefaults.gender}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Quota</div><div className="font-medium">{personalWithDefaults.quota}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Religion</div><div className="font-medium">{personalWithDefaults.religion}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Disability / Blood Group</div><div className="font-medium">{personalWithDefaults.disability_status} / {personalWithDefaults.blood_group}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Student Mobile</div><div className="font-medium">{personalWithDefaults.student_mobile}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Student Email</div><div className="font-medium">{personalWithDefaults.student_email}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Present Address</div><div className="text-sm font-medium">{personalWithDefaults.present_address}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Permanent Address</div><div className="text-sm font-medium">{personalWithDefaults.permanent_address}</div></div>
                       </div>
                     </div>
 
