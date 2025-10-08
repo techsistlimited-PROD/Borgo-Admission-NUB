@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -20,10 +22,10 @@ import { useToast } from "../hooks/use-toast";
 
 export default function AdminDashboard() {
   const [summary, setSummary] = useState<any>(null);
-  const [students, setStudents] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit] = useState(20);
+  const [limit] = useState(10);
   const { toast } = useToast();
 
   const loadSummary = async () => {
@@ -31,28 +33,33 @@ export default function AdminDashboard() {
     if (res.success) setSummary(res.data || {});
   };
 
-  const loadStudents = async () => {
+  const loadApplications = async () => {
     try {
-      const res = await apiClient.getStudents({ search, page, limit });
-      if (res.success) setStudents(res.data.students || []);
+      const res = await apiClient.getApplications({ search, page, limit });
+      if (res.success) setApplications(res.data.applications || []);
     } catch (e) {
       console.error(e);
+      toast({ title: "Error", description: "Failed to load applications." });
     }
   };
 
   useEffect(() => {
     loadSummary();
+    loadApplications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   useEffect(() => {
-    loadStudents();
+    loadApplications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, page]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Admission Dashboard (Demo)</h2>
+        <h2 className="text-xl font-semibold">Admission Dashboard (Officer)</h2>
         <div className="flex items-center gap-2">
-          <Button onClick={loadSummary}>Refresh</Button>
+          <Button onClick={() => { loadSummary(); loadApplications(); }}>Refresh</Button>
         </div>
       </div>
 
@@ -62,14 +69,20 @@ export default function AdminDashboard() {
             <CardTitle>Total Applications</CardTitle>
           </CardHeader>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold">
-              {summary?.totalApplications ?? "—"}
-            </div>
+            <div className="text-2xl font-bold">{summary?.totalApplications ?? "—"}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Admitted</CardTitle>
+            <CardTitle>Need Review</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold">{summary?.needReview ?? "—"}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Approved</CardTitle>
           </CardHeader>
           <CardContent className="p-4">
             <div className="text-2xl font-bold">{summary?.admitted ?? "—"}</div>
@@ -77,22 +90,10 @@ export default function AdminDashboard() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Total Students</CardTitle>
+            <CardTitle>Today's Applicants</CardTitle>
           </CardHeader>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold">
-              {summary?.totalStudents ?? "—"}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Visitors (30d)</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold">
-              {summary?.recentVisitors ?? "—"}
-            </div>
+            <div className="text-2xl font-bold">{summary?.todayApplicants ?? "—"}</div>
           </CardContent>
         </Card>
       </div>
@@ -100,19 +101,19 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Students</CardTitle>
+            <CardTitle>Applicant Information</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 mb-4">
               <Input
-                placeholder="Search students by name/ID/email"
+                placeholder="Search applicants by name/tracking id/email"
                 value={search}
                 onChange={(e: any) => setSearch(e.target.value)}
               />
               <Button
                 onClick={() => {
                   setPage(1);
-                  loadStudents();
+                  loadApplications();
                 }}
               >
                 Search
@@ -122,52 +123,68 @@ export default function AdminDashboard() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Student ID</TableHead>
-                  <TableHead>Full Name</TableHead>
+                  <TableHead>SL</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Tracking ID</TableHead>
                   <TableHead>Program</TableHead>
-                  <TableHead>Batch</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {students.map((s) => (
-                  <TableRow key={s.student_id}>
-                    <TableCell>{s.university_id || s.student_id}</TableCell>
-                    <TableCell>{s.full_name}</TableCell>
-                    <TableCell>{s.program_code}</TableCell>
-                    <TableCell>{s.batch}</TableCell>
+                {applications.map((a: any, idx: number) => (
+                  <TableRow key={a.id}>
+                    <TableCell>{(page - 1) * limit + idx + 1}</TableCell>
+                    <TableCell>{a.full_name || a.name}</TableCell>
+                    <TableCell>{a.tracking_id || a.id}</TableCell>
+                    <TableCell>{a.program_name || a.program_code}</TableCell>
+                    <TableCell>{a.status || a.admission_status || "—"}</TableCell>
+                    <TableCell>
+                      <Link to={`/admin/applicant/${a.id}`} className="text-accent-purple hover:underline">View</Link>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
 
             <div className="mt-4 flex justify-between">
-              <Button onClick={() => setPage((p) => Math.max(1, p - 1))}>
-                Prev
-              </Button>
+              <div>
+                <Button onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</Button>
+                <Button onClick={() => setPage((p) => p + 1)} className="ml-2">Next</Button>
+              </div>
               <div>Page {page}</div>
-              <Button onClick={() => setPage((p) => p + 1)}>Next</Button>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Metrics</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div>
-                Total Waiver Assignments:{" "}
-                {summary?.totalWaiverAssignments ?? "—"}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col space-y-2">
+                <Link to="/admin/visitors-log" className="text-deep-plum hover:underline">Visitors List</Link>
+                <Link to="/admin/admission-target" className="text-deep-plum hover:underline">Admission Target</Link>
+                <Link to="/admin/program-change" className="text-deep-plum hover:underline">Program Change</Link>
+                <Link to="/admin/scholarships" className="text-deep-plum hover:underline">Waiver List</Link>
               </div>
-              <div>
-                Total Waiver % (sum): {summary?.totalWaiverPercent ?? "—"}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Metrics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm">
+                <div>Total Waivers Assigned: {summary?.totalWaiverAssignments ?? '—'}</div>
+                <div>Total Collected: {summary?.totalCollected ?? '—'}</div>
+                <div>Active Students: {summary?.activeStudents ?? '—'}</div>
               </div>
-              <div>Total Collected: {summary?.totalCollected ?? "—"}</div>
-              <div>Active Students: {summary?.activeStudents ?? "—"}</div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
