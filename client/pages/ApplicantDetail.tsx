@@ -726,26 +726,91 @@ export default function ApplicantDetail() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <div className="text-sm font-medium text-gray-700 mb-2">Automations Performed</div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {(studentCreatedData?.automations || []).map((a: string, i: number) => (
-                    <div key={i} className="p-3 border rounded flex items-start gap-3 bg-white">
-                      <div className="text-green-600 mt-0.5">
-                        <CheckCircle className="w-5 h-5" />
+                <div className="text-sm font-medium text-gray-700 mb-2">Generated IDs & Basic Info</div>
+                <div className="p-3 border rounded bg-white">
+                  <div className="text-sm text-gray-700"><strong>University ID / Roll:</strong> <span className="font-mono">{studentCreatedData?.university_id}</span></div>
+                  <div className="text-sm text-gray-700 mt-1"><strong>UGC Unique ID:</strong> <span className="font-mono">{studentCreatedData?.ugc_id}</span></div>
+                  <div className="text-sm text-gray-700 mt-1"><strong>Semester:</strong> {studentCreatedData?.semester}</div>
+                  <div className="text-sm text-gray-700 mt-1"><strong>Program:</strong> {studentCreatedData?.program}</div>
+                  <div className="text-sm text-gray-700 mt-1"><strong>Program Type:</strong> {studentCreatedData?.program_type}</div>
+                  <div className="text-sm text-gray-700 mt-1"><strong>Batch:</strong> {studentCreatedData?.batch}</div>
+                  <div className="text-sm text-gray-700 mt-1"><strong>University Email:</strong> {studentCreatedData?.university_email}</div>
+                </div>
+
+                <div className="mt-3">
+                  <div className="text-sm font-medium text-gray-700 mb-2">Admission Fees</div>
+                  <div className="grid gap-2">
+                    {(studentCreatedData?.admission_fees || []).map((f: any, idx: number) => (
+                      <div key={idx} className="p-3 border rounded bg-white flex justify-between items-center">
+                        <div>
+                          <div className="text-sm font-medium">{f.name}</div>
+                          <div className="text-xs text-gray-500">Amount</div>
+                        </div>
+                        <div className="text-sm font-mono">BDT {Number(f.amount || 0).toLocaleString()}</div>
                       </div>
-                      <div className="text-sm text-gray-700">{a}</div>
-                    </div>
-                  ))}
+                    ))}
+
+                    {studentCreatedData?.mr && (
+                      <div className="p-3 border rounded bg-white flex items-center justify-between">
+                        <div>
+                          <div className="text-sm font-medium">Money Receipt</div>
+                          <div className="text-xs text-gray-500">Admission fee receipt (PDF)</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="text-sm font-mono">{studentCreatedData?.mr?.number}</div>
+                          <a href={studentCreatedData?.mr?.url} target="_blank" rel="noreferrer" className="text-deep-plum text-sm">Download</a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
               <div>
-                <div className="text-sm font-medium text-gray-700 mb-2">Personal & Admission Info</div>
-                <div className="text-sm text-gray-700">
-                  <div><strong>Email:</strong> {studentCreatedData?.personal_info?.student_email}</div>
-                  <div><strong>Mobile:</strong> {studentCreatedData?.personal_info?.student_mobile}</div>
-                  <div><strong>Batch:</strong> {studentCreatedData?.batch}</div>
-                  <div><strong>Quota:</strong> {studentCreatedData?.personal_info?.quota}</div>
+                <div className="text-sm font-medium text-gray-700 mb-2">Fee Structure & Syllabus</div>
+                <div className="p-3 border rounded bg-white">
+                  <div className="text-sm text-gray-700"><strong>Fee Structure</strong></div>
+                  <div className="text-sm text-gray-700 mt-1">Admission Fee: BDT {Number(studentCreatedData?.fee_structure?.admissionFee || 0).toLocaleString()}</div>
+                  <div className="text-sm text-gray-700">Per Credit Fee: BDT {Number(studentCreatedData?.fee_structure?.perCreditFee || 0).toLocaleString()}</div>
+                  <div className="text-sm text-gray-700">Lab Fee per Course: BDT {Number(studentCreatedData?.fee_structure?.labFeePerCourse || 0).toLocaleString()}</div>
+                  <div className="text-sm text-gray-700">Other Fees: BDT {Number(studentCreatedData?.fee_structure?.otherFees || 0).toLocaleString()}</div>
+                  <div className="text-sm text-gray-700 mt-2"><strong>Syllabus Version:</strong> {studentCreatedData?.syllabus_version}</div>
+                </div>
+
+                <div className="mt-3">
+                  <div className="text-sm font-medium text-gray-700 mb-2">First Semester Courses</div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full table-auto text-left text-sm">
+                      <thead>
+                        <tr className="text-xs text-gray-600 border-b">
+                          <th className="px-2 py-1">Code</th>
+                          <th className="px-2 py-1">Title</th>
+                          <th className="px-2 py-1">Credits</th>
+                          <th className="px-2 py-1">Section</th>
+                          <th className="px-2 py-1">Faculty</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(studentCreatedData?.first_semester_courses || []).map((c: any, i: number) => (
+                          <tr key={i} className="odd:bg-white even:bg-gray-50">
+                            <td className="px-2 py-1 align-top">{c.code}</td>
+                            <td className="px-2 py-1 align-top">{c.title}</td>
+                            <td className="px-2 py-1 align-top">{c.credits}</td>
+                            <td className="px-2 py-1 align-top">{c.section}</td>
+                            <td className="px-2 py-1 align-top">{c.faculty}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="mt-3 p-3 border rounded bg-white flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium">First Semester Tuition</div>
+                      <div className="text-xs text-gray-500">Calculated tuition for first semester</div>
+                    </div>
+                    <div className="text-sm font-mono">BDT {Number(studentCreatedData?.first_semester_tuition?.amount || 0).toLocaleString()}</div>
+                  </div>
                 </div>
               </div>
             </div>
