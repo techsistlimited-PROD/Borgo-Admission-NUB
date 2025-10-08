@@ -121,6 +121,7 @@ class MockApiService {
         },
       ],
       documents: {
+        photograph: { file_name: 'rahim_uddin.jpg', file_url: '/placeholder.svg' },
         ssc_transcript: { file_name: 'ssc_transcript.pdf', file_url: '/placeholder.svg' },
         hsc_transcript: { file_name: 'hsc_transcript.pdf', file_url: '/placeholder.svg' },
         nid_card: { file_name: 'nid_card.jpg', file_url: '/placeholder.svg' },
@@ -132,6 +133,8 @@ class MockApiService {
         { id: 4, cost_head: 'F/Asst.', credits_taken: 0.0, cost_amount: 1000.0, deductive_amount: 0.0, remarks: '' },
       ],
       waiver: { type: 'Merit', percentage: 30, status: 'active', note: 'Applied based on HSC GPA' },
+      payment_status: 'paid',
+      admission_test_status: 'pending',
     },
     {
       id: "app-002",
