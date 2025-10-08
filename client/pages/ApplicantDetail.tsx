@@ -383,6 +383,37 @@ export default function ApplicantDetail() {
     }
   };
 
+  const handleMakeStudent = async () => {
+    if (!application) return;
+    setIsMakingStudent(true);
+    try {
+      const academicOk = !!(academic && ((academic.sscGPA || academic.ssc_gpa || academic.hscGPA || academic.hsc_gpa) || (application.academic_history && application.academic_history.sscGPA)));
+      const paymentOk = application.payment_status === 'verified' || application.payment_status === 'paid';
+      if (!academicOk || !paymentOk) {
+        toast({ title: 'Review incomplete', description: 'Please ensure academic qualifications and payment are verified before converting to student', variant: 'destructive' });
+        setIsMakingStudent(false);
+        return;
+      }
+
+      const res = await apiClient.generateStudentForApplicant(application.id);
+      if (res.success && res.data) {
+        setStudentCreatedData(res.data);
+        setStudentModalOpen(true);
+        toast({ title: 'Student Created', description: res.data.student_id });
+        try { await apiClient.updateApplicationStatus(application.id, 'converted_to_student'); } catch (e) { console.warn('Failed to update status', e); }
+        try { await apiClient.createStudentRecord(application.id, { university_id: res.data.student_id, ugc_id: res.data.ugc_id }); } catch (e) { console.warn('Failed to create student', e); }
+        await loadApplication();
+      } else {
+        toast({ title: 'Error', description: res.error || 'Failed to generate student ID', variant: 'destructive' });
+      }
+    } catch (e) {
+      console.error('Generate student failed', e);
+      toast({ title: 'Error', description: 'Failed to generate student ID', variant: 'destructive' });
+    } finally {
+      setIsMakingStudent(false);
+    }
+  };
+
   const handleSendSMS = async () => {
     if (!application || !studentIDs) return;
     setSendingSMS(true);
