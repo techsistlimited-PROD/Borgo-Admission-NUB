@@ -48,6 +48,7 @@ import {
 } from "../components/ui/tabs";
 import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
+import { defaultSyllabuses } from "../lib/syllabusData";
 
 export default function ApplicantDetail() {
   const { id } = useParams<{ id: string }>();
@@ -157,7 +158,7 @@ export default function ApplicantDetail() {
     bn: {
       title: "আবেদনকারীর বিবর��",
       backToList: "ভর্তি তালিকায় ফিরুন",
-      personalInfo: "ব্যক্তিগ�� তথ্য",
+      personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
       documentsUploaded: "আপলোডকৃত কাগজপত্র",
