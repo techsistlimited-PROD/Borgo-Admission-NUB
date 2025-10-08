@@ -725,7 +725,8 @@ export default function ApplicantDetail() {
   return (
     <div>
       {/* Student Created Modal */}
-      <Dialog open={studentModalOpen} onOpenChange={setStudentModalOpen}>
+      {/* Student Created Modal (shown only when inlineReport not present) */}
+      <Dialog open={studentModalOpen && !inlineReport} onOpenChange={setStudentModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>✅ Student Created Successfully</DialogTitle>
