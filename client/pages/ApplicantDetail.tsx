@@ -1078,32 +1078,6 @@ export default function ApplicantDetail() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white shadow-lg mt-6">
-              <CardHeader>
-                <CardTitle className="text-xl font-poppins text-deep-plum flex items-center gap-2">
-                  <Phone className="w-5 h-5" />
-                  {t.contactInfo}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <Label className="text-sm font-medium text-gray-600">{t.email}</Label>
-                      <p className="text-gray-900">{personalWithDefaults.student_email || '-'}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <Label className="text-sm font-medium text-gray-600">{t.phone}</Label>
-                      <p className="text-gray-900">{personalWithDefaults.student_mobile || '-'}</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
 
           <TabsContent value="academic">
