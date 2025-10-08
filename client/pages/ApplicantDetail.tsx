@@ -1210,14 +1210,23 @@ export default function ApplicantDetail() {
                             {v ? t.uploaded : t.notUploaded}
                           </Badge>
                           {v && typeof v === "object" && v.file_url && (
-                            <a
-                              href={v.file_url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-sm text-deep-plum"
-                            >
-                              Preview
-                            </a>
+                            <>
+                              <a
+                                href={v.file_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-sm text-deep-plum mr-3"
+                              >
+                                Preview
+                              </a>
+                              <a
+                                href={v.file_url}
+                                download={v.file_name || ''}
+                                className="text-sm text-deep-plum"
+                              >
+                                Download
+                              </a>
+                            </>
                           )}
                         </div>
                       </div>
