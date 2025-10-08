@@ -45,7 +45,6 @@ export default function Sidebar({ userType }: SidebarProps) {
       icon: GraduationCap,
     },
     { name: "Personal Info", path: "/personal-information", icon: User },
-    { name: "Academic History", path: "/academic-history", icon: FileText },
     { name: "Review & Submit", path: "/application-review", icon: FileText },
   ];
 
