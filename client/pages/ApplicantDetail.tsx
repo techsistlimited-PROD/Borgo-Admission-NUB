@@ -845,6 +845,43 @@ export default function ApplicantDetail() {
                     </p>
                   </div>
                   <div>
+                    <Label className="text-sm font-medium text-gray-600">{t.photograph}</Label>
+                    <div className="flex items-center gap-4">
+                      {application?.documents?.photograph && application.documents.photograph.file_url ? (
+                        <img src={application.documents.photograph.file_url} alt="photo" className="w-24 h-24 object-cover rounded" />
+                      ) : (
+                        <div className="w-24 h-24 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-500">No Photo</div>
+                      )}
+                      <div>
+                        <input
+                          id="photoUpload"
+                          type="file"
+                          accept="image/*"
+                          className="text-sm"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file || !application) return;
+                            const reader = new FileReader();
+                            reader.onload = async () => {
+                              // In mock, we store a fake URL using timestamp
+                              const fileUrl = `https://cdn.example.com/uploads/${Date.now()}-${file.name}`;
+                              const res = await apiClient.updateApplicationDocument(application.id, 'photograph', { file_name: file.name, file_url: fileUrl });
+                              if (res.success && res.data?.document) {
+                                // Update local state
+                                setApplication((prev: any) => ({ ...prev, documents: { ...(prev?.documents || {}), photograph: res.data.document } }));
+                                toast({ title: 'Photo uploaded', description: 'Applicant photo has been updated.' });
+                              } else {
+                                toast({ title: 'Upload failed', description: res.error || 'Unable to upload photo' });
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                          }}
+                        />
+                        <div className="text-xs text-gray-500 mt-1">Admin can reupload applicant photo here.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
                     <Label className="text-sm font-medium text-gray-600">
                       {t.dateOfBirth}
                     </Label>
