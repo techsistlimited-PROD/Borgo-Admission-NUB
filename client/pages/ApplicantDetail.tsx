@@ -166,7 +166,7 @@ export default function ApplicantDetail() {
       approve: "আবেদন অনুমোদন",
       reject: "আবেদন ����্রত্যাখ্��ান",
       generateIDs: "ছাত্র আইডি তৈরি করুন",
-      changeLog: "পরিবর্তন লগ",
+      changeLog: "পরিব��্তন লগ",
     },
   };
 
@@ -683,19 +683,40 @@ export default function ApplicantDetail() {
           </DialogHeader>
           <div className="space-y-4">
             <div className="text-center">
-              <div className="text-3xl font-bold font-mono">{studentCreatedData?.student_id}</div>
+              <div className="text-3xl font-bold font-mono">{studentCreatedData?.university_id || studentCreatedData?.student_id}</div>
               <div className="text-sm text-gray-600">This Student ID has been assigned to the student.</div>
+              {studentCreatedData?.ugc_id && <div className="text-sm text-gray-700 mt-1">UGC ID: <span className="font-mono">{studentCreatedData.ugc_id}</span></div>}
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <div className="text-sm font-medium text-gray-700 mb-2">Automations Performed</div>
+                <ul className="list-disc list-inside text-sm text-gray-700">
+                  {(studentCreatedData?.automations || []).map((a: string, i: number) => (
+                    <li key={i}>{a}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <div className="text-sm font-medium text-gray-700 mb-2">Personal & Admission Info</div>
+                <div className="text-sm text-gray-700">
+                  <div><strong>Email:</strong> {studentCreatedData?.personal_info?.student_email}</div>
+                  <div><strong>Mobile:</strong> {studentCreatedData?.personal_info?.student_mobile}</div>
+                  <div><strong>Batch:</strong> {studentCreatedData?.batch}</div>
+                  <div><strong>Quota:</strong> {studentCreatedData?.personal_info?.quota}</div>
+                </div>
+              </div>
+            </div>
+
             <div className="flex items-center justify-center gap-2">
               <Button
                 onClick={() => {
                   try {
-                    const id = studentCreatedData?.student_id || '';
+                    const id = studentCreatedData?.university_id || studentCreatedData?.student_id || '';
                     navigator.clipboard.writeText(id);
                     toast({ title: 'Copied', description: 'Student ID copied to clipboard' });
-                  } catch (e) {
-                    toast({ title: 'Error', description: 'Failed to copy' });
-                  }
+                  } catch (e) { toast({ title: 'Error', description: 'Failed to copy' }); }
                 }}
                 className="bg-deep-plum"
               >
@@ -703,6 +724,7 @@ export default function ApplicantDetail() {
               </Button>
               <Button variant="outline" onClick={() => setStudentModalOpen(false)}>Close</Button>
             </div>
+
             <div className="text-xs text-gray-500 text-center">UGC ID is securely stored for official reporting.</div>
           </div>
         </DialogContent>
