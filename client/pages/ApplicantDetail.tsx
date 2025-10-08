@@ -538,7 +538,7 @@ export default function ApplicantDetail() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <Link
-            to="/admin/admissions"
+            to="/admin/admission-dashboard"
             className="inline-flex items-center text-accent-purple hover:text-deep-plum mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> {t.backToList}
