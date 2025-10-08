@@ -81,6 +81,8 @@ import StudentSearch from "./pages/admin/StudentSearch";
 import StudentDashboardSummary from "./pages/admin/StudentDashboardSummary";
 import ScholarshipWaiverManagement from "./pages/admin/ScholarshipWaiverManagement";
 import ReportCentre from "./pages/admin/ReportCentre";
+import AdmissionTarget from "./pages/admin/AdmissionTarget";
+import ProgramChange from "./pages/admin/ProgramChange";
 
 const queryClient = new QueryClient();
 
@@ -527,6 +529,26 @@ function AppContent() {
               element={
                 isAuthenticated && userType === "admin" ? (
                   <AdminDashboard />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/admission-target"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <AdmissionTarget />
+                ) : (
+                  <Navigate to="/admin" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/program-change"
+              element={
+                isAuthenticated && userType === "admin" ? (
+                  <ProgramChange />
                 ) : (
                   <Navigate to="/admin" replace />
                 )
