@@ -162,7 +162,7 @@ export default function ApplicantDetail() {
     },
     bn: {
       title: "আবেদনকারীর বিবর��",
-      backToList: "ভর্তি তালিকায় ফিরুন",
+      backToList: "ভর্���ি তালিকায় ফিরুন",
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
@@ -493,24 +493,12 @@ export default function ApplicantDetail() {
         try { await apiClient.updateApplicationStatus(application.id, 'converted_to_student'); } catch (e) { console.warn('Failed to update status', e); }
         try { await apiClient.createStudentRecord(application.id, { university_id: detailed.university_id, ugc_id: detailed.ugc_id }); } catch (e) { console.warn('Failed to create student', e); }
         await loadApplication();
-        // navigate to report page, passing data in location state for immediate render
-        // preserve current base path (e.g., /admin) when navigating so SPA route resolves correctly
-        // Use relative navigation to avoid full page reloads and preserve Router base
-        try {
-          navigate('report', { state: { report: detailed } });
-        } catch (e) {
-          // fallback to absolute path with base preserved
-          try {
-            const current = window.location.pathname;
-            const anchor = `/applicant/${application.id}`;
-            const idx = current.indexOf(anchor);
-            const base = idx === -1 ? '' : current.substring(0, idx) + anchor;
-            const target = `${base}/report`;
-            navigate(target, { state: { report: detailed } });
-          } catch (err) {
-            navigate(`/applicant/${application.id}/report`, { state: { report: detailed } });
-          }
-        }
+        // Render report inline in this page to avoid server-side 404 on deep links
+        setInlineReport(detailed);
+        // close modal if open
+        setStudentModalOpen(false);
+        // scroll to top of page so the report is visible
+        window.setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
         toast({ title: 'Student Created', description: detailed.university_id });
       } else {
         toast({ title: 'Error', description: res.error || 'Failed to generate student ID', variant: 'destructive' });
