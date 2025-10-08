@@ -125,6 +125,13 @@ class MockApiService {
         hsc_transcript: { file_name: 'hsc_transcript.pdf', file_url: '/placeholder.svg' },
         nid_card: { file_name: 'nid_card.jpg', file_url: '/placeholder.svg' },
       },
+      fees: [
+        { id: 1, cost_head: 'Total Course Fee', credits_taken: 12.0, cost_amount: 15600.0, deductive_amount: 0.0, remarks: 'Auto created payable during registration entry from ERP' },
+        { id: 2, cost_head: 'Retake Course Fee', credits_taken: 0.0, cost_amount: 12000.0, deductive_amount: 0.0, remarks: '' },
+        { id: 3, cost_head: 'Semester Fee', credits_taken: 0.0, cost_amount: 5000.0, deductive_amount: 0.0, remarks: '' },
+        { id: 4, cost_head: 'F/Asst.', credits_taken: 0.0, cost_amount: 1000.0, deductive_amount: 0.0, remarks: '' },
+      ],
+      waiver: { type: 'Merit', percentage: 30, status: 'active', note: 'Applied based on HSC GPA' },
     },
     {
       id: "app-002",
