@@ -155,7 +155,7 @@ export default function ApplicantDetail() {
       changeLog: "Change Log",
     },
     bn: {
-      title: "আবেদনকারীর বিবরণ",
+      title: "আবেদনকারীর বিবর��",
       backToList: "ভর্তি তালিকায় ফিরুন",
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
@@ -500,6 +500,73 @@ export default function ApplicantDetail() {
   const documents = application?.documents || application?.documents || {};
   const waiver = application?.waiver || application?.waiver || null;
 
+  // Quota determination based on waiver data
+  const meritWaiverNames = [
+    "Golden GPA 5.00",
+    "Normal GPA 5.00",
+    "GPA 4.80 – 4.99",
+    "GPA 4.50 – 4.79",
+    "GPA 4.00 – 4.49",
+    "GPA 3.50 – 3.99",
+  ];
+  const otherWaiverNames = [
+    "Sibling (students)",
+    "Spouse",
+    "Freedom Fighter",
+    "Female",
+    "Tribal",
+    "Reference (students, staff, counselor)",
+    "Admission Fair",
+    "Group Waiver",
+    "Direct Ward of Staff",
+  ];
+
+  function determineQuota(waiverObj: any) {
+    const name = (waiverObj?.name || waiverObj?.type || waiverObj?.category || waiverObj?.waiver_category || "").toString();
+    if (!name) return "Merit";
+    const lower = name.toLowerCase();
+    for (const m of meritWaiverNames) {
+      if (lower.includes(m.toLowerCase()) || lower.includes("gpa") || lower.includes("golden")) return "Merit";
+    }
+    for (const o of otherWaiverNames) {
+      if (lower.includes(o.split(" ")[0].toLowerCase())) return o;
+    }
+    // If waiverObj has a direct matching name from otherWaiverNames, return it
+    if (otherWaiverNames.includes(name)) return name;
+    // Fallback to Merit for safety
+    return "Merit";
+  }
+
+  const quotaValue = determineQuota(waiver || application?.waiver || {});
+
+  // Provide defaults for personal information when fields are empty
+  const personalWithDefaults: any = {
+    name: personal.name || application?.applicant_name || "John Doe",
+    date_of_birth: personal.date_of_birth || personal.dateOfBirth || "1995-01-01",
+    gender: personal.gender || "Male",
+    nationality: personal.nationality || "Bangladeshi",
+    address: personal.address || "House 12, Road 5, Dhanmondi, Dhaka",
+    father_name: personal.father_name || personal.fatherName || "Mr. Saad Abdullah",
+    father_contact: personal.father_contact || personal.fatherContact || "01711112222",
+    mother_name: personal.mother_name || personal.motherName || "Mrs. Ayesha Abdullah",
+    mother_contact: personal.mother_contact || personal.motherContact || "01733334444",
+    guardian_name: personal.guardian_name || personal.guardianName || "Mr. Zafar Hossain",
+    guardian_contact: personal.guardian_contact || personal.guardianContact || "01755556666",
+    student_mobile: personal.phone || application?.phone || "01812345678",
+    student_email: personal.email || application?.email || "johndoe@example.com",
+    required_credits: application?.required_credits || application?.program?.required_credits || "120",
+    grading_system: application?.grading_system || "CGPA (4.00)",
+    quota: quotaValue,
+    religion: personal.religion || "Islam",
+    disability_status: personal.disability_status || "None",
+    blood_group: personal.blood_group || "O+",
+    id_numbers: personal.id_numbers || personal.ids || application?.id_numbers || "N/A",
+    remarks: application?.remarks || personal.remarks || "",
+    present_address: personal.present_address || personal.address || "House 12, Road 5, Dhanmondi, Dhaka",
+    permanent_address: personal.permanent_address || personal.address || "Village X, Upazila Y, District Z",
+    local_guardian: personal.local_guardian || { name: "Mr. Local Guardian", contact: "01600001111", address: "Local Guardian Address, Dhaka" },
+  };
+
   return (
     <div>
       {/* Student Created Modal */}
@@ -837,13 +904,10 @@ export default function ApplicantDetail() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.name}
-                    </Label>
-                    <p className="text-gray-900">
-                      {personal.name || application?.applicant_name}
-                    </p>
+                    <Label className="text-sm font-medium text-gray-600">{t.name}</Label>
+                    <p className="text-gray-900">{personalWithDefaults.name}</p>
                   </div>
+
                   <div>
                     <Label className="text-sm font-medium text-gray-600">{t.photograph}</Label>
                     <div className="flex items-center gap-4">
@@ -863,11 +927,9 @@ export default function ApplicantDetail() {
                             if (!file || !application) return;
                             const reader = new FileReader();
                             reader.onload = async () => {
-                              // In mock, we store a fake URL using timestamp
                               const fileUrl = `https://cdn.example.com/uploads/${Date.now()}-${file.name}`;
                               const res = await apiClient.updateApplicationDocument(application.id, 'photograph', { file_name: file.name, file_url: fileUrl });
                               if (res.success && res.data?.document) {
-                                // Update local state
                                 setApplication((prev: any) => ({ ...prev, documents: { ...(prev?.documents || {}), photograph: res.data.document } }));
                                 toast({ title: 'Photo uploaded', description: 'Applicant photo has been updated.' });
                               } else {
@@ -881,37 +943,122 @@ export default function ApplicantDetail() {
                       </div>
                     </div>
                   </div>
+
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.dateOfBirth}
-                    </Label>
-                    <p className="text-gray-900">
-                      {personal.date_of_birth || personal.dateOfBirth || "-"}
-                    </p>
+                    <Label className="text-sm font-medium text-gray-600">{t.dateOfBirth}</Label>
+                    <p className="text-gray-900">{personalWithDefaults.date_of_birth}</p>
                   </div>
+
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.gender}
-                    </Label>
-                    <p className="text-gray-900">{personal.gender || "-"}</p>
+                    <Label className="text-sm font-medium text-gray-600">{t.gender}</Label>
+                    <p className="text-gray-900">{personalWithDefaults.gender}</p>
                   </div>
+
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.nationality}
-                    </Label>
-                    <p className="text-gray-900">
-                      {personal.nationality || "-"}
-                    </p>
+                    <Label className="text-sm font-medium text-gray-600">{t.nationality}</Label>
+                    <p className="text-gray-900">{personalWithDefaults.nationality}</p>
                   </div>
+
                   <div className="md:col-span-2">
-                    <Label className="text-sm font-medium text-gray-600">
-                      {t.address}
-                    </Label>
-                    <p className="text-gray-900">
-                      {(personal.address && JSON.stringify(personal.address)) ||
-                        personal.address ||
-                        "-"}
-                    </p>
+                    <Label className="text-sm font-medium text-gray-600">{t.address}</Label>
+                    <p className="text-gray-900">{typeof personalWithDefaults.address === 'string' ? personalWithDefaults.address : JSON.stringify(personalWithDefaults.address)}</p>
+                  </div>
+
+                  {/* Additional personal fields requested */}
+
+                  <div className="md:col-span-2 border-t pt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Father's Name</Label>
+                        <p className="text-gray-900">{personalWithDefaults.father_name}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Father's Contact</Label>
+                        <p className="text-gray-900">{personalWithDefaults.father_contact}</p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Mother's Name</Label>
+                        <p className="text-gray-900">{personalWithDefaults.mother_name}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Mother's Contact</Label>
+                        <p className="text-gray-900">{personalWithDefaults.mother_contact}</p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Guardian's Name</Label>
+                        <p className="text-gray-900">{personalWithDefaults.guardian_name}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Guardian's Contact</Label>
+                        <p className="text-gray-900">{personalWithDefaults.guardian_contact}</p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Student Mobile</Label>
+                        <p className="text-gray-900">{personalWithDefaults.student_mobile}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Student Email</Label>
+                        <p className="text-gray-900">{personalWithDefaults.student_email}</p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Required Credits</Label>
+                        <p className="text-gray-900">{personalWithDefaults.required_credits}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Grading System</Label>
+                        <p className="text-gray-900">{personalWithDefaults.grading_system}</p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Quota</Label>
+                        <p className="text-gray-900">{personalWithDefaults.quota}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Religion</Label>
+                        <p className="text-gray-900">{personalWithDefaults.religion}</p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Disability Status</Label>
+                        <p className="text-gray-900">{personalWithDefaults.disability_status}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Blood Group</Label>
+                        <p className="text-gray-900">{personalWithDefaults.blood_group}</p>
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <Label className="text-sm font-medium text-gray-600">ID Numbers</Label>
+                        <p className="text-gray-900">{typeof personalWithDefaults.id_numbers === 'string' ? personalWithDefaults.id_numbers : JSON.stringify(personalWithDefaults.id_numbers)}</p>
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <Label className="text-sm font-medium text-gray-600">Remarks</Label>
+                        <p className="text-gray-900">{personalWithDefaults.remarks || '-'}</p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Present Address</Label>
+                        <p className="text-gray-900">{personalWithDefaults.present_address}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-gray-600">Permanent Address</Label>
+                        <p className="text-gray-900">{personalWithDefaults.permanent_address}</p>
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <Label className="text-sm font-medium text-gray-600">Local Guardian Information</Label>
+                        <div className="text-gray-900">
+                          <div><strong>Name:</strong> {personalWithDefaults.local_guardian.name}</div>
+                          <div><strong>Contact:</strong> {personalWithDefaults.local_guardian.contact}</div>
+                          <div><strong>Address:</strong> {personalWithDefaults.local_guardian.address}</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -929,23 +1076,15 @@ export default function ApplicantDetail() {
                   <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4 text-gray-400" />
                     <div>
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t.email}
-                      </Label>
-                      <p className="text-gray-900">
-                        {personal.email || application?.email || "-"}
-                      </p>
+                      <Label className="text-sm font-medium text-gray-600">{t.email}</Label>
+                      <p className="text-gray-900">{personalWithDefaults.student_email || '-'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-gray-400" />
                     <div>
-                      <Label className="text-sm font-medium text-gray-600">
-                        {t.phone}
-                      </Label>
-                      <p className="text-gray-900">
-                        {personal.phone || application?.phone || "-"}
-                      </p>
+                      <Label className="text-sm font-medium text-gray-600">{t.phone}</Label>
+                      <p className="text-gray-900">{personalWithDefaults.student_mobile || '-'}</p>
                     </div>
                   </div>
                 </div>
