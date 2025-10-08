@@ -17,6 +17,8 @@ type Props = {
 export default function StudentReport({ inlineReport, personalWithDefaults, onClose }: Props) {
   if (!inlineReport) return null;
 
+  const studentId = (typeof personalWithDefaults.id_numbers === 'string' && personalWithDefaults.id_numbers && personalWithDefaults.id_numbers !== 'N/A') ? personalWithDefaults.id_numbers : (inlineReport.university_id || 'N/A');
+
   return (
     <div className="p-6 print:bg-white">
       <div className="max-w-4xl mx-auto">
