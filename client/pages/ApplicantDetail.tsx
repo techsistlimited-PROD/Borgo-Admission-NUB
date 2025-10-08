@@ -50,6 +50,7 @@ import {
 import { useToast } from "../hooks/use-toast";
 import apiClient from "../lib/api";
 import { defaultSyllabuses } from "../lib/syllabusData";
+import StudentReport from "./components/StudentReport";
 
 export default function ApplicantDetail() {
   const { id } = useParams<{ id: string }>();
