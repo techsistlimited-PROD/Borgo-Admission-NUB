@@ -1089,44 +1089,72 @@ export default function ApplicantDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {recordsToShow && recordsToShow.length ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full table-auto text-left">
-                      <thead>
-                        <tr className="text-sm text-gray-600 border-b">
-                          <th className="px-3 py-2">Education Level / Exam</th>
-                          <th className="px-3 py-2">Group / Subject</th>
-                          <th className="px-3 py-2">Board / University</th>
-                          <th className="px-3 py-2">Institute</th>
-                          <th className="px-3 py-2">Passing Year</th>
-                          <th className="px-3 py-2">Roll Number</th>
-                          <th className="px-3 py-2">Registration Number / UGC ID</th>
-                          <th className="px-3 py-2">Grade Point</th>
-                          <th className="px-3 py-2">Class</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {recordsToShow.map((rec: any, idx: number) => (
-                          <tr key={idx} className="odd:bg-white even:bg-gray-50">
-                            <td className="px-3 py-2 align-top">
-                              {rec.exam_name || rec.level || '-'}
-                            </td>
-                            <td className="px-3 py-2 align-top">{rec.group_subject || rec.group || '-'}</td>
-                            <td className="px-3 py-2 align-top">{rec.board_university || rec.board || '-'}</td>
-                            <td className="px-3 py-2 align-top">{rec.institute_name || rec.institute || '-'}</td>
-                            <td className="px-3 py-2 align-top">{rec.passing_year || '-'}</td>
-                            <td className="px-3 py-2 align-top">{rec.roll_no || rec.roll || '-'}</td>
-                            <td className="px-3 py-2 align-top">{rec.registration_no || rec.registrationNo || rec.ugc_id || rec.ugcId || '-'}</td>
-                            <td className="px-3 py-2 align-top">{rec.grade_point || rec.gpa || '-'}</td>
-                            <td className="px-3 py-2 align-top">{rec.obtained_class || rec.class || '-'}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="text-sm text-gray-600">No academic records available for this program.</div>
-                )}
+                <div className="grid grid-cols-1 gap-4">
+                  {/* Prepare grouped records */}
+                  {(() => {
+                    const sscRecords = academicArray.filter((r: any) => matchesLevel(r, "ssc"));
+                    const hscRecords = academicArray.filter((r: any) => matchesLevel(r, "hsc"));
+                    const ugRecords = academicArray.filter((r: any) => matchesLevel(r, "undergrad"));
+                    const uniRecords = academicArray.filter((r: any) => matchesLevel(r, "university"));
+
+                    const showSSC = programLevel !== "diploma" || sscRecords.length > 0;
+                    const showHSC = hscRecords.length > 0 || true; // always show HSC block
+                    const showUG = programLevel === "masters" || ugRecords.length > 0;
+
+                    function renderRecordCard(rec: any, idx: number) {
+                      const hasGpa = !!(rec.grade_point || rec.gpa);
+                      return (
+                        <div key={idx} className="p-3 bg-white border rounded">
+                          <div className="font-medium mb-2">{rec.exam_name || rec.level || '-'}</div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
+                            <div><span className="text-xs text-gray-500">Group / Subject</span><div>{rec.group_subject || rec.group || '-'}</div></div>
+                            <div><span className="text-xs text-gray-500">Board / University</span><div>{rec.board_university || rec.board || '-'}</div></div>
+                            <div><span className="text-xs text-gray-500">Institute</span><div>{rec.institute_name || rec.institute || '-'}</div></div>
+                            <div><span className="text-xs text-gray-500">Passing Year</span><div>{rec.passing_year || '-'}</div></div>
+                            <div><span className="text-xs text-gray-500">Roll Number</span><div>{rec.roll_no || rec.roll || '-'}</div></div>
+                            <div><span className="text-xs text-gray-500">Registration No / UGC ID</span><div>{rec.registration_no || rec.registrationNo || rec.ugc_id || rec.ugcId || '-'}</div></div>
+                            <div><span className="text-xs text-gray-500">Grade Point</span><div>{rec.grade_point || rec.gpa || '-'}</div></div>
+                            {!hasGpa && (
+                              <div><span className="text-xs text-gray-500">Class / Division</span><div>{rec.obtained_class || rec.class || '-'}</div></div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {showHSC && (
+                          <div>
+                            <div className="text-sm font-medium text-gray-700 mb-2">HSC</div>
+                            {hscRecords.length ? hscRecords.map((r: any, i: number) => renderRecordCard(r, i)) : <div className="text-sm text-gray-600">No HSC record</div>}
+                          </div>
+                        )}
+
+                        {showSSC && (
+                          <div>
+                            <div className="text-sm font-medium text-gray-700 mb-2">SSC</div>
+                            {sscRecords.length ? sscRecords.map((r: any, i: number) => renderRecordCard(r, i)) : <div className="text-sm text-gray-600">No SSC record</div>}
+                          </div>
+                        )}
+
+                        {showUG && (
+                          <div className="md:col-span-2">
+                            <div className="text-sm font-medium text-gray-700 mb-2">Undergraduate</div>
+                            {ugRecords.length ? ugRecords.map((r: any, i: number) => renderRecordCard(r, i)) : <div className="text-sm text-gray-600">No undergraduate record</div>}
+                          </div>
+                        )}
+
+                        {uniRecords.length > 0 && (
+                          <div className="md:col-span-2">
+                            <div className="text-sm font-medium text-gray-700 mb-2">University / Degree</div>
+                            {uniRecords.map((r: any, i: number) => renderRecordCard(r, i))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
