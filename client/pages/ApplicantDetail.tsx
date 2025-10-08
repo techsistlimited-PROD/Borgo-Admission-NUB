@@ -162,7 +162,7 @@ export default function ApplicantDetail() {
       academicHistory: "শিক্ষাগত ইতিহাস",
       documentsUploaded: "আপলোডকৃত কাগজপত্র",
       waiverInfo: "মওকুফ তথ্য",
-      actions: "���র��ম",
+      actions: "���র্ম",
       approve: "আবেদন অনুমোদন",
       reject: "আবেদন প্রত্যাখ্যান",
       generateIDs: "ছাত্র আইডি তৈরি করুন",
@@ -911,11 +911,7 @@ export default function ApplicantDetail() {
                   <div>
                     <Label className="text-sm font-medium text-gray-600">{t.photograph}</Label>
                     <div className="flex items-center gap-4">
-                      {application?.documents?.photograph && application.documents.photograph.file_url ? (
-                        <img src={application.documents.photograph.file_url} alt="photo" className="w-24 h-24 object-cover rounded" />
-                      ) : (
-                        <div className="w-24 h-24 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-500">No Photo</div>
-                      )}
+                      <img src={application?.documents?.photograph?.file_url || '/placeholder.svg'} alt="photo" className="w-24 h-24 object-cover rounded" />
                       <div>
                         <input
                           id="photoUpload"
