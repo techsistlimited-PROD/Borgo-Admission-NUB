@@ -159,7 +159,7 @@ export default function ApplicantDetail() {
       changeLog: "Change Log",
     },
     bn: {
-      title: "আবেদনকার��র বিবর��",
+      title: "আবেদনকারীর বিবর��",
       backToList: "ভর্তি তালিকায় ফিরুন",
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
@@ -739,6 +739,7 @@ export default function ApplicantDetail() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>✅ Student Created Successfully</DialogTitle>
+            <DialogDescription>This page summarizes all generated IDs, fees, and registrations for the student.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="text-center">
@@ -1622,6 +1623,7 @@ export default function ApplicantDetail() {
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>{t.confirmApproval}</DialogTitle>
+                        <DialogDescription>Confirm approval to generate student IDs and mark application approved.</DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4">
                         <div className="space-y-2">
@@ -1661,6 +1663,7 @@ export default function ApplicantDetail() {
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>{t.confirmRejection}</DialogTitle>
+                        <DialogDescription>Provide a reason for rejection and confirm to update application status.</DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4">
                         <div className="space-y-2">
