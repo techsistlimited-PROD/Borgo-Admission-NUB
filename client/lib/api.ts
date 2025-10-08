@@ -996,6 +996,13 @@ class ApiClient {
   async generateStudentForApplicant(
     applicantId: string,
   ): Promise<ApiResponse<{ student_id: string; ugc_id: string }>> {
+    // In preview/development prefer the mock implementation to avoid calling nonexistent server endpoints
+    try {
+      return await mockApi.generateStudentForApplicant(applicantId);
+    } catch (e) {
+      console.warn('mock generateStudentForApplicant failed, attempting server call', e);
+    }
+
     if (this.serverAvailable) {
       try {
         const res = await fetch(`/api/id/generate-student`, {
