@@ -77,7 +77,7 @@ const AdminApp = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={window.location.pathname.startsWith('/admin') ? '/admin' : undefined}>
         <AuthProvider>
           <ProtectedLayout />
         </AuthProvider>
