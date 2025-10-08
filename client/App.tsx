@@ -229,7 +229,7 @@ function AppContent() {
               path="/admin/admissions"
               element={
                 isAuthenticated && userType === "admin" ? (
-                  <Navigate to="/admin/admission-dashboard" replace />
+                  <AdminAdmissionList />
                 ) : (
                   <Navigate to="/admin" replace />
                 )
@@ -518,16 +518,6 @@ function AppContent() {
               element={
                 isAuthenticated && userType === "admin" ? (
                   <AdminScholarships />
-                ) : (
-                  <Navigate to="/admin" replace />
-                )
-              }
-            />
-            <Route
-              path="/admin/admission-dashboard"
-              element={
-                isAuthenticated && userType === "admin" ? (
-                  <AdminDashboard />
                 ) : (
                   <Navigate to="/admin" replace />
                 )
