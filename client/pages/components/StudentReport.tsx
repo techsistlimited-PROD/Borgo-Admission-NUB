@@ -112,31 +112,31 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                      <div>
+                    <div className="flex flex-wrap gap-4 text-sm">
+                      <div className="w-full sm:w-1/2 md:w-1/3">
                         <div className="text-xs text-gray-500">Father</div>
                         <div className="font-medium">{personalWithDefaults.father_name}</div>
                         <div className="text-sm text-gray-600">{personalWithDefaults.father_contact}</div>
                       </div>
 
-                      <div>
+                      <div className="w-full sm:w-1/2 md:w-1/3">
                         <div className="text-xs text-gray-500">Mother</div>
                         <div className="font-medium">{personalWithDefaults.mother_name}</div>
                         <div className="text-sm text-gray-600">{personalWithDefaults.mother_contact}</div>
                       </div>
 
-                      <div>
+                      <div className="w-full sm:w-1/2 md:w-1/3">
                         <div className="text-xs text-gray-500">Local Guardian</div>
                         <div className="font-medium">{personalWithDefaults.local_guardian?.name}</div>
                         <div className="text-sm text-gray-600">{personalWithDefaults.local_guardian?.contact}</div>
                       </div>
 
-                      <div className="sm:col-span-2 md:col-span-1">
+                      <div className="w-full sm:w-1/2 md:w-1/3">
                         <div className="text-xs text-gray-500">ID Numbers</div>
                         <div className="text-sm">{typeof personalWithDefaults.id_numbers === 'string' ? personalWithDefaults.id_numbers : JSON.stringify(personalWithDefaults.id_numbers)}</div>
                       </div>
 
-                      <div className="sm:col-span-2 md:col-span-1">
+                      <div className="w-full sm:w-1/2 md:w-1/3">
                         <div className="text-xs text-gray-500">Required Credits / Grading System</div>
                         <div className="text-sm">{personalWithDefaults.required_credits} / {personalWithDefaults.grading_system}</div>
                       </div>
