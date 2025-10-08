@@ -387,8 +387,10 @@ export default function ApplicantDetail() {
     if (!application) return;
     setIsMakingStudent(true);
     try {
-      const academicOk = !!(academic && ((academic.sscGPA || academic.ssc_gpa || academic.hscGPA || academic.hsc_gpa) || (application.academic_history && application.academic_history.sscGPA)));
-      const paymentOk = application.payment_status === 'verified' || application.payment_status === 'paid';
+      // Prefer explicit verification flags set by admin
+      const academicOk = application?.academic_verified === true || !!(academic && ((academic.sscGPA || academic.ssc_gpa || academic.hscGPA || academic.hsc_gpa) || (application.academic_history && application.academic_history.sscGPA)));
+      const paymentOk = application?.payment_verified === true || application.payment_status === 'verified' || application.payment_status === 'paid';
+
       if (!academicOk || !paymentOk) {
         toast({ title: 'Review incomplete', description: 'Please ensure academic qualifications and payment are verified before converting to student', variant: 'destructive' });
         setIsMakingStudent(false);
@@ -397,11 +399,57 @@ export default function ApplicantDetail() {
 
       const res = await apiClient.generateStudentForApplicant(application.id);
       if (res.success && res.data) {
-        setStudentCreatedData(res.data);
+        // Add additional automation summary to returned data for UI display
+        const summary = {
+          university_id: res.data.student_id,
+          ugc_id: res.data.ugc_id,
+          generated_email: res.data.generated_email || `${(res.data.student_id || '').toLowerCase()}@nu.edu.bd`,
+          batch: res.data.batch || application.semester,
+          automations: [
+            'Automatic University ID/Roll Generation',
+            'Automatic UGC Unique ID Generation',
+            'Automatic Semester Selection (Spring/Summer/Fall or Spring/Fall)',
+            'Automatic Permission Request for Limited-Seat Programs',
+            'Automatic Program Selection',
+            'Automatic Admission Fees Selection Flexibility',
+            "Automatic Program Type Selection (Bachelor’s/Master’s)",
+            'Automatic Batch Selection',
+            'Automatic University Email Generation',
+            'Automatic Welcome Email Notification Upon Successful Admission',
+            'Automatic Fee Structure Selection',
+            'Automatic Syllabus Version Selection',
+            'Automatic Generation of Admission Fee Money Receipt in PDF Format',
+            'Automatic First Semester/Year Course Addition/Registration',
+            'Automatic First Semester/Year Tuition Fee/Bill Generation',
+          ],
+          personal_info: {
+            father: personalWithDefaults.father_name,
+            mother: personalWithDefaults.mother_name,
+            guardian: personalWithDefaults.local_guardian,
+            student_mobile: personalWithDefaults.student_mobile,
+            student_email: personalWithDefaults.student_email,
+            required_credits: personalWithDefaults.required_credits,
+            grading_system: personalWithDefaults.grading_system,
+            gender: personalWithDefaults.gender,
+            date_of_birth: personalWithDefaults.date_of_birth,
+            quota: personalWithDefaults.quota,
+            religion: personalWithDefaults.religion,
+            picture: application?.documents?.photograph || null,
+            disability_status: personalWithDefaults.disability_status,
+            blood_group: personalWithDefaults.blood_group,
+            id_numbers: personalWithDefaults.id_numbers,
+            remarks: personalWithDefaults.remarks,
+            present_address: personalWithDefaults.present_address,
+            permanent_address: personalWithDefaults.permanent_address,
+            local_guardian: personalWithDefaults.local_guardian,
+          },
+        };
+
+        setStudentCreatedData(summary);
         setStudentModalOpen(true);
-        toast({ title: 'Student Created', description: res.data.student_id });
+        toast({ title: 'Student Created', description: summary.university_id });
         try { await apiClient.updateApplicationStatus(application.id, 'converted_to_student'); } catch (e) { console.warn('Failed to update status', e); }
-        try { await apiClient.createStudentRecord(application.id, { university_id: res.data.student_id, ugc_id: res.data.ugc_id }); } catch (e) { console.warn('Failed to create student', e); }
+        try { await apiClient.createStudentRecord(application.id, { university_id: summary.university_id, ugc_id: summary.ugc_id }); } catch (e) { console.warn('Failed to create student', e); }
         await loadApplication();
       } else {
         toast({ title: 'Error', description: res.error || 'Failed to generate student ID', variant: 'destructive' });
