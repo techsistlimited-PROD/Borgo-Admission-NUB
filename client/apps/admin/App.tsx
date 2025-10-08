@@ -55,6 +55,7 @@ const ProtectedLayout = () => {
               element={<AdminRegistrationPackages />}
             />
             <Route path="/applicant/:id" element={<ApplicantDetail />} />
+            <Route path="/applicant/:id/report" element={<StudentReport />} />
             <Route path="/finance" element={<FinancePanel />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/templates" element={<EmailTemplates />} />
