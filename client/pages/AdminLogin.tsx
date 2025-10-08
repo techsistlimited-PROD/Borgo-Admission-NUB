@@ -48,7 +48,7 @@ export default function AdminLogin() {
     });
 
     if (success) {
-      navigate("/admin/admissions");
+      navigate("/admin/admission-dashboard");
     } else {
       setError("Invalid email or password. Please try again.");
     }
