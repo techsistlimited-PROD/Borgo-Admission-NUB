@@ -35,6 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
@@ -158,7 +159,7 @@ export default function ApplicantDetail() {
       changeLog: "Change Log",
     },
     bn: {
-      title: "আবেদনকারীর বিবর��",
+      title: "আবেদনকার��র বিবর��",
       backToList: "ভর্তি তালিকায় ফিরুন",
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
