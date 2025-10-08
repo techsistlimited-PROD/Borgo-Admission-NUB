@@ -230,7 +230,7 @@ function AppContent() {
               path="/admin/admissions"
               element={
                 isAuthenticated && userType === "admin" ? (
-                  <AdminAdmissionList />
+                  <Navigate to="/admin/admission-dashboard" replace />
                 ) : (
                   <Navigate to="/admin" replace />
                 )
