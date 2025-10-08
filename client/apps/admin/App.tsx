@@ -22,6 +22,7 @@ import SmsQueue from "../../pages/Messaging/SmsQueue";
 import AdminMessaging from "../../pages/Messaging/AdminMessaging";
 import AdminLogin from "../../pages/AdminLogin";
 import NotFound from "../../pages/NotFound";
+import StudentReport from "../../pages/StudentReport";
 
 const queryClient = new QueryClient();
 
