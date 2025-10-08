@@ -485,6 +485,25 @@ class MockApiService {
     };
   }
 
+  // Update application document (mock file upload)
+  async updateApplicationDocument(id: string, key: string, fileMeta: any): Promise<ApiResponse> {
+    await this.delay();
+    const appIndex = this.applications.findIndex(
+      (app) => app.id === id || app.uuid === id,
+    );
+    if (appIndex === -1) return { success: false, error: 'Application not found' };
+
+    const application = this.applications[appIndex];
+    application.documents = application.documents || {};
+    application.documents[key] = {
+      file_name: fileMeta.file_name || fileMeta.name || 'uploaded_file',
+      file_url: fileMeta.file_url || fileMeta.url || `https://example.com/files/${Date.now()}`,
+      uploaded_on: new Date().toISOString(),
+    };
+
+    return { success: true, data: { document: application.documents[key] } };
+  }
+
   async generateApplicationIds(id: string): Promise<
     ApiResponse<{
       university_id: string;
