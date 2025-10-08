@@ -163,7 +163,7 @@ export default function ApplicantDetail() {
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
-      documentsUploaded: "আপলোডকৃত কাগজপত্র",
+      documentsUploaded: "আপলোডক���ত কাগজপত্র",
       waiverInfo: "মওকুফ ���থ্য",
       actions: "���র্ম",
       approve: "আবেদন অনুমোদন",
@@ -492,16 +492,21 @@ export default function ApplicantDetail() {
         await loadApplication();
         // navigate to report page, passing data in location state for immediate render
         // preserve current base path (e.g., /admin) when navigating so SPA route resolves correctly
+        // Use relative navigation to avoid full page reloads and preserve Router base
         try {
-          const current = window.location.pathname;
-          const anchor = `/applicant/${application.id}`;
-          const idx = current.indexOf(anchor);
-          const base = idx === -1 ? '' : current.substring(0, idx) + anchor;
-          const target = `${base}/report`;
-          navigate(target, { state: { report: detailed } });
+          navigate('report', { state: { report: detailed } });
         } catch (e) {
-          // fallback to absolute path
-          navigate(`/applicant/${application.id}/report`, { state: { report: detailed } });
+          // fallback to absolute path with base preserved
+          try {
+            const current = window.location.pathname;
+            const anchor = `/applicant/${application.id}`;
+            const idx = current.indexOf(anchor);
+            const base = idx === -1 ? '' : current.substring(0, idx) + anchor;
+            const target = `${base}/report`;
+            navigate(target, { state: { report: detailed } });
+          } catch (err) {
+            navigate(`/applicant/${application.id}/report`, { state: { report: detailed } });
+          }
         }
         toast({ title: 'Student Created', description: detailed.university_id });
       } else {
