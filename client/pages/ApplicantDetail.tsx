@@ -828,6 +828,40 @@ export default function ApplicantDetail() {
                       {sendingEmail ? "Sending..." : t.sendEmailId}
                     </Button>
 
+                    <div className="flex items-center gap-2 ml-2">
+                      <Button
+                        onClick={async () => {
+                          if (!application) return;
+                          const res = await apiClient.setAcademicVerification(application.id, true);
+                          if (res.success) {
+                            toast({ title: 'Academic verified' });
+                            await loadApplication();
+                          } else {
+                            toast({ title: 'Failed', description: res.error || 'Unable to verify' });
+                          }
+                        }}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white"
+                      >
+                        Verify Academic
+                      </Button>
+
+                      <Button
+                        onClick={async () => {
+                          if (!application) return;
+                          const res = await apiClient.setPaymentVerification(application.id, true);
+                          if (res.success) {
+                            toast({ title: 'Payment verified' });
+                            await loadApplication();
+                          } else {
+                            toast({ title: 'Failed', description: res.error || 'Unable to verify' });
+                          }
+                        }}
+                        className="bg-indigo-500 hover:bg-indigo-600 text-white"
+                      >
+                        Verify Payment
+                      </Button>
+                    </div>
+
                     {!studentCreatedData && (
                       <Button
                         onClick={handleMakeStudent}
