@@ -156,7 +156,7 @@ export default function ApplicantDetail() {
       changeLog: "Change Log",
     },
     bn: {
-      title: "আবেদনকা���ীর বিবর��",
+      title: "আবেদনকারীর বিবর��",
       backToList: "ভর্তি তালিকায় ফিরুন",
       personalInfo: "ব্যক্তিগত তথ্য",
       contactInfo: "যোগাযোগের তথ্য",
@@ -486,7 +486,18 @@ export default function ApplicantDetail() {
         try { await apiClient.createStudentRecord(application.id, { university_id: detailed.university_id, ugc_id: detailed.ugc_id }); } catch (e) { console.warn('Failed to create student', e); }
         await loadApplication();
         // navigate to report page, passing data in location state for immediate render
-        navigate(`/applicant/${application.id}/report`, { state: { report: detailed } });
+        // preserve current base path (e.g., /admin) when navigating so SPA route resolves correctly
+        try {
+          const current = window.location.pathname;
+          const anchor = `/applicant/${application.id}`;
+          const idx = current.indexOf(anchor);
+          const base = idx === -1 ? '' : current.substring(0, idx) + anchor;
+          const target = `${base}/report`;
+          navigate(target, { state: { report: detailed } });
+        } catch (e) {
+          // fallback to absolute path
+          navigate(`/applicant/${application.id}/report`, { state: { report: detailed } });
+        }
         toast({ title: 'Student Created', description: detailed.university_id });
       } else {
         toast({ title: 'Error', description: res.error || 'Failed to generate student ID', variant: 'destructive' });
