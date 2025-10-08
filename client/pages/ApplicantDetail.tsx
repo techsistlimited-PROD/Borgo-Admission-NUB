@@ -164,7 +164,7 @@ export default function ApplicantDetail() {
       waiverInfo: "মওকুফ তথ্য",
       actions: "���র্ম",
       approve: "আবেদন অনুমোদন",
-      reject: "আবেদন প্রত্যাখ্যান",
+      reject: "আবেদন প্রত্যাখ্��ান",
       generateIDs: "ছাত্র আইডি তৈরি করুন",
       changeLog: "পরিবর্তন লগ",
     },
@@ -998,103 +998,80 @@ export default function ApplicantDetail() {
 
                   <div className="md:col-span-2">
                     <Label className="text-sm font-medium text-gray-600">{t.address}</Label>
-                    <p className="text-gray-900">{typeof personalWithDefaults.address === 'string' ? personalWithDefaults.address : JSON.stringify(personalWithDefaults.address)}</p>
-                  </div>
-
-                  {/* Additional personal fields requested */}
-
-                  <div className="md:col-span-2 border-t pt-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                       <div>
-                        <Label className="text-sm font-medium text-gray-600">Father's Name</Label>
-                        <p className="text-gray-900">{personalWithDefaults.father_name}</p>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Father's Contact</Label>
-                        <p className="text-gray-900">{personalWithDefaults.father_contact}</p>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Mother's Name</Label>
-                        <p className="text-gray-900">{personalWithDefaults.mother_name}</p>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Mother's Contact</Label>
-                        <p className="text-gray-900">{personalWithDefaults.mother_contact}</p>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Guardian's Name</Label>
-                        <p className="text-gray-900">{personalWithDefaults.guardian_name}</p>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Guardian's Contact</Label>
-                        <p className="text-gray-900">{personalWithDefaults.guardian_contact}</p>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Student Mobile</Label>
-                        <p className="text-gray-900">{personalWithDefaults.student_mobile}</p>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Student Email</Label>
-                        <p className="text-gray-900">{personalWithDefaults.student_email}</p>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Required Credits</Label>
-                        <p className="text-gray-900">{personalWithDefaults.required_credits}</p>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Grading System</Label>
-                        <p className="text-gray-900">{personalWithDefaults.grading_system}</p>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Quota</Label>
-                        <p className="text-gray-900">{personalWithDefaults.quota}</p>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Religion</Label>
-                        <p className="text-gray-900">{personalWithDefaults.religion}</p>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Disability Status</Label>
-                        <p className="text-gray-900">{personalWithDefaults.disability_status}</p>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Blood Group</Label>
-                        <p className="text-gray-900">{personalWithDefaults.blood_group}</p>
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <Label className="text-sm font-medium text-gray-600">ID Numbers</Label>
-                        <p className="text-gray-900">{typeof personalWithDefaults.id_numbers === 'string' ? personalWithDefaults.id_numbers : JSON.stringify(personalWithDefaults.id_numbers)}</p>
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <Label className="text-sm font-medium text-gray-600">Remarks</Label>
-                        <p className="text-gray-900">{personalWithDefaults.remarks || '-'}</p>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-600">Present Address</Label>
+                        <Label className="text-xs text-gray-500">Present Address</Label>
                         <p className="text-gray-900">{personalWithDefaults.present_address}</p>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium text-gray-600">Permanent Address</Label>
+                        <Label className="text-xs text-gray-500">Permanent Address</Label>
                         <p className="text-gray-900">{personalWithDefaults.permanent_address}</p>
                       </div>
+                    </div>
+                  </div>
 
-                      <div className="md:col-span-2">
-                        <Label className="text-sm font-medium text-gray-600">Local Guardian Information</Label>
-                        <div className="text-gray-900">
-                          <div><strong>Name:</strong> {personalWithDefaults.local_guardian.name}</div>
-                          <div><strong>Contact:</strong> {personalWithDefaults.local_guardian.contact}</div>
-                          <div><strong>Address:</strong> {personalWithDefaults.local_guardian.address}</div>
-                        </div>
+                  {/* Guardian and Family Info */}
+                  <div className="md:col-span-2 border-t pt-4">
+                    <Label className="text-sm font-medium text-gray-600">Guardian / Family</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                      <div>
+                        <div className="text-xs text-gray-500">Father</div>
+                        <div className="text-gray-900">{personalWithDefaults.father_name}</div>
+                        <div className="text-gray-600 text-sm">{personalWithDefaults.father_contact}</div>
                       </div>
+                      <div>
+                        <div className="text-xs text-gray-500">Mother</div>
+                        <div className="text-gray-900">{personalWithDefaults.mother_name}</div>
+                        <div className="text-gray-600 text-sm">{personalWithDefaults.mother_contact}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-500">Local Guardian</div>
+                        <div className="text-gray-900">{personalWithDefaults.local_guardian.name}</div>
+                        <div className="text-gray-600 text-sm">{personalWithDefaults.local_guardian.contact}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contact & Program Info */}
+                  <div className="md:col-span-2 border-t pt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                      <div>
+                        <Label className="text-xs text-gray-500">Applicant Phone</Label>
+                        <div className="text-gray-900">{personalWithDefaults.student_mobile}</div>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-gray-500">Applicant Email</Label>
+                        <div className="text-gray-900">{personalWithDefaults.student_email}</div>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-gray-500">Required Credits / Grading</Label>
+                        <div className="text-gray-900">{personalWithDefaults.required_credits} / {personalWithDefaults.grading_system}</div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                      <div>
+                        <Label className="text-xs text-gray-500">Quota</Label>
+                        <div className="text-gray-900">{personalWithDefaults.quota}</div>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-gray-500">Religion</Label>
+                        <div className="text-gray-900">{personalWithDefaults.religion}</div>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-gray-500">Disability / Blood</Label>
+                        <div className="text-gray-900">{personalWithDefaults.disability_status} / {personalWithDefaults.blood_group}</div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <Label className="text-xs text-gray-500">ID Numbers</Label>
+                      <div className="text-gray-900">{typeof personalWithDefaults.id_numbers === 'string' ? personalWithDefaults.id_numbers : JSON.stringify(personalWithDefaults.id_numbers)}</div>
+                    </div>
+
+                    <div className="mt-4">
+                      <Label className="text-xs text-gray-500">Remarks</Label>
+                      <div className="text-gray-900">{personalWithDefaults.remarks || '-'}</div>
                     </div>
                   </div>
                 </div>
