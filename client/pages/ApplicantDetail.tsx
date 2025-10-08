@@ -164,7 +164,7 @@ export default function ApplicantDetail() {
       contactInfo: "যোগাযোগের তথ্য",
       academicHistory: "শিক্ষাগত ইতিহাস",
       documentsUploaded: "আপলোডকৃত কাগজপত্র",
-      waiverInfo: "মওকুফ তথ্য",
+      waiverInfo: "মওকুফ ���থ্য",
       actions: "���র্ম",
       approve: "আবেদন অনুমোদন",
       reject: "আবেদন ����্রত্যাখ্��ান",
@@ -1179,7 +1179,9 @@ export default function ApplicantDetail() {
                               const fileUrl = `/uploads/${Date.now()}-${file.name}`;
                               const res = await apiClient.updateApplicationDocument(application.id, 'photograph', { file_name: file.name, file_url: fileUrl });
                               if (res.success && res.data?.document) {
-                                setApplication((prev: any) => ({ ...prev, documents: { ...(prev?.documents || {}), photograph: res.data.document } }));
+                                const doc = res.data.document;
+                                setApplication((prev: any) => ({ ...prev, documents: { ...(prev?.documents || {}), photograph: doc } }));
+                                if (doc?.file_url) setPhotoSrc(doc.file_url);
                                 toast({ title: 'Photo uploaded', description: 'Applicant photo has been updated.' });
                               } else {
                                 toast({ title: 'Upload failed', description: res.error || 'Unable to upload photo' });
