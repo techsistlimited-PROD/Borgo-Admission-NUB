@@ -169,12 +169,15 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
         <div className="space-y-4">
 
           <Card>
-            <CardHeader className="flex items-center justify-between">
-              <CardTitle>Semester Registration</CardTitle>
-              <div className="print:hidden">
+            <CardHeader className="relative">
+              <div className="flex items-center">
+                <CardTitle>Semester Registration</CardTitle>
+              </div>
+
+              <div className="absolute right-3 top-3 print:hidden">
                 {inlineReport.first_semester_courses_download_url && (
                   <a href={inlineReport.first_semester_courses_download_url} target="_blank" rel="noreferrer">
-                    <Button variant="outline" className="ml-2"><Download className="w-4 h-4 mr-2" />Download</Button>
+                    <Button variant="outline" className="h-9 px-3"><Download className="w-4 h-4 mr-2" />Download</Button>
                   </a>
                 )}
               </div>
