@@ -851,6 +851,137 @@ export default function ApplicantDetail() {
         </DialogContent>
       </Dialog>
 
+      {inlineReport && (
+        <div className="p-6">
+          <div className="max-w-6xl mx-auto bg-white p-6 rounded shadow">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-2xl font-semibold">Admission Report</h1>
+                <div className="text-sm text-gray-600">University ID: <span className="font-mono">{inlineReport.university_id}</span></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="text-sm text-gray-600" onClick={() => setInlineReport(null)}>Close Report</button>
+                <a href={inlineReport.mr?.url} target="_blank" rel="noreferrer">
+                  <Button variant="outline">Download MR</Button>
+                </a>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2 overflow-y-auto max-h-[60vh] space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Generated IDs & Basic Info</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 text-sm">
+                      <div><strong>University ID / Roll:</strong> <span className="font-mono">{inlineReport.university_id}</span></div>
+                      <div><strong>UGC Unique ID:</strong> <span className="font-mono">{inlineReport.ugc_id || '-'}</span></div>
+                      <div><strong>Semester:</strong> {inlineReport.semester}</div>
+                      <div><strong>Program:</strong> {inlineReport.program}</div>
+                      <div><strong>Program Type:</strong> {inlineReport.program_type}</div>
+                      <div><strong>Batch:</strong> {inlineReport.batch}</div>
+                      <div><strong>University Email:</strong> {inlineReport.university_email}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>First Semester Courses</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full table-auto text-sm">
+                        <thead>
+                          <tr className="text-xs text-gray-600 border-b">
+                            <th className="px-2 py-1">Code</th>
+                            <th className="px-2 py-1">Title</th>
+                            <th className="px-2 py-1">Credits</th>
+                            <th className="px-2 py-1">Section</th>
+                            <th className="px-2 py-1">Faculty</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(inlineReport.first_semester_courses || []).map((c: any, i: number) => (
+                            <tr key={i} className="odd:bg-white even:bg-gray-50">
+                              <td className="px-2 py-1">{c.code}</td>
+                              <td className="px-2 py-1">{c.title}</td>
+                              <td className="px-2 py-1">{c.credits}</td>
+                              <td className="px-2 py-1">{c.section}</td>
+                              <td className="px-2 py-1">{c.faculty}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="mt-3 p-3 border rounded flex items-center justify-between">
+                      <div>
+                        <div className="text-sm font-medium">First Semester Tuition</div>
+                        <div className="text-xs text-gray-500">Calculated tuition for first semester</div>
+                      </div>
+                      <div className="text-sm font-mono">BDT {Number(inlineReport.first_semester_tuition?.amount || 0).toLocaleString()}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Fee Structure & Syllabus</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-sm">
+                      <div><strong>Fee Structure</strong></div>
+                      <div>Admission Fee: BDT {Number(inlineReport.fee_structure?.admissionFee || 0).toLocaleString()}</div>
+                      <div>Per Credit Fee: BDT {Number(inlineReport.fee_structure?.perCreditFee || 0).toLocaleString()}</div>
+                      <div>Lab Fee per Course: BDT {Number(inlineReport.fee_structure?.labFeePerCourse || 0).toLocaleString()}</div>
+                      <div>Other Fees: BDT {Number(inlineReport.fee_structure?.otherFees || 0).toLocaleString()}</div>
+                      <div className="mt-2"><strong>Syllabus Version:</strong> {inlineReport.syllabus_version}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Admission Fees & Receipt</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 text-sm">
+                      {(inlineReport.admission_fees || []).map((f: any, i: number) => (
+                        <div key={i} className="flex justify-between">
+                          <div>{f.cost_head || f.name || 'Fee'}</div>
+                          <div className="font-mono">BDT {Number(f.cost_amount || f.amount || 0).toLocaleString()}</div>
+                        </div>
+                      ))}
+
+                      <div className="mt-3 flex items-center justify-between">
+                        <div className="text-xs text-gray-500">Money Receipt</div>
+                        <a href={inlineReport.mr?.url} target="_blank" rel="noreferrer" className="text-deep-plum">Download</a>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-col gap-2">
+                      <a className="text-sm text-deep-plum" href={`mailto:${inlineReport.personal_info?.student_email}`}>Send Welcome Email</a>
+                      <a className="text-sm text-deep-plum" href={inlineReport.first_semester_tuition?.url} target="_blank" rel="noreferrer">Download Tuition Bill</a>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <Link
