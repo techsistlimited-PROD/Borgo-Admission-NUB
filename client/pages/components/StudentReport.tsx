@@ -35,104 +35,47 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
           </div>
         </div>
 
-        {/* First two sections grouped in one div */}
+        {/* First two sections grouped in one div, stacked vertically */}
         <div className="bg-white p-4 rounded shadow-sm mb-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <Card>
                 <CardHeader>
                   <CardTitle>Student Details</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="md:col-span-1 flex items-start">
-                      <div className="w-28 h-28 rounded border overflow-hidden bg-gray-50 flex items-center justify-center">
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="flex items-start">
+                      <div className="w-28 h-28 rounded border overflow-hidden bg-gray-50 flex items-center justify-center mr-4">
                         {inlineReport.personal_info?.picture?.file_url ? (
                           <img src={inlineReport.personal_info.picture.file_url} alt="photo" className="w-full h-full object-cover" onError={(e: any) => { try { e.currentTarget.onerror = null; } catch (err) {} e.currentTarget.src = '/placeholder.svg'; }} />
                         ) : (
                           <img src={'/placeholder.svg'} alt="photo" className="w-full h-full object-cover" />
                         )}
                       </div>
+                      <div className="flex-1 text-sm">
+                        <div className="mb-2"><div className="text-xs text-gray-500">Full name</div><div className="font-medium">{personalWithDefaults.name}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Date of Birth</div><div>{personalWithDefaults.date_of_birth}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Gender</div><div>{personalWithDefaults.gender}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Quota</div><div>{personalWithDefaults.quota}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Religion</div><div>{personalWithDefaults.religion}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Disability / Blood Group</div><div>{personalWithDefaults.disability_status} / {personalWithDefaults.blood_group}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Student Mobile</div><div>{personalWithDefaults.student_mobile}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Student Email</div><div>{personalWithDefaults.student_email}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Present Address</div><div className="text-sm">{personalWithDefaults.present_address}</div></div>
+                        <div className="mb-2"><div className="text-xs text-gray-500">Permanent Address</div><div className="text-sm">{personalWithDefaults.permanent_address}</div></div>
+                      </div>
                     </div>
 
-                    <div className="md:col-span-2">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <div className="text-xs text-gray-500">Full name</div>
-                          <div className="font-medium">{personalWithDefaults.name}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500">Date of Birth</div>
-                          <div>{personalWithDefaults.date_of_birth}</div>
-                        </div>
+                    <div className="grid grid-cols-1 gap-2 text-sm">
+                      <div className="mb-2"><div className="text-xs text-gray-500">Father</div><div className="font-medium">{personalWithDefaults.father_name}</div><div className="text-sm text-gray-600">{personalWithDefaults.father_contact}</div></div>
+                      <div className="mb-2"><div className="text-xs text-gray-500">Mother</div><div className="font-medium">{personalWithDefaults.mother_name}</div><div className="text-sm text-gray-600">{personalWithDefaults.mother_contact}</div></div>
+                      <div className="mb-2"><div className="text-xs text-gray-500">Local Guardian</div><div className="font-medium">{personalWithDefaults.local_guardian?.name}</div><div className="text-sm text-gray-600">{personalWithDefaults.local_guardian?.contact}</div></div>
 
-                        <div>
-                          <div className="text-xs text-gray-500">Gender</div>
-                          <div>{personalWithDefaults.gender}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500">Quota</div>
-                          <div>{personalWithDefaults.quota}</div>
-                        </div>
-
-                        <div>
-                          <div className="text-xs text-gray-500">Religion</div>
-                          <div>{personalWithDefaults.religion}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500">Disability / Blood Group</div>
-                          <div>{personalWithDefaults.disability_status} / {personalWithDefaults.blood_group}</div>
-                        </div>
-
-                        <div>
-                          <div className="text-xs text-gray-500">Student Mobile</div>
-                          <div>{personalWithDefaults.student_mobile}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500">Student Email</div>
-                          <div>{personalWithDefaults.student_email}</div>
-                        </div>
-
-                        <div className="md:col-span-2">
-                          <div className="text-xs text-gray-500">Present Address</div>
-                          <div className="text-sm">{personalWithDefaults.present_address}</div>
-                        </div>
-                        <div className="md:col-span-2">
-                          <div className="text-xs text-gray-500">Permanent Address</div>
-                          <div className="text-sm">{personalWithDefaults.permanent_address}</div>
-                        </div>
-
-                      </div>
-
-                      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                        <div>
-                          <div className="text-xs text-gray-500">Father</div>
-                          <div className="font-medium">{personalWithDefaults.father_name}</div>
-                          <div className="text-sm text-gray-600">{personalWithDefaults.father_contact}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500">Mother</div>
-                          <div className="font-medium">{personalWithDefaults.mother_name}</div>
-                          <div className="text-sm text-gray-600">{personalWithDefaults.mother_contact}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500">Local Guardian</div>
-                          <div className="font-medium">{personalWithDefaults.local_guardian?.name}</div>
-                          <div className="text-sm text-gray-600">{personalWithDefaults.local_guardian?.contact}</div>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 text-sm">
-                        <div className="text-xs text-gray-500">ID Numbers</div>
-                        <div>{typeof personalWithDefaults.id_numbers === 'string' ? personalWithDefaults.id_numbers : JSON.stringify(personalWithDefaults.id_numbers)}</div>
-                      </div>
-
-                      <div className="mt-3 text-sm">
-                        <div className="text-xs text-gray-500">Required Credits / Grading System</div>
-                        <div>{personalWithDefaults.required_credits} / {personalWithDefaults.grading_system}</div>
-                      </div>
-
+                      <div className="mb-2"><div className="text-xs text-gray-500">ID Numbers</div><div>{typeof personalWithDefaults.id_numbers === 'string' ? personalWithDefaults.id_numbers : JSON.stringify(personalWithDefaults.id_numbers)}</div></div>
+                      <div className="mb-2"><div className="text-xs text-gray-500">Required Credits / Grading System</div><div>{personalWithDefaults.required_credits} / {personalWithDefaults.grading_system}</div></div>
                     </div>
+
                   </div>
                 </CardContent>
               </Card>
@@ -145,30 +88,12 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 gap-2 text-sm">
-                    <div>
-                      <div className="text-xs text-gray-500">University ID / Roll</div>
-                      <div className="font-mono">{inlineReport.university_id}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500">UGC Unique ID</div>
-                      <div className="font-mono">{inlineReport.ugc_id || '-'}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500">Program</div>
-                      <div>{inlineReport.program}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500">Semester / Batch</div>
-                      <div>{inlineReport.semester} / {inlineReport.batch}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500">University Email</div>
-                      <div>{inlineReport.university_email}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500">Syllabus Version</div>
-                      <div>{inlineReport.syllabus_version}</div>
-                    </div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">University ID / Roll</div><div className="font-mono">{inlineReport.university_id}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">UGC Unique ID</div><div className="font-mono">{inlineReport.ugc_id || '-'}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">Program</div><div>{inlineReport.program}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">Semester / Batch</div><div>{inlineReport.semester} / {inlineReport.batch}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">University Email</div><div>{inlineReport.university_email}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">Syllabus Version</div><div>{inlineReport.syllabus_version}</div></div>
                   </div>
                 </CardContent>
               </Card>
