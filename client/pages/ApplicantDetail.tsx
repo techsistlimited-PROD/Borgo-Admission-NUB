@@ -60,6 +60,8 @@ export default function ApplicantDetail() {
   const [application, setApplication] = useState<any | null>(null);
   const [studentIDs, setStudentIDs] = useState<any | null>(null);
   const [isGeneratingIDs, setIsGeneratingIDs] = useState(false);
+  // Manage photo src to prevent infinite reload loops
+  const [photoSrc, setPhotoSrc] = useState<string>('/placeholder.svg');
   const [isMakingStudent, setIsMakingStudent] = useState(false);
   const [studentModalOpen, setStudentModalOpen] = useState(false);
   const [studentCreatedData, setStudentCreatedData] = useState<any | null>(null);
