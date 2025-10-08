@@ -496,9 +496,50 @@ export default function ApplicantDetail() {
 
   const personal =
     application?.personal_info || application?.personalInfo || {};
-  const academic = application?.academic_history || application?.academic || {};
+  const academic = application?.academic_history || application?.academic || [];
   const documents = application?.documents || application?.documents || {};
   const waiver = application?.waiver || application?.waiver || null;
+
+  // Determine program level (diploma, undergrad, masters) from program_name or program_code
+  function deriveProgramLevel(app: any) {
+    const name = (app?.program_name || app?.program || "").toString().toLowerCase();
+    const code = (app?.program_code || "").toString().toLowerCase();
+    if (name.includes("master") || name.includes("m\.s") || name.includes("msc") || name.includes("ma") || code.includes("master") || name.includes("mph") || name.includes("llm")) return "masters";
+    if (name.includes("bsc") || name.includes("bachelor") || name.includes("bba") || name.includes("hon") || code.includes("bsc") || code.includes("bba") || code.includes("bachelor")) return "undergrad";
+    if (name.includes("diploma") || code.includes("diploma") || name.includes("polytechnic")) return "diploma";
+    // fallback: if program duration indicates 4 years -> undergrad
+    if ((app?.duration || "").toString().includes("4 years")) return "undergrad";
+    return "undergrad";
+  }
+
+  const programLevel = deriveProgramLevel(application || {});
+
+  // Normalize academic array to uniform objects
+  const academicArray = Array.isArray(academic) ? academic : [academic];
+
+  function matchesLevel(record: any, level: string) {
+    const name = (record?.exam_name || record?.level || "").toString().toLowerCase();
+    if (level === "hsc") return name.includes("hsc") || name.includes("higher") || name.includes("intermediate");
+    if (level === "ssc") return name.includes("ssc") || name.includes("secondary");
+    if (level === "undergrad") return name.includes("bachelor") || name.includes("bsc") || name.includes("hon") || name.includes("undergrad") || name.includes("ug");
+    if (level === "university") return name.includes("degree") || name.includes("bachelor") || name.includes("master") || name.includes("university") || name.includes("graduation");
+    return false;
+  }
+
+  // Select records based on program level
+  let recordsToShow: any[] = [];
+  if (programLevel === "diploma") {
+    recordsToShow = academicArray.filter((r: any) => matchesLevel(r, "hsc") || matchesLevel(r, "university") );
+  } else if (programLevel === "undergrad") {
+    recordsToShow = academicArray.filter((r: any) => matchesLevel(r, "hsc") || matchesLevel(r, "ssc") || matchesLevel(r, "university") );
+  } else if (programLevel === "masters") {
+    recordsToShow = academicArray.filter((r: any) => matchesLevel(r, "hsc") || matchesLevel(r, "ssc") || matchesLevel(r, "undergrad") || matchesLevel(r, "university") );
+  } else {
+    recordsToShow = academicArray;
+  }
+
+  // If no filtered records, fallback to showing all available
+  if (!recordsToShow.length) recordsToShow = academicArray;
 
   // Quota determination based on waiver data
   const meritWaiverNames = [
@@ -1097,31 +1138,44 @@ export default function ApplicantDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {Array.isArray(academic) && academic.length > 0 ? (
-                    academic.map((rec: any, idx: number) => (
-                      <div key={idx} className="p-3 bg-gray-50 rounded-lg">
-                        <div className="flex justify-between">
-                          <div>
-                            <div className="font-medium">
-                              {rec.exam_name || rec.level}
-                            </div>
-                            <div className="text-sm text-gray-600">
-                              {rec.institute} • {rec.passing_year}
-                            </div>
-                          </div>
-                          <div className="text-sm text-gray-700">
-                            GPA: {rec.grade_point}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-sm text-gray-600">
-                      No academic records
-                    </div>
-                  )}
-                </div>
+                {recordsToShow && recordsToShow.length ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full table-auto text-left">
+                      <thead>
+                        <tr className="text-sm text-gray-600 border-b">
+                          <th className="px-3 py-2">Education Level / Exam</th>
+                          <th className="px-3 py-2">Group / Subject</th>
+                          <th className="px-3 py-2">Board / University</th>
+                          <th className="px-3 py-2">Institute</th>
+                          <th className="px-3 py-2">Passing Year</th>
+                          <th className="px-3 py-2">Roll Number</th>
+                          <th className="px-3 py-2">Registration Number / UGC ID</th>
+                          <th className="px-3 py-2">Grade Point</th>
+                          <th className="px-3 py-2">Class</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {recordsToShow.map((rec: any, idx: number) => (
+                          <tr key={idx} className="odd:bg-white even:bg-gray-50">
+                            <td className="px-3 py-2 align-top">
+                              {rec.exam_name || rec.level || '-'}
+                            </td>
+                            <td className="px-3 py-2 align-top">{rec.group_subject || rec.group || '-'}</td>
+                            <td className="px-3 py-2 align-top">{rec.board_university || rec.board || '-'}</td>
+                            <td className="px-3 py-2 align-top">{rec.institute_name || rec.institute || '-'}</td>
+                            <td className="px-3 py-2 align-top">{rec.passing_year || '-'}</td>
+                            <td className="px-3 py-2 align-top">{rec.roll_no || rec.roll || '-'}</td>
+                            <td className="px-3 py-2 align-top">{rec.registration_no || rec.registrationNo || rec.ugc_id || rec.ugcId || '-'}</td>
+                            <td className="px-3 py-2 align-top">{rec.grade_point || rec.gpa || '-'}</td>
+                            <td className="px-3 py-2 align-top">{rec.obtained_class || rec.class || '-'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-600">No academic records available for this program.</div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
