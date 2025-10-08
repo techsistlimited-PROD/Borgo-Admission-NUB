@@ -56,8 +56,6 @@ export default function Sidebar({ userType }: SidebarProps) {
 
   const adminPages = [
     { name: "Admissions", path: "/admin/admissions", icon: Users },
-    { name: "New Student Profile", path: "/admin/new-student-profile", icon: User },
-    { name: "Academic History", path: "/admin/academic-history", icon: FileText },
     { name: "Credit Transfer", path: "/admin/credit-transfer-management", icon: BookOpen },
     { name: "Fee Structure & Packages", path: "/admin/fee-structure", icon: CreditCard },
     { name: "Waiver & Scholarship", path: "/admin/scholarships", icon: Award },
