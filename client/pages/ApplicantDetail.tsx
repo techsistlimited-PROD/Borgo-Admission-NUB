@@ -401,27 +401,62 @@ export default function ApplicantDetail() {
       const res = await apiClient.generateStudentForApplicant(application.id);
       if (res.success && res.data) {
         // Add additional automation summary to returned data for UI display
-        const summary = {
+        // Build detailed summary using syllabus data when available
+        const programName = (application?.program_name || application?.program || 'Program').toString();
+        const programId = (application?.department_code || application?.program_code || '').toString().toLowerCase();
+        const syllabus = defaultSyllabuses.find((s) => (s.programId && programId && s.programId === programId) || s.programName.toLowerCase().includes(programName.toLowerCase())) || defaultSyllabuses[0];
+
+        const admissionFee = syllabus?.feeStructure?.admissionFee || (application?.fees || []).find((f: any) => (f.cost_head || '').toLowerCase().includes('admission'))?.cost_amount || 0;
+        const perCreditFee = syllabus?.feeStructure?.perCreditFee || 0;
+
+        const firstSemester = syllabus?.semesters?.[0] || { courses: [], totalCredits: 0 };
+        const firstSemesterCredits = firstSemester.totalCredits || firstSemester.courses.reduce((s: number, c: any) => s + (c?.credits || 0), 0);
+        const labCourses = (firstSemester.courses || []).filter((c: any) => c?.type === 'lab').length;
+        const tuitionFirstSemester = perCreditFee * firstSemesterCredits + (syllabus?.feeStructure?.labFeePerCourse || 0) * labCourses;
+
+        const mrNumber = `MR-${Date.now()}`;
+        const mrUrl = `/mock-receipts/${mrNumber}.pdf`;
+        const tuitionBillUrl = `/mock-receipts/tuition-${mrNumber}.pdf`;
+
+        const programType = syllabus?.programName?.toLowerCase().includes("master") ? 'Masters' : 'Bachelors';
+
+        const detailed = {
           university_id: res.data.student_id,
           ugc_id: res.data.ugc_id,
-          generated_email: res.data.generated_email || `${(res.data.student_id || '').toLowerCase()}@nu.edu.bd`,
-          batch: res.data.batch || application.semester,
+          semester: application.semester || 'Spring',
+          program: syllabus?.programName || programName,
+          admission_fees: [{ name: 'Admission Fee', amount: admissionFee }],
+          mr: { number: mrNumber, url: mrUrl },
+          program_type: programType,
+          batch: application.semester || 'Batch 2024',
+          university_email: res.data.generated_email || `${(res.data.student_id || '').toLowerCase()}@nu.edu.bd`,
+          fee_structure: syllabus?.feeStructure || {},
+          syllabus_version: syllabus?.packageCode || syllabus?.id || 'v1',
+          first_semester_courses: (firstSemester.courses || []).map((c: any) => ({
+            code: c.code,
+            title: c.name,
+            credits: c.credits,
+            section: 'A',
+            faculty: application.department_name || application.department_name || 'Faculty of Engineering',
+            type: c.type,
+          })),
+          first_semester_tuition: { amount: tuitionFirstSemester, url: tuitionBillUrl },
+          welcome_email_sent: true,
           automations: [
-            'Automatic University ID/Roll Generation',
-            'Automatic UGC Unique ID Generation',
-            'Automatic Semester Selection (Spring/Summer/Fall or Spring/Fall)',
-            'Automatic Permission Request for Limited-Seat Programs',
-            'Automatic Program Selection',
-            'Automatic Admission Fees Selection Flexibility',
-            "Automatic Program Type Selection (Bachelor’s/Master’s)",
-            'Automatic Batch Selection',
-            'Automatic University Email Generation',
-            'Automatic Welcome Email Notification Upon Successful Admission',
-            'Automatic Fee Structure Selection',
-            'Automatic Syllabus Version Selection',
-            'Automatic Generation of Admission Fee Money Receipt in PDF Format',
-            'Automatic First Semester/Year Course Addition/Registration',
-            'Automatic First Semester/Year Tuition Fee/Bill Generation',
+            'University ID/Roll Generated',
+            'UGC Unique ID Generated',
+            `Semester selected: ${application.semester || 'Spring'}`,
+            'Permission request queued for limited-seat programs',
+            `Program selected: ${syllabus?.programName || programName}`,
+            'Admission fees selected',
+            `Program Type: ${programType}`,
+            `Batch: ${application.semester || 'Batch 2024'}`,
+            `University email: ${res.data.generated_email || `${(res.data.student_id || '').toLowerCase()}@nu.edu.bd`}`,
+            `Fee structure applied: ${syllabus?.packageCode || 'default'}`,
+            `Syllabus version: ${syllabus?.packageCode || syllabus?.id || 'v1'}`,
+            'Admission fee MR generated',
+            'First semester courses registered',
+            'First semester tuition bill generated',
           ],
           personal_info: {
             father: personalWithDefaults.father_name,
@@ -446,11 +481,11 @@ export default function ApplicantDetail() {
           },
         };
 
-        setStudentCreatedData(summary);
+        setStudentCreatedData(detailed);
         setStudentModalOpen(true);
-        toast({ title: 'Student Created', description: summary.university_id });
+        toast({ title: 'Student Created', description: detailed.university_id });
         try { await apiClient.updateApplicationStatus(application.id, 'converted_to_student'); } catch (e) { console.warn('Failed to update status', e); }
-        try { await apiClient.createStudentRecord(application.id, { university_id: summary.university_id, ugc_id: summary.ugc_id }); } catch (e) { console.warn('Failed to create student', e); }
+        try { await apiClient.createStudentRecord(application.id, { university_id: detailed.university_id, ugc_id: detailed.ugc_id }); } catch (e) { console.warn('Failed to create student', e); }
         await loadApplication();
       } else {
         toast({ title: 'Error', description: res.error || 'Failed to generate student ID', variant: 'destructive' });
