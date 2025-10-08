@@ -182,6 +182,9 @@ export default function ApplicantDetail() {
       const res = await apiClient.getApplication(id);
       if (res.success && res.data) {
         setApplication(res.data.application || res.data);
+        // set photo source from application documents if present
+        const docPhoto = res.data.application?.documents?.photograph?.file_url || res.data.documents?.photograph?.file_url || res.data?.documents?.photograph?.file_url;
+        if (docPhoto) setPhotoSrc(docPhoto);
         if (res.data.application?.id_generation) {
           setStudentIDs(res.data.application.id_generation);
         } else if (res.data.id_generation) {
