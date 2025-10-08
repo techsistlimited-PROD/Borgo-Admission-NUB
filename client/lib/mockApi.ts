@@ -531,6 +531,24 @@ class MockApiService {
     };
   }
 
+  async setAcademicVerification(id: string, verified: boolean): Promise<ApiResponse> {
+    await this.delay();
+    const appIndex = this.applications.findIndex((app) => app.id === id || app.uuid === id);
+    if (appIndex === -1) return { success: false, error: 'Application not found' };
+    this.applications[appIndex].academic_verified = !!verified;
+    return { success: true, data: { academic_verified: !!verified } };
+  }
+
+  async setPaymentVerification(id: string, verified: boolean): Promise<ApiResponse> {
+    await this.delay();
+    const appIndex = this.applications.findIndex((app) => app.id === id || app.uuid === id);
+    if (appIndex === -1) return { success: false, error: 'Application not found' };
+    this.applications[appIndex].payment_verified = !!verified;
+    // keep payment_status field in sync
+    this.applications[appIndex].payment_status = !!verified ? 'verified' : (this.applications[appIndex].payment_status || 'pending');
+    return { success: true, data: { payment_verified: !!verified } };
+  }
+
   // Update application document (mock file upload)
   async updateApplicationDocument(id: string, key: string, fileMeta: any): Promise<ApiResponse> {
     await this.delay();
@@ -598,6 +616,8 @@ class MockApiService {
       admission_test_required: this.applications.filter(
         (app) => app.admission_test_status === "required",
       ).length,
+      academic_verified: this.applications.filter((app) => app.academic_verified).length,
+      payment_verified: this.applications.filter((app) => app.payment_verified).length,
       admission_test_completed: this.applications.filter(
         (app) => app.admission_test_status === "completed",
       ).length,
