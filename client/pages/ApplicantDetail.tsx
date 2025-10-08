@@ -481,12 +481,13 @@ export default function ApplicantDetail() {
           },
         };
 
-        setStudentCreatedData(detailed);
-        setStudentModalOpen(true);
-        toast({ title: 'Student Created', description: detailed.university_id });
+        // store generated ids in application (mock) and navigate to dedicated report page
         try { await apiClient.updateApplicationStatus(application.id, 'converted_to_student'); } catch (e) { console.warn('Failed to update status', e); }
         try { await apiClient.createStudentRecord(application.id, { university_id: detailed.university_id, ugc_id: detailed.ugc_id }); } catch (e) { console.warn('Failed to create student', e); }
         await loadApplication();
+        // navigate to report page, passing data in location state for immediate render
+        navigate(`/applicant/${application.id}/report`, { state: { report: detailed } });
+        toast({ title: 'Student Created', description: detailed.university_id });
       } else {
         toast({ title: 'Error', description: res.error || 'Failed to generate student ID', variant: 'destructive' });
       }
