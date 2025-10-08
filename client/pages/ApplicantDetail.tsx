@@ -827,6 +827,17 @@ export default function ApplicantDetail() {
                       <Mail className="w-4 h-4 mr-2" />
                       {sendingEmail ? "Sending..." : t.sendEmailId}
                     </Button>
+
+                    {!studentCreatedData && (
+                      <Button
+                        onClick={handleMakeStudent}
+                        disabled={isMakingStudent}
+                        className="bg-deep-plum ml-auto"
+                      >
+                        {isMakingStudent ? (<><Clock className="w-4 h-4 mr-2 animate-spin" /> Creating...</>) : ("Make Student")}
+                      </Button>
+                    )}
+
                     {mrNumber && (
                       <Button
                         variant="outline"
