@@ -38,16 +38,16 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
         </div>
 
         {/* First two sections grouped in one div, stacked vertically */}
-        <div className="bg-white p-4 rounded shadow-sm mb-4">
-          <div className="grid grid-cols-1 gap-4">
+        <div className="bg-white p-3 rounded shadow-sm mb-4">
+          <div className="grid grid-cols-1 gap-2">
             <div>
               <Card>
                 <CardHeader>
                   <CardTitle>Student Details</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                  <div className="grid grid-cols-1 gap-2">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-start">
                       <div className="md:col-span-1">
                         <div className="w-36 h-36 rounded border overflow-hidden bg-gray-50 flex items-center justify-center">
                           {inlineReport.personal_info?.picture?.file_url ? (
@@ -64,7 +64,7 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                           <div className="font-semibold text-base">{personalWithDefaults.name}</div>
                         </div>
 
-                        <div className="mt-3 grid grid-cols-3 gap-4 text-sm">
+                        <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
                           <div>
                             <div className="text-xs text-gray-500">Student Mobile</div>
                             <div className="font-medium">{personalWithDefaults.student_mobile}</div>
@@ -75,11 +75,11 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                           </div>
                           <div>
                             <div className="text-xs text-gray-500">Student ID</div>
-                            <div className="font-medium">{typeof personalWithDefaults.id_numbers === 'string' ? personalWithDefaults.id_numbers : JSON.stringify(personalWithDefaults.id_numbers)}</div>
+                            <div className="font-medium">{studentId}</div>
                           </div>
                         </div>
 
-                        <div className="mt-3 grid grid-cols-3 gap-4 text-sm">
+                        <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
                           <div>
                             <div className="text-xs text-gray-500">Date of Birth</div>
                             <div className="font-medium">{personalWithDefaults.date_of_birth}</div>
@@ -94,7 +94,7 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                           </div>
                         </div>
 
-                        <div className="mt-3 grid grid-cols-3 gap-4 text-sm">
+                        <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
                           <div>
                             <div className="text-xs text-gray-500">Religion</div>
                             <div className="font-medium">{personalWithDefaults.religion}</div>
@@ -120,8 +120,8 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
 
                     </div>
 
-                    <div className="flex flex-col gap-4 text-sm">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div>
                           <div className="text-xs text-gray-500">Father</div>
                           <div className="font-medium">{personalWithDefaults.father_name}</div>
@@ -134,7 +134,7 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <div className="sm:col-span-1">
                           <div className="text-xs text-gray-500">Local Guardian</div>
                           <div className="font-medium">{personalWithDefaults.local_guardian?.name}</div>
@@ -164,7 +164,7 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                   <CardTitle>Identifiers & Program</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                     <div className="mb-2"><div className="text-xs text-gray-500">University ID / Roll</div><div className="font-mono font-semibold">{inlineReport.university_id}</div></div>
                     <div className="mb-2"><div className="text-xs text-gray-500">UGC Unique ID</div><div className="font-mono font-semibold">{inlineReport.ugc_id || '-'}</div></div>
                     <div className="mb-2"><div className="text-xs text-gray-500">Program</div><div className="font-medium">{inlineReport.program}</div></div>
