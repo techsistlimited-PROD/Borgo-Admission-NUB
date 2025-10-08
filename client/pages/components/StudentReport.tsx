@@ -17,7 +17,6 @@ type Props = {
 export default function StudentReport({ inlineReport, personalWithDefaults, onClose }: Props) {
   if (!inlineReport) return null;
 
-  const studentId = (typeof personalWithDefaults.id_numbers === 'string' && personalWithDefaults.id_numbers && personalWithDefaults.id_numbers !== 'N/A') ? personalWithDefaults.id_numbers : (inlineReport.university_id || 'N/A');
 
   return (
     <div className="p-6 print:bg-white">
@@ -72,10 +71,6 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                           <div>
                             <div className="text-xs text-gray-500">Student Email</div>
                             <div className="font-medium">{personalWithDefaults.student_email}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-gray-500">Student ID</div>
-                            <div className="font-medium">{studentId}</div>
                           </div>
                         </div>
 
@@ -141,10 +136,6 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                           <div className="text-sm text-gray-600">{personalWithDefaults.local_guardian?.contact}</div>
                         </div>
 
-                        <div className="sm:col-span-1">
-                          <div className="text-xs text-gray-500">ID Numbers</div>
-                          <div className="text-sm">{typeof personalWithDefaults.id_numbers === 'string' ? personalWithDefaults.id_numbers : JSON.stringify(personalWithDefaults.id_numbers)}</div>
-                        </div>
 
                         <div className="sm:col-span-1">
                           <div className="text-xs text-gray-500">Required Credits / Grading System</div>
