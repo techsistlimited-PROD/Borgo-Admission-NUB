@@ -27,6 +27,20 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
 
   const coursesToShow = (inlineReport.first_semester_courses && inlineReport.first_semester_courses.length) ? inlineReport.first_semester_courses : sampleCourses;
 
+  const downloadCourses = () => {
+    const rows = coursesToShow.map((c: any) => [c.code, c.title, c.credits, c.section || '', c.faculty]);
+    const header = ['Code', 'Title', 'Credits', 'Section', 'Faculty'];
+    const csv = [header, ...rows].map(r => r.map((v: any) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'semester_registration.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
 
   return (
     <div className="p-6 print:bg-white">
