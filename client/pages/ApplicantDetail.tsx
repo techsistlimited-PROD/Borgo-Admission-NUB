@@ -982,7 +982,7 @@ export default function ApplicantDetail() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ display: inlineReport ? 'none' : undefined }}>
         <div className="mb-6">
           <Link
             to="/admin/admissions"
