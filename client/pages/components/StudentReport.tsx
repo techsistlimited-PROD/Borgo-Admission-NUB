@@ -87,13 +87,13 @@ export default function StudentReport({ inlineReport, personalWithDefaults, onCl
                   <CardTitle>Identifiers & Program</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 gap-2 text-sm">
-                    <div className="mb-2"><div className="text-xs text-gray-500">University ID / Roll</div><div className="font-mono">{inlineReport.university_id}</div></div>
-                    <div className="mb-2"><div className="text-xs text-gray-500">UGC Unique ID</div><div className="font-mono">{inlineReport.ugc_id || '-'}</div></div>
-                    <div className="mb-2"><div className="text-xs text-gray-500">Program</div><div>{inlineReport.program}</div></div>
-                    <div className="mb-2"><div className="text-xs text-gray-500">Semester / Batch</div><div>{inlineReport.semester} / {inlineReport.batch}</div></div>
-                    <div className="mb-2"><div className="text-xs text-gray-500">University Email</div><div>{inlineReport.university_email}</div></div>
-                    <div className="mb-2"><div className="text-xs text-gray-500">Syllabus Version</div><div>{inlineReport.syllabus_version}</div></div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className="mb-2"><div className="text-xs text-gray-500">University ID / Roll</div><div className="font-mono font-semibold">{inlineReport.university_id}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">UGC Unique ID</div><div className="font-mono font-semibold">{inlineReport.ugc_id || '-'}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">Program</div><div className="font-medium">{inlineReport.program}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">Semester / Batch</div><div className="font-medium">{inlineReport.semester} / {inlineReport.batch}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">University Email</div><div className="font-medium">{inlineReport.university_email}</div></div>
+                    <div className="mb-2"><div className="text-xs text-gray-500">Syllabus Version</div><div className="font-medium">{inlineReport.syllabus_version}</div></div>
                   </div>
                 </CardContent>
               </Card>
