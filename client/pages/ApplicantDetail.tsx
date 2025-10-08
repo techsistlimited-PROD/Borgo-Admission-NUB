@@ -1272,15 +1272,15 @@ export default function ApplicantDetail() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium text-gray-600">{t.originalAmount}</Label>
-                      <p className="text-gray-900">BDT {(application?.fees || []).reduce((s: number, it: any) => s + Number(it.cost_amount || 0), 0).toLocaleString()}</p>
+                      <p className="text-gray-900">BDT {totalFees.toLocaleString()}</p>
                     </div>
                     <div>
-                      <Label className="text-sm font-medium text-gray-600">{t.waiverAmount}</Label>
-                      <p className="text-green-600 font-semibold">-BDT {((application?.waiver?.percentage || 0) / 100 * ((application?.fees || []).reduce((s: number, it: any) => s + Number(it.cost_amount || 0), 0))).toLocaleString()}</p>
+                      <Label className="text-sm font-medium text-gray-600">{t.waiverAmount} (applied to tuition only)</Label>
+                      <p className="text-green-600 font-semibold">-BDT {waiverAmountOnTuition.toLocaleString()}</p>
                     </div>
                     <div>
                       <Label className="text-sm font-medium text-gray-600">{t.finalAmount}</Label>
-                      <p className="text-xl font-bold text-accent-purple">BDT {(((application?.fees || []).reduce((s: number, it: any) => s + Number(it.cost_amount || 0), 0)) - ((application?.waiver?.percentage || 0) / 100 * ((application?.fees || []).reduce((s: number, it: any) => s + Number(it.cost_amount || 0), 0)))).toLocaleString()}</p>
+                      <p className="text-xl font-bold text-accent-purple">BDT {finalAmount.toLocaleString()}</p>
                     </div>
                   </div>
 
