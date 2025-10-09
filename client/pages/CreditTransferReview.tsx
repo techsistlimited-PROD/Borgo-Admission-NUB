@@ -224,7 +224,7 @@ export default function CreditTransferReview(){
             </div>
 
             <div>
-              <Button onClick={addPickedCourse} disabled={!pickedCourse}><Plus className="w-4 h-4 mr-2"/> Add Course</Button>
+              <Button onClick={addPickedCourse} disabled={!pickedCourse}><Plus className="w-4 h-4 mr-2"/> Add Pending</Button>
             </div>
           </div>
 
