@@ -6,7 +6,7 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Textarea } from "../../components/ui/textarea";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "../../components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription, DialogClose } from "../../components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "../../components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -19,6 +19,7 @@ import {
   AlertDialogDescription,
 } from "../../components/ui/alert-dialog";
 import { useToast } from "../../hooks/use-toast";
+import apiClient from "../../lib/api";
 
 const PROGRAMS = ["CSE", "EEE", "BBA", "LAW", "ME", "CE", "PHARM"];
 
@@ -47,30 +48,27 @@ export default function FeeStructureManagement() {
   const [editingQuota, setEditingQuota] = useState<any | null>(null);
   const [quotaDialogOpen, setQuotaDialogOpen] = useState(false);
 
-  // Auto Course Offering
-  const [autoProgram, setAutoProgram] = useState(PROGRAMS[0]);
-  const [autoSession, setAutoSession] = useState("Fall 2025");
-  const [generatedCourses, setGeneratedCourses] = useState<any[]>([]);
-
   // Waiver policy settings
   const [waiverPolicy, setWaiverPolicy] = useState({ applyTwoSemesters: true, minCGPA: 2.5 });
 
   // Referral toggle
   const [showReferralInReports, setShowReferralInReports] = useState(false);
 
-  // Admission Circulars
-  const [circulars, setCirculars] = useState<any[]>([]);
-  const [editingCircular, setEditingCircular] = useState<any | null>(null);
-  const [circularDialogOpen, setCircularDialogOpen] = useState(false);
+  // Waiver/Scholarship Setup uses waivers state above
 
-  // Change history (mock)
-  const [changeHistory, setChangeHistory] = useState<any[]>([]);
+  // Applications (for selecting student to edit previous education)
+  const [applications, setApplications] = useState<any[]>([]);
+  const [selectedAppId, setSelectedAppId] = useState<number | null>(null);
+  const [academicHistory, setAcademicHistory] = useState<any[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [newHistory, setNewHistory] = useState<any>({ level: "SSC", exam_name: "", institute_name: "", passing_year: new Date().getFullYear(), grade_point: "" });
 
   // Helpers
   const calcPackageTotal = (p: any) => {
     return (Number(p.admissionFee || 0) + Number(p.fixedFees || 0));
   };
 
+  // Packages handlers
   const openAddPackage = () => {
     setEditingPackage({ name: "", program: PROGRAMS[0], admissionFee: 0, perCreditFee: 0, fixedFees: 0, notes: "" });
     setPkgDialogOpen(true);
@@ -96,7 +94,7 @@ export default function FeeStructureManagement() {
     toast({ title: "Package deleted" });
   };
 
-  // Waiver handlers
+  // Waivers handlers
   const openAddWaiver = () => {
     setEditingWaiver({ code: "", name: "", type: "Waiver", sscFrom: 0, sscTo: 0, hscFrom: 0, hscTo: 0, percent: 0, active: true });
     setWaiverDialogOpen(true);
@@ -128,24 +126,48 @@ export default function FeeStructureManagement() {
   };
   const deleteQuota = (id: string) => { setQuotas((s) => s.filter((q) => q.id !== id)); toast({ title: "Quota deleted" }); };
 
-  // Auto course offering generator (simple mock)
-  const generateCourses = () => {
-    const list = [] as any[];
-    for (let i = 1; i <= 8; i++) {
-      list.push({ code: `${autoProgram}-${String(i).padStart(3, "0")}`, title: `Course ${i} for ${autoProgram}`, credit: i % 4 === 0 ? 0 : 3, semester: Math.ceil(i / 2), levelTerm: `${Math.ceil(i/2)}-term` });
-    }
-    setGeneratedCourses(list);
-    toast({ title: "Courses generated" });
-  };
+  // Load applications for student selector
+  useEffect(() => {
+    const loadApps = async () => {
+      try {
+        const res = await apiClient.getApplications({ limit: 100 });
+        if (res.success && res.data) setApplications(res.data.applications || []);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    loadApps();
+  }, []);
 
-  // Circulars
-  const openAddCircular = () => { setEditingCircular({ name: "", intake: "", session: "Fall", deadline: "", eligibility: "" }); setCircularDialogOpen(true); };
-  const saveCircular = () => { if (!editingCircular) return; if (!editingCircular.name) { toast({ title: "Validation", description: "Circular name required" }); return; } if (!editingCircular.id) { editingCircular.id = `c-${Date.now()}`; setCirculars((s) => [editingCircular, ...s]); toast({ title: "Circular added" }); } else { setCirculars((s) => s.map((c) => (c.id === editingCircular.id ? editingCircular : c))); toast({ title: "Circular updated" }); } setCircularDialogOpen(false); setEditingCircular(null); };
-  const deleteCircular = (id: string) => { setCirculars((s) => s.filter((c) => c.id !== id)); toast({ title: "Circular deleted" }); };
+  // Load academic history when student selected
+  useEffect(() => {
+    const loadHistory = async () => {
+      if (!selectedAppId) { setAcademicHistory([]); return; }
+      setLoadingHistory(true);
+      try {
+        const res = await apiClient.getAcademicHistory(Number(selectedAppId));
+        if (res.success) setAcademicHistory(res.data || []);
+      } catch (e) { console.error(e); }
+      finally { setLoadingHistory(false); }
+    };
+    loadHistory();
+  }, [selectedAppId]);
 
-  // Change history mock add
-  const addChangeHistory = (oldVal: any, newVal: any, field: string) => {
-    setChangeHistory((s) => [{ field, oldValue: oldVal, newValue: newVal, changedBy: "admin", date: new Date().toISOString() }, ...s]);
+  const addHistory = async () => {
+    if (!selectedAppId) { toast({ title: "Select Student first" }); return; }
+    try {
+      const payload = { ...newHistory, application_id: selectedAppId };
+      const res = await apiClient.addAcademicHistory(payload);
+      if (res.success) {
+        toast({ title: "Added", description: "Academic history added." });
+        setNewHistory({ level: "SSC", exam_name: "", institute_name: "", passing_year: new Date().getFullYear(), grade_point: "" });
+        // reload
+        const hres = await apiClient.getAcademicHistory(Number(selectedAppId));
+        if (hres.success) setAcademicHistory(hres.data || []);
+      } else {
+        toast({ title: "Failed", description: String(res.error), variant: "destructive" });
+      }
+    } catch (e) { console.error(e); toast({ title: "Error", description: "Failed to add", variant: "destructive" }); }
   };
 
   const feeCalculation = (pkg: any, credits: number, percentWaiver = 0, percentDiscount = 0, quotaPercent = 0) => {
@@ -347,311 +369,58 @@ export default function FeeStructureManagement() {
         </CardContent>
       </Card>
 
-      {/* Auto Course Offering */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Auto Course Offering (Level-Term Wise)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div>
-              <Label>Program</Label>
-              <Select value={autoProgram} onValueChange={setAutoProgram}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {PROGRAMS.map((p) => (<SelectItem key={p} value={p}>{p}</SelectItem>))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Session</Label>
-              <Select value={autoSession} onValueChange={setAutoSession}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Fall 2025">Fall 2025</SelectItem>
-                  <SelectItem value="Spring 2025">Spring 2025</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-end">
-              <Button onClick={generateCourses}>Generate Courses</Button>
-            </div>
-          </div>
-
-          {generatedCourses.length>0 && (
-            <div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Course Code</TableHead>
-                    <TableHead>Course Title</TableHead>
-                    <TableHead>Credit</TableHead>
-                    <TableHead>Semester</TableHead>
-                    <TableHead>Level-Term</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {generatedCourses.map((g) => (
-                    <TableRow key={g.code}>
-                      <TableCell>{g.code}</TableCell>
-                      <TableCell>{g.title}</TableCell>
-                      <TableCell>{g.credit}</TableCell>
-                      <TableCell>{g.semester}</TableCell>
-                      <TableCell>{g.levelTerm}</TableCell>
-                      <TableCell>
-                        <Button onClick={() => toast({ title: "Edit course", description: "Use course editor to modify before publishing" })}>Edit</Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <div className="mt-3">
-                <Button onClick={() => toast({ title: "Saved as default", description: "Generated offering saved as default for selected program/session" })}>Save as Default</Button>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Previous Education Data Management (display only) */}
+      {/* Previous Education Data Management: select a student and edit academic history */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Previous Education Data Management</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             <div>
-              <Label>SSC GPA</Label>
-              <Input />
-            </div>
-            <div>
-              <Label>SSC Board</Label>
-              <Input />
-            </div>
-            <div>
-              <Label>SSC Year</Label>
-              <Input />
-            </div>
-            <div>
-              <Label>SSC Institute</Label>
-              <Input />
-            </div>
-            <div>
-              <Label>HSC GPA</Label>
-              <Input />
-            </div>
-            <div>
-              <Label>HSC Board</Label>
-              <Input />
-            </div>
-            <div>
-              <Label>HSC Year</Label>
-              <Input />
-            </div>
-            <div>
-              <Label>HSC Institute</Label>
-              <Input />
-            </div>
-          </div>
-          <div className="mt-3 text-sm text-gray-600">Student profile tab will show education history using the fields above.</div>
-        </CardContent>
-      </Card>
-
-      {/* Admission Cancellation & Account Controls */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Admission Cancellation & Account Controls</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-2">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive">Cancel Admission</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Cancel Admission</AlertDialogTitle>
-                  <AlertDialogDescription>Are you sure?</AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>No</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => toast({ title: "Admission cancelled" })}>Yes, Cancel</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-
-            <Button onClick={() => toast({ title: "Account deactivated" })}>Deactivate Account</Button>
-            <Button onClick={() => toast({ title: "Account locked" })}>Lock Account</Button>
-            <Button onClick={() => toast({ title: "Password reset" })}>Reset Password</Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Department Change & Name Correction */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Department Change & Name Correction</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div>
-              <Label>Department Change</Label>
-              <Select>
+              <Label>Select Student (from Admissions)</Label>
+              <Select value={selectedAppId ? String(selectedAppId) : undefined} onValueChange={(v:any)=> setSelectedAppId(v ? Number(v) : null)}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Choose a student" />
                 </SelectTrigger>
                 <SelectContent>
-                  {PROGRAMS.map((p) => (<SelectItem key={p} value={p}>{p}</SelectItem>))}
+                  {applications.map((a:any)=> (
+                    <SelectItem key={a.id} value={String(a.id)}>{a.applicant_name} — {a.id}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              <div className="mt-2">
-                <Button onClick={() => toast({ title: "Change request submitted" })}>Request Change</Button>
-              </div>
             </div>
-            <div>
-              <Label>Name Correction</Label>
-              <Input />
-              <div className="mt-2">
-                <Button onClick={() => toast({ title: "Name correction requested" })}>Submit Correction</Button>
-              </div>
+            <div className="md:col-span-2">
+              <div className="text-sm text-gray-600">Choose a student first. Their academic history is editable and stored per application.</div>
             </div>
           </div>
 
-          <div className="mt-3">
-            <div className="font-medium">Change Log</div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Old Value</TableHead>
-                  <TableHead>New Value</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Changed By</TableHead>
-                  <TableHead>Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {changeHistory.map((c,i) => (
-                  <TableRow key={i}>
-                    <TableCell>{c.oldValue}</TableCell>
-                    <TableCell>{c.newValue}</TableCell>
-                    <TableCell>Pending</TableCell>
-                    <TableCell>{c.changedBy}</TableCell>
-                    <TableCell>{new Date(c.date).toLocaleString()}</TableCell>
-                  </TableRow>
+          <div>
+            <h3 className="font-medium mb-2">Academic History</h3>
+            {loadingHistory ? <div>Loading...</div> : (
+              <div className="space-y-2">
+                {academicHistory.length===0 ? <div className="text-sm text-gray-500">No records</div> : academicHistory.map((h:any)=> (
+                  <div key={h.academic_history_id || h.id} className="p-2 border rounded">
+                    <div className="font-semibold">{h.level} — {h.institute_name} ({h.passing_year})</div>
+                    <div className="text-xs text-gray-500">{h.exam_name} — GPA: {h.grade_point || h.grade_point}</div>
+                  </div>
                 ))}
-              </TableBody>
-            </Table>
+
+                <div className="mt-4 border-t pt-3">
+                  <h4 className="font-medium">Add Academic History</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-2">
+                    <Input placeholder="Level (SSC/HSC/etc)" value={newHistory.level} onChange={(e:any)=> setNewHistory({...newHistory, level: e.target.value})} />
+                    <Input placeholder="Exam Name" value={newHistory.exam_name} onChange={(e:any)=> setNewHistory({...newHistory, exam_name: e.target.value})} />
+                    <Input placeholder="Institute" value={newHistory.institute_name} onChange={(e:any)=> setNewHistory({...newHistory, institute_name: e.target.value})} />
+                    <Input placeholder="Passing Year" type="number" value={newHistory.passing_year} onChange={(e:any)=> setNewHistory({...newHistory, passing_year: Number(e.target.value)})} />
+                    <Input placeholder="Grade Point / GPA" value={newHistory.grade_point} onChange={(e:any)=> setNewHistory({...newHistory, grade_point: e.target.value})} />
+                  </div>
+                  <div className="flex justify-end mt-3">
+                    <Button onClick={addHistory} disabled={!selectedAppId}>Add</Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Admission Circular Management */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Admission Circular Management</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-between mb-4">
-            <div />
-            <div>
-              <Button onClick={openAddCircular}>+ Add Circular</Button>
-            </div>
-          </div>
-
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Circular Name</TableHead>
-                <TableHead>Intake</TableHead>
-                <TableHead>Session</TableHead>
-                <TableHead>Deadline</TableHead>
-                <TableHead>Eligibility</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {circulars.map((c) => (
-                <TableRow key={c.id}>
-                  <TableCell>{c.name}</TableCell>
-                  <TableCell>{c.intake}</TableCell>
-                  <TableCell>{c.session}</TableCell>
-                  <TableCell>{c.deadline}</TableCell>
-                  <TableCell>{c.eligibility}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button onClick={() => { setEditingCircular({ ...c }); setCircularDialogOpen(true); }}>Edit</Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="destructive">Delete</Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Circular</AlertDialogTitle>
-                            <AlertDialogDescription>Confirm delete</AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deleteCircular(c.id)}>Delete</AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Change History Report */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Change History Report</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <Label>Student ID</Label>
-              <Input />
-            </div>
-            <div>
-              <Label>Date From</Label>
-              <Input type="date" />
-            </div>
-            <div>
-              <Label>Date To</Label>
-              <Input type="date" />
-            </div>
-          </div>
-
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Field Changed</TableHead>
-                <TableHead>Old Value</TableHead>
-                <TableHead>New Value</TableHead>
-                <TableHead>Changed By</TableHead>
-                <TableHead>Date/Time</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {changeHistory.map((h,i)=> (
-                <TableRow key={i}>
-                  <TableCell>{h.field}</TableCell>
-                  <TableCell>{h.oldValue}</TableCell>
-                  <TableCell>{h.newValue}</TableCell>
-                  <TableCell>{h.changedBy}</TableCell>
-                  <TableCell>{new Date(h.date).toLocaleString()}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
         </CardContent>
       </Card>
 
@@ -855,50 +624,6 @@ export default function FeeStructureManagement() {
           <DialogFooter>
             <Button onClick={saveQuota}>Save</Button>
             <Button variant="outline" onClick={()=>{ setQuotaDialogOpen(false); setEditingQuota(null); }}>Cancel</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Circular Dialog */}
-      <Dialog open={circularDialogOpen} onOpenChange={setCircularDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingCircular?.id ? "Edit Circular" : "Add Circular"}</DialogTitle>
-          </DialogHeader>
-          <div className="grid grid-cols-1 gap-3 mt-3">
-            <div>
-              <Label>Circular Name</Label>
-              <Input value={editingCircular?.name || ""} onChange={(e:any)=>setEditingCircular({...editingCircular, name: e.target.value})} />
-            </div>
-            <div>
-              <Label>Intake</Label>
-              <Input value={editingCircular?.intake || ""} onChange={(e:any)=>setEditingCircular({...editingCircular, intake: e.target.value})} />
-            </div>
-            <div>
-              <Label>Session</Label>
-              <Select value={editingCircular?.session || "Fall"} onValueChange={(v:any)=>setEditingCircular({...editingCircular, session: v})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Spring">Spring</SelectItem>
-                  <SelectItem value="Summer">Summer</SelectItem>
-                  <SelectItem value="Fall">Fall</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Deadline</Label>
-              <Input type="date" value={editingCircular?.deadline || ""} onChange={(e:any)=>setEditingCircular({...editingCircular, deadline: e.target.value})} />
-            </div>
-            <div>
-              <Label>Eligibility</Label>
-              <Textarea value={editingCircular?.eligibility || ""} onChange={(e:any)=>setEditingCircular({...editingCircular, eligibility: e.target.value})} />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={saveCircular}>Save</Button>
-            <Button variant="outline" onClick={()=>{ setCircularDialogOpen(false); setEditingCircular(null); }}>Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
