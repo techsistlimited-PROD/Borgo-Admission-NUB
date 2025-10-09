@@ -177,6 +177,19 @@ export default function CreditTransferReview(){
                 </div>
               ))}
             </div>
+
+            {/* Debug helper: load example courses directly into catalog for testing */}
+            <div>
+              <Button onClick={() => {
+                const examples = [
+                  { id: 'cse-201', title: 'Data Structures', credits: 3, code: 'CSE 201' },
+                  { id: 'math-102', title: 'Calculus II', credits: 3, code: 'MATH 102' },
+                  { id: 'eng-102', title: 'Academic Writing II', credits: 3, code: 'ENG 102' },
+                ];
+                setCoursesCatalog(examples);
+              }}><Plus className="w-4 h-4 mr-2"/> Load Examples</Button>
+            </div>
+
             <div>
               <Button onClick={addPickedCourse} disabled={!pickedCourse}><Plus className="w-4 h-4 mr-2"/> Add Course</Button>
             </div>
