@@ -277,6 +277,15 @@ class ApiClient {
 
   // Programs and departments — prefer server when available
   async getPrograms(): Promise<ApiResponse> {
+    // If running inside Builder/preview environment, prefer mock to avoid network errors
+    try {
+      if (typeof window !== "undefined" && window.location && window.location.host && window.location.host.includes("builder")) {
+        return await mockApi.getPrograms();
+      }
+    } catch (e) {
+      // ignore
+    }
+
     if (this.serverAvailable) {
       try {
         const res = await fetch("/api/programs");
