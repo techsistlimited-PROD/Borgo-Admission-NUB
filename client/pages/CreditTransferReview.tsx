@@ -96,15 +96,15 @@ export default function CreditTransferReview(){
 
   // CGPA calculations
   const transferStats = useMemo(()=>{
-    const credits = transferCourses.reduce((s:number,c:any)=> s + (Number(c.credits)||0), 0);
-    const weighted = transferCourses.reduce((s:number,c:any)=> s + ((Number(c.gpa)||0) * (Number(c.credits)||0)), 0);
+    const credits = savedTransferCourses.reduce((s:number,c:any)=> s + (Number(c.credits)||0), 0);
+    const weighted = savedTransferCourses.reduce((s:number,c:any)=> s + ((Number(c.gpa)||0) * (Number(c.credits)||0)), 0);
     const transferGPA = credits>0 ? (weighted/credits) : 0;
     const currentCredits = Number(application?.completedCredits || application?.completed_credits || application?.academic_history?.completedCredits || 0);
     const currentCGPA = Number(application?.previousCGPA || application?.previous_cgpa || application?.academic_history?.previousCGPA || application?.academic_history?.previous_cgpa || 0);
     const combinedCredits = currentCredits + credits;
     const combinedCGPA = combinedCredits>0 ? ((currentCGPA*currentCredits) + (transferGPA*credits))/combinedCredits : 0;
     return { credits, transferGPA, currentCredits, currentCGPA, combinedCredits, combinedCGPA };
-  }, [transferCourses, application]);
+  }, [savedTransferCourses, application]);
 
   const handleSave = async ()=>{
     if (!application) return;
