@@ -135,7 +135,18 @@ export default function CreditTransferReview(){
     setMakingStudent(true);
     try{
       // ensure transfer courses saved first
-      await apiClient.saveTransferCourses({ applicant_id: application.id, courses: transferCourses });
+      // if there are pending courses, merge and persist them first
+      if (pendingCourses.length>0) {
+        const mergedMap: Record<string, any> = {};
+        savedTransferCourses.forEach((c:any)=> { mergedMap[c.code || c.id] = c; });
+        pendingCourses.forEach((c:any)=> { mergedMap[c.code || c.id] = c; });
+        const merged = Object.values(mergedMap);
+        await apiClient.saveTransferCourses({ applicant_id: application.id, courses: merged });
+        setSavedTransferCourses(merged);
+        setPendingCourses([]);
+      } else {
+        await apiClient.saveTransferCourses({ applicant_id: application.id, courses: savedTransferCourses });
+      }
       const res = await apiClient.generateStudentForApplicant(application.id);
       if (res.success && res.data){
         setStudentCreated(res.data);
