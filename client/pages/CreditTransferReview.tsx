@@ -80,6 +80,7 @@ export default function CreditTransferReview(){
       toast({ title: 'Already added', description: 'Course already in list' });
       return;
     }
+    console.debug('[CreditTransferReview] addPickedCourse', pickedCourse);
     setPendingCourses(prev=>[...prev, { code: pickedCourse.id, title: pickedCourse.title, credits: pickedCourse.credits, grade: '', gpa: '' }]);
     setPickedCourse(null);
     setSearchCode('');
