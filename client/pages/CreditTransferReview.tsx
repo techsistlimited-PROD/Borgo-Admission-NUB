@@ -228,6 +228,29 @@ export default function CreditTransferReview(){
             </div>
           </div>
 
+          {/* Pending courses (staged but not saved) */}
+          {pendingCourses.length>0 && (
+            <div className="mb-4">
+              <div className="font-medium mb-2">Pending Courses (not yet saved)</div>
+              <div className="flex flex-col gap-2">
+                {pendingCourses.map(p=> (
+                  <div key={p.code} className="p-2 border rounded flex items-center justify-between">
+                    <div>
+                      <div className="font-medium">{p.code} - {p.title}</div>
+                      <div className="text-sm text-gray-600">Credits: {p.credits}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Input placeholder="Grade" className="w-28" value={p.grade || ''} onChange={(e:any)=>updateCourseField(p.code,'grade',e.target.value)} />
+                      <Input placeholder="GPA" className="w-28" value={p.gpa || ''} onChange={(e:any)=>updateCourseField(p.code,'gpa',e.target.value)} />
+                      <Button variant="ghost" onClick={()=>removeCourse(p.code)}><Trash className="w-4 h-4"/></Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Saved transfer courses (transcript) */}
           <Table>
             <TableHeader>
               <TableRow>
@@ -240,7 +263,7 @@ export default function CreditTransferReview(){
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transferCourses.map((c:any)=> (
+              {savedTransferCourses.map((c:any)=> (
                 <TableRow key={c.code}>
                   <TableCell>{c.code}</TableCell>
                   <TableCell>{c.title}</TableCell>
@@ -256,7 +279,7 @@ export default function CreditTransferReview(){
                   </TableCell>
                 </TableRow>
               ))}
-              {transferCourses.length===0 && (
+              {savedTransferCourses.length===0 && (
                 <TableRow><TableCell colSpan={6}>No transfer courses added</TableCell></TableRow>
               )}
             </TableBody>
