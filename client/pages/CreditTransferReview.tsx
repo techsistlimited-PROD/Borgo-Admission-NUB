@@ -88,11 +88,11 @@ export default function CreditTransferReview(){
   const canMakeStudent = useMemo(()=>{
     if (!application) return false;
     if (!application.documents || !application.documents.transcript) return false;
-    if (transferCourses.length === 0) return false;
-    // all courses must have grade and gpa
-    if (transferCourses.some(c=> !c.grade || c.grade.toString().trim()==='' || c.gpa===undefined || c.gpa==='' )) return false;
+    // require at least one saved (persisted) transfer course with grades
+    if (savedTransferCourses.length === 0) return false;
+    if (savedTransferCourses.some(c=> !c.grade || c.grade.toString().trim()==='' || c.gpa===undefined || c.gpa==='' )) return false;
     return true;
-  }, [application, transferCourses]);
+  }, [application, savedTransferCourses]);
 
   // CGPA calculations
   const transferStats = useMemo(()=>{
