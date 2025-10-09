@@ -321,47 +321,67 @@ export default function CreditTransferReview(){
           <CardTitle>Transcript Preview (with Transferred Courses)</CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-2">
+            <div className="font-semibold">Fall 2024</div>
+            <div className="text-sm text-gray-600">Term GPA: {(() => {
+              const termCredits = savedTransferCourses.reduce((s:number,c:any)=> s + (Number(c.credits)||0), 0);
+              const termTgp = savedTransferCourses.reduce((s:number,c:any)=> {
+                const gp = Number(c.gpa) || (c.grade ? letterGradeToGP(c.grade) : 0);
+                return s + (gp * (Number(c.credits)||0));
+              }, 0);
+              return termCredits>0 ? (termTgp/termCredits).toFixed(3) : '0.000';
+            })()}</div>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full table-auto text-sm">
               <thead>
                 <tr className="text-xs text-gray-600 border-b">
-                  <th className="px-2 py-1">Course Code</th>
-                  <th className="px-2 py-1">Course Title</th>
-                  <th className="px-2 py-1">Credits</th>
-                  <th className="px-2 py-1">Grade</th>
-                  <th className="px-2 py-1">Notes</th>
+                  <th className="px-2 py-1 text-left">Course Code</th>
+                  <th className="px-2 py-1 text-left">Course Name</th>
+                  <th className="px-2 py-1 text-right">Credit</th>
+                  <th className="px-2 py-1 text-center">Grade</th>
+                  <th className="px-2 py-1 text-right">GP</th>
+                  <th className="px-2 py-1 text-right">TGP</th>
+                  <th className="px-2 py-1 text-center">Is Final</th>
                 </tr>
               </thead>
               <tbody>
-                {savedTransferCourses.map((c:any,i:number)=> (
-                  <tr key={`t-${i}`} className="odd:bg-white even:bg-gray-50">
-                    <td className="px-2 py-1">{c.code}</td>
-                    <td className="px-2 py-1">{c.title}</td>
-                    <td className="px-2 py-1">{c.credits}</td>
-                    <td className="px-2 py-1">{c.grade || '-'}</td>
-                    <td className="px-2 py-1">{Number(c.gpa || '') ? `GPA: ${c.gpa}` : 'Transferred'}</td>
-                  </tr>
-                ))}
+                {savedTransferCourses.map((c:any,i:number)=> {
+                  const gp = Number(c.gpa) || (c.grade ? letterGradeToGP(c.grade) : 0);
+                  const credits = Number(c.credits)||0;
+                  const tgp = +(gp * credits).toFixed(2);
+                  return (
+                    <tr key={`t-${i}`} className="odd:bg-white even:bg-gray-50">
+                      <td className="px-2 py-1">{c.code}</td>
+                      <td className="px-2 py-1">{c.title}</td>
+                      <td className="px-2 py-1 text-right">{credits}</td>
+                      <td className="px-2 py-1 text-center">{c.grade || '-'}</td>
+                      <td className="px-2 py-1 text-right">{gp || '-'}</td>
+                      <td className="px-2 py-1 text-right">{tgp}</td>
+                      <td className="px-2 py-1 text-center">{c.is_final ? 'Yes' : ''}</td>
+                    </tr>
+                  );
+                })}
 
                 {savedTransferCourses.length === 0 && (
-                  <tr><td colSpan={5} className="p-4 text-sm text-gray-500">No transferred courses added yet</td></tr>
+                  <tr><td colSpan={7} className="p-4 text-sm text-gray-500">No transferred courses added yet</td></tr>
                 )}
               </tbody>
             </table>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-3 border rounded">
-              <div className="text-xs text-gray-500">Total Transferred Credits</div>
-              <div className="font-semibold text-lg">{transferStats.credits}</div>
-            </div>
-            <div className="p-3 border rounded">
-              <div className="text-xs text-gray-500">Combined CGPA (after transfer)</div>
-              <div className="font-semibold text-lg">{transferStats.combinedCGPA.toFixed(2)}</div>
-            </div>
+          <div className="mt-4 text-right">
+            <div className="text-sm text-gray-600">Total: {savedTransferCourses.reduce((s:number,c:any)=> s + (Number(c.credits)||0),0)} credits, TGP: {savedTransferCourses.reduce((s:number,c:any)=> {
+              const gp = Number(c.gpa) || (c.grade ? letterGradeToGP(c.grade) : 0);
+              return s + (gp * (Number(c.credits)||0));
+            },0)}</div>
           </div>
         </CardContent>
       </Card>
+
+
+
 
       {/* Success Modal */}
       {studentModalOpen && (
