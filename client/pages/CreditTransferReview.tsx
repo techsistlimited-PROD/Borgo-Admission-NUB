@@ -68,11 +68,21 @@ export default function CreditTransferReview(){
   }
 
   const removeCourse = (code: string)=>{
-    setTransferCourses(prev=>prev.filter(c=>c.code !== code));
+    // remove from pending if exists, otherwise from saved (transcript)
+    if (pendingCourses.find(c=>c.code===code || c.id===code)){
+      setPendingCourses(prev=>prev.filter(c=>c.code !== code));
+      return;
+    }
+    setSavedTransferCourses(prev=>prev.filter(c=>c.code !== code));
   }
 
   const updateCourseField = (code: string, field: string, value: any)=>{
-    setTransferCourses(prev=> prev.map(c=> c.code===code ? { ...c, [field]: value } : c));
+    // update pending first, otherwise saved
+    if (pendingCourses.find(c=>c.code===code || c.id===code)){
+      setPendingCourses(prev=> prev.map(c=> c.code===code ? { ...c, [field]: value } : c));
+      return;
+    }
+    setSavedTransferCourses(prev=> prev.map(c=> c.code===code ? { ...c, [field]: value } : c));
   }
 
   const canMakeStudent = useMemo(()=>{
