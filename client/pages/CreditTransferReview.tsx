@@ -349,6 +349,17 @@ export default function CreditTransferReview(){
               </tbody>
             </table>
           </div>
+
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-3 border rounded">
+              <div className="text-xs text-gray-500">Total Transferred Credits</div>
+              <div className="font-semibold text-lg">{transferStats.credits}</div>
+            </div>
+            <div className="p-3 border rounded">
+              <div className="text-xs text-gray-500">Combined CGPA (after transfer)</div>
+              <div className="font-semibold text-lg">{transferStats.combinedCGPA.toFixed(2)}</div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
