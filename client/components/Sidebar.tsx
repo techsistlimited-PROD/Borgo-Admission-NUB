@@ -56,16 +56,44 @@ export default function Sidebar({ userType }: SidebarProps) {
 
   const adminPages = [
     { name: "Admissions", path: "/admin/admissions", icon: Users },
-    { name: "Credit Transfer", path: "/admin/credit-transfers", icon: BookOpen },
-    { name: "Fee Structure & Packages", path: "/admin/fee-structure", icon: CreditCard },
+    {
+      name: "Credit Transfer",
+      path: "/admin/credit-transfers",
+      icon: BookOpen,
+    },
+    {
+      name: "Fee Structure & Packages",
+      path: "/admin/fee-structure",
+      icon: CreditCard,
+    },
     { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
-    { name: "ID Card Generation", path: "/admin/id-card-generation", icon: Shield },
+    {
+      name: "ID Card Generation",
+      path: "/admin/id-card-generation",
+      icon: Shield,
+    },
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
-    { name: "Student Management", path: "/admin/student-management", icon: UserCog },
+    {
+      name: "Student Management",
+      path: "/admin/student-management",
+      icon: UserCog,
+    },
     { name: "Student Search", path: "/admin/student-search", icon: Users },
-    { name: "Account Management", path: "/admin/account-management", icon: Lock },
-    { name: "Admission Circular", path: "/admin/admission-circular", icon: Mail },
-    { name: "Departmental Reports", path: "/admin/department-reports", icon: PieChart },
+    {
+      name: "Account Management",
+      path: "/admin/account-management",
+      icon: Lock,
+    },
+    {
+      name: "Admission Circular",
+      path: "/admin/admission-circular",
+      icon: Mail,
+    },
+    {
+      name: "Departmental Reports",
+      path: "/admin/department-reports",
+      icon: PieChart,
+    },
     { name: "Report Centre", path: "/admin/report-centre", icon: PieChart },
     { name: "Messaging", path: "/admin/messaging", icon: Mail },
     { name: "Templates", path: "/admin/templates", icon: Mail },
@@ -75,7 +103,11 @@ export default function Sidebar({ userType }: SidebarProps) {
     { name: "Referrals", path: "/admin/referrals", icon: Users },
     { name: "Change History", path: "/admin/change-history", icon: History },
     { name: "Configuration", path: "/admin/configuration", icon: Settings },
-    { name: "Permission Configuration", path: "/admin/permissions", icon: Shield },
+    {
+      name: "Permission Configuration",
+      path: "/admin/permissions",
+      icon: Shield,
+    },
   ];
 
   const loginPages = [

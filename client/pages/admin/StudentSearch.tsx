@@ -3,8 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import apiClient from "@/lib/api";
 import { departments, getProgramById } from "@/lib/programData";
@@ -59,7 +72,11 @@ export default function StudentSearch() {
         } else {
           setResults([]);
           setTotal(0);
-          toast({ title: "Not found", description: "No student found for that ID", variant: "destructive" });
+          toast({
+            title: "Not found",
+            description: "No student found for that ID",
+            variant: "destructive",
+          });
         }
         setLoading(false);
         return;
@@ -85,11 +102,17 @@ export default function StudentSearch() {
       const totalRes = res.data?.total ?? students.length;
 
       // Apply exact-match filters client-side where required
-      if (uniqueId) students = students.filter((s) => (s.ugc_id || "") === uniqueId);
-      if (cellNumber) students = students.filter((s) => (s.mobile_number || "") === cellNumber);
+      if (uniqueId)
+        students = students.filter((s) => (s.ugc_id || "") === uniqueId);
+      if (cellNumber)
+        students = students.filter(
+          (s) => (s.mobile_number || "") === cellNumber,
+        );
       if (studentName) {
         const q = studentName.toLowerCase();
-        students = students.filter((s) => (s.full_name || "").toLowerCase().includes(q));
+        students = students.filter((s) =>
+          (s.full_name || "").toLowerCase().includes(q),
+        );
       }
 
       // Sorting client-side
@@ -103,9 +126,13 @@ export default function StudentSearch() {
 
       setResults(students);
       setTotal(totalRes);
-    } catch (e:any) {
+    } catch (e: any) {
       console.error(e);
-      toast({ title: "Error", description: String(e.message || e), variant: "destructive" });
+      toast({
+        title: "Error",
+        description: String(e.message || e),
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -149,15 +176,26 @@ export default function StudentSearch() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
             <div className="md:col-span-2">
               <Label>Any detail</Label>
-              <Input placeholder="Search by any detail..." value={anyText} onChange={(e:any)=>setAnyText(e.target.value)} />
+              <Input
+                placeholder="Search by any detail..."
+                value={anyText}
+                onChange={(e: any) => setAnyText(e.target.value)}
+              />
             </div>
             <div className="flex items-end">
               <div className="w-full">
                 <Label>&nbsp;</Label>
                 <div className="flex gap-2">
-                  <Button onClick={()=>runSearch(1)}>Search</Button>
-                  <Button variant="outline" onClick={clearFilters}>Clear Filters</Button>
-                  <Button variant="ghost" onClick={()=>setShowAdvanced(s=>!s)}>{showAdvanced? 'Hide Filters' : 'Advanced Filters'}</Button>
+                  <Button onClick={() => runSearch(1)}>Search</Button>
+                  <Button variant="outline" onClick={clearFilters}>
+                    Clear Filters
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setShowAdvanced((s) => !s)}
+                  >
+                    {showAdvanced ? "Hide Filters" : "Advanced Filters"}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -168,23 +206,42 @@ export default function StudentSearch() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
                   <Label>Cell Number</Label>
-                  <Input placeholder="Enter Mobile Number" value={cellNumber} onChange={(e:any)=>setCellNumber(e.target.value)} />
+                  <Input
+                    placeholder="Enter Mobile Number"
+                    value={cellNumber}
+                    onChange={(e: any) => setCellNumber(e.target.value)}
+                  />
                 </div>
                 <div>
                   <Label>Student ID</Label>
-                  <Input placeholder="Enter Student ID" value={studentId} onChange={(e:any)=>setStudentId(e.target.value)} />
+                  <Input
+                    placeholder="Enter Student ID"
+                    value={studentId}
+                    onChange={(e: any) => setStudentId(e.target.value)}
+                  />
                 </div>
                 <div>
                   <Label>Unique ID (UGC)</Label>
-                  <Input placeholder="Enter UGC/Unique ID" value={uniqueId} onChange={(e:any)=>setUniqueId(e.target.value)} />
+                  <Input
+                    placeholder="Enter UGC/Unique ID"
+                    value={uniqueId}
+                    onChange={(e: any) => setUniqueId(e.target.value)}
+                  />
                 </div>
                 <div>
                   <Label>Student Name</Label>
-                  <Input placeholder="Enter Full or Partial Name" value={studentName} onChange={(e:any)=>setStudentName(e.target.value)} />
+                  <Input
+                    placeholder="Enter Full or Partial Name"
+                    value={studentName}
+                    onChange={(e: any) => setStudentName(e.target.value)}
+                  />
                 </div>
                 <div>
                   <Label>Admission Semester</Label>
-                  <Select value={admissionSemester} onValueChange={(v:any)=>setAdmissionSemester(v)}>
+                  <Select
+                    value={admissionSemester}
+                    onValueChange={(v: any) => setAdmissionSemester(v)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Semester" />
                     </SelectTrigger>
@@ -198,24 +255,38 @@ export default function StudentSearch() {
                 </div>
                 <div>
                   <Label>Program</Label>
-                  <Select value={programCode} onValueChange={(v:any)=>setProgramCode(v)}>
+                  <Select
+                    value={programCode}
+                    onValueChange={(v: any) => setProgramCode(v)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Program" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">All Programs</SelectItem>
-                      {programOptions.map((p)=> <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+                      {programOptions.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label>Campus</Label>
-                  <Select value={campus} onValueChange={(v:any)=>setCampus(v)}>
+                  <Select
+                    value={campus}
+                    onValueChange={(v: any) => setCampus(v)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Campus" />
                     </SelectTrigger>
                     <SelectContent>
-                      {campusOptions.map((c)=> <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                      {campusOptions.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -224,14 +295,31 @@ export default function StudentSearch() {
           )}
 
           <div>
-            <div className="text-sm text-gray-600 mb-2">Results: {total} — Page {page}</div>
+            <div className="text-sm text-gray-600 mb-2">
+              Results: {total} — Page {page}
+            </div>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead onClick={()=>changeSort('student_id')} className="cursor-pointer">Student ID</TableHead>
+                  <TableHead
+                    onClick={() => changeSort("student_id")}
+                    className="cursor-pointer"
+                  >
+                    Student ID
+                  </TableHead>
                   <TableHead>Unique ID (UGC)</TableHead>
-                  <TableHead onClick={()=>changeSort('full_name')} className="cursor-pointer">Student Name</TableHead>
-                  <TableHead onClick={()=>changeSort('program_code')} className="cursor-pointer">Program</TableHead>
+                  <TableHead
+                    onClick={() => changeSort("full_name")}
+                    className="cursor-pointer"
+                  >
+                    Student Name
+                  </TableHead>
+                  <TableHead
+                    onClick={() => changeSort("program_code")}
+                    className="cursor-pointer"
+                  >
+                    Program
+                  </TableHead>
                   <TableHead>Admission Semester</TableHead>
                   <TableHead>Campus</TableHead>
                   <TableHead>Mobile Number</TableHead>
@@ -240,18 +328,27 @@ export default function StudentSearch() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {results.map((s:any)=> (
+                {results.map((s: any) => (
                   <TableRow key={s.student_id}>
                     <TableCell>{s.student_id}</TableCell>
-                    <TableCell>{s.ugc_id || s.university_id || '-'}</TableCell>
-                    <TableCell>{s.full_name || '-'}</TableCell>
-                    <TableCell>{(getProgramById(s.program_code || '')?.name) || s.program_code || '-'}</TableCell>
-                    <TableCell>{s.batch || s.semester || '-'}</TableCell>
-                    <TableCell>{s.campus || '-'}</TableCell>
-                    <TableCell>{s.mobile_number || '-'}</TableCell>
-                    <TableCell>{s.is_active ? 'Active' : 'Inactive'}</TableCell>
+                    <TableCell>{s.ugc_id || s.university_id || "-"}</TableCell>
+                    <TableCell>{s.full_name || "-"}</TableCell>
                     <TableCell>
-                      <Link to={`/admin/student-profile?id=${s.student_id}`} className="text-deep-plum hover:underline">View Profile</Link>
+                      {getProgramById(s.program_code || "")?.name ||
+                        s.program_code ||
+                        "-"}
+                    </TableCell>
+                    <TableCell>{s.batch || s.semester || "-"}</TableCell>
+                    <TableCell>{s.campus || "-"}</TableCell>
+                    <TableCell>{s.mobile_number || "-"}</TableCell>
+                    <TableCell>{s.is_active ? "Active" : "Inactive"}</TableCell>
+                    <TableCell>
+                      <Link
+                        to={`/admin/student-profile?id=${s.student_id}`}
+                        className="text-deep-plum hover:underline"
+                      >
+                        View Profile
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -260,10 +357,23 @@ export default function StudentSearch() {
 
             <div className="mt-3 flex items-center justify-between">
               <div>
-                <Button onClick={()=> runSearch(Math.max(1, page-1))} disabled={page<=1 || loading}>Prev</Button>
-                <Button className="ml-2" onClick={()=> runSearch(page+1)} disabled={ (page*limit) >= total || loading}>Next</Button>
+                <Button
+                  onClick={() => runSearch(Math.max(1, page - 1))}
+                  disabled={page <= 1 || loading}
+                >
+                  Prev
+                </Button>
+                <Button
+                  className="ml-2"
+                  onClick={() => runSearch(page + 1)}
+                  disabled={page * limit >= total || loading}
+                >
+                  Next
+                </Button>
               </div>
-              <div className="text-sm text-gray-600">Showing {results.length} of {total}</div>
+              <div className="text-sm text-gray-600">
+                Showing {results.length} of {total}
+              </div>
             </div>
           </div>
         </CardContent>

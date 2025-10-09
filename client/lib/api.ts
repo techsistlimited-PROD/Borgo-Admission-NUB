@@ -99,7 +99,11 @@ class ApiClient {
     return await mockApi.getApplication(id);
   }
 
-  async updateApplicationDocument(id: string, key: string, fileMeta: any): Promise<ApiResponse> {
+  async updateApplicationDocument(
+    id: string,
+    key: string,
+    fileMeta: any,
+  ): Promise<ApiResponse> {
     return await mockApi.updateApplicationDocument(id, key, fileMeta as any);
   }
 
@@ -144,12 +148,18 @@ class ApiClient {
     return await mockApi.generateApplicationIds(id);
   }
 
-  async setAcademicVerification(id: string, verified: boolean): Promise<ApiResponse> {
+  async setAcademicVerification(
+    id: string,
+    verified: boolean,
+  ): Promise<ApiResponse> {
     // @ts-ignore
     return await mockApi.setAcademicVerification(id, verified);
   }
 
-  async setPaymentVerification(id: string, verified: boolean): Promise<ApiResponse> {
+  async setPaymentVerification(
+    id: string,
+    verified: boolean,
+  ): Promise<ApiResponse> {
     // @ts-ignore
     return await mockApi.setPaymentVerification(id, verified);
   }
@@ -1000,7 +1010,10 @@ class ApiClient {
     try {
       return await mockApi.generateStudentForApplicant(applicantId);
     } catch (e) {
-      console.warn('mock generateStudentForApplicant failed, attempting server call', e);
+      console.warn(
+        "mock generateStudentForApplicant failed, attempting server call",
+        e,
+      );
     }
 
     if (this.serverAvailable) {

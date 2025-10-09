@@ -121,20 +121,62 @@ class MockApiService {
         },
       ],
       documents: {
-        photograph: { file_name: 'rahim_uddin.jpg', file_url: '/placeholder.svg' },
-        ssc_transcript: { file_name: 'ssc_transcript.pdf', file_url: '/placeholder.svg' },
-        hsc_transcript: { file_name: 'hsc_transcript.pdf', file_url: '/placeholder.svg' },
-        nid_card: { file_name: 'nid_card.jpg', file_url: '/placeholder.svg' },
+        photograph: {
+          file_name: "rahim_uddin.jpg",
+          file_url: "/placeholder.svg",
+        },
+        ssc_transcript: {
+          file_name: "ssc_transcript.pdf",
+          file_url: "/placeholder.svg",
+        },
+        hsc_transcript: {
+          file_name: "hsc_transcript.pdf",
+          file_url: "/placeholder.svg",
+        },
+        nid_card: { file_name: "nid_card.jpg", file_url: "/placeholder.svg" },
       },
       fees: [
-        { id: 1, cost_head: 'Total Course Fee', credits_taken: 12.0, cost_amount: 15600.0, deductive_amount: 0.0, remarks: 'Auto created payable during registration entry from ERP' },
-        { id: 2, cost_head: 'Retake Course Fee', credits_taken: 0.0, cost_amount: 12000.0, deductive_amount: 0.0, remarks: '' },
-        { id: 3, cost_head: 'Semester Fee', credits_taken: 0.0, cost_amount: 5000.0, deductive_amount: 0.0, remarks: '' },
-        { id: 4, cost_head: 'F/Asst.', credits_taken: 0.0, cost_amount: 1000.0, deductive_amount: 0.0, remarks: '' },
+        {
+          id: 1,
+          cost_head: "Total Course Fee",
+          credits_taken: 12.0,
+          cost_amount: 15600.0,
+          deductive_amount: 0.0,
+          remarks: "Auto created payable during registration entry from ERP",
+        },
+        {
+          id: 2,
+          cost_head: "Retake Course Fee",
+          credits_taken: 0.0,
+          cost_amount: 12000.0,
+          deductive_amount: 0.0,
+          remarks: "",
+        },
+        {
+          id: 3,
+          cost_head: "Semester Fee",
+          credits_taken: 0.0,
+          cost_amount: 5000.0,
+          deductive_amount: 0.0,
+          remarks: "",
+        },
+        {
+          id: 4,
+          cost_head: "F/Asst.",
+          credits_taken: 0.0,
+          cost_amount: 1000.0,
+          deductive_amount: 0.0,
+          remarks: "",
+        },
       ],
-      waiver: { type: 'Merit', percentage: 30, status: 'active', note: 'Applied based on HSC GPA' },
-      payment_status: 'paid',
-      admission_test_status: 'selected',
+      waiver: {
+        type: "Merit",
+        percentage: 30,
+        status: "active",
+        note: "Applied based on HSC GPA",
+      },
+      payment_status: "paid",
+      admission_test_status: "selected",
     },
     {
       id: "app-002",
@@ -210,7 +252,8 @@ class MockApiService {
       code: "CSE 201",
       credits: 3,
       type: "theory",
-      description: "Linear and non-linear data structures, trees, graphs, hashing",
+      description:
+        "Linear and non-linear data structures, trees, graphs, hashing",
     },
     {
       id: "math-102",
@@ -218,7 +261,8 @@ class MockApiService {
       code: "MATH 102",
       credits: 3,
       type: "theory",
-      description: "Sequences and series, multivariable calculus, partial derivatives",
+      description:
+        "Sequences and series, multivariable calculus, partial derivatives",
     },
     {
       id: "eng-102",
@@ -234,7 +278,8 @@ class MockApiService {
       code: "HIST 101",
       credits: 3,
       type: "theory",
-      description: "Global historical developments from ancient to modern times",
+      description:
+        "Global historical developments from ancient to modern times",
     },
   ];
 
@@ -568,37 +613,59 @@ class MockApiService {
     };
   }
 
-  async setAcademicVerification(id: string, verified: boolean): Promise<ApiResponse> {
-    await this.delay();
-    const appIndex = this.applications.findIndex((app) => app.id === id || app.uuid === id);
-    if (appIndex === -1) return { success: false, error: 'Application not found' };
-    this.applications[appIndex].academic_verified = !!verified;
-    return { success: true, data: { academic_verified: !!verified } };
-  }
-
-  async setPaymentVerification(id: string, verified: boolean): Promise<ApiResponse> {
-    await this.delay();
-    const appIndex = this.applications.findIndex((app) => app.id === id || app.uuid === id);
-    if (appIndex === -1) return { success: false, error: 'Application not found' };
-    this.applications[appIndex].payment_verified = !!verified;
-    // keep payment_status field in sync
-    this.applications[appIndex].payment_status = !!verified ? 'verified' : (this.applications[appIndex].payment_status || 'pending');
-    return { success: true, data: { payment_verified: !!verified } };
-  }
-
-  // Update application document (mock file upload)
-  async updateApplicationDocument(id: string, key: string, fileMeta: any): Promise<ApiResponse> {
+  async setAcademicVerification(
+    id: string,
+    verified: boolean,
+  ): Promise<ApiResponse> {
     await this.delay();
     const appIndex = this.applications.findIndex(
       (app) => app.id === id || app.uuid === id,
     );
-    if (appIndex === -1) return { success: false, error: 'Application not found' };
+    if (appIndex === -1)
+      return { success: false, error: "Application not found" };
+    this.applications[appIndex].academic_verified = !!verified;
+    return { success: true, data: { academic_verified: !!verified } };
+  }
+
+  async setPaymentVerification(
+    id: string,
+    verified: boolean,
+  ): Promise<ApiResponse> {
+    await this.delay();
+    const appIndex = this.applications.findIndex(
+      (app) => app.id === id || app.uuid === id,
+    );
+    if (appIndex === -1)
+      return { success: false, error: "Application not found" };
+    this.applications[appIndex].payment_verified = !!verified;
+    // keep payment_status field in sync
+    this.applications[appIndex].payment_status = !!verified
+      ? "verified"
+      : this.applications[appIndex].payment_status || "pending";
+    return { success: true, data: { payment_verified: !!verified } };
+  }
+
+  // Update application document (mock file upload)
+  async updateApplicationDocument(
+    id: string,
+    key: string,
+    fileMeta: any,
+  ): Promise<ApiResponse> {
+    await this.delay();
+    const appIndex = this.applications.findIndex(
+      (app) => app.id === id || app.uuid === id,
+    );
+    if (appIndex === -1)
+      return { success: false, error: "Application not found" };
 
     const application = this.applications[appIndex];
     application.documents = application.documents || {};
     application.documents[key] = {
-      file_name: fileMeta.file_name || fileMeta.name || 'uploaded_file',
-      file_url: fileMeta.file_url || fileMeta.url || `https://example.com/files/${Date.now()}`,
+      file_name: fileMeta.file_name || fileMeta.name || "uploaded_file",
+      file_url:
+        fileMeta.file_url ||
+        fileMeta.url ||
+        `https://example.com/files/${Date.now()}`,
       uploaded_on: new Date().toISOString(),
     };
 
@@ -653,8 +720,11 @@ class MockApiService {
       admission_test_required: this.applications.filter(
         (app) => app.admission_test_status === "required",
       ).length,
-      academic_verified: this.applications.filter((app) => app.academic_verified).length,
-      payment_verified: this.applications.filter((app) => app.payment_verified).length,
+      academic_verified: this.applications.filter(
+        (app) => app.academic_verified,
+      ).length,
+      payment_verified: this.applications.filter((app) => app.payment_verified)
+        .length,
       admission_test_completed: this.applications.filter(
         (app) => app.admission_test_status === "completed",
       ).length,
@@ -1345,18 +1415,22 @@ class MockApiService {
       // Merge in sampleCourses (ensure uniqueness by id) so demo courses always available
       const mergedById: Record<string, any> = {};
       // prefer syllabus data, then sampleCourses - but include both sets
-      (this.sampleCourses || []).forEach((c:any)=> { mergedById[c.id] = c; });
-      (courses || []).forEach((c:any)=> { mergedById[c.id] = { ...(mergedById[c.id]||{}), ...c }; });
+      (this.sampleCourses || []).forEach((c: any) => {
+        mergedById[c.id] = c;
+      });
+      (courses || []).forEach((c: any) => {
+        mergedById[c.id] = { ...(mergedById[c.id] || {}), ...c };
+      });
       courses = Object.values(mergedById);
 
       if (code) {
         const q = code.toLowerCase();
         courses = courses.filter(
           (c: any) =>
-            (c.id || '').toLowerCase().includes(q) ||
-            (c.code || '').toLowerCase().includes(q) ||
-            (c.title || '').toLowerCase().includes(q) ||
-            (c.name || '').toLowerCase().includes(q),
+            (c.id || "").toLowerCase().includes(q) ||
+            (c.code || "").toLowerCase().includes(q) ||
+            (c.title || "").toLowerCase().includes(q) ||
+            (c.name || "").toLowerCase().includes(q),
         );
       }
 
@@ -1367,7 +1441,15 @@ class MockApiService {
         name: c.name || c.title || c.code || c.id,
       }));
       // Debug log to help trace search behavior in the browser console
-      try { console.debug('[mockApi.getCourses] query=', code, 'matches=', normalized.length, normalized.slice(0,10)); } catch (err) {}
+      try {
+        console.debug(
+          "[mockApi.getCourses] query=",
+          code,
+          "matches=",
+          normalized.length,
+          normalized.slice(0, 10),
+        );
+      } catch (err) {}
       return { success: true, data: normalized };
     } catch (e) {
       return { success: true, data: [] };

@@ -371,7 +371,8 @@ const coursesDatabase: Course[] = [
     code: "CSE 201",
     credits: 3,
     type: "theory",
-    description: "Linear and non-linear data structures, trees, graphs, hashing",
+    description:
+      "Linear and non-linear data structures, trees, graphs, hashing",
   },
   {
     id: "math-102",
@@ -379,7 +380,8 @@ const coursesDatabase: Course[] = [
     code: "MATH 102",
     credits: 3,
     type: "theory",
-    description: "Sequences and series, multivariable calculus, partial derivatives",
+    description:
+      "Sequences and series, multivariable calculus, partial derivatives",
   },
   {
     id: "eng-102",
