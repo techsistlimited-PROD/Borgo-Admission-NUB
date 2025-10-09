@@ -1310,7 +1310,8 @@ class MockApiService {
           (c: any) =>
             c.id.toLowerCase().includes(q) ||
             c.code?.toLowerCase().includes(q) ||
-            c.title?.toLowerCase().includes(q),
+            c.title?.toLowerCase().includes(q) ||
+            c.name?.toLowerCase().includes(q),
         );
       }
       return { success: true, data: courses };
