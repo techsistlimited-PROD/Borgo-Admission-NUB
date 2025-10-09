@@ -34,27 +34,6 @@ export default function FeeStructureManagement() {
   const [editingPackage, setEditingPackage] = useState<any | null>(null);
   const [pkgDialogOpen, setPkgDialogOpen] = useState(false);
 
-  // Waivers
-  const [waivers, setWaivers] = useState<any[]>([
-    { id: "w-1", code: "MERIT1", name: "Merit 1", type: "Waiver", sscFrom: 4.50, sscTo: 5.00, hscFrom: 4.50, hscTo: 5.00, percent: 50, active: true },
-  ]);
-  const [editingWaiver, setEditingWaiver] = useState<any | null>(null);
-  const [waiverDialogOpen, setWaiverDialogOpen] = useState(false);
-
-  // Quotas
-  const [quotas, setQuotas] = useState<any[]>([
-    { id: "q-1", name: "Freedom Fighter", type: "Quota", percent: 100, active: true, notes: "Full waiver" },
-  ]);
-  const [editingQuota, setEditingQuota] = useState<any | null>(null);
-  const [quotaDialogOpen, setQuotaDialogOpen] = useState(false);
-
-  // Waiver policy settings
-  const [waiverPolicy, setWaiverPolicy] = useState({ applyTwoSemesters: true, minCGPA: 2.5 });
-
-  // Referral toggle
-  const [showReferralInReports, setShowReferralInReports] = useState(false);
-
-  // Waiver/Scholarship Setup uses waivers state above
 
   // Applications (for selecting student to edit previous education)
   const [applications, setApplications] = useState<any[]>([]);
@@ -94,37 +73,6 @@ export default function FeeStructureManagement() {
     toast({ title: "Package deleted" });
   };
 
-  // Waivers handlers
-  const openAddWaiver = () => {
-    setEditingWaiver({ code: "", name: "", type: "Waiver", sscFrom: 0, sscTo: 0, hscFrom: 0, hscTo: 0, percent: 0, active: true });
-    setWaiverDialogOpen(true);
-  };
-  const saveWaiver = () => {
-    if (!editingWaiver) return;
-    if (!editingWaiver.code || !editingWaiver.name) { toast({ title: "Validation", description: "Waiver code and name required" }); return; }
-    if (!editingWaiver.id) {
-      editingWaiver.id = `w-${Date.now()}`;
-      setWaivers((s) => [editingWaiver, ...s]);
-      toast({ title: "Waiver added" });
-    } else {
-      setWaivers((s) => s.map((w) => (w.id === editingWaiver.id ? editingWaiver : w)));
-      toast({ title: "Waiver updated" });
-    }
-    setWaiverDialogOpen(false);
-    setEditingWaiver(null);
-  };
-  const deleteWaiver = (id: string) => { setWaivers((s) => s.filter((w) => w.id !== id)); toast({ title: "Waiver deleted" }); };
-
-  // Quota handlers
-  const openAddQuota = () => { setEditingQuota({ name: "", type: "Quota", percent: 0, notes: "" }); setQuotaDialogOpen(true); };
-  const saveQuota = () => {
-    if (!editingQuota) return;
-    if (!editingQuota.name) { toast({ title: "Validation", description: "Name required" }); return; }
-    if (!editingQuota.id) { editingQuota.id = `q-${Date.now()}`; setQuotas((s) => [editingQuota, ...s]); toast({ title: "Quota added" }); }
-    else { setQuotas((s) => s.map((q) => (q.id === editingQuota.id ? editingQuota : q))); toast({ title: "Quota updated" }); }
-    setQuotaDialogOpen(false); setEditingQuota(null);
-  };
-  const deleteQuota = (id: string) => { setQuotas((s) => s.filter((q) => q.id !== id)); toast({ title: "Quota deleted" }); };
 
   // Load applications for student selector
   useEffect(() => {
@@ -249,125 +197,7 @@ export default function FeeStructureManagement() {
         </CardContent>
       </Card>
 
-      {/* Waiver Management */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Waiver Management (SSC, HSC & Others)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-between items-center mb-4">
-            <div />
-            <div>
-              <Button onClick={openAddWaiver}>+ Add Waiver Rule</Button>
-            </div>
-          </div>
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Waiver Name</TableHead>
-                <TableHead>SSC GPA From</TableHead>
-                <TableHead>SSC GPA To</TableHead>
-                <TableHead>HSC GPA From</TableHead>
-                <TableHead>HSC GPA To</TableHead>
-                <TableHead>Percent</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {waivers.map((w) => (
-                <TableRow key={w.id}>
-                  <TableCell>{w.name}</TableCell>
-                  <TableCell>{w.sscFrom}</TableCell>
-                  <TableCell>{w.sscTo}</TableCell>
-                  <TableCell>{w.hscFrom}</TableCell>
-                  <TableCell>{w.hscTo}</TableCell>
-                  <TableCell>{w.percent}%</TableCell>
-                  <TableCell>{w.type}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button onClick={() => { setEditingWaiver({ ...w }); setWaiverDialogOpen(true); }}>Edit</Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="destructive">Delete</Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Waiver</AlertDialogTitle>
-                            <AlertDialogDescription>Confirm deletion</AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deleteWaiver(w.id)}>Delete</AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Quota & Discount Management */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Quota & Discount Management</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-between items-center mb-4">
-            <div />
-            <div>
-              <Button onClick={openAddQuota}>+ Add Quota</Button>
-            </div>
-          </div>
-
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Quota/Discount Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Percent</TableHead>
-                <TableHead>Active</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {quotas.map((q) => (
-                <TableRow key={q.id}>
-                  <TableCell>{q.name}</TableCell>
-                  <TableCell>{q.type}</TableCell>
-                  <TableCell>{q.percent}%</TableCell>
-                  <TableCell>{q.active ? "Active" : "Inactive"}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button onClick={() => { setEditingQuota({ ...q }); setQuotaDialogOpen(true); }}>Edit</Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="destructive">Delete</Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Quota</AlertDialogTitle>
-                            <AlertDialogDescription>Confirm deletion</AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deleteQuota(q.id)}>Delete</AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
 
       {/* Previous Education Data Management: select a student and edit academic history */}
       <Card className="mb-6">
@@ -424,66 +254,7 @@ export default function FeeStructureManagement() {
         </CardContent>
       </Card>
 
-      {/* Waiver Policy Implementation & Referral */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Waiver Policy & Referral</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4 mb-4">
-            <div>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={waiverPolicy.applyTwoSemesters} onChange={(e)=>setWaiverPolicy({...waiverPolicy, applyTwoSemesters: e.target.checked})} /> Apply waiver for 2 semesters only.</label>
-            </div>
-            <div>
-              <Label>Minimum CGPA required to continue waiver</Label>
-              <Input type="number" step="0.01" value={waiverPolicy.minCGPA} onChange={(e:any)=>setWaiverPolicy({...waiverPolicy, minCGPA: Number(e.target.value)})} />
-            </div>
-            <div>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={showReferralInReports} onChange={(e)=>setShowReferralInReports(e.target.checked)} /> Show referral fee collection info in reports.</label>
-            </div>
-          </div>
 
-          <div className="text-sm text-gray-600">System rules enforced: Fee calculation, waiver validity (2 semesters), auto-suspend if CGPA &lt; threshold, quotas applied before waivers, audit logs maintained. Course offerings generated from syllabus and can be overridden by admin.</div>
-        </CardContent>
-      </Card>
-
-      {/* Waiver/Scholarship Setup Table */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Waiver/Scholarship Setup</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-4">
-            <Button onClick={() => { setEditingWaiver({ code: "NEW", name: "", type: "Waiver", sscFrom: 0, sscTo: 0, hscFrom: 0, hscTo: 0, percent: 0, active: true }); setWaiverDialogOpen(true); }}>+ Add Waiver/Scholarship</Button>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Code</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Percent</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>SSC From</TableHead>
-                <TableHead>SSC To</TableHead>
-                <TableHead>Active</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {waivers.map((w) => (
-                <TableRow key={w.id}>
-                  <TableCell>{w.code}</TableCell>
-                  <TableCell>{w.name}</TableCell>
-                  <TableCell>{w.percent}%</TableCell>
-                  <TableCell>{w.type}</TableCell>
-                  <TableCell>{w.sscFrom}</TableCell>
-                  <TableCell>{w.sscTo}</TableCell>
-                  <TableCell>{w.active ? "Active" : "Inactive"}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
 
       {/* Dialogs: Package */}
       <Dialog open={pkgDialogOpen} onOpenChange={setPkgDialogOpen}>
@@ -532,101 +303,7 @@ export default function FeeStructureManagement() {
         </DialogContent>
       </Dialog>
 
-      {/* Waiver Dialog */}
-      <Dialog open={waiverDialogOpen} onOpenChange={setWaiverDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingWaiver?.id ? "Edit Waiver" : "Add Waiver"}</DialogTitle>
-            <DialogDescription>Define waiver or scholarship rules</DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-            <div>
-              <Label>Waiver Code</Label>
-              <Input value={editingWaiver?.code || ""} onChange={(e:any)=>setEditingWaiver({...editingWaiver, code: e.target.value})} />
-            </div>
-            <div>
-              <Label>Waiver Name</Label>
-              <Input value={editingWaiver?.name || ""} onChange={(e:any)=>setEditingWaiver({...editingWaiver, name: e.target.value})} />
-            </div>
-            <div>
-              <Label>Type</Label>
-              <Select value={editingWaiver?.type || "Waiver"} onValueChange={(v:any)=>setEditingWaiver({...editingWaiver, type: v})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Waiver">Waiver</SelectItem>
-                  <SelectItem value="Scholarship">Scholarship</SelectItem>
-                  <SelectItem value="Discount">Discount</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Percent (%)</Label>
-              <Input type="number" value={editingWaiver?.percent || 0} onChange={(e:any)=>setEditingWaiver({...editingWaiver, percent: Number(e.target.value)})} />
-            </div>
-            <div>
-              <Label>SSC GPA From</Label>
-              <Input type="number" step="0.01" value={editingWaiver?.sscFrom || 0} onChange={(e:any)=>setEditingWaiver({...editingWaiver, sscFrom: Number(e.target.value)})} />
-            </div>
-            <div>
-              <Label>SSC GPA To</Label>
-              <Input type="number" step="0.01" value={editingWaiver?.sscTo || 0} onChange={(e:any)=>setEditingWaiver({...editingWaiver, sscTo: Number(e.target.value)})} />
-            </div>
-            <div>
-              <Label>HSC GPA From</Label>
-              <Input type="number" step="0.01" value={editingWaiver?.hscFrom || 0} onChange={(e:any)=>setEditingWaiver({...editingWaiver, hscFrom: Number(e.target.value)})} />
-            </div>
-            <div>
-              <Label>HSC GPA To</Label>
-              <Input type="number" step="0.01" value={editingWaiver?.hscTo || 0} onChange={(e:any)=>setEditingWaiver({...editingWaiver, hscTo: Number(e.target.value)})} />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={saveWaiver}>Save</Button>
-            <Button variant="outline" onClick={()=>{ setWaiverDialogOpen(false); setEditingWaiver(null); }}>Cancel</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* Quota Dialog */}
-      <Dialog open={quotaDialogOpen} onOpenChange={setQuotaDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingQuota?.id ? "Edit Quota/Discount" : "Add Quota/Discount"}</DialogTitle>
-          </DialogHeader>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-            <div>
-              <Label>Name</Label>
-              <Input value={editingQuota?.name || ""} onChange={(e:any)=>setEditingQuota({...editingQuota, name: e.target.value})} />
-            </div>
-            <div>
-              <Label>Type</Label>
-              <Select value={editingQuota?.type || "Quota"} onValueChange={(v:any)=>setEditingQuota({...editingQuota, type: v})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Quota">Quota</SelectItem>
-                  <SelectItem value="Discount">Discount</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Percent</Label>
-              <Input type="number" value={editingQuota?.percent || 0} onChange={(e:any)=>setEditingQuota({...editingQuota, percent: Number(e.target.value)})} />
-            </div>
-            <div>
-              <Label>Notes</Label>
-              <Textarea value={editingQuota?.notes || ""} onChange={(e:any)=>setEditingQuota({...editingQuota, notes: e.target.value})} />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={saveQuota}>Save</Button>
-            <Button variant="outline" onClick={()=>{ setQuotaDialogOpen(false); setEditingQuota(null); }}>Cancel</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
     </div>
   );
