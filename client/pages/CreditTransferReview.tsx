@@ -1,4 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
+
+// Map letter grades to grade points used in transcript preview
+const letterGradeToGP = (grade: string): number => {
+  if (!grade) return 0;
+  const g = grade.toString().trim().toUpperCase();
+  const map: Record<string, number> = {
+    'A+': 4.0,
+    'A': 3.75,
+    'A-': 3.5,
+    'B+': 3.25,
+    'B': 3.0,
+    'B-': 2.75,
+    'C+': 2.5,
+    'C': 2.25,
+    'D': 2.0,
+    'F': 0,
+  };
+  return map[g] ?? parseFloat(g) || 0;
+};
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, FileText, Trash, Plus, Check, Clock } from "lucide-react";
 import { Button } from "../components/ui/button";
