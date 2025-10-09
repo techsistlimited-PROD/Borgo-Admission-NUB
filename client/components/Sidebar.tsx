@@ -58,7 +58,6 @@ export default function Sidebar({ userType }: SidebarProps) {
     { name: "Admissions", path: "/admin/admissions", icon: Users },
     { name: "Credit Transfer", path: "/admin/credit-transfers", icon: BookOpen },
     { name: "Fee Structure & Packages", path: "/admin/fee-structure", icon: CreditCard },
-    { name: "Waiver & Scholarship", path: "/admin/scholarships", icon: Award },
     { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
     { name: "ID Card Generation", path: "/admin/id-card-generation", icon: Shield },
     { name: "Finance", path: "/admin/finance", icon: CreditCard },
@@ -89,7 +88,6 @@ export default function Sidebar({ userType }: SidebarProps) {
     if (role === "admission_officer")
       return [
         { name: "Admissions", path: "/admin/admissions", icon: Users },
-        { name: "Waiver Management", path: "/admin/waivers", icon: Award },
         { name: "Offer Courses", path: "/admin/offer-courses", icon: BookOpen },
         {
           name: "ID Card Generation",
