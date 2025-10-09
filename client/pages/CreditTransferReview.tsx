@@ -16,7 +16,7 @@ const letterGradeToGP = (grade: string): number => {
     'D': 2.0,
     'F': 0,
   };
-  return map[g] ?? parseFloat(g) || 0;
+  return map[g] ?? (parseFloat(g) || 0);
 };
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, FileText, Trash, Plus, Check, Clock } from "lucide-react";
