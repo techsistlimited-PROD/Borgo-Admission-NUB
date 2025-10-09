@@ -1314,7 +1314,13 @@ class MockApiService {
             c.name?.toLowerCase().includes(q),
         );
       }
-      return { success: true, data: courses };
+      // Normalize course objects to include both 'title' and 'name' for UI compatibility
+      const normalized = (courses || []).map((c: any) => ({
+        ...c,
+        title: c.title || c.name || c.code || c.id,
+        name: c.name || c.title || c.code || c.id,
+      }));
+      return { success: true, data: normalized };
     } catch (e) {
       return { success: true, data: [] };
     }
