@@ -108,13 +108,22 @@ export default function CreditTransferReview(){
 
   const handleSave = async ()=>{
     if (!application) return;
-    if (transferCourses.length===0){ toast({ title:'Error', description:'Add at least one course', variant:'destructive'}); return; }
-    // validate fields
-    for (const c of transferCourses){ if (!c.grade || c.gpa==='' ) { toast({ title:'Validation', description:'Please fill grade and GPA for all courses', variant:'destructive'}); return; } }
+    if (pendingCourses.length===0){ toast({ title:'Error', description:'Add at least one course to save', variant:'destructive'}); return; }
+    // validate pending fields
+    for (const c of pendingCourses){ if (!c.grade || c.gpa==='' ) { toast({ title:'Validation', description:'Please fill grade and GPA for all pending courses', variant:'destructive'}); return; } }
     setSaving(true);
     try{
-      const res = await apiClient.saveTransferCourses({ applicant_id: application.id, courses: transferCourses });
-      if (res.success) { toast({ title:'Saved', description:'Transfer courses saved' }); await load(); }
+      // merge saved and pending, avoid duplicates by code/id
+      const mergedMap: Record<string, any> = {};
+      savedTransferCourses.forEach((c:any)=> { mergedMap[c.code || c.id] = c; });
+      pendingCourses.forEach((c:any)=> { mergedMap[c.code || c.id] = c; });
+      const merged = Object.values(mergedMap);
+      const res = await apiClient.saveTransferCourses({ applicant_id: application.id, courses: merged });
+      if (res.success) {
+        toast({ title:'Saved', description:'Transfer courses saved' });
+        setSavedTransferCourses(merged);
+        setPendingCourses([]);
+      }
       else toast({ title:'Error', description: res.error || 'Failed to save', variant:'destructive' });
     }catch(e){ console.error(e); toast({ title:'Error', description:'Failed to save', variant:'destructive' }); }
     finally{ setSaving(false); }
