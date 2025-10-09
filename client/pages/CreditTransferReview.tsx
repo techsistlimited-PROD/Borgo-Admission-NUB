@@ -81,6 +81,18 @@ export default function CreditTransferReview(){
     return true;
   }, [application, transferCourses]);
 
+  // CGPA calculations
+  const transferStats = useMemo(()=>{
+    const credits = transferCourses.reduce((s:number,c:any)=> s + (Number(c.credits)||0), 0);
+    const weighted = transferCourses.reduce((s:number,c:any)=> s + ((Number(c.gpa)||0) * (Number(c.credits)||0)), 0);
+    const transferGPA = credits>0 ? (weighted/credits) : 0;
+    const currentCredits = Number(application?.completedCredits || application?.completed_credits || application?.academic_history?.completedCredits || 0);
+    const currentCGPA = Number(application?.previousCGPA || application?.previous_cgpa || application?.academic_history?.previousCGPA || application?.academic_history?.previous_cgpa || 0);
+    const combinedCredits = currentCredits + credits;
+    const combinedCGPA = combinedCredits>0 ? ((currentCGPA*currentCredits) + (transferGPA*credits))/combinedCredits : 0;
+    return { credits, transferGPA, currentCredits, currentCGPA, combinedCredits, combinedCGPA };
+  }, [transferCourses, application]);
+
   const handleSave = async ()=>{
     if (!application) return;
     if (transferCourses.length===0){ toast({ title:'Error', description:'Add at least one course', variant:'destructive'}); return; }
@@ -204,12 +216,79 @@ export default function CreditTransferReview(){
             </TableBody>
           </Table>
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div className="p-3 border rounded">
+              <div className="text-xs text-gray-500">Credits Transferred</div>
+              <div className="font-semibold text-lg">{transferStats.credits}</div>
+            </div>
+            <div className="p-3 border rounded">
+              <div className="text-xs text-gray-500">GPA from Transfer</div>
+              <div className="font-semibold text-lg">{transferStats.transferGPA.toFixed(2)}</div>
+            </div>
+            <div className="p-3 border rounded">
+              <div className="text-xs text-gray-500">Current NUB (Credits / CGPA)</div>
+              <div className="font-semibold text-lg">{transferStats.currentCredits} / {transferStats.currentCGPA.toFixed(2)}</div>
+            </div>
+          </div>
+
+          <div className="mt-4 p-3 border rounded bg-gray-50">
+            <div className="text-xs text-gray-500">Combined CGPA (after transfer)</div>
+            <div className="font-semibold text-xl">{transferStats.combinedCGPA.toFixed(2)}</div>
+          </div>
+
           <div className="flex items-center gap-2 mt-4">
             <Button onClick={handleSave} disabled={saving}><Check className="w-4 h-4 mr-2"/> Save Transfer Courses</Button>
             <Button className="bg-deep-plum" onClick={handleMakeStudent} disabled={!canMakeStudent || makingStudent}>
               {makingStudent? (<><Clock className="w-4 h-4 mr-2 animate-spin"/> Creating...</>) : ('Make Student')}
             </Button>
             <div className="text-sm text-gray-600 ml-4">Make Student is enabled when transcript present and all courses have grade & GPA.</div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Transcript Preview */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Transcript Preview (with Transferred Courses)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full table-auto text-sm">
+              <thead>
+                <tr className="text-xs text-gray-600 border-b">
+                  <th className="px-2 py-1">Course Code</th>
+                  <th className="px-2 py-1">Course Title</th>
+                  <th className="px-2 py-1">Credits</th>
+                  <th className="px-2 py-1">Grade</th>
+                  <th className="px-2 py-1">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(application?.transfer_courses || []).map((c:any,i:number)=> (
+                  <tr key={`t-${i}`} className="odd:bg-white even:bg-gray-50">
+                    <td className="px-2 py-1">{c.code}</td>
+                    <td className="px-2 py-1">{c.title}</td>
+                    <td className="px-2 py-1">{c.credits}</td>
+                    <td className="px-2 py-1">{c.grade}</td>
+                    <td className="px-2 py-1">Transferred</td>
+                  </tr>
+                ))}
+
+                {transferCourses.map((c:any,i:number)=> (
+                  <tr key={`new-${i}`} className="odd:bg-white even:bg-gray-50">
+                    <td className="px-2 py-1">{c.code}</td>
+                    <td className="px-2 py-1">{c.title}</td>
+                    <td className="px-2 py-1">{c.credits}</td>
+                    <td className="px-2 py-1">{c.grade || '-'}</td>
+                    <td className="px-2 py-1">Transferred</td>
+                  </tr>
+                ))}
+
+                {((application?.transfer_courses || []).length === 0 && transferCourses.length===0) && (
+                  <tr><td colSpan={5} className="p-4 text-sm text-gray-500">No transferred courses added yet</td></tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </CardContent>
       </Card>
