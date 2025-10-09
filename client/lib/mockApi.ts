@@ -201,6 +201,43 @@ class MockApiService {
     { code: "LAW", name: "Law" },
   ];
 
+  // Additional sample courses injected directly into the mock API to ensure predictable
+  // search results for demos and testing (avoids relying on external syllabusData imports during runtime)
+  private sampleCourses: any[] = [
+    {
+      id: "cse-201",
+      name: "Data Structures",
+      code: "CSE 201",
+      credits: 3,
+      type: "theory",
+      description: "Linear and non-linear data structures, trees, graphs, hashing",
+    },
+    {
+      id: "math-102",
+      name: "Calculus II",
+      code: "MATH 102",
+      credits: 3,
+      type: "theory",
+      description: "Sequences and series, multivariable calculus, partial derivatives",
+    },
+    {
+      id: "eng-102",
+      name: "Academic Writing II",
+      code: "ENG 102",
+      credits: 3,
+      type: "theory",
+      description: "Advanced academic writing and research skills",
+    },
+    {
+      id: "hist-101",
+      name: "World History",
+      code: "HIST 101",
+      credits: 3,
+      type: "theory",
+      description: "Global historical developments from ancient to modern times",
+    },
+  ];
+
   private documentRequirements: any[] = [
     {
       id: 1,
