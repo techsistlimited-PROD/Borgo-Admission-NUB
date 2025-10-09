@@ -1038,7 +1038,15 @@ class ApiClient {
           headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
         });
         const json = await res.json().catch(() => ({}));
-        if (res.ok) return { success: true, data: json.data || json } as any;
+        if (res.ok) {
+          const data = json.data || json;
+          // If server returns an empty array, fallback to mockApi so local mock courses show up in dev
+          if (Array.isArray(data) && data.length === 0) {
+            this.serverAvailable = false;
+            return await mockApi.getCourses(code);
+          }
+          return { success: true, data } as any;
+        }
         console.warn("getCourses server returned non-ok", res.status);
         this.serverAvailable = false;
         return await mockApi.getCourses(code);
