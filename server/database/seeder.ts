@@ -402,6 +402,57 @@ const seedDatabase = async () => {
       ],
     );
 
+    // Seed sample students for search/testing if none exist
+    const existingStudents = await dbGet(`SELECT COUNT(*) as count FROM students`);
+    if (!existingStudents || existingStudents.count === 0) {
+      console.log("🎒 Seeding sample students for testing...");
+      const sampleStudents = [
+        {
+          university_id: 'NU24CS001',
+          ugc_id: 'UGC2024001',
+          program_code: 'BSC_CS',
+          campus: 'Main Campus',
+          semester: 'Spring 2024',
+          full_name: 'Md Shariful Islam',
+          email: 'sharif@example.com',
+          mobile_number: '+8801712340001',
+          batch: '2024',
+        },
+        {
+          university_id: 'NU24BA002',
+          ugc_id: 'UGC2024002',
+          program_code: 'BBA',
+          campus: 'Main Campus',
+          semester: 'Spring 2024',
+          full_name: 'Rahat Ahmed',
+          email: 'rahat@example.com',
+          mobile_number: '+8801712340002',
+          batch: '2024',
+        },
+        {
+          university_id: 'NU24EE003',
+          ugc_id: 'UGC2024003',
+          program_code: 'BSC_EEE',
+          campus: 'Khulna Campus',
+          semester: 'Fall 2023',
+          full_name: 'Ayesha Siddique',
+          email: 'ayesha@example.com',
+          mobile_number: '+8801712340003',
+          batch: '2023',
+        },
+      ];
+
+      for (const s of sampleStudents) {
+        await dbRun(
+          `
+          INSERT INTO students (application_id, university_id, ugc_id, program_code, campus_id, semester_id, full_name, email, mobile_number, batch, enrolled_at, created_by)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)
+        `,
+          [null, s.university_id, s.ugc_id, s.program_code, null, null, s.full_name, s.email, s.mobile_number, s.batch, 1],
+        );
+      }
+    }
+
     // Seed registration packages (if not present)
     console.log("📦 Seeding registration packages...");
     const existingPkgs = await dbGet(
