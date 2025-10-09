@@ -279,7 +279,12 @@ class ApiClient {
   async getPrograms(): Promise<ApiResponse> {
     // If running inside Builder/preview environment, prefer mock to avoid network errors
     try {
-      if (typeof window !== "undefined" && window.location && window.location.host && window.location.host.includes("builder")) {
+      if (
+        typeof window !== "undefined" &&
+        window.location &&
+        window.location.host &&
+        window.location.host.includes("builder")
+      ) {
         return await mockApi.getPrograms();
       }
     } catch (e) {
@@ -306,7 +311,12 @@ class ApiClient {
   async getRegistrationPackages(): Promise<ApiResponse> {
     // If running inside Builder/preview environment, prefer mock to avoid network errors
     try {
-      if (typeof window !== "undefined" && window.location && window.location.host && window.location.host.includes("builder")) {
+      if (
+        typeof window !== "undefined" &&
+        window.location &&
+        window.location.host &&
+        window.location.host.includes("builder")
+      ) {
         return await mockApi.getRegistrationPackages();
       }
     } catch (e) {
