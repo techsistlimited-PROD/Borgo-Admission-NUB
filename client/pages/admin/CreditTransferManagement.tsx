@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CreditTransferList from "../../CreditTransferList";
+import CreditTransferList from "../CreditTransferList";
 
 export default function CreditTransferManagement() {
   return (
