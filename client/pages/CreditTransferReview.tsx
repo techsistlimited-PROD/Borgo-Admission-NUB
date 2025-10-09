@@ -56,11 +56,12 @@ export default function CreditTransferReview(){
 
   const addPickedCourse = ()=>{
     if (!pickedCourse) return;
-    if (transferCourses.find((c)=>c.code === pickedCourse.id || c.id === pickedCourse.id)){
+    // check duplicates in pending or saved (transcript)
+    if (pendingCourses.find((c)=>c.code === pickedCourse.id || c.id === pickedCourse.id) || savedTransferCourses.find((c)=>c.code === pickedCourse.id || c.id === pickedCourse.id)){
       toast({ title: 'Already added', description: 'Course already in list' });
       return;
     }
-    setTransferCourses(prev=>[...prev, { code: pickedCourse.id, title: pickedCourse.title, credits: pickedCourse.credits, grade: '', gpa: '' }]);
+    setPendingCourses(prev=>[...prev, { code: pickedCourse.id, title: pickedCourse.title, credits: pickedCourse.credits, grade: '', gpa: '' }]);
     setPickedCourse(null);
     setSearchCode('');
     setCoursesCatalog([]);
