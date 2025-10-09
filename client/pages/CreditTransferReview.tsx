@@ -18,7 +18,8 @@ export default function CreditTransferReview(){
   const [coursesCatalog, setCoursesCatalog] = useState<any[]>([]);
   const [searchCode, setSearchCode] = useState("");
   const [pickedCourse, setPickedCourse] = useState<any | null>(null);
-  const [transferCourses, setTransferCourses] = useState<any[]>([]);
+  const [savedTransferCourses, setSavedTransferCourses] = useState<any[]>([]); // courses currently saved to application (transcript)
+  const [pendingCourses, setPendingCourses] = useState<any[]>([]); // staged courses not yet saved
   const [saving, setSaving] = useState(false);
   const [makingStudent, setMakingStudent] = useState(false);
   const [studentModalOpen, setStudentModalOpen] = useState(false);
