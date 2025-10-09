@@ -33,7 +33,8 @@ export default function CreditTransferReview(){
       if (res.success && res.data){
         setApplication(res.data.application || res.data);
         const existing = (res.data.application && res.data.application.transfer_courses) || res.data.transfer_courses || [];
-        setTransferCourses(Array.isArray(existing)? existing : []);
+        setSavedTransferCourses(Array.isArray(existing)? existing : []);
+        setPendingCourses([]);
       }
     }catch(e){ console.error(e); toast({ title: 'Error', description: 'Failed to load applicant' , variant: 'destructive'}); }
     finally{ setLoading(false); }
