@@ -108,16 +108,16 @@ export default function CreditTransferReview(){
 
   const handleSave = async ()=>{
     if (!application) return;
-    if (pendingCourses.length===0){ toast({ title:'Error', description:'Add at least one course to save', variant:'destructive'}); return; }
-    // validate pending fields
-    for (const c of pendingCourses){ if (!c.grade || c.gpa==='' ) { toast({ title:'Validation', description:'Please fill grade and GPA for all pending courses', variant:'destructive'}); return; } }
+    if (pendingCourses.length===0 && savedTransferCourses.length===0){ toast({ title:'Error', description:'Add at least one course to save', variant:'destructive'}); return; }
+    // build merged list (pending override saved)
+    const mergedMap: Record<string, any> = {};
+    savedTransferCourses.forEach((c:any)=> { mergedMap[c.code || c.id] = c; });
+    pendingCourses.forEach((c:any)=> { mergedMap[c.code || c.id] = c; });
+    const merged = Object.values(mergedMap);
+    // validate all courses to be saved
+    for (const c of merged){ if (!c.grade || c.gpa===undefined || c.gpa==='' ) { toast({ title:'Validation', description:'Please fill grade and GPA for all courses before saving', variant:'destructive'}); return; } }
     setSaving(true);
     try{
-      // merge saved and pending, avoid duplicates by code/id
-      const mergedMap: Record<string, any> = {};
-      savedTransferCourses.forEach((c:any)=> { mergedMap[c.code || c.id] = c; });
-      pendingCourses.forEach((c:any)=> { mergedMap[c.code || c.id] = c; });
-      const merged = Object.values(mergedMap);
       const res = await apiClient.saveTransferCourses({ applicant_id: application.id, courses: merged });
       if (res.success) {
         toast({ title:'Saved', description:'Transfer courses saved' });
