@@ -1320,6 +1320,8 @@ class MockApiService {
         title: c.title || c.name || c.code || c.id,
         name: c.name || c.title || c.code || c.id,
       }));
+      // Debug log to help trace search behavior in the browser console
+      try { console.debug('[mockApi.getCourses] query=', code, 'matches=', normalized.length, normalized.slice(0,10)); } catch (err) {}
       return { success: true, data: normalized };
     } catch (e) {
       return { success: true, data: [] };
