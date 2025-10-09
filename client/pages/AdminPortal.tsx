@@ -59,9 +59,6 @@ export default function AdminPortal() {
               <Link to="/admin/admissions">
                 <Button>Applications</Button>
               </Link>
-              <Link to="/admin/waivers">
-                <Button variant="outline">Waivers</Button>
-              </Link>
               <Link to="/admin/imports">
                 <Button variant="ghost">Imports</Button>
               </Link>
