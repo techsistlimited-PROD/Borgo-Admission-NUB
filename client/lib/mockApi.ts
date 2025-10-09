@@ -1341,16 +1341,25 @@ class MockApiService {
     try {
       const { getAllCourses } = await import("./syllabusData");
       let courses = getAllCourses();
+
+      // Merge in sampleCourses (ensure uniqueness by id) so demo courses always available
+      const mergedById: Record<string, any> = {};
+      // prefer syllabus data, then sampleCourses - but include both sets
+      (this.sampleCourses || []).forEach((c:any)=> { mergedById[c.id] = c; });
+      (courses || []).forEach((c:any)=> { mergedById[c.id] = { ...(mergedById[c.id]||{}), ...c }; });
+      courses = Object.values(mergedById);
+
       if (code) {
         const q = code.toLowerCase();
         courses = courses.filter(
           (c: any) =>
-            c.id.toLowerCase().includes(q) ||
-            c.code?.toLowerCase().includes(q) ||
-            c.title?.toLowerCase().includes(q) ||
-            c.name?.toLowerCase().includes(q),
+            (c.id || '').toLowerCase().includes(q) ||
+            (c.code || '').toLowerCase().includes(q) ||
+            (c.title || '').toLowerCase().includes(q) ||
+            (c.name || '').toLowerCase().includes(q),
         );
       }
+
       // Normalize course objects to include both 'title' and 'name' for UI compatibility
       const normalized = (courses || []).map((c: any) => ({
         ...c,
