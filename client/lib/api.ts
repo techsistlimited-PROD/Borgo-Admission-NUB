@@ -1676,21 +1676,26 @@ class ApiClient {
     } = {},
   ): Promise<ApiResponse> {
     // If server is not available yet, use mock
-    if (this.serverAvailable === false) return await mockApi.getStudents(params as any);
+    if (this.serverAvailable === false)
+      return await mockApi.getStudents(params as any);
 
     try {
       if (this.serverAvailable) {
         const qs = new URLSearchParams(params as any).toString();
         try {
           const res = await fetch(`/api/students?${qs}`, {
-            headers: this.token ? { Authorization: `Bearer ${this.token}` } : {},
+            headers: this.token
+              ? { Authorization: `Bearer ${this.token}` }
+              : {},
           });
           const json = await res.json().catch(() => ({}));
           if (res.ok) {
             const data = json.data || json;
             // If server returned no students, fallback to mock data for demo
             if (Array.isArray(data.students) && data.students.length === 0) {
-              console.warn("Server returned 0 students, falling back to mock students for UI demo");
+              console.warn(
+                "Server returned 0 students, falling back to mock students for UI demo",
+              );
               return await mockApi.getStudents(params as any);
             }
             return { success: true, data };
@@ -1700,7 +1705,10 @@ class ApiClient {
           this.serverAvailable = false;
           return await mockApi.getStudents(params as any);
         } catch (e) {
-          console.warn("getStudents server fetch failed, falling back to mock", e);
+          console.warn(
+            "getStudents server fetch failed, falling back to mock",
+            e,
+          );
           this.serverAvailable = false;
           return await mockApi.getStudents(params as any);
         }
