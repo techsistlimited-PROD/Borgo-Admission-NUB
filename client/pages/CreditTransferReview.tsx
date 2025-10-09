@@ -333,27 +333,17 @@ export default function CreditTransferReview(){
                 </tr>
               </thead>
               <tbody>
-                {(application?.transfer_courses || []).map((c:any,i:number)=> (
+                {savedTransferCourses.map((c:any,i:number)=> (
                   <tr key={`t-${i}`} className="odd:bg-white even:bg-gray-50">
                     <td className="px-2 py-1">{c.code}</td>
                     <td className="px-2 py-1">{c.title}</td>
                     <td className="px-2 py-1">{c.credits}</td>
-                    <td className="px-2 py-1">{c.grade}</td>
-                    <td className="px-2 py-1">Transferred</td>
-                  </tr>
-                ))}
-
-                {transferCourses.map((c:any,i:number)=> (
-                  <tr key={`new-${i}`} className="odd:bg-white even:bg-gray-50">
-                    <td className="px-2 py-1">{c.code}</td>
-                    <td className="px-2 py-1">{c.title}</td>
-                    <td className="px-2 py-1">{c.credits}</td>
                     <td className="px-2 py-1">{c.grade || '-'}</td>
-                    <td className="px-2 py-1">Transferred</td>
+                    <td className="px-2 py-1">{Number(c.gpa || '') ? `GPA: ${c.gpa}` : 'Transferred'}</td>
                   </tr>
                 ))}
 
-                {((application?.transfer_courses || []).length === 0 && transferCourses.length===0) && (
+                {savedTransferCourses.length === 0 && (
                   <tr><td colSpan={5} className="p-4 text-sm text-gray-500">No transferred courses added yet</td></tr>
                 )}
               </tbody>
