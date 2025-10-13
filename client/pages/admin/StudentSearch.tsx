@@ -131,7 +131,7 @@ export default function StudentSearch() {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   const campusOptions = [
-    { id: "", name: "All Campuses" },
+    { id: "__all", name: "All Campuses" },
     { id: "Main Campus", name: "Main Campus" },
     { id: "Khulna Campus", name: "Khulna Campus" },
   ];
@@ -211,9 +211,9 @@ export default function StudentSearch() {
       else if (cellNumber) params.search = cellNumber;
       else if (studentName) params.search = studentName;
       else if (anyText) params.search = anyText;
-      if (programCode) params.program_code = programCode;
-      if (admissionSemester) params.semester = admissionSemester;
-      if (campus) params.campus = campus;
+      if (programCode && programCode !== "__all") params.program_code = programCode;
+      if (admissionSemester && admissionSemester !== "__all") params.semester = admissionSemester;
+      if (campus && campus !== "__all") params.campus = campus;
 
       const res = await apiClient.getStudents(params);
 
@@ -347,7 +347,7 @@ export default function StudentSearch() {
                       <SelectValue placeholder="Select Semester" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All</SelectItem>
+                      <SelectItem value="__all">All</SelectItem>
                       <SelectItem value="Spring 2025">Spring 2025</SelectItem>
                       <SelectItem value="Summer 2025">Summer 2025</SelectItem>
                       <SelectItem value="Fall 2025">Fall 2025</SelectItem>
@@ -361,7 +361,7 @@ export default function StudentSearch() {
                       <SelectValue placeholder="Select Program" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Programs</SelectItem>
+                      <SelectItem value="__all">All Programs</SelectItem>
                       {programOptions.map((p) => (
                         <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
                       ))}
