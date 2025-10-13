@@ -37,6 +37,7 @@ export default function Sidebar({ userType }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
   const { role } = useAuth();
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
   const publicPages = [
     { name: "Home", path: "/", icon: Home },
