@@ -90,7 +90,18 @@ export default function Sidebar({ userType }: SidebarProps) {
       path: "/admin/admission-circular",
       icon: Mail,
     },
-    { name: "Reports", path: "/admin/reports", icon: PieChart, children: [ { name: "Admission Departmental Reports", path: "/admin/department-reports", icon: PieChart }, ], },
+    {
+      name: "Reports",
+      path: "/admin/reports",
+      icon: PieChart,
+      children: [
+        {
+          name: "Admission Departmental Reports",
+          path: "/admin/department-reports",
+          icon: PieChart,
+        },
+      ],
+    },
     { name: "Report Centre", path: "/admin/report-centre", icon: PieChart },
     { name: "Messaging", path: "/admin/messaging", icon: Mail },
     { name: "Templates", path: "/admin/templates", icon: Mail },
@@ -242,16 +253,24 @@ export default function Sidebar({ userType }: SidebarProps) {
               return (
                 <div key={page.path}>
                   <button
-                    onClick={() => setOpenMenus((s) => ({ ...s, [page.name]: !s[page.name] }))}
+                    onClick={() =>
+                      setOpenMenus((s) => ({
+                        ...s,
+                        [page.name]: !s[page.name],
+                      }))
+                    }
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                      isActive(page.path) || children.some((c) => isActive(c.path))
+                      isActive(page.path) ||
+                      children.some((c) => isActive(c.path))
                         ? "bg-deep-plum text-white"
                         : "text-gray-700 hover:bg-gray-100"
                     }`}
                     aria-expanded={!!open}
                   >
                     <page.icon className="w-4 h-4 flex-shrink-0" />
-                    {!isCollapsed && <span className="text-sm font-medium">{page.name}</span>}
+                    {!isCollapsed && (
+                      <span className="text-sm font-medium">{page.name}</span>
+                    )}
                   </button>
 
                   {open && (
@@ -260,13 +279,19 @@ export default function Sidebar({ userType }: SidebarProps) {
                         <Link
                           key={child.path}
                           to={child.path}
-                          aria-current={isActive(child.path) ? "page" : undefined}
+                          aria-current={
+                            isActive(child.path) ? "page" : undefined
+                          }
                           className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                            isActive(child.path) ? "bg-deep-plum text-white" : "text-gray-700 hover:bg-gray-100"
+                            isActive(child.path)
+                              ? "bg-deep-plum text-white"
+                              : "text-gray-700 hover:bg-gray-100"
                           }`}
                         >
                           <child.icon className="w-3 h-3 opacity-80" />
-                          {!isCollapsed && <span className="text-sm">{child.name}</span>}
+                          {!isCollapsed && (
+                            <span className="text-sm">{child.name}</span>
+                          )}
                         </Link>
                       ))}
                     </div>
