@@ -1458,8 +1458,7 @@ class MockApiService {
     const serialBase =
       this.students.filter(
         (s) =>
-          s.student_id &&
-          s.student_id.includes(`${campusCode}${year}${deptCode}`),
+          (s.student_id || "").toString().includes(`${campusCode}${year}${deptCode}`),
       ).length + 1;
     const serial = String(serialBase).padStart(5, "0");
 
