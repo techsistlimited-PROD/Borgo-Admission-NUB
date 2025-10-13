@@ -240,23 +240,65 @@ export default function Sidebar({ userType }: SidebarProps) {
       {/* Navigation */}
       <div className="flex-1 p-2">
         <div className="space-y-1">
-          {getPages().map((page) => (
-            <Link
-              key={page.path}
-              to={page.path}
-              aria-current={isActive(page.path) ? "page" : undefined}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                isActive(page.path)
-                  ? "bg-deep-plum text-white"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              <page.icon className="w-4 h-4 flex-shrink-0" />
-              {!isCollapsed && (
-                <span className="text-sm font-medium">{page.name}</span>
-              )}
-            </Link>
-          ))}
+          {getPages().map((page) => {
+            // If the page has children, render a collapsible group
+            if ((page as any).children && (page as any).children.length) {
+              const children = (page as any).children as any[];
+              const open = openMenus[page.name];
+              return (
+                <div key={page.path}>
+                  <button
+                    onClick={() => setOpenMenus((s) => ({ ...s, [page.name]: !s[page.name] }))}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                      isActive(page.path) || children.some((c) => isActive(c.path))
+                        ? "bg-deep-plum text-white"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                    aria-expanded={!!open}
+                  >
+                    <page.icon className="w-4 h-4 flex-shrink-0" />
+                    {!isCollapsed && <span className="text-sm font-medium">{page.name}</span>}
+                  </button>
+
+                  {open && (
+                    <div className="mt-1 ml-6 space-y-1">
+                      {children.map((child) => (
+                        <Link
+                          key={child.path}
+                          to={child.path}
+                          aria-current={isActive(child.path) ? "page" : undefined}
+                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                            isActive(child.path) ? "bg-deep-plum text-white" : "text-gray-700 hover:bg-gray-100"
+                          }`}
+                        >
+                          <child.icon className="w-3 h-3 opacity-80" />
+                          {!isCollapsed && <span className="text-sm">{child.name}</span>}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <Link
+                key={page.path}
+                to={page.path}
+                aria-current={isActive(page.path) ? "page" : undefined}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                  isActive(page.path)
+                    ? "bg-deep-plum text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <page.icon className="w-4 h-4 flex-shrink-0" />
+                {!isCollapsed && (
+                  <span className="text-sm font-medium">{page.name}</span>
+                )}
+              </Link>
+            );
+          })}
         </div>
       </div>
 
