@@ -146,26 +146,6 @@ export default function AdmissionDepartmentalReports() {
     <div className="max-w-7xl mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-4">Admission Departmental Reports</h1>
       <div className="grid grid-cols-1 gap-4">
-        <div className="col-span-1">
-          <Card>
-            <CardHeader>
-              <CardTitle>Reports</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-2">
-                {leftTabs.map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setActiveTab(t)}
-                    className={`w-full text-left px-3 py-2 rounded ${activeTab === t ? "bg-deep-plum text-white" : "hover:bg-gray-100 text-gray-700"}`}>
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
         <div className="col-span-1 md:col-span-3">
           <Card className="bg-[rgba(248,242,248,0.8)]">
             <CardHeader>
