@@ -246,15 +246,7 @@ export default function AdmissionDepartmentalReports() {
                   </div>
 
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex gap-2 flex-wrap">
-                      <Button>Annex-wise Admitted Students Number</Button>
-                      <Button>Program-wise Admitted Students Number</Button>
-                      <Button>Annex and Program-wise Admitted Students Number</Button>
-                      <Button>Semester-wise Admitted Students Number</Button>
-                      <Button>Program-wise Admission</Button>
-                      <Button>Year-wise Admission</Button>
-                    </div>
-
+                    <div />
                     <div className="flex gap-2">
                       <Button className="bg-[#3B0A45] text-white" onClick={() => window.print()}>Export as PDF</Button>
                       <Button variant="outline" onClick={() => { /* export excel */ }}>Export as Excel</Button>
@@ -327,7 +319,7 @@ export default function AdmissionDepartmentalReports() {
                   </div>
 
                   <div className="mt-3 flex items-center justify-between">
-                    <Button>View Daily Collection Report</Button>
+                    <div />
                     <Button className="bg-[#3B0A45] text-white" onClick={() => window.print()}>Export as PDF</Button>
                   </div>
                 </div>
@@ -377,9 +369,8 @@ export default function AdmissionDepartmentalReports() {
                       </Select>
                     </div>
 
-                    <div className="ml-auto flex gap-2">
-                      <Button onClick={()=>setFlowView('program')} className={`${flowView==='program' ? 'bg-[#3B0A45] text-white' : ''}`}>Program-wise Flowchart</Button>
-                      <Button onClick={()=>setFlowView('department')} className={`${flowView==='department' ? 'bg-[#3B0A45] text-white' : ''}`}>Department-wise Flowchart</Button>
+                    <div className="ml-auto">
+                      {/* Flowchart view toggle removed per request */}
                     </div>
                   </div>
 
@@ -391,8 +382,7 @@ export default function AdmissionDepartmentalReports() {
                     </div>
                   </div>
 
-                  <div className="flex justify-between">
-                    <Button>View Previous Semester Flowchart</Button>
+                  <div className="flex justify-end">
                     <Button className="bg-[#3B0A45] text-white" onClick={()=>window.print()}>Export as PDF</Button>
                   </div>
                 </div>
@@ -576,7 +566,7 @@ export default function AdmissionDepartmentalReports() {
                     </Table>
                   </div>
 
-                  <div className="mt-3 flex justify-between"><div></div><div className="flex gap-2"><Button>View Semester-wise Waiver Amount</Button><Button>View Program-wise Waiver Amount</Button><Button>View Yearly Waiver Summary</Button><Button className="bg-[#3B0A45] text-white">Export PDF</Button></div></div>
+                  <div className="mt-3 flex justify-end"><Button className="bg-[#3B0A45] text-white">Export PDF</Button></div>
                 </div>
               )}
 
@@ -610,7 +600,7 @@ export default function AdmissionDepartmentalReports() {
                     </Table>
                   </div>
 
-                  <div className="mt-3"><Button>View Admission Target Report</Button></div>
+                  <div className="mt-3" />
                 </div>
               )}
 
@@ -694,7 +684,7 @@ export default function AdmissionDepartmentalReports() {
                     </Table>
                   </div>
 
-                  <div className="mt-3 flex justify-between"><div></div><div className="flex gap-2"><Button>View Credit Transfer Students</Button><Button className="bg-[#3B0A45] text-white">Download PDF</Button></div></div>
+                  <div className="mt-3 flex justify-end"><Button className="bg-[#3B0A45] text-white">Download PDF</Button></div>
                 </div>
               )}
 
