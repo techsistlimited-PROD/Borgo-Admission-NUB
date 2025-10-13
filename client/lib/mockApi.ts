@@ -1456,9 +1456,10 @@ class MockApiService {
 
     // Serial: count existing students with same campus+year+dept and increment
     const serialBase =
-      this.students.filter(
-        (s) =>
-          (s.student_id || "").toString().includes(`${campusCode}${year}${deptCode}`),
+      this.students.filter((s) =>
+        (s.student_id || "")
+          .toString()
+          .includes(`${campusCode}${year}${deptCode}`),
       ).length + 1;
     const serial = String(serialBase).padStart(5, "0");
 
