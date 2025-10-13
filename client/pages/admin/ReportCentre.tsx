@@ -206,7 +206,6 @@ export default function ReportCentre() {
             <div className="flex gap-2">
               <Button className="bg-[#3B0A45] text-white" onClick={exportPdf} disabled={loadingExport}>{loadingExport ? 'Exporting...' : 'Export as PDF'}</Button>
               <Button variant="outline" onClick={exportExcel}>Export as Excel</Button>
-              <Button className="bg-[#3B0A45] text-white">Download All Student Lists</Button>
             </div>
           </div>
         </CardContent>
@@ -268,10 +267,6 @@ export default function ReportCentre() {
           <div className="flex justify-between items-center">
             <div />
             <div className="flex gap-2 flex-wrap">
-              <Button>Admitted Students Address</Button>
-              <Button>Registered Students Address</Button>
-              <Button>Admitted Students List with Address</Button>
-              <Button>Registered Students List with Address</Button>
               <Button className="bg-[#3B0A45] text-white">Print Selected Addresses</Button>
               <Button variant="outline">Export PDF</Button>
             </div>
@@ -324,10 +319,8 @@ export default function ReportCentre() {
             <div className="flex gap-2">
               <Button onClick={()=>setS3Page((p)=>Math.max(1,p-1))}>Prev</Button>
               <Button onClick={()=>setS3Page((p)=>p+1)} disabled={s3Page * pageSize >= filteredCreditTransfers.length}>Next</Button>
-              <Button className="bg-[#3B0A45] text-white">View Credit Transfer Students</Button>
               <Button className="bg-[#3B0A45] text-white" onClick={exportPdf}>{loadingExport ? 'Exporting...' : 'Export as PDF'}</Button>
               <Button variant="outline" onClick={exportExcel}>Export as Excel</Button>
-              <Button className="bg-[#3B0A45] text-white">Download Report</Button>
             </div>
           </div>
         </CardContent>
