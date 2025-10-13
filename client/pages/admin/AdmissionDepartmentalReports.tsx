@@ -29,7 +29,6 @@ const leftTabs = [
   "Admission Targets",
   "Feeder Districts",
   "Credit Transfer Students",
-  "Report Centre",
 ];
 
 const sampleProgramWise = [
@@ -149,7 +148,7 @@ export default function AdmissionDepartmentalReports() {
         <div className="col-span-1 md:col-span-1">
           <Card className="bg-[rgba(248,242,248,0.8)]">
             <CardHeader>
-              <CardTitle className="text-lg">Admission Departmental Reports</CardTitle>
+              <CardTitle className="text-lg">{activeTab}</CardTitle>
             </CardHeader>
             {/* Tabs */}
             <div className="px-6 -mt-3">
