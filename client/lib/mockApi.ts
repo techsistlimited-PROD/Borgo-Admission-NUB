@@ -468,8 +468,8 @@ class MockApiService {
         (app) =>
           app.applicant_name.toLowerCase().includes(search) ||
           app.email.toLowerCase().includes(search) ||
-          app.university_id?.toLowerCase().includes(search) ||
-          app.student_id?.toLowerCase().includes(search),
+          (app.university_id || "").toString().toLowerCase().includes(search) ||
+          (app.student_id || "").toString().toLowerCase().includes(search),
       );
     }
 
