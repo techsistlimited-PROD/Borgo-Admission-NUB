@@ -29,8 +29,8 @@ export default function AdmissionDepartmentalReports() {
   const [activeTab, setActiveTab] = useState(leftTabs[0]);
 
   // Filters for program-wise
-  const [semester, setSemester] = useState("");
-  const [program, setProgram] = useState("");
+  const [semester, setSemester] = useState("__all");
+  const [program, setProgram] = useState("__all");
   const [year, setYear] = useState<string | number>(2024);
 
   const semesters = ["", "Spring 2024", "Summer 2024", "Fall 2024", "Spring 2025"];
@@ -39,8 +39,8 @@ export default function AdmissionDepartmentalReports() {
 
   const filteredProgramWise = useMemo(() => {
     let list = sampleProgramWise.slice();
-    if (semester) list = list.filter((r) => r.semester === semester);
-    if (program) list = list.filter((r) => r.programCode === program);
+    if (semester && semester !== "__all") list = list.filter((r) => r.semester === semester);
+    if (program && program !== "__all") list = list.filter((r) => r.programCode === program);
     if (year) list = list.filter((r) => r.year === Number(year));
     return list;
   }, [semester, program, year]);
@@ -108,7 +108,7 @@ export default function AdmissionDepartmentalReports() {
                           <SelectValue placeholder="Select Semester" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">All</SelectItem>
+                          <SelectItem value="__all">All</SelectItem>
                           {semesters.filter(s=>s).map((s) => (
                             <SelectItem key={s} value={s}>{s}</SelectItem>
                           ))}
@@ -123,7 +123,7 @@ export default function AdmissionDepartmentalReports() {
                           <SelectValue placeholder="Select Program" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">All Programs</SelectItem>
+                          <SelectItem value="__all">All Programs</SelectItem>
                           {programOptions.map((p) => (
                             <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
                           ))}
