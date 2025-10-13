@@ -90,11 +90,14 @@ export default function Sidebar({ userType }: SidebarProps) {
       icon: Mail,
     },
     {
-      name: "Departmental Reports",
-      path: "/admin/department-reports",
+      name: "Reports",
+      path: "/admin/reports",
       icon: PieChart,
+      children: [
+        { name: "Admission Departmental Reports", path: "/admin/department-reports", icon: PieChart },
+        { name: "Report Centre", path: "/admin/report-centre", icon: PieChart },
+      ],
     },
-    { name: "Report Centre", path: "/admin/report-centre", icon: PieChart },
     { name: "Messaging", path: "/admin/messaging", icon: Mail },
     { name: "Templates", path: "/admin/templates", icon: Mail },
     { name: "Mock Emails", path: "/admin/mock-emails", icon: Mail },
