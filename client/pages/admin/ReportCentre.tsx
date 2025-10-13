@@ -141,7 +141,6 @@ export default function ReportCentre() {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-2">Report Centre</h1>
-      <p className="text-sm text-gray-600 mb-4">Central place for generating and downloading student lists, address labels, credit transfer lists and other admission-related reports.</p>
       <hr className="mb-6" />
 
       {/* Section 1 */}
@@ -150,7 +149,6 @@ export default function ReportCentre() {
           <CardTitle className="text-lg">Student List Details and Address Exports</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-600 mb-4">Generate student lists with full details, filter by semester, campus, and program, and export in PDF or Excel format.</p>
 
           <div className="flex flex-wrap gap-3 items-end mb-4">
             <div className="w-1/5 min-w-[160px]"><Label>Admission Semester</Label><Select value={s1Semester} onValueChange={(v:any)=>setS1Semester(v)}><SelectTrigger><SelectValue placeholder="Select"/></SelectTrigger><SelectContent>{semesters.map(s=>(<SelectItem key={s} value={s}>{s === '__all' ? 'All' : s}</SelectItem>))}</SelectContent></Select></div>
@@ -217,7 +215,6 @@ export default function ReportCentre() {
           <CardTitle className="text-lg">Admitted/Registered Students Address (Envelope) Exports</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-600 mb-4">Generate and print address labels for admitted and registered students for communication and envelope mailing.</p>
 
           <div className="flex flex-wrap gap-3 items-end mb-4">
             <div className="w-1/5 min-w-[160px]"><Label>Program</Label><Select value={s2Program} onValueChange={(v:any)=>setS2Program(v)}><SelectTrigger><SelectValue placeholder="Program"/></SelectTrigger><SelectContent>{programs.map(p=>(<SelectItem key={p} value={p}>{p === '__all' ? 'All' : p}</SelectItem>))}</SelectContent></Select></div>
@@ -280,7 +277,6 @@ export default function ReportCentre() {
           <CardTitle className="text-lg">Credit Transferred Student List</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-600 mb-4">View and export a list of students who transferred credits from other institutions.</p>
 
           <div className="flex flex-wrap gap-3 items-end mb-4">
             <div className="w-1/5 min-w-[160px]"><Label>Program</Label><Select value={s3Program} onValueChange={(v:any)=>setS3Program(v)}><SelectTrigger><SelectValue placeholder="Program"/></SelectTrigger><SelectContent>{programs.map(p=>(<SelectItem key={p} value={p}>{p === '__all' ? 'All' : p}</SelectItem>))}</SelectContent></Select></div>
